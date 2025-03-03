@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge } from '@/types';
 
 export async function POST(request: Request) {
   try {
+    const { db } = await connectToDatabase();
     const { challengeId, guess } = await request.json();
     
     if (!challengeId || !guess) {
@@ -13,11 +13,10 @@ export async function POST(request: Request) {
       );
     }
     
-    const { db } = await connectToDatabase();
-    
-    // Find the challenge to check the answer
-    const challenge = await db.collection<Challenge>('challenges').findOne(
-      { challengeId }
+    // Find the challenge with the given ID
+    const challenge = await db.collection('challenges').findOne(
+      { challengeId },
+      { projection: { answer: 1 } } // Only get the answer
     );
     
     if (!challenge) {
@@ -27,21 +26,13 @@ export async function POST(request: Request) {
       );
     }
     
-    // Normalize strings for comparison (lowercase, trim whitespace)
-    const normalizedGuess = guess.trim().toLowerCase();
-    const normalizedAnswer = challenge.answer.trim().toLowerCase();
-    
-    // Check if the guess is correct
-    const isCorrect = normalizedGuess === normalizedAnswer;
+    // Compare the guess with the answer (case insensitive)
+    const isCorrect = guess.toLowerCase() === challenge.answer.toLowerCase();
     
     return NextResponse.json({
-      correct: isCorrect,
-      // We never reveal the answer until the game is over
-      feedback: isCorrect 
-        ? 'Correct! Well done!' 
-        : 'Incorrect. Try again!',
+      isCorrect,
+      message: isCorrect ? 'Correct!' : 'Incorrect, try again.'
     });
-    
   } catch (error) {
     console.error('Error verifying guess:', error);
     return NextResponse.json(

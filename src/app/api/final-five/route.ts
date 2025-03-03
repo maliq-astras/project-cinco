@@ -67,3 +67,49 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const challengeId = searchParams.get('id');
+    
+    if (!challengeId) {
+      return NextResponse.json(
+        { error: 'Missing challenge ID' }, 
+        { status: 400 }
+      );
+    }
+    
+    const { db } = await connectToDatabase();
+    
+    // Get the challenge with the answer and alternatives
+    const challenge = await db.collection('challenges').findOne(
+      { challengeId },
+      { projection: { answer: 1, alternatives: 1 } }
+    );
+    
+    if (!challenge) {
+      return NextResponse.json(
+        { error: 'Challenge not found' }, 
+        { status: 404 }
+      );
+    }
+    
+    // Create the final five options (the correct answer + 4 alternatives)
+    const options = [
+      challenge.answer,
+      ...challenge.alternatives.slice(0, 4)
+    ];
+    
+    // Shuffle the options
+    const shuffledOptions = options.sort(() => Math.random() - 0.5);
+    
+    return NextResponse.json({ options: shuffledOptions });
+  } catch (error) {
+    console.error('Error getting final five options:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' }, 
+      { status: 500 }
+    );
+  }
+}
