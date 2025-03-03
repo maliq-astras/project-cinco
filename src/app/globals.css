@@ -35,6 +35,19 @@
   }
 }
 
+@keyframes progressPulse {
+  0%, 100% {
+    stroke-opacity: 0.8;
+  }
+  50% {
+    stroke-opacity: 1;
+  }
+}
+
+.progress-animation {
+  animation: progressPulse 2s ease-in-out infinite;
+}
+
 .card-in-hand {
   animation: cardDeal 0.5s ease-out forwards;
   animation-delay: calc(var(--card-index, 0) * 0.1s);
