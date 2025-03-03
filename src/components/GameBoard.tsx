@@ -8,6 +8,7 @@ import FactCardStack from './FactCardStack';
 import GuessInput from './GuessInput';
 import GuessProgressBar from './GuessProgressBar';
 import FinalFiveOptions from './FinalFiveOptions';
+import { Question } from 'phosphor-react';
 
 interface GameState {
   loading: boolean;
@@ -83,15 +84,16 @@ export default function GameBoard() {
   const handleFactReveal = (factIndex: number) => {
     if (gameState.revealedFacts.includes(factIndex)) {
       setViewingFact(factIndex);
-      return;
+    } else {
+      // Only reveal if not already revealed
+      if (!gameState.revealedFacts.includes(factIndex)) {
+        setGameState(prev => ({
+          ...prev,
+          revealedFacts: [...prev.revealedFacts, factIndex]
+        }));
+        setViewingFact(factIndex);
+      }
     }
-    
-    setGameState(prev => ({
-      ...prev,
-      revealedFacts: [...prev.revealedFacts, factIndex]
-    }));
-    
-    setViewingFact(factIndex);
   };
 
   const handleCloseFactCard = () => {
@@ -218,12 +220,12 @@ export default function GameBoard() {
   return (
     <div className="max-w-4xl mx-auto p-4 min-h-screen bg-white">
       {/* Header */}
-      <header className="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
+      <header className="flex justify-center items-center mb-6 pb-4 relative">
         <h1 className="text-3xl font-bold text-blue-600">FACT 5</h1>
-        <div className="flex gap-4">
-          <button className="hover:bg-gray-100 p-2 rounded-full transition-colors" aria-label="Calendar">📅</button>
-          <button className="hover:bg-gray-100 p-2 rounded-full transition-colors" aria-label="Help">❓</button>
-          <button className="hover:bg-gray-100 p-2 rounded-full transition-colors" aria-label="Settings">⚙️</button>
+        <div className="absolute right-0 flex gap-4">
+          <button className="hover:bg-gray-100 p-2 rounded-full transition-colors" aria-label="Help">
+            <Question size={24} weight="bold" />
+          </button>
         </div>
       </header>
 
@@ -236,7 +238,7 @@ export default function GameBoard() {
       </div>
 
       {/* Facts Display Area */}
-      <div className="min-h-[200px] border border-gray-200 rounded-lg p-6 mb-8 bg-white shadow-sm">
+      <div className="min-h-[200px] rounded-lg p-6 mb-8 bg-white shadow-sm">
         {gameState.challenge && (
           <FactCardStack 
             revealedFacts={gameState.revealedFacts} 
@@ -256,10 +258,17 @@ export default function GameBoard() {
       </p>
 
       {/* Context Area */}
-      <div className="min-h-[100px] border border-gray-200 rounded-lg p-4 mb-8 bg-white shadow-sm text-center">
+      <div className="min-h-[100px] rounded-lg p-4 mb-8 bg-white shadow-sm text-center">
         {hoveredFact !== null && !gameState.revealedFacts.includes(hoveredFact)
           ? <span className="text-blue-600 font-medium">{`Reveal ${gameState.challenge?.facts[hoveredFact].factType} fact?`}</span>
-          : <span className="text-gray-500">Hover over a fact bubble to see its type</span>}
+          : gameState.revealedFacts.length === 0 
+            ? <span className="text-gray-500">Hover over a fact bubble to see its type</span>
+            : gameState.revealedFacts.length === gameState.challenge?.facts.length
+              ? <span className="text-blue-600">All facts revealed! Try to guess the answer.</span>
+              : <span className="text-gray-500">
+                  {`${gameState.revealedFacts.length} of ${gameState.challenge?.facts.length} facts revealed. Hover over remaining bubbles to see their types.`}
+                </span>
+        }
       </div>
 
       {/* Final Five Options or Fact Bubbles */}
@@ -269,17 +278,18 @@ export default function GameBoard() {
           onSelect={handleFinalFiveSelect} 
         />
       ) : (
-        <div className="grid grid-cols-4 gap-8 mb-8 justify-items-center">
+        <div className="flex flex-wrap justify-center gap-6 mb-8 mt-4">
           {gameState.challenge?.facts.map((fact, index) => (
-            <div key={index} className="text-center">
-              <FactBubble 
+            !gameState.revealedFacts.includes(index) && (
+              <FactBubble
+                key={index}
                 factType={fact.factType}
-                isRevealed={gameState.revealedFacts.includes(index)}
+                isRevealed={false}
                 onClick={() => handleFactReveal(index)}
                 onMouseEnter={() => setHoveredFact(index)}
                 onMouseLeave={() => setHoveredFact(null)}
               />
-            </div>
+            )
           ))}
         </div>
       )}

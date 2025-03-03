@@ -19,47 +19,30 @@ export default function FactCard({ fact, onClose }: FactCardProps) {
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, [handleClickOutside]);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 modal-overlay">
-      <div className="bg-white rounded-xl p-6 w-[320px] h-[480px] mx-4 relative shadow-xl">
-        {/* Card Corners - Top Left */}
-        <div className="absolute top-3 left-3 text-center">
-          <div className="font-swanky text-3xl leading-none">5</div>
-        </div>
-        
-        {/* Card Corners - Bottom Right */}
-        <div className="absolute bottom-3 right-3 text-center rotate-180">
-          <div className="font-swanky text-3xl leading-none">5</div>
-        </div>
-        
+    <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay bg-black bg-opacity-50">
+      <div className="relative w-[320px] h-[480px] bg-white rounded-md shadow-xl p-6 flex flex-col items-center justify-center overflow-hidden card-border-glow">
         {/* Card Content */}
-        <div className="flex flex-col items-center h-full justify-center">
-          {/* Icon Circle */}
-          <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center border-2 border-blue-100 mb-6">
+        <div className="w-full h-full flex flex-col items-center justify-center space-y-6 z-10">
+          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
             {getFactIcon(fact.factType, true)}
           </div>
           
-          {/* Fact Type */}
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+          <h3 className="text-lg font-semibold text-blue-800 text-center">
             {fact.factType}
           </h3>
           
-          {/* Decorative Line */}
-          <div className="w-16 h-0.5 bg-blue-100 mb-6"></div>
+          <div className="w-16 h-0.5 bg-gray-200"></div>
           
-          {/* Fact Content */}
-          <div className="max-h-[200px] overflow-y-auto px-4">
-            <p className="text-gray-600 leading-relaxed text-center">
-              {fact.content}
-            </p>
+          <div className="max-h-[240px] overflow-y-auto px-2 text-center">
+            <p className="text-gray-700">{fact.content}</p>
           </div>
         </div>
-        
-        {/* Card Border */}
-        <div className="absolute inset-4 border border-gray-200 rounded-lg pointer-events-none"></div>
       </div>
     </div>
   );
