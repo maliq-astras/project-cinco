@@ -18,6 +18,7 @@ interface FactBubbleProps {
   onClick: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  'data-fact-index'?: number;
 }
 
 export default function FactBubble({ 
@@ -25,7 +26,8 @@ export default function FactBubble({
   isRevealed, 
   onClick, 
   onMouseEnter, 
-  onMouseLeave 
+  onMouseLeave,
+  'data-fact-index': dataFactIndex
 }: FactBubbleProps) {
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -120,8 +122,9 @@ export default function FactBubble({
         onMouseLeave();
         handleHoldEnd();
       }}
+      data-fact-index={dataFactIndex}
     >
-      <div className="relative w-20 h-20">
+      <div className="relative w-20 aspect-square">
         {/* Regular button with border */}
         <button
           className={`absolute inset-0 w-full h-full rounded-full 
@@ -139,8 +142,9 @@ export default function FactBubble({
           onTouchCancel={handleHoldEnd}
           disabled={isRevealed}
           aria-label={factType}
+          data-fact-index={dataFactIndex}
         >
-          {getFactIcon(factType, isRevealed)}
+          {getFactIcon(factType, isRevealed, 32)}
         </button>
         
         {/* Progress Circle - Only shown when holding */}
@@ -167,8 +171,9 @@ export default function FactBubble({
   );
 }
 
-export function getFactIcon(factType: string, isRevealed: boolean = false): React.ReactNode {
-  const size = 32;
+export function getFactIcon(factType: string, isRevealed: boolean = false, iconSize?: number): React.ReactNode {
+  // Default size is 32, but can be overridden by the iconSize parameter
+  const size = iconSize || 32;
   const color = isRevealed ? "#3b82f6" : "#6b7280";
   const weight = isRevealed ? "fill" : "regular";
   

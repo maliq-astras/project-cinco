@@ -36,6 +36,17 @@ export default function GameBoard() {
   const [timeRemaining, setTimeRemaining] = useState(300); // 5 minutes
   const [hoveredFact, setHoveredFact] = useState<number | null>(null);
   const [viewingFact, setViewingFact] = useState<number | null>(null);
+  const [cardSourcePosition, setCardSourcePosition] = useState<{ x: number, y: number } | null>(null);
+  const [isDrawingFromStack, setIsDrawingFromStack] = useState(false);
+  const [isReturningToStack, setIsReturningToStack] = useState(false);
+  const [isCardAnimatingOut, setIsCardAnimatingOut] = useState(false);
+  const [pendingCardToAdd, setPendingCardToAdd] = useState<number | null>(null);
+  
+  // Track which facts are currently visible in the stack (all revealed facts except the one being viewed)
+  const visibleStackFacts = gameState.revealedFacts.filter(factIndex => 
+    // Only show the card in the stack if it's not being viewed OR if it's returning AND the animation out is complete
+    factIndex !== viewingFact || (isReturningToStack && !isCardAnimatingOut)
+  );
 
   // Fetch challenge on component mount
   useEffect(() => {
@@ -83,21 +94,101 @@ export default function GameBoard() {
 
   const handleFactReveal = (factIndex: number) => {
     if (gameState.revealedFacts.includes(factIndex)) {
+      // If revealing from the stack, get the position of the fact bubble
+      const factBubble = document.querySelector(`[data-fact-index="${factIndex}"]`);
+      if (factBubble) {
+        const rect = factBubble.getBoundingClientRect();
+        setCardSourcePosition({
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        });
+      } else {
+        setCardSourcePosition(null);
+      }
+      
       setViewingFact(factIndex);
+      setIsDrawingFromStack(false); // Not drawing from stack in this case
+      setIsReturningToStack(false);
     } else {
       // Only reveal if not already revealed
       if (!gameState.revealedFacts.includes(factIndex)) {
-        setGameState(prev => ({
-          ...prev,
-          revealedFacts: [...prev.revealedFacts, factIndex]
-        }));
+        // Get the position of the fact bubble
+        const factBubble = document.querySelector(`[data-fact-index="${factIndex}"]`);
+        if (factBubble) {
+          const rect = factBubble.getBoundingClientRect();
+          setCardSourcePosition({
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+          });
+        } else {
+          setCardSourcePosition(null);
+        }
+        
+        // First set the viewing fact to show the animation
         setViewingFact(factIndex);
+        setIsDrawingFromStack(false);
+        setIsReturningToStack(false);
+        
+        // Then update the revealed facts list after a delay
+        setTimeout(() => {
+          setGameState(prev => ({
+            ...prev,
+            revealedFacts: [...prev.revealedFacts, factIndex]
+          }));
+        }, 1000); // Delay to allow the flip animation to complete
       }
     }
   };
 
+  const handleCardClick = (factIndex: number, sourcePosition: { x: number, y: number }) => {
+    // Only set the source position if the fact isn't already being viewed
+    if (viewingFact !== factIndex) {
+      setCardSourcePosition(sourcePosition);
+      setIsDrawingFromStack(true);
+      setViewingFact(factIndex);
+    }
+  };
+
   const handleCloseFactCard = () => {
-    setViewingFact(null);
+    const currentViewingFact = viewingFact;
+    
+    // Set animation flags
+    setIsCardAnimatingOut(true);
+    setIsReturningToStack(true);
+  };
+
+  const handleCardAnimationComplete = () => {
+    const currentViewingFact = viewingFact;
+    
+    // Wait a short delay before updating the state to prevent the card from appearing twice
+    setTimeout(() => {
+      // First clear the viewing state
+      setViewingFact(null);
+      setCardSourcePosition(null);
+      setIsDrawingFromStack(false);
+      
+      // If we were viewing a fact from the stack, move it to the end of the revealed facts array
+      if (currentViewingFact !== null && gameState.revealedFacts.includes(currentViewingFact)) {
+        // Create a new array without the current fact, then add it to the end
+        const newRevealedFacts = gameState.revealedFacts.filter(index => index !== currentViewingFact);
+        
+        // Update the state with the reordered facts
+        setGameState(prev => ({
+          ...prev,
+          revealedFacts: [...newRevealedFacts, currentViewingFact]
+        }));
+      }
+      
+      // Reset the animation flags after a short delay
+      setTimeout(() => {
+        setIsCardAnimatingOut(false);
+        
+        // Reset the returning to stack flag after the animation completes
+        setTimeout(() => {
+          setIsReturningToStack(false);
+        }, 600); // Increased to match the longer animation duration
+      }, 150);
+    }, 300); // Increased delay to match the longer animation duration
   };
 
   const handleGuessSubmit = async (guess: string) => {
@@ -241,9 +332,9 @@ export default function GameBoard() {
       <div className="min-h-[200px] rounded-lg p-6 mb-8 bg-white shadow-sm">
         {gameState.challenge && (
           <FactCardStack 
-            revealedFacts={gameState.revealedFacts} 
+            revealedFacts={visibleStackFacts} 
             facts={gameState.challenge.facts}
-            onCardClick={setViewingFact}
+            onCardClick={(factIndex, sourcePosition) => handleCardClick(factIndex, sourcePosition)}
           />
         )}
       </div>
@@ -288,6 +379,7 @@ export default function GameBoard() {
                 onClick={() => handleFactReveal(index)}
                 onMouseEnter={() => setHoveredFact(index)}
                 onMouseLeave={() => setHoveredFact(null)}
+                data-fact-index={index}
               />
             )
           ))}
@@ -313,7 +405,10 @@ export default function GameBoard() {
       {viewingFact !== null && gameState.challenge && (
         <FactCard 
           fact={gameState.challenge.facts[viewingFact]} 
-          onClose={handleCloseFactCard} 
+          onClose={handleCloseFactCard}
+          sourcePosition={cardSourcePosition}
+          visibleStackCount={visibleStackFacts.length}
+          onAnimationComplete={handleCardAnimationComplete}
         />
       )}
     </div>
