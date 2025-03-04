@@ -19,6 +19,7 @@ interface FactBubbleProps {
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   'data-fact-index'?: number;
+  className?: string;
 }
 
 export default function FactBubble({ 
@@ -27,13 +28,14 @@ export default function FactBubble({
   onClick, 
   onMouseEnter, 
   onMouseLeave,
-  'data-fact-index': dataFactIndex
+  'data-fact-index': dataFactIndex,
+  className = ''
 }: FactBubbleProps) {
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const HOLD_DURATION = 2000; // 2 seconds
+  const HOLD_DURATION = 1000; // 1 second
   const PROGRESS_INTERVAL = 50; // Update progress every 50ms
 
   // Handle hold start
@@ -116,7 +118,7 @@ export default function FactBubble({
 
   return (
     <div 
-      className="relative"
+      className={`relative ${className}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={() => {
         onMouseLeave();
@@ -124,7 +126,7 @@ export default function FactBubble({
       }}
       data-fact-index={dataFactIndex}
     >
-      <div className="relative w-20 aspect-square">
+      <div className="relative w-full aspect-square">
         {/* Regular button with border */}
         <button
           className={`absolute inset-0 w-full h-full rounded-full 

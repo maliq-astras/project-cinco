@@ -186,16 +186,17 @@ export default function FactCard({
     // Cards on the left side of the stack have negative rotation, right side have positive
     const rotation = offsetX > 0 ? Math.min(5, offsetX / 50) : Math.max(-5, offsetX / 50);
     
-    // Calculate the exact scale ratio between stack card (140x200) and open card (320x480)
-    // 140/320 = 0.4375 for width, 200/480 = 0.4167 for height
-    // Using the smaller ratio to ensure the card fits properly
-    const scaleRatio = 0.4167;
+    // Calculate the exact scale ratio between stack card and open card
+    // For small screens: stack card (120x180) and open card (280x420)
+    // For larger screens: stack card (140x200) and open card (320x480)
+    const isSmallScreen = window.innerWidth < 640; // sm breakpoint in Tailwind
+    const scaleRatio = isSmallScreen ? 0.429 : 0.4167; // 120/280 = 0.429 or 140/320 = 0.4375
     
     return {
       x: offsetX,
       y: offsetY,
       rotate: rotation,
-      scale: scaleRatio, // Exact ratio between stack card and modal size
+      scale: scaleRatio,
       opacity: 1
     };
   };
@@ -214,13 +215,16 @@ export default function FactCard({
     const offsetX = returnPosition.x - centerX;
     const offsetY = returnPosition.y - centerY;
     
-    // Calculate the exact scale ratio between stack card (140x200) and open card (320x480)
-    const scaleRatio = 0.4167;
+    // Calculate the exact scale ratio between stack card and open card
+    // For small screens: stack card (120x180) and open card (280x420)
+    // For larger screens: stack card (140x200) and open card (320x480)
+    const isSmallScreen = window.innerWidth < 640; // sm breakpoint in Tailwind
+    const scaleRatio = isSmallScreen ? 0.429 : 0.4167; // 120/280 = 0.429 or 140/320 = 0.4375
     
     return {
       x: offsetX,
       y: offsetY,
-      scale: scaleRatio, // Exact ratio between stack card and modal size
+      scale: scaleRatio,
       opacity: 1, // Keep the card fully opaque
       rotateY: 0
     };
@@ -237,7 +241,7 @@ export default function FactCard({
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay bg-black bg-opacity-50">
       <div className="flip-card-container" ref={cardRef}>
         <motion.div
-          className="relative w-[320px] h-[480px] rounded-lg shadow-xl overflow-hidden"
+          className="relative w-[280px] sm:w-[320px] h-[420px] sm:h-[480px] rounded-lg shadow-xl overflow-hidden"
           initial={getInitialPosition()}
           animate={!isClosing ? { 
             opacity: 1, 
@@ -269,8 +273,8 @@ export default function FactCard({
             </div>
 
             {/* Card Front (white with fact content) - visible after flip */}
-            <div className="flip-card-front absolute inset-0 bg-white rounded-lg shadow-xl p-6 flex flex-col items-center justify-center card-border-glow">
-              <div className="w-full h-full flex flex-col items-center justify-center space-y-6 z-10">
+            <div className="flip-card-front absolute inset-0 bg-white rounded-lg shadow-xl p-4 sm:p-6 flex flex-col items-center justify-center card-border-glow">
+              <div className="w-full h-full flex flex-col items-center justify-center space-y-4 sm:space-y-6 z-10">
                 <IconContainer 
                   factType={fact.factType} 
                   isRevealed={true} 
@@ -279,14 +283,14 @@ export default function FactCard({
                   iconSize={frontIconSize}
                 />
                 
-                <h3 className="text-lg font-semibold text-blue-800 text-center">
+                <h3 className="text-base sm:text-lg font-semibold text-blue-800 text-center">
                   {fact.factType}
                 </h3>
                 
-                <div className="w-16 h-0.5 bg-gray-200"></div>
+                <div className="w-12 sm:w-16 h-0.5 bg-gray-200"></div>
                 
-                <div className="max-h-[240px] overflow-y-auto px-2 text-center">
-                  <p className="text-gray-700">{fact.content}</p>
+                <div className="max-h-[200px] sm:max-h-[240px] overflow-y-auto px-2 text-center">
+                  <p className="text-sm sm:text-base text-gray-700">{fact.content}</p>
                 </div>
               </div>
             </div>

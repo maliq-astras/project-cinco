@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Inter, Swanky_and_Moo_Moo } from 'next/font/google'
+import { Inter, Bangers, Quicksand } from 'next/font/google'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +15,18 @@ const geistMono = Geist_Mono({
 });
 
 const inter = Inter({ subsets: ['latin'] })
-const swankyAndMooMoo = Swanky_and_Moo_Moo({ 
+
+// Fun, playful font for the game title
+const bangers = Bangers({ 
   weight: '400',
   subsets: ['latin'],
-  variable: '--font-swanky'
+  variable: '--font-game'
+})
+
+// Clean, friendly font for display text
+const quicksand = Quicksand({ 
+  subsets: ['latin'],
+  variable: '--font-display'
 })
 
 export const metadata: Metadata = {
@@ -34,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${swankyAndMooMoo.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${bangers.variable} ${quicksand.variable} antialiased`}
       >
         {children}
       </body>

@@ -91,16 +91,6 @@ export default function FactCardStack({ revealedFacts, facts, onCardClick }: Fac
     }
   };
 
-  if (revealedFacts.length === 0) {
-    return (
-      <div className="text-center text-gray-500 py-8 min-h-[220px] flex items-center justify-center card-stack-container" ref={stackRef}>
-        {prevRevealedFacts.length > 0 
-          ? "Card in view. Close it to return to the stack."
-          : "No facts revealed yet. Select a fact bubble below to reveal a clue!"}
-      </div>
-    );
-  }
-
   // Calculate the fan angle based on the number of cards
   const fanAngle = Math.min(4, 12 / revealedFacts.length);
   const centerIndex = Math.floor(revealedFacts.length / 2);
@@ -181,7 +171,7 @@ export default function FactCardStack({ revealedFacts, facts, onCardClick }: Fac
                 onMouseEnter={() => setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
                 className={`absolute p-0 border-2 border-blue-200 rounded-lg 
-                  cursor-pointer w-[140px] h-[200px] card-hover-glow card-in-stack
+                  cursor-pointer w-[120px] sm:w-[140px] h-[180px] sm:h-[200px] card-hover-glow card-in-stack
                   ${shadowClass}`}
                 initial={isInitialRender ? {
                   y: 100,
@@ -219,7 +209,7 @@ export default function FactCardStack({ revealedFacts, facts, onCardClick }: Fac
                 }}
                 style={{
                   transformOrigin: 'bottom center',
-                  left: 'calc(50% - 70px)', // Center the card (half of card width)
+                  left: 'calc(50% - 60px)', // Center the card (half of card width)
                   bottom: '0px',
                 }}
                 layout
