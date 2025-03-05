@@ -33,14 +33,18 @@ export default function IconContainer({
   }[size];
   
   // Determine icon size based on container size
+  // Make icons slightly bigger when revealed (for cards)
   const calculatedIconSize = iconSize || {
-    'small': 28,
-    'medium': 36,
-    'large': 48
+    'small': isRevealed ? 32 : 28,
+    'medium': isRevealed ? 44 : 36,
+    'large': isRevealed ? 56 : 48
   }[size];
   
+  // Only add background for unrevealed icons
+  const bgClass = isRevealed ? '' : 'bg-blue-50';
+  
   return (
-    <div className={`${sizeClass} aspect-square rounded-full flex items-center justify-center ${className}`}>
+    <div className={`${sizeClass} aspect-square rounded-full flex items-center justify-center ${bgClass} ${className}`}>
       {children || getFactIcon(factType, isRevealed, calculatedIconSize)}
     </div>
   );
@@ -53,7 +57,7 @@ export function FactCardBackIcon({ fact, size = 'large' }: { fact: Fact<any>, si
   return (
     <IconContainer
       factType={fact.factType}
-      isRevealed={false}
+      isRevealed={true}
       size={size}
       className="bg-white"
     />

@@ -8,7 +8,7 @@ import FactCardStack from './FactCardStack';
 import GuessInput from './GuessInput';
 import GuessProgressBar from './GuessProgressBar';
 import FinalFiveOptions from './FinalFiveOptions';
-import { Question } from 'phosphor-react';
+import { Question } from "phosphor-react";
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface GameState {
@@ -388,11 +388,28 @@ export default function GameBoard() {
             )}
           </div>
           
-          {/* Context Area */}
-          <div className="min-h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-white text-center">
-            {hoveredFact !== null && !gameState.revealedFacts.includes(hoveredFact) && (
-              <span className="text-blue-600 font-medium font-display">{`${gameState.challenge?.facts[hoveredFact].factType} Fact`}</span>
-            )}
+          {/* Context Area - Fixed height with invisible placeholder */}
+          <div className="h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-white text-center flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Invisible placeholder text to maintain space */}
+              <span className="invisible" aria-hidden="true">
+                Geographic Features & Border Info Fact
+              </span>
+              
+              {/* Actual text that appears on hover */}
+              <span 
+                className={`absolute inset-0 flex items-center justify-center text-blue-600 font-medium font-display transition-opacity duration-200 ${
+                  hoveredFact !== null && !gameState.revealedFacts.includes(hoveredFact) 
+                    ? 'opacity-100' 
+                    : 'opacity-0'
+                }`}
+              >
+                {hoveredFact !== null && !gameState.revealedFacts.includes(hoveredFact)
+                  ? `${gameState.challenge?.facts[hoveredFact].factType} Fact`
+                  : ''
+                }
+              </span>
+            </div>
           </div>
 
           {/* Fact Bubbles */}
@@ -405,92 +422,77 @@ export default function GameBoard() {
             ) : (
               <div className="flex justify-center items-center">
                 {(() => {
-                  // Filter out revealed facts first to get only unrevealed facts
-                  const unrevealedFacts = gameState.challenge?.facts.filter((_, index) => 
-                    !gameState.revealedFacts.includes(index)
-                  ) || [];
+                  // Always use a fixed 4x2 grid layout
+                  const cols = 4;
+                  const rows = 2;
+                  const totalSlots = cols * rows;
                   
-                  // Count unrevealed facts
-                  const unrevealedCount = unrevealedFacts.length;
-                  
-                  // Determine optimal grid layout based on count and screen size
-                  let cols = 4; // Default: 4 columns for wide layout (4×2)
-                  let rows = 2;
-                  
-                  // Adjust layout based on count and screen size
-                  if (windowWidth < 640) { // Mobile
-                    // Use 4×2 on iPhone-sized screens
-                    cols = 4;
-                    rows = 2;
-                    
-                    // Only adjust for very small screens or few bubbles
-                    if (windowWidth < 360) {
-                      if (unrevealedCount <= 4) {
-                        cols = 2;
-                        rows = 2;
-                      } else {
-                        cols = 3;
-                        rows = Math.ceil(unrevealedCount / 3);
-                      }
-                    } else if (unrevealedCount <= 4) {
-                      cols = 2;
-                      rows = 2;
-                    }
-                  } else { // Desktop
-                    // Default to 4×2 on desktop (4 columns, 2 rows)
-                    cols = 4;
-                    rows = 2;
-                    
-                    // Adjust for fewer bubbles
-                    if (unrevealedCount <= 3) {
-                      cols = 3;
-                      rows = 1;
-                    } else if (unrevealedCount <= 4) {
-                      cols = 4;
-                      rows = 1;
-                    } else if (unrevealedCount <= 6) {
-                      cols = 3;
-                      rows = 2;
-                    } else if (unrevealedCount <= 8) {
-                      cols = 4;
-                      rows = 2;
-                    } else if (unrevealedCount <= 9) {
-                      cols = 3;
-                      rows = 3;
-                    } else {
-                      cols = 4;
-                      rows = Math.ceil(unrevealedCount / 4);
-                    }
-                  }
-                  
-                  // Calculate width based on columns
+                  // Calculate container width based on screen size
                   const containerWidth = windowWidth < 640 
                     ? Math.min(windowWidth - 32, cols * 80) // Mobile: account for padding and bubble size
                     : Math.min(480, cols * 100); // Desktop: max width or based on columns
                   
+                  // Create a fixed grid with placeholders for revealed facts
                   return (
                     <div 
                       className="grid gap-4 md:gap-6 justify-items-center"
                       style={{ 
                         gridTemplateColumns: `repeat(${cols}, 1fr)`,
-                        width: containerWidth + 'px'
+                        width: containerWidth + 'px',
+                        height: `${rows * (windowWidth < 640 ? 80 : 100)}px` // Fixed height based on rows
                       }}
                     >
-                      {gameState.challenge?.facts.map((fact, index) => {
-                        // Skip revealed facts
-                        if (gameState.revealedFacts.includes(index)) return null;
+                      {/* Map through all 8 positions in the grid */}
+                      {Array.from({ length: totalSlots }).map((_, slotIndex) => {
+                        // Find the fact that should be in this position
+                        const factIndex = gameState.challenge?.facts.findIndex((_, factIndex) => 
+                          !gameState.revealedFacts.includes(factIndex) && 
+                          gameState.challenge?.facts
+                            .filter((_, i) => !gameState.revealedFacts.includes(i))
+                            .indexOf(gameState.challenge?.facts[factIndex]) === slotIndex
+                        );
+                        
+                        // If no fact should be in this position, render an empty slot
+                        if (factIndex === undefined || factIndex === -1) {
+                          return (
+                            <div 
+                              key={`empty-${slotIndex}`} 
+                              className="w-[65px] md:w-[80px] aspect-square opacity-0"
+                            />
+                          );
+                        }
+                        
+                        // Otherwise, render the fact bubble
+                        const fact = gameState.challenge?.facts[factIndex];
+                        if (!fact) return null;
                         
                         return (
-                          <FactBubble
-                            key={index}
-                            factType={fact.factType}
-                            isRevealed={false}
-                            onClick={() => handleFactReveal(index)}
-                            onMouseEnter={() => setHoveredFact(index)}
-                            onMouseLeave={() => setHoveredFact(null)}
-                            data-fact-index={index}
-                            className="w-[65px] md:w-[80px]" // Smaller on mobile
-                          />
+                          <AnimatePresence mode="popLayout" key={`slot-${slotIndex}`}>
+                            <motion.div
+                              key={`fact-${factIndex}`}
+                              layout
+                              initial={{ scale: 0.9, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              exit={{ scale: 0.8, opacity: 0 }}
+                              transition={{ 
+                                type: "spring", 
+                                stiffness: 300, 
+                                damping: 25,
+                                duration: 0.4
+                              }}
+                              className="flex items-center justify-center"
+                            >
+                              <FactBubble
+                                factType={fact.factType}
+                                isRevealed={false}
+                                onClick={() => handleFactReveal(factIndex)}
+                                onMouseEnter={() => setHoveredFact(factIndex)}
+                                onMouseLeave={() => setHoveredFact(null)}
+                                data-fact-index={factIndex}
+                                className="w-[65px] md:w-[80px]" // Smaller on mobile
+                              />
+                            </motion.div>
+                          </AnimatePresence>
                         );
                       })}
                     </div>
@@ -600,7 +602,7 @@ export default function GameBoard() {
                 </div>
               </div>
               
-              <div className="text-xl font-mono bg-gray-100 rounded-lg text-gray-700 flex items-center justify-center h-[76px] px-4 min-w-[80px]">
+              <div className="text-xl bg-blue-50 rounded-lg text-black flex items-center justify-center h-[76px] px-4 min-w-[80px] font-iceberg">
                 {Math.floor(timeRemaining / 60)}:
                 {(timeRemaining % 60).toString().padStart(2, '0')}
               </div>

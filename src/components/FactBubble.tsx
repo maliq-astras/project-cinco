@@ -1,16 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Globe, 
-  Flag, 
-  Buildings, 
-  Briefcase, 
-  Users, 
-  Bank, 
-  MapTrifold, 
-  Question 
-} from 'phosphor-react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FactBubbleProps {
   factType: string;
@@ -31,143 +23,176 @@ export default function FactBubble({
   'data-fact-index': dataFactIndex,
   className = ''
 }: FactBubbleProps) {
-  const [isHolding, setIsHolding] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const HOLD_DURATION = 1000; // 1 second
-  const PROGRESS_INTERVAL = 50; // Update progress every 50ms
+  const [isPopping, setIsPopping] = useState(false);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const clickCountRef = useRef(0);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const DOUBLE_CLICK_TIMEOUT = 300; // Time window for double click in ms
+  const POP_ANIMATION_DURATION = 500; // Animation duration in ms
+  const CARD_ANIMATION_DELAY = 900; // Delay before card animation starts (includes animation duration plus extra wait)
 
-  // Handle hold start
-  const handleHoldStart = (e: React.MouseEvent | React.TouchEvent) => {
-    // Prevent default behavior for touch events to avoid scrolling
-    if ('touches' in e) {
-      e.preventDefault();
-    }
+  // Handle click/tap with double-click/tap detection
+  const handleInteraction = () => {
+    if (isRevealed || isPopping) return;
     
-    if (isRevealed) return;
+    clickCountRef.current += 1;
     
-    setIsHolding(true);
-    setProgress(0);
-    
-    // Start progress interval
-    progressIntervalRef.current = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + (PROGRESS_INTERVAL / HOLD_DURATION) * 100;
-        return Math.min(newProgress, 100);
-      });
-    }, PROGRESS_INTERVAL);
-    
-    // Set timer for the full hold duration
-    holdTimerRef.current = setTimeout(() => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
+    if (clickCountRef.current === 1) {
+      // First click/tap - start timer
+      clickTimerRef.current = setTimeout(() => {
+        // Reset if no second click/tap within timeout
+        clickCountRef.current = 0;
+      }, DOUBLE_CLICK_TIMEOUT);
+    } else if (clickCountRef.current === 2) {
+      // Double click/tap detected
+      if (clickTimerRef.current) {
+        clearTimeout(clickTimerRef.current);
+        clickTimerRef.current = null;
       }
-      setIsHolding(false);
-      setProgress(0);
-      onClick(); // This triggers the card to open
-    }, HOLD_DURATION);
+      
+      // Start pop animation
+      setIsPopping(true);
+      
+      // Trigger reveal after animation completes plus additional delay
+      setTimeout(() => {
+        onClick(); // This triggers the card to open
+        clickCountRef.current = 0;
+      }, CARD_ANIMATION_DELAY);
+    }
   };
 
-  // Handle hold end
-  const handleHoldEnd = () => {
-    if (isRevealed) return;
-    
-    setIsHolding(false);
-    
-    // Clear timers
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
-    
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current);
-      progressIntervalRef.current = null;
-    }
-    
-    // Reset progress with animation
-    const resetInterval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev - 5; // Decrease faster than it increases
-        if (newProgress <= 0) {
-          clearInterval(resetInterval);
-          return 0;
-        }
-        return newProgress;
-      });
-    }, 20);
-  };
+  // Set up touch event listeners with proper options to prevent default behavior
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    // Function to prevent default behavior for touch events
+    const preventZoom = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+
+    // Add event listeners with passive: false to allow preventDefault
+    button.addEventListener('touchstart', preventZoom, { passive: false });
+    button.addEventListener('touchend', () => handleInteraction(), { passive: true });
+
+    // Clean up event listeners
+    return () => {
+      button.removeEventListener('touchstart', preventZoom);
+      button.removeEventListener('touchend', () => handleInteraction());
+    };
+  }, [isRevealed, isPopping]);
 
   // Clean up timers on unmount
   useEffect(() => {
     return () => {
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current);
-      }
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
+      if (clickTimerRef.current) {
+        clearTimeout(clickTimerRef.current);
       }
     };
   }, []);
 
-  // Calculate the stroke-dasharray and stroke-dashoffset for the progress circle
-  const circleRadius = 40; // Size of the button radius
-  const circleCircumference = 2 * Math.PI * circleRadius;
-  const strokeDashoffset = circleCircumference * (1 - progress / 100);
+  // Bubble pop variants for more dramatic animation
+  const bubbleVariants = {
+    initial: { 
+      scale: 1, 
+      opacity: 1,
+      rotate: 0,
+      filter: "blur(0px)"
+    },
+    exit: { 
+      scale: [1, 1.3, 0.8, 1.2, 0], 
+      opacity: [1, 1, 0.8, 0.5, 0],
+      rotate: [0, -5, 5, -3, 0],
+      filter: ["blur(0px)", "blur(0px)", "blur(2px)", "blur(8px)", "blur(12px)"],
+      transition: { 
+        duration: POP_ANIMATION_DURATION / 1000,
+        times: [0, 0.2, 0.4, 0.6, 1],
+        ease: "easeInOut"
+      }
+    },
+    hover: { 
+      scale: 1.1,
+      boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
+      borderColor: "#3b82f6",
+      transition: { duration: 0.2 }
+    },
+    tap: { 
+      scale: 0.95,
+      transition: { duration: 0.1 }
+    }
+  };
+
+  // Particle effect for more dramatic pop
+  const particles = Array.from({ length: 8 }).map((_, i) => {
+    const angle = (i / 8) * Math.PI * 2;
+    return {
+      x: Math.cos(angle) * 50,
+      y: Math.sin(angle) * 50,
+      opacity: 0,
+      scale: 0,
+      rotate: Math.random() * 360
+    };
+  });
 
   return (
     <div 
       className={`relative ${className}`}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={() => {
-        onMouseLeave();
-        handleHoldEnd();
-      }}
-      data-fact-index={dataFactIndex}
+      onMouseLeave={onMouseLeave}
     >
       <div className="relative w-full aspect-square">
-        {/* Regular button with border */}
-        <button
-          className={`absolute inset-0 w-full h-full rounded-full 
-            ${isRevealed 
-              ? 'border-blue-500 shadow-inner border-4' 
-              : isHolding || progress > 0
-                ? 'border-0 shadow-md' 
-                : 'border-gray-300 hover:border-blue-500 shadow-md hover:shadow-lg border-4'} 
-            flex items-center justify-center transition-all transform ${isHolding ? 'scale-105' : 'hover:scale-110'}`}
-          onMouseDown={handleHoldStart}
-          onMouseUp={handleHoldEnd}
-          onMouseLeave={handleHoldEnd}
-          onTouchStart={handleHoldStart}
-          onTouchEnd={handleHoldEnd}
-          onTouchCancel={handleHoldEnd}
-          disabled={isRevealed}
-          aria-label={factType}
-          data-fact-index={dataFactIndex}
-        >
-          {getFactIcon(factType, isRevealed, 32)}
-        </button>
+        <AnimatePresence>
+          {!isRevealed && !isPopping && (
+            <motion.button
+              ref={buttonRef}
+              className="absolute inset-0 w-full h-full rounded-full 
+                border-gray-300 border-4
+                flex items-center justify-center"
+              onClick={handleInteraction}
+              variants={bubbleVariants}
+              initial="initial"
+              exit="exit"
+              whileHover="hover"
+              whileTap="tap"
+              aria-label={`Double-tap to reveal ${factType} fact`}
+              data-fact-index={dataFactIndex}
+              // Add touch-action CSS property to prevent browser handling of all touch actions
+              style={{ touchAction: 'none' }}
+            >
+              {/* Always use gradient icons, but still pass isRevealed for opacity control */}
+              {getFactIcon(factType, false, 32)}
+            </motion.button>
+          )}
+        </AnimatePresence>
         
-        {/* Progress Circle - Only shown when holding */}
-        {!isRevealed && (isHolding || progress > 0) && (
-          <svg 
-            className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
-            viewBox="0 0 100 100"
-          >
-            <circle
-              cx="50"
-              cy="50"
-              r={circleRadius}
-              fill="none"
-              stroke="rgba(59, 130, 246, 0.8)" // Blue with transparency
-              strokeWidth="8"
-              strokeDasharray={circleCircumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-            />
-          </svg>
-        )}
+        {/* Particle effects that appear during pop animation */}
+        <AnimatePresence>
+          {isPopping && !isRevealed && (
+            <>
+              {particles.map((particle, index) => (
+                <motion.div
+                  key={`particle-${index}`}
+                  className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-blue-500"
+                  initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                  animate={{ 
+                    x: particle.x, 
+                    y: particle.y, 
+                    opacity: [0, 1, 0],
+                    scale: [0, 1, 0],
+                    rotate: particle.rotate
+                  }}
+                  transition={{ 
+                    duration: 0.6,
+                    times: [0, 0.3, 1],
+                    ease: "easeOut" 
+                  }}
+                />
+              ))}
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -176,25 +201,65 @@ export default function FactBubble({
 export function getFactIcon(factType: string, isRevealed: boolean = false, iconSize?: number): React.ReactNode {
   // Default size is 32, but can be overridden by the iconSize parameter
   const size = iconSize || 32;
-  const color = isRevealed ? "#3b82f6" : "#6b7280";
-  const weight = isRevealed ? "fill" : "regular";
+  
+  // Helper function to get the appropriate filter for each icon type
+  const getIconFilter = (iconName: string) => {
+    // Different blue gradient filters for different icons - always use gradients
+    switch(iconName) {
+      case 'languages':
+        return 'brightness(0) saturate(100%) invert(35%) sepia(80%) saturate(1800%) hue-rotate(230deg) brightness(95%) contrast(95%)';
+      case 'flag':
+        return 'brightness(0) saturate(100%) invert(40%) sepia(85%) saturate(1500%) hue-rotate(210deg) brightness(100%) contrast(95%)';
+      case 'cityscape':
+        return 'brightness(0) saturate(100%) invert(50%) sepia(90%) saturate(1200%) hue-rotate(200deg) brightness(100%) contrast(95%)';
+      case 'economy':
+        return 'brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1600%) hue-rotate(195deg) brightness(100%) contrast(95%)';
+      case 'demographics':
+        return 'brightness(0) saturate(100%) invert(35%) sepia(70%) saturate(2000%) hue-rotate(220deg) brightness(95%) contrast(100%)';
+      case 'history':
+        return 'brightness(0) saturate(100%) invert(30%) sepia(75%) saturate(1900%) hue-rotate(215deg) brightness(90%) contrast(95%)';
+      case 'geography':
+        return 'brightness(0) saturate(100%) invert(45%) sepia(85%) saturate(1400%) hue-rotate(190deg) brightness(100%) contrast(95%)';
+      default: // wildcard
+        return 'brightness(0) saturate(100%) invert(40%) sepia(80%) saturate(1700%) hue-rotate(205deg) brightness(95%) contrast(95%)';
+    }
+  };
+  
+  // Helper function to render SVG icon with proper styling
+  const renderSvgIcon = (iconName: string) => {
+    return (
+      <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Image 
+          src={`/icons/${iconName}.svg`} 
+          width={size} 
+          height={size} 
+          alt={factType}
+          style={{ 
+            filter: getIconFilter(iconName),
+            opacity: isRevealed ? 1 : 0.7, // Still reduce opacity for unrevealed icons
+            transition: 'opacity 0.3s ease'
+          }}
+        />
+      </div>
+    );
+  };
   
   switch(factType) {
     case 'Official Language(s)':
-      return <Globe size={size} color={color} weight={weight} />;
+      return renderSvgIcon('languages');
     case 'Flag Colors & Features':
-      return <Flag size={size} color={color} weight={weight} />;
+      return renderSvgIcon('flag');
     case 'Notable City':
-      return <Buildings size={size} color={color} weight={weight} />;
+      return renderSvgIcon('cityscape');
     case 'Largest Industry':
-      return <Briefcase size={size} color={color} weight={weight} />;
+      return renderSvgIcon('economy');
     case 'Population & Demographic Info':
-      return <Users size={size} color={color} weight={weight} />;
+      return renderSvgIcon('demographics');
     case 'Origin/Founding':
-      return <Bank size={size} color={color} weight={weight} />;
+      return renderSvgIcon('history');
     case 'Geographic Features & Border Info':
-      return <MapTrifold size={size} color={color} weight={weight} />;
+      return renderSvgIcon('geography');
     default:
-      return <Question size={size} color={color} weight={weight} />;
+      return renderSvgIcon('wildcard');
   }
 } 

@@ -273,24 +273,27 @@ export default function FactCard({
             </div>
 
             {/* Card Front (white with fact content) - visible after flip */}
-            <div className="flip-card-front absolute inset-0 bg-white rounded-lg shadow-xl p-4 sm:p-6 flex flex-col items-center justify-center card-border-glow">
-              <div className="w-full h-full flex flex-col items-center justify-center space-y-4 sm:space-y-6 z-10">
-                <IconContainer 
-                  factType={fact.factType} 
-                  isRevealed={true} 
-                  size="medium"
-                  className="bg-blue-100"
-                  iconSize={frontIconSize}
-                />
+            <div className="flip-card-front absolute inset-0 bg-white rounded-lg shadow-xl p-4 sm:p-6 flex flex-col card-border-glow">
+              <div className="w-full h-full flex flex-col z-10">
+                {/* Top half - Icon and Fact Type */}
+                <div className="flex-1 flex flex-col items-center justify-center pb-4 border-b border-gray-200">
+                  <IconContainer 
+                    factType={fact.factType} 
+                    isRevealed={true} 
+                    size="medium"
+                    iconSize={frontIconSize}
+                  />
+                  
+                  <h3 className="text-base sm:text-lg font-semibold text-blue-800 text-center mt-4">
+                    {fact.factType}
+                  </h3>
+                </div>
                 
-                <h3 className="text-base sm:text-lg font-semibold text-blue-800 text-center">
-                  {fact.factType}
-                </h3>
-                
-                <div className="w-12 sm:w-16 h-0.5 bg-gray-200"></div>
-                
-                <div className="max-h-[200px] sm:max-h-[240px] overflow-y-auto px-2 text-center">
-                  <p className="text-sm sm:text-base text-gray-700">{fact.content}</p>
+                {/* Bottom half - Fact Content */}
+                <div className="flex-1 flex items-center justify-center pt-4">
+                  <div className="w-full max-h-[200px] sm:max-h-[240px] overflow-y-auto">
+                    <p className="text-sm sm:text-base text-gray-700 text-left">{fact.content}</p>
+                  </div>
                 </div>
               </div>
             </div>
