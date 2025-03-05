@@ -3,13 +3,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { UserGuess } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useGameStore } from '../store/gameStore';
 
-interface GuessProgressBarProps {
-  guesses: UserGuess[];
-  maxGuesses: number;
-}
-
-export default function GuessProgressBar({ guesses, maxGuesses }: GuessProgressBarProps) {
+export default function GuessProgressBar() {
+  // Access state from the store
+  const guesses = useGameStore(state => state.gameState.guesses);
+  const maxGuesses = 5; // Set a constant value or use one from config if available
+  
   // Filter to only wrong guesses
   const wrongGuesses = guesses.filter(guess => !guess.isCorrect);
   const wrongGuessCount = wrongGuesses.length;

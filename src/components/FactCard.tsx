@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Fact } from '../types';
-import { getFactIcon } from './FactBubble';
 import IconContainer, { FactCardBackIcon } from './IconContainer';
+import { useGameStore } from '../store/gameStore';
 
 // Shared component for the back of the card
 export function FactCardBack({ fact, size = 'large' }: { fact: Fact<any>, size?: 'small' | 'large' }) {
@@ -17,19 +17,18 @@ export function FactCardBack({ fact, size = 'large' }: { fact: Fact<any>, size?:
 
 interface FactCardProps {
   fact: Fact<any>;
-  onClose: () => void;
-  sourcePosition?: { x: number, y: number } | null;
   visibleStackCount?: number;
-  onAnimationComplete?: () => void;
 }
 
 export default function FactCard({ 
   fact, 
-  onClose, 
-  sourcePosition, 
   visibleStackCount = 0,
-  onAnimationComplete
 }: FactCardProps) {
+  // Access state and actions from the store
+  const closeFactCard = useGameStore(state => state.closeFactCard);
+  const completeCardAnimation = useGameStore(state => state.completeCardAnimation);
+  const sourcePosition = useGameStore(state => state.cardSourcePosition);
+  
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDrawn, setIsDrawn] = useState(!sourcePosition);
   const [isClosing, setIsClosing] = useState(false);
@@ -123,9 +122,9 @@ export default function FactCard({
         }
       }
       
-      // After the return animation completes, call the onClose prop
+      // After the return animation completes, call closeFactCard from the store
       setTimeout(() => {
-        onClose();
+        closeFactCard();
       }, 500); // Return animation duration - increased for smoother animation
     }, 400); // Flip animation duration - increased for smoother animation
   };
@@ -230,10 +229,10 @@ export default function FactCard({
     };
   };
 
-  // Handle animation completion
+  // Handle animation completion with store action
   const handleAnimationComplete = () => {
-    if (isClosing && onAnimationComplete) {
-      onAnimationComplete();
+    if (isClosing) {
+      completeCardAnimation();
     }
   };
 

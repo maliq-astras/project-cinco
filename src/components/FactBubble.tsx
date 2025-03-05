@@ -3,26 +3,24 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useGameStore } from '../store/gameStore';
 
 interface FactBubbleProps {
   factType: string;
   isRevealed: boolean;
-  onClick: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  'data-fact-index'?: number;
+  'data-fact-index': number; // Changed to be required
   className?: string;
 }
 
 export default function FactBubble({ 
   factType, 
   isRevealed, 
-  onClick, 
-  onMouseEnter, 
-  onMouseLeave,
-  'data-fact-index': dataFactIndex,
+  'data-fact-index': factIndex,
   className = ''
 }: FactBubbleProps) {
+  const revealFact = useGameStore(state => state.revealFact);
+  const setHoveredFact = useGameStore(state => state.setHoveredFact);
+  
   const [isPopping, setIsPopping] = useState(false);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
   const clickCountRef = useRef(0);
@@ -55,7 +53,7 @@ export default function FactBubble({
       
       // Trigger reveal after animation completes plus additional delay
       setTimeout(() => {
-        onClick(); // This triggers the card to open
+        revealFact(factIndex); // Use revealFact from store
         clickCountRef.current = 0;
       }, CARD_ANIMATION_DELAY);
     }
@@ -139,8 +137,8 @@ export default function FactBubble({
   return (
     <div 
       className={`relative ${className}`}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={() => setHoveredFact(factIndex)}
+      onMouseLeave={() => setHoveredFact(null)}
     >
       <div className="relative w-full aspect-square">
         <AnimatePresence>
@@ -157,7 +155,7 @@ export default function FactBubble({
               whileHover="hover"
               whileTap="tap"
               aria-label={`Double-tap to reveal ${factType} fact`}
-              data-fact-index={dataFactIndex}
+              data-fact-index={factIndex}
               // Add touch-action CSS property to prevent browser handling of all touch actions
               style={{ touchAction: 'none' }}
             >
