@@ -87,7 +87,6 @@ export default function MainContainer() {
           <main className="w-full flex-1 flex flex-col items-center justify-between py-6">
             {gameState.challenge && (
               <>
-                <CategoryDisplay timeRemaining={timeRemaining} />
                 
                 <FactsArea />
 

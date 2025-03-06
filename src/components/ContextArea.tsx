@@ -8,7 +8,7 @@ const ContextArea: React.FC = () => {
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
 
   return (
-    <div className="h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-white text-center flex items-center justify-center">
+    <div className="h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-gray-50 text-center flex items-center justify-center">
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Invisible placeholder text to maintain space */}
         <span className="invisible" aria-hidden="true">

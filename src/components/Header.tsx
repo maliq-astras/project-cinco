@@ -1,23 +1,32 @@
 import React from 'react';
-import { Question } from "phosphor-react";
+import { Righteous } from 'next/font/google';
 import Logo from './Logo';
+import { useGameStore } from '../store/gameStore';
+
+const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
 const Header: React.FC = () => {
+  const challenge = useGameStore(state => state.gameState.challenge);
+  
   return (
-    <div className="w-full px-4 relative" style={{ height: '110px' }}>
-      <header className="relative max-w-5xl mx-auto h-full flex items-center justify-center">
-        {/* Large logo using the SVG file from public/icons */}
-        <Logo width={800} height={100} className="text-blue-600" />
-        
-        {/* Icons container with absolute positioning */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          <button 
-            className="p-2 rounded-full transition-colors hover:bg-gray-100" 
-            aria-label="Help"
-          >
-            <Question size={24} weight="bold" />
-          </button>
-          {/* Space for additional icons (2-3 max) */}
+    <div className="w-full px-4 sm:px-6 py-3 sm:py-4">
+      <header className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-center gap-3 sm:gap-6">
+          <div className="h-[90px] sm:h-[120px] md:h-[150px] lg:h-[170px]">
+            <Logo height="100%" className="text-blue-600" />
+          </div>
+          
+          {challenge?.category && (
+            <h1 
+              className={`text-blue-600 m-0 ${righteous.className}`}
+              style={{ 
+                fontSize: "clamp(28px, 5vw, 46px)",
+                lineHeight: 1
+              }}
+            >
+              {challenge.category.toUpperCase()}
+            </h1>
+          )}
         </div>
       </header>
     </div>

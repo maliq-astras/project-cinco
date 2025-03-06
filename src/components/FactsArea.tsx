@@ -7,7 +7,7 @@ import { useGameStore } from '../store/gameStore';
 // Extracted placeholder component for empty card stack
 const EmptyStackPlaceholder: React.FC = () => (
   <motion.div 
-    className="border-2 border-dashed border-gray-200 rounded-lg w-[350px] h-[180px] bg-gray-50 flex items-center justify-center absolute"
+    className="border-2 border-dashed border-gray-200 rounded-lg w-[350px] h-[180px] bg-gray-100 flex items-center justify-center absolute"
     initial={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5 }}
@@ -22,7 +22,7 @@ const FactsArea: React.FC = () => {
   const challenge = useGameStore(state => state.gameState.challenge);
 
   return (
-    <div className="h-[220px] w-full max-w-4xl rounded-lg p-4 mb-6 bg-white flex items-center justify-center relative">
+    <div className="h-[220px] w-full max-w-4xl rounded-lg p-4 mb-6 bg-gray-50 flex items-center justify-center relative">
       {challenge && (
         <>
           {/* Placeholder that fades out when cards appear */}
