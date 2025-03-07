@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FactCard from './FactCard';
 import FinalFiveOptions from './FinalFiveOptions';
 import Header from './Header';
@@ -8,6 +8,7 @@ import FactsArea from './FactsArea';
 import ContextArea from './ContextArea';
 import FactBubbleGrid from './FactBubbleGrid';
 import GameControls from './GameControls';
+import LoadingAnimation from './LoadingAnimation';
 import { useGameStore } from '../store/gameStore';
 
 export default function MainContainer() {
@@ -18,13 +19,23 @@ export default function MainContainer() {
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const setWindowWidth = useGameStore(state => state.setWindowWidth);
 
+  // State to control the loading animation
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
+  const [hasLoadedChallenge, setHasLoadedChallenge] = useState(false);
+
   // Fetch challenge on mount
   useEffect(() => {
-    fetchChallenge();
+    const loadChallenge = async () => {
+      await fetchChallenge();
+      setHasLoadedChallenge(true);
+    };
+    loadChallenge();
   }, [fetchChallenge]);
 
   // Handle timer countdown
   useEffect(() => {
+    if (showLoadingAnimation) return; // Don't start timer during animation
+
     const timer = setInterval(() => {
       if (!gameState.loading && !gameState.error && !gameState.isGameOver) {
         decrementTimer();
@@ -32,7 +43,7 @@ export default function MainContainer() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameState.loading, gameState.error, gameState.isGameOver, decrementTimer]);
+  }, [gameState.loading, gameState.error, gameState.isGameOver, decrementTimer, showLoadingAnimation]);
 
   // Handle window resize
   useEffect(() => {
@@ -50,6 +61,21 @@ export default function MainContainer() {
       };
     }
   }, [setWindowWidth]);
+
+  // Handle loading animation completion
+  const handleLoadingComplete = () => {
+    setShowLoadingAnimation(false);
+  };
+
+  // Show loading animation if we're still loading or haven't finished the animation
+  if (showLoadingAnimation && hasLoadedChallenge && gameState.challenge) {
+    return (
+      <LoadingAnimation 
+        finalCategory={gameState.challenge.category} 
+        onComplete={handleLoadingComplete}
+      />
+    );
+  }
 
   return (
     <div 
@@ -83,9 +109,7 @@ export default function MainContainer() {
           <main className="w-full flex-1 flex flex-col items-center justify-between py-6">
             {gameState.challenge && (
               <>
-                
                 <FactsArea />
-
                 <ContextArea />
                 
                 <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mb-4">
