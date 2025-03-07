@@ -39,21 +39,12 @@ export type CategoryFactTypeMap = {
 
 // Create a generic Fact interface
 export interface Fact<T extends CategoryType> {
-  category: T;
+  category: T; // This is a required field
   factType: CategoryFactTypeMap[T];  // Now TypeScript knows T is a valid key for CategoryFactTypeMap
   content: string;
 }
 
 // For Challenge, we need to handle mixed categories
-export interface Challenge {
-  challengeId: string;
-  date: string;
-  category: CategoryType;
-  facts: Array<Fact<CategoryType>>;
-  answer: string;
-  alternatives: string[];
-}
-
 export interface Challenge {
   challengeId: string;
   date: string;

@@ -1,22 +1,24 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
+import { getFactIcon } from '../helpers/iconHelpers';
 
 interface FactBubbleProps {
   factType: string;
   isRevealed: boolean;
-  'data-fact-index': number; // Changed to be required
+  'data-fact-index': number;
   className?: string;
+  category?: string;
 }
 
 export default function FactBubble({ 
   factType, 
   isRevealed, 
   'data-fact-index': factIndex,
-  className = ''
+  className = '',
+  category = 'countries'
 }: FactBubbleProps) {
   const revealFact = useGameStore(state => state.revealFact);
   const setHoveredFact = useGameStore(state => state.setHoveredFact);
@@ -159,8 +161,23 @@ export default function FactBubble({
               // Add touch-action CSS property to prevent browser handling of all touch actions
               style={{ touchAction: 'none' }}
             >
-              {/* Always use gradient icons, but still pass isRevealed for opacity control */}
-              {getFactIcon(factType, false, 32)}
+              {/* Use the updated icon object format */}
+              {(() => {
+                const icon = getFactIcon(factType, false, 32, category);
+                return (
+                  <img 
+                    src={`/icons/${icon.iconName}.svg`}
+                    alt={factType}
+                    width={icon.size}
+                    height={icon.size}
+                    style={{
+                      filter: icon.filter,
+                      opacity: icon.isRevealed ? 1 : 0.7,
+                      transition: 'opacity 0.3s ease'
+                    }}
+                  />
+                );
+              })()}
             </motion.button>
           )}
         </AnimatePresence>
@@ -195,69 +212,3 @@ export default function FactBubble({
     </div>
   );
 }
-
-export function getFactIcon(factType: string, isRevealed: boolean = false, iconSize?: number): React.ReactNode {
-  // Default size is 32, but can be overridden by the iconSize parameter
-  const size = iconSize || 32;
-  
-  // Helper function to get the appropriate filter for each icon type
-  const getIconFilter = (iconName: string) => {
-    // Different blue gradient filters for different icons - always use gradients
-    switch(iconName) {
-      case 'languages':
-        return 'brightness(0) saturate(100%) invert(35%) sepia(80%) saturate(1800%) hue-rotate(230deg) brightness(95%) contrast(95%)';
-      case 'flag':
-        return 'brightness(0) saturate(100%) invert(40%) sepia(85%) saturate(1500%) hue-rotate(210deg) brightness(100%) contrast(95%)';
-      case 'cityscape':
-        return 'brightness(0) saturate(100%) invert(50%) sepia(90%) saturate(1200%) hue-rotate(200deg) brightness(100%) contrast(95%)';
-      case 'economy':
-        return 'brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1600%) hue-rotate(195deg) brightness(100%) contrast(95%)';
-      case 'demographics':
-        return 'brightness(0) saturate(100%) invert(35%) sepia(70%) saturate(2000%) hue-rotate(220deg) brightness(95%) contrast(100%)';
-      case 'history':
-        return 'brightness(0) saturate(100%) invert(30%) sepia(75%) saturate(1900%) hue-rotate(215deg) brightness(90%) contrast(95%)';
-      case 'geography':
-        return 'brightness(0) saturate(100%) invert(45%) sepia(85%) saturate(1400%) hue-rotate(190deg) brightness(100%) contrast(95%)';
-      default: // wildcard
-        return 'brightness(0) saturate(100%) invert(40%) sepia(80%) saturate(1700%) hue-rotate(205deg) brightness(95%) contrast(95%)';
-    }
-  };
-  
-  // Helper function to render SVG icon with proper styling
-  const renderSvgIcon = (iconName: string) => {
-    return (
-      <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Image 
-          src={`/icons/${iconName}.svg`} 
-          width={size} 
-          height={size} 
-          alt={factType}
-          style={{ 
-            filter: getIconFilter(iconName),
-            opacity: isRevealed ? 1 : 0.7, // Still reduce opacity for unrevealed icons
-            transition: 'opacity 0.3s ease'
-          }}
-        />
-      </div>
-    );
-  };
-  
-  switch(factType) {
-    case 'Official Language(s)':
-      return renderSvgIcon('languages');
-    case 'Flag Colors & Features':
-      return renderSvgIcon('flag');
-    case 'Notable City':
-      return renderSvgIcon('cityscape');
-    case 'Largest Industry':
-      return renderSvgIcon('economy');
-    case 'Population & Demographic Info':
-      return renderSvgIcon('demographics');
-    case 'Origin/Founding':
-      return renderSvgIcon('history');
-    case 'Geographic Features & Border Info':
-      return renderSvgIcon('geography');
-    default:
-      return renderSvgIcon('wildcard');
-  }
-} 

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { getFactIcon } from './FactBubble';
-import { Fact } from '../types';
+import { getFactIcon } from '../helpers/iconHelpers';
+import { Fact, CategoryType } from '../types';
 
 interface IconContainerProps {
   factType: string;
@@ -11,6 +11,7 @@ interface IconContainerProps {
   className?: string;
   iconSize?: number;
   children?: React.ReactNode;
+  category?: string;
 }
 
 /**
@@ -23,7 +24,8 @@ export default function IconContainer({
   size = 'medium',
   className = '',
   iconSize,
-  children
+  children,
+  category = 'countries'
 }: IconContainerProps) {
   // Determine container size class
   const sizeClass = {
@@ -43,9 +45,27 @@ export default function IconContainer({
   // Only add background for unrevealed icons
   const bgClass = isRevealed ? '' : 'bg-blue-50';
   
+  // Ensure category is normalized
+  const normalizedCategory = category.toLowerCase();
+  
   return (
     <div className={`${sizeClass} aspect-square rounded-full flex items-center justify-center ${bgClass} ${className}`}>
-      {children || getFactIcon(factType, isRevealed, calculatedIconSize)}
+      {children || (() => {
+        const icon = getFactIcon(factType, isRevealed, calculatedIconSize, normalizedCategory);
+        return (
+          <img 
+            src={`/icons/${icon.iconName}.svg`}
+            alt={factType}
+            width={icon.size}
+            height={icon.size}
+            style={{
+              filter: icon.filter,
+              opacity: icon.isRevealed ? 1 : 0.7,
+              transition: 'opacity 0.3s ease'
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }
@@ -54,12 +74,18 @@ export default function IconContainer({
  * Specialized version for fact card backs
  */
 export function FactCardBackIcon({ fact, size = 'large' }: { fact: Fact<any>, size?: 'small' | 'large' }) {
+  // Get category from fact or default to 'countries'
+  const category = fact.category ? 
+    (typeof fact.category === 'string' ? fact.category : fact.category.toString()) : 
+    'countries';
+    
   return (
     <IconContainer
       factType={fact.factType}
       isRevealed={true}
       size={size}
       className="bg-white"
+      category={category.toLowerCase()}
     />
   );
 } 

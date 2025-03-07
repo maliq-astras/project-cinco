@@ -52,6 +52,9 @@ const FactBubbleGrid: React.FC = () => {
         const fact = challenge?.facts[factIndex];
         if (!fact) return null;
         
+        // Get category either from the fact itself or from the challenge
+        const category = fact.category ? fact.category : challenge?.category;
+        
         return (
           <AnimatePresence mode="popLayout" key={`slot-${slotIndex}`}>
             <motion.div
@@ -73,6 +76,7 @@ const FactBubbleGrid: React.FC = () => {
                 isRevealed={false}
                 data-fact-index={factIndex}
                 className="w-[65px] md:w-[80px]" // Smaller on mobile
+                category={category.toString().toLowerCase()}
               />
             </motion.div>
           </AnimatePresence>

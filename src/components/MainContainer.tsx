@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import FactCard from './FactCard';
 import FinalFiveOptions from './FinalFiveOptions';
 import Header from './Header';
-import CategoryDisplay from './CategoryDisplay';
 import FactsArea from './FactsArea';
 import ContextArea from './ContextArea';
 import FactBubbleGrid from './FactBubbleGrid';
@@ -14,10 +13,7 @@ import { useGameStore } from '../store/gameStore';
 export default function MainContainer() {
   // Use individual selectors instead to avoid type issues
   const gameState = useGameStore(state => state.gameState);
-  const timeRemaining = useGameStore(state => state.timeRemaining);
   const viewingFact = useGameStore(state => state.viewingFact);
-  const windowWidth = useGameStore(state => state.windowWidth);
-  const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const setWindowWidth = useGameStore(state => state.setWindowWidth);

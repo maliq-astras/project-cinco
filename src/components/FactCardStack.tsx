@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FactCardBack } from './FactCard';
+import FactCardBack from './FactCardBack';
 import { useGameStore } from '../store/gameStore';
 import { useCardStack } from '../hooks/useCardStack';
 import { calculateCardPosition, getCardAnimationVariants } from '../helpers/uiHelpers';

@@ -3,17 +3,10 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Fact } from '../types';
-import IconContainer, { FactCardBackIcon } from './IconContainer';
+import IconContainer from './IconContainer';
+import FactCardBack from './FactCardBack';
 import { useGameStore } from '../store/gameStore';
-
-// Shared component for the back of the card
-export function FactCardBack({ fact, size = 'large' }: { fact: Fact<any>, size?: 'small' | 'large' }) {
-  return (
-    <div className="bg-blue-600 rounded-lg flex items-center justify-center w-full h-full">
-      <FactCardBackIcon fact={fact} size={size} />
-    </div>
-  );
-}
+import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../helpers/cardAnimationHelpers';
 
 interface FactCardProps {
   fact: Fact<any>;
@@ -36,13 +29,16 @@ export default function FactCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [frontIconSize, setFrontIconSize] = useState(40);
 
+  // Ensure we have a valid category
+  const category = fact.category ? 
+    (typeof fact.category === 'string' ? fact.category : fact.category.toString()) : 
+    'countries';
+
   // Dynamically adjust icon size based on card size
   useEffect(() => {
     const updateIconSize = () => {
       if (cardRef.current) {
         const cardWidth = cardRef.current.offsetWidth;
-        // Set icon size to be proportional to card width
-        // For a 320px wide card, we want a 40px icon
         const newIconSize = Math.max(32, Math.round(cardWidth * 0.125));
         setFrontIconSize(newIconSize);
       }
@@ -56,6 +52,7 @@ export default function FactCard({
     };
   }, []);
 
+  // Handle click outside the card
   const handleClickOutside = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.classList.contains('modal-overlay')) {
@@ -63,6 +60,7 @@ export default function FactCard({
     }
   }, []);
 
+  // Handle closing the card
   const handleClose = () => {
     // First flip the card back
     setIsFlipped(false);
@@ -70,65 +68,17 @@ export default function FactCard({
     
     // After the flip animation, start the return animation
     setTimeout(() => {
-      // Find the card stack element to get its position
-      const cardStackElement = document.querySelector('.card-stack-container');
-      
-      if (cardStackElement) {
-        const rect = cardStackElement.getBoundingClientRect();
-        
-        // Check if there are visible cards in the stack
-        if (visibleStackCount > 0) {
-          // Find the rightmost card in the stack
-          const rightmostCard = document.querySelector('.card-stack-container .card-in-stack:last-child');
-          
-          if (rightmostCard) {
-            // Position to the right of the rightmost card
-            const cardRect = rightmostCard.getBoundingClientRect();
-            setReturnPosition({
-              x: cardRect.right + 20, // Position to the right of the last card with some spacing
-              y: cardRect.top + cardRect.height / 2 // Align with the vertical center of the card
-            });
-          } else {
-            // Fallback: position to the right side of the stack
-            setReturnPosition({
-              x: rect.right - 70, // Position at the right edge of the stack minus half card width
-              y: rect.top + rect.height / 2 // Position at the vertical center of the stack
-            });
-          }
-        } else {
-          // If no cards in the stack, position to the center of the stack
-          setReturnPosition({
-            x: rect.left + rect.width / 2, // Center of the stack horizontally
-            y: rect.top + rect.height / 2 // Center of the stack vertically
-          });
-        }
-      } else {
-        // Fallback if we can't find the card stack element
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const centerX = viewportWidth / 2;
-        
-        // Position based on whether there are cards in the stack
-        if (visibleStackCount > 0) {
-          setReturnPosition({
-            x: centerX + 150, // Move to the right side
-            y: viewportHeight / 2 - 50 // Adjust to match the card stack's vertical position
-          });
-        } else {
-          setReturnPosition({
-            x: centerX, // Center horizontally
-            y: viewportHeight / 2 - 50 // Adjust to match the card stack's vertical position
-          });
-        }
-      }
+      // Calculate the return position
+      setReturnPosition(calculateCardReturnPosition(visibleStackCount));
       
       // After the return animation completes, call closeFactCard from the store
       setTimeout(() => {
         closeFactCard();
-      }, 500); // Return animation duration - increased for smoother animation
-    }, 400); // Flip animation duration - increased for smoother animation
+      }, 500);
+    }, 400);
   };
 
+  // Setup animations and event listeners
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
     
@@ -144,7 +94,7 @@ export default function FactCard({
         }, 300);
         
         return () => clearTimeout(flipTimer);
-      }, 500); // Drawing animation duration
+      }, 500);
       
       return () => {
         document.removeEventListener('click', handleClickOutside);
@@ -167,69 +117,7 @@ export default function FactCard({
     };
   }, [handleClickOutside, sourcePosition, isClosing]);
 
-  // Calculate the initial position for the drawing animation
-  const getInitialPosition = () => {
-    if (!sourcePosition) return { opacity: 0, scale: 0.8 };
-    
-    // Get the center of the viewport
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const centerX = viewportWidth / 2;
-    const centerY = viewportHeight / 2;
-    
-    // Calculate the offset from center
-    const offsetX = sourcePosition.x - centerX;
-    const offsetY = sourcePosition.y - centerY;
-    
-    // Calculate the rotation based on the position in the stack
-    // Cards on the left side of the stack have negative rotation, right side have positive
-    const rotation = offsetX > 0 ? Math.min(5, offsetX / 50) : Math.max(-5, offsetX / 50);
-    
-    // Calculate the exact scale ratio between stack card and open card
-    // For small screens: stack card (120x180) and open card (280x420)
-    // For larger screens: stack card (140x200) and open card (320x480)
-    const isSmallScreen = window.innerWidth < 640; // sm breakpoint in Tailwind
-    const scaleRatio = isSmallScreen ? 0.429 : 0.4167; // 120/280 = 0.429 or 140/320 = 0.4375
-    
-    return {
-      x: offsetX,
-      y: offsetY,
-      rotate: rotation,
-      scale: scaleRatio,
-      opacity: 1
-    };
-  };
-
-  // Calculate the final position for the return animation
-  const getFinalPosition = () => {
-    if (!returnPosition) return { opacity: 0 };
-    
-    // Get the center of the viewport
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const centerX = viewportWidth / 2;
-    const centerY = viewportHeight / 2;
-    
-    // Calculate the offset from center
-    const offsetX = returnPosition.x - centerX;
-    const offsetY = returnPosition.y - centerY;
-    
-    // Calculate the exact scale ratio between stack card and open card
-    // For small screens: stack card (120x180) and open card (280x420)
-    // For larger screens: stack card (140x200) and open card (320x480)
-    const isSmallScreen = window.innerWidth < 640; // sm breakpoint in Tailwind
-    const scaleRatio = isSmallScreen ? 0.429 : 0.4167; // 120/280 = 0.429 or 140/320 = 0.4375
-    
-    return {
-      x: offsetX,
-      y: offsetY,
-      scale: scaleRatio,
-      opacity: 1, // Keep the card fully opaque
-      rotateY: 0
-    };
-  };
-
-  // Handle animation completion with store action
+  // Handle animation completion
   const handleAnimationComplete = () => {
     if (isClosing) {
       completeCardAnimation();
@@ -241,17 +129,17 @@ export default function FactCard({
       <div className="flip-card-container" ref={cardRef}>
         <motion.div
           className="relative w-[280px] sm:w-[320px] h-[420px] sm:h-[480px] rounded-lg shadow-xl overflow-hidden"
-          initial={getInitialPosition()}
+          initial={getCardInitialPosition(sourcePosition)}
           animate={!isClosing ? { 
             opacity: 1, 
             scale: 1,
             x: 0,
             y: 0,
             rotate: 0
-          } : getFinalPosition()}
+          } : getCardReturnPosition(returnPosition)}
           transition={{
-            duration: sourcePosition || isClosing ? 0.7 : 0.3, // Increased duration for smoother animation
-            ease: "easeInOut" // Changed to easeInOut for smoother animation
+            duration: sourcePosition || isClosing ? 0.7 : 0.3,
+            ease: "easeInOut"
           }}
           onAnimationComplete={handleAnimationComplete}
         >
@@ -261,9 +149,9 @@ export default function FactCard({
             animate={{ rotateY: isFlipped && isDrawn && !isClosing ? 180 : 0 }}
             transition={{
               type: "spring",
-              stiffness: 70, // Reduced stiffness for smoother animation
+              stiffness: 70,
               damping: 15,
-              duration: 0.9 // Increased duration for smoother animation
+              duration: 0.9
             }}
           >
             {/* Card Back (blue with white icon) - visible first */}
@@ -281,6 +169,7 @@ export default function FactCard({
                     isRevealed={true} 
                     size="medium"
                     iconSize={frontIconSize}
+                    category={category.toLowerCase()}
                   />
                   
                   <h3 className="text-base sm:text-lg font-semibold text-blue-800 text-center mt-4">
@@ -290,9 +179,9 @@ export default function FactCard({
                 
                 {/* Bottom half - Fact Content */}
                 <div className="flex-1 flex items-center justify-center pt-4">
-                  <div className="w-full max-h-[200px] sm:max-h-[240px] overflow-y-auto">
-                    <p className="text-sm sm:text-base text-gray-700 text-left">{fact.content}</p>
-                  </div>
+                  <p className="text-gray-800 text-sm sm:text-base text-center leading-tight sm:leading-snug">
+                    {fact.content}
+                  </p>
                 </div>
               </div>
             </div>

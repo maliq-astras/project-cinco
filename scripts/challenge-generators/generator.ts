@@ -61,7 +61,8 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
         category: this.category,
         facts: this.factTypes.map(factType => ({
           factType,
-          content: subject.facts[factType] || `No fact available for ${factType}`
+          content: subject.facts[factType] || `No fact available for ${factType}`,
+          category: this.category
         })),
         answer: subject.answer,
         alternatives: subject.alternatives || []
