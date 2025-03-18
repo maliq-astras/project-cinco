@@ -10,6 +10,7 @@ import FactBubbleGrid from './FactBubbleGrid';
 import GameControls from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
 import { useGameStore } from '../store/gameStore';
+import Logo from './Logo';
 
 export default function MainContainer() {
   // Use individual selectors instead to avoid type issues
@@ -19,31 +20,34 @@ export default function MainContainer() {
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const setWindowWidth = useGameStore(state => state.setWindowWidth);
 
-  // State to control the loading animation
-  const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
-  const [hasLoadedChallenge, setHasLoadedChallenge] = useState(false);
+  // We need just one state to track if we're done with all animations and ready to show the game
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   // Fetch challenge on mount
   useEffect(() => {
     const loadChallenge = async () => {
       await fetchChallenge();
-      setHasLoadedChallenge(true);
     };
     loadChallenge();
   }, [fetchChallenge]);
 
-  // Handle timer countdown
+  // Handle timer countdown - only start once loading is complete
   useEffect(() => {
-    if (showLoadingAnimation) return; // Don't start timer during animation
-
+    if (!loadingComplete) return;
+    
     const timer = setInterval(() => {
       if (!gameState.loading && !gameState.error && !gameState.isGameOver) {
         decrementTimer();
       }
     }, 1000);
-
+    
     return () => clearInterval(timer);
-  }, [gameState.loading, gameState.error, gameState.isGameOver, decrementTimer, showLoadingAnimation]);
+  }, [gameState.loading, gameState.error, gameState.isGameOver, decrementTimer, loadingComplete]);
+
+  // Handle loading animation completion
+  const handleLoadingComplete = () => {
+    setLoadingComplete(true);
+  };
 
   // Handle window resize
   useEffect(() => {
@@ -62,21 +66,18 @@ export default function MainContainer() {
     }
   }, [setWindowWidth]);
 
-  // Handle loading animation completion
-  const handleLoadingComplete = () => {
-    setShowLoadingAnimation(false);
-  };
-
-  // Show loading animation if we're still loading or haven't finished the animation
-  if (showLoadingAnimation && hasLoadedChallenge && gameState.challenge) {
+  // Always show loading animation until we're ready to show the game
+  if (!loadingComplete) {
     return (
       <LoadingAnimation 
-        finalCategory={gameState.challenge.category} 
+        finalCategory={gameState.challenge?.category || "CATEGORIES"} 
         onComplete={handleLoadingComplete}
+        isChallengeFetched={gameState.challenge !== null}
       />
     );
   }
 
+  // STEP 3: Show the main game after animations are complete
   return (
     <div 
       className="flex flex-col items-center justify-between px-4 pt-4 pb-8 min-h-screen max-w-6xl mx-auto"
