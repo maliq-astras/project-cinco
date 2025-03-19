@@ -9,12 +9,12 @@ const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const Header: React.FC = () => {
   const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
-  
+
   return (
-    <div className="w-full px-4 sm:px-6 py-3 sm:py-4">
+    <div className="w-full py-3 sm:py-4">
       <header className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 sm:gap-6">
-          <div className="h-[90px] sm:h-[120px] md:h-[150px] lg:h-[170px]">
+          <div className="h-[99px] sm:h-[132px] md:h-[165px] lg:h-[187px]">
             <Logo height="100%" className={`text-${colors.primary}`} />
           </div>
           

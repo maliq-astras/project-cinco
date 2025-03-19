@@ -14,6 +14,11 @@ interface GameStore {
   // Core game state
   gameState: GameState;
   timeRemaining: number;
+  isTimerActive: boolean;
+  hasSeenClue: boolean;
+  canRevealNewClue: boolean;
+  canMakeGuess: boolean;
+  lastRevealedFactIndex: number | null;
   
   // UI and animation states
   hoveredFact: number | null;
@@ -29,6 +34,7 @@ interface GameStore {
   // Actions
   setWindowWidth: (width: number) => void;
   decrementTimer: () => void;
+  startTimer: () => void;
   resetTimer: () => void;
   setHoveredFact: (factIndex: number | null) => void;
   
@@ -47,6 +53,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Initial state
   gameState: initialGameState,
   timeRemaining: 300, // 5 minutes
+  isTimerActive: false,
+  hasSeenClue: false,
+  canRevealNewClue: true,
+  canMakeGuess: false,
+  lastRevealedFactIndex: null,
   
   // UI and animation states
   hoveredFact: null,
@@ -60,15 +71,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
   decrementTimer: () => {
-    const { timeRemaining, triggerFinalFive } = get();
-    if (timeRemaining <= 1) {
-      set({ timeRemaining: 0 });
-      triggerFinalFive();
-    } else {
-      set({ timeRemaining: timeRemaining - 1 });
+    const { timeRemaining, triggerFinalFive, isTimerActive } = get();
+    
+    // Only decrement if timer is active
+    if (isTimerActive) {
+      if (timeRemaining <= 1) {
+        set({ timeRemaining: 0 });
+        triggerFinalFive();
+      } else {
+        set({ timeRemaining: timeRemaining - 1 });
+      }
     }
   },
-  resetTimer: () => set({ timeRemaining: 300 }),
+  startTimer: () => set({ isTimerActive: true }),
+  resetTimer: () => set({ timeRemaining: 300, isTimerActive: false }),
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   
   // Game logic actions
@@ -94,7 +110,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   revealFact: (factIndex: number) => {
-    const { gameState } = get();
+    const { gameState, canRevealNewClue, lastRevealedFactIndex } = get();
+    
+    // Check if we can reveal a new clue
+    if (!canRevealNewClue && !gameState.revealedFacts.includes(factIndex)) {
+      return; // Don't allow revealing a new fact if we haven't guessed yet
+    }
+    
+    // Don't allow revealing the same fact that was just revealed (to force revealing different facts)
+    if (factIndex === lastRevealedFactIndex && !gameState.revealedFacts.includes(factIndex)) {
+      return;
+    }
     
     if (gameState.revealedFacts.includes(factIndex)) {
       // If revealing from the stack, get the position of the fact bubble
@@ -117,7 +143,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
           cardSourcePosition: position,
           viewingFact: factIndex,
           isDrawingFromStack: false,
-          isReturningToStack: false
+          isReturningToStack: false,
+          // Disable revealing new clues until they make a guess
+          canRevealNewClue: false,
+          lastRevealedFactIndex: factIndex,
+          // Enable making a guess after revealing a new fact
+          canMakeGuess: true
         });
         
         // Then update the revealed facts list after a delay
@@ -146,7 +177,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   handleCardClick: (factIndex: number, sourcePosition: { x: number, y: number }) => {
-    const { viewingFact } = get();
+    const { viewingFact, canRevealNewClue, gameState } = get();
+    
+    // Check if we can reveal a new clue
+    if (!canRevealNewClue && !gameState.revealedFacts.includes(factIndex)) return;
     
     // Only set the source position if the fact isn't already being viewed
     if (viewingFact !== factIndex) {
@@ -159,10 +193,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   closeFactCard: () => {
+    const { isTimerActive, hasSeenClue } = get();
+    
     set({
       isCardAnimatingOut: true,
-      isReturningToStack: true
+      isReturningToStack: true,
+      hasSeenClue: true
     });
+    
+    // Start the timer on first clue close if not already started
+    if (!isTimerActive && !hasSeenClue) {
+      set({ isTimerActive: true });
+    }
   },
   
   completeCardAnimation: () => {
@@ -205,9 +247,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   submitGuess: async (guess: string) => {
-    const { gameState, triggerFinalFive } = get();
+    const { gameState, triggerFinalFive, hasSeenClue, canMakeGuess } = get();
     
     if (!gameState.challenge) return;
+    if (!hasSeenClue) return; // Can't guess without seeing a clue
+    if (!canMakeGuess) return; // Can't guess twice without revealing a new fact
     
     try {
       const data = await verifyGuessAPI(gameState.challenge.challengeId, guess);
@@ -225,7 +269,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
             ...state.gameState,
             guesses: newGuesses,
             isGameOver: data.isCorrect
-          }
+          },
+          // After guessing, allow revealing a new clue
+          canRevealNewClue: true,
+          // Disable making another guess until they reveal a new fact
+          canMakeGuess: false
         };
         
         // If not correct, check if we've reached the maximum number of wrong guesses

@@ -25,6 +25,8 @@ export default function FactBubble({
 }: FactBubbleProps) {
   const revealFact = useGameStore(state => state.revealFact);
   const setHoveredFact = useGameStore(state => state.setHoveredFact);
+  const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
+  const hasSeenClue = useGameStore(state => state.hasSeenClue);
   
   const [isPopping, setIsPopping] = useState(false);
   const [isPoppedOut, setIsPoppedOut] = useState(false);
@@ -37,9 +39,19 @@ export default function FactBubble({
   const { colors } = useTheme();
   const getFilter = useIconFilter();
 
+  // Check if this bubble is clickable based on game rules
+  const isClickable = () => {
+    // Always allow re-viewing already revealed facts
+    if (isRevealed) return true;
+    
+    // New facts can only be revealed if canRevealNewClue is true
+    return canRevealNewClue;
+  };
+
   // Handle click/tap with double-click/tap detection
   const handleInteraction = () => {
     if (isRevealed || isPopping) return;
+    if (!isClickable()) return; // Don't proceed if not clickable
     
     clickCountRef.current += 1;
     
@@ -88,7 +100,7 @@ export default function FactBubble({
       button.removeEventListener('touchstart', preventZoom);
       button.removeEventListener('touchend', () => handleInteraction());
     };
-  }, [isRevealed, isPopping]);
+  }, [isRevealed, isPopping, canRevealNewClue]);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -121,7 +133,7 @@ export default function FactBubble({
     hover: { 
       scale: 1.1,
       boxShadow: "0 10px 25px -5px rgba(var(--primary-rgb), 0.4)",
-      borderColor: "rgb(var(--primary-rgb))",
+      // Don't animate borderColor to prevent the warning
       transition: { duration: 0.2 }
     },
     tap: { 
@@ -142,11 +154,19 @@ export default function FactBubble({
     };
   });
 
+  // Get tooltip text based on state
+  const getTooltipText = () => {
+    if (isRevealed) return "Click to view this fact again";
+    if (!hasSeenClue) return "Double-tap to reveal your first fact";
+    if (!canRevealNewClue) return "Make a guess before revealing a new fact";
+    return `Double-tap to reveal ${factType} fact`;
+  };
+
   return (
     <div 
       className={`relative ${className}`}
       style={style}
-      onMouseEnter={() => setHoveredFact(factIndex)}
+      onMouseEnter={() => isClickable() && setHoveredFact(factIndex)}
       onMouseLeave={() => setHoveredFact(null)}
     >
       <div className="relative w-full aspect-square">
@@ -155,15 +175,16 @@ export default function FactBubble({
             <motion.button
               ref={buttonRef}
               className={`absolute inset-0 w-full h-full rounded-full 
-                border-${colors.light} border-4
+                border-${colors.light} border-4 
+                ${isClickable() ? `hover:border-${colors.primary} cursor-pointer` : 'cursor-not-allowed opacity-60'}
                 flex items-center justify-center`}
               onClick={handleInteraction}
               variants={bubbleVariants}
               initial="initial"
               exit="exit"
-              whileHover="hover"
-              whileTap="tap"
-              aria-label={`Double-tap to reveal ${factType} fact`}
+              whileHover={isClickable() ? "hover" : "initial"}
+              whileTap={isClickable() ? "tap" : "initial"}
+              aria-label={getTooltipText()}
               data-fact-index={factIndex}
               // Add touch-action CSS property to prevent browser handling of all touch actions
               style={{ touchAction: 'none' }}
@@ -186,7 +207,7 @@ export default function FactBubble({
                     height={icon.size}
                     style={{
                       filter: getFilter(icon.category),
-                      opacity: icon.isRevealed ? 1 : 0.7,
+                      opacity: isClickable() ? 0.7 : 0.4,
                       transition: 'opacity 0.3s ease'
                     }}
                   />

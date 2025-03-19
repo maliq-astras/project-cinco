@@ -25,18 +25,18 @@ const FactsArea: React.FC = () => {
   // Calculate the appropriate height based on screen size
   const getResponsiveHeight = () => {
     // iPhone-specific height
-    if (windowWidth >= 375 && windowWidth <= 430) return 170;
+    if (windowWidth >= 375 && windowWidth <= 430) return 150;
     
-    if (windowWidth < 360) return 165; // Extra small devices
-    if (windowWidth < 480) return 170; // Small devices
-    if (windowWidth < 640) return 190; // Medium devices
-    if (windowWidth < 768) return 200; // Medium-large devices
+    if (windowWidth < 360) return 140; // Extra small devices
+    if (windowWidth < 480) return 150; // Small devices
+    if (windowWidth < 640) return 170; // Medium devices
+    if (windowWidth < 768) return 180; // Medium-large devices
     return 220; // Large devices
   };
 
   return (
     <div 
-      className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-4 sm:mb-6 bg-gray-50 flex items-center justify-center relative"
+      className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-2 sm:mb-4 bg-gray-50 flex items-center justify-center relative"
       style={{ height: `${getResponsiveHeight()}px` }}
     >
       {challenge && (

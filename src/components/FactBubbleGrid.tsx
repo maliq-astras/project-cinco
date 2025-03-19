@@ -17,7 +17,9 @@ const FactBubbleGrid: React.FC = () => {
   // Enhanced sizing logic for multiple breakpoints
   // sm: 640px, md: 768px, lg: 1024px, xl: 1280px
   const getBubbleSize = () => {
-    if (windowWidth < 640) return 65; // Mobile
+    if (windowWidth < 380) return 65; // Small mobile
+    if (windowWidth < 480) return 70; // Medium mobile
+    if (windowWidth < 640) return 75; // Large mobile
     if (windowWidth < 768) return 80; // Small tablets
     if (windowWidth < 1024) return 90; // Larger tablets
     if (windowWidth < 1280) return 100; // Small desktops
@@ -27,7 +29,16 @@ const FactBubbleGrid: React.FC = () => {
   const bubbleSize = getBubbleSize();
   
   // Calculate gap size based on screen width
-  const gapSize = windowWidth < 640 ? 16 : windowWidth < 1024 ? 24 : 32; // 4, 6, or 8 in Tailwind scale
+  const gapSize = windowWidth < 380 ? 16 : windowWidth < 640 ? 20 : windowWidth < 1024 ? 24 : 32; // 4, 5, 6, or 8 in Tailwind scale
+
+  // Calculate fixed height for different screen sizes - to prevent layout shifts
+  const getContainerHeight = () => {
+    if (windowWidth < 380) return 155; // Fixed height for small mobile
+    if (windowWidth < 480) return 165; // Fixed height for medium mobile
+    if (windowWidth < 640) return 175; // Fixed height for large mobile
+    // For larger screens, dynamically calculate based on bubble and gap
+    return rows * bubbleSize + gapSize * (rows - 1);
+  };
   
   // Calculate container width based on screen size and bubble sizes
   const containerWidth = Math.min(
@@ -42,7 +53,7 @@ const FactBubbleGrid: React.FC = () => {
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
         width: containerWidth + 'px',
         gap: `${gapSize}px`,
-        height: `${rows * bubbleSize + gapSize * (rows - 1)}px` // Dynamic height based on bubble size and gaps
+        height: getContainerHeight() + 'px'
       }}
     >
       {/* Map through all 8 positions in the grid */}

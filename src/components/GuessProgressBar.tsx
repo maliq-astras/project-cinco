@@ -75,7 +75,7 @@ export default function GuessProgressBar() {
   return (
     <div className="w-full">
       <div 
-        className={`flex w-full h-5 overflow-hidden rounded-full shadow-sm ${isShaking ? 'animate-shake' : ''}`}
+        className={`flex w-full h-4 sm:h-5 overflow-hidden rounded-full shadow-sm ${isShaking ? 'animate-shake' : ''}`}
       >
         {Array.from({ length: maxGuesses }).map((_, index) => (
           <div 
@@ -94,14 +94,21 @@ export default function GuessProgressBar() {
                     delay: index * 0.1 // Stagger the animations
                   }}
                 >
-                  {/* Premium gradient background */}
-                  <div className={`absolute inset-0 bg-gradient-to-r from-${colors.primary} to-${colors.secondary}`} />
+                  {/* Premium gradient background - using direct color variable names */}
+                  <div 
+                    className="absolute inset-0" 
+                    style={{ 
+                      background: `linear-gradient(to right, var(--color-${colors.primary}), var(--color-${colors.secondary}))` 
+                    }}
+                  />
                   
                   {/* Subtle shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-10" />
                   
                   {/* Subtle bottom shadow for depth */}
-                  <div className={`absolute inset-x-0 bottom-0 h-[1px] bg-${colors.dark} opacity-20`} />
+                  <div className="absolute inset-x-0 bottom-0 h-[1px] opacity-20" 
+                    style={{ backgroundColor: `var(--color-${colors.dark})` }}
+                  />
                 </motion.div>
               </AnimatePresence>
             )}

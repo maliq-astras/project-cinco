@@ -17,6 +17,7 @@ export default function FactCardStack() {
   const isReturningToStack = useGameStore(state => state.isReturningToStack);
   const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
   const windowWidth = useGameStore(state => state.windowWidth);
+  const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const { colors } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
@@ -71,6 +72,9 @@ export default function FactCardStack() {
 
   // Handle card click event to open a card
   const onCardClicked = (factIndex: number, index: number, e: React.MouseEvent) => {
+    // Don't allow clicking if we can't reveal a new clue
+    if (!canRevealNewClue && !revealedFacts.includes(factIndex)) return;
+    
     // Get the exact position of the card element
     const cardElement = cardRefs.current[index];
     
@@ -95,6 +99,11 @@ export default function FactCardStack() {
     }
   };
   
+  // Determines if a card is clickable
+  const isCardClickable = (factIndex: number) => {
+    return canRevealNewClue || revealedFacts.includes(factIndex);
+  };
+  
   return (
     <div 
       className="flex justify-center items-end relative card-stack-container"
@@ -115,7 +124,7 @@ export default function FactCardStack() {
         <AnimatePresence mode="popLayout">
           {visibleStackFacts.map((factIndex, i) => {
             // Use helper function to calculate card position and styling
-            const isHovered = hoveredCardIndex === i;
+            const isHovered = hoveredCardIndex === i && isCardClickable(factIndex);
             const cardPosition = calculateCardPosition(i, visibleStackFacts.length, isHovered, hoveredCardIndex);
             
             // Scale hover effect based on screen size
@@ -148,10 +157,10 @@ export default function FactCardStack() {
                   return undefined;
                 }}
                 onClick={(e) => onCardClicked(factIndex, i, e)}
-                onMouseEnter={() => setHoveredCardIndex(i)}
+                onMouseEnter={() => isCardClickable(factIndex) && setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
                 className={`absolute p-0 border-2 border-${colors.light} rounded-lg 
-                  cursor-pointer card-hover-glow card-in-stack
+                  ${isCardClickable(factIndex) ? 'cursor-pointer card-hover-glow' : 'cursor-not-allowed opacity-70'} card-in-stack
                   ${cardPosition.shadowClass}`}
                 initial={animations.initialState}
                 animate={{
@@ -159,7 +168,7 @@ export default function FactCardStack() {
                   y: adjustedTranslateY,
                   rotate: cardPosition.rotation,
                   scale: cardPosition.scale,
-                  opacity: 1,
+                  opacity: isCardClickable(factIndex) ? 1 : 0.7,
                   zIndex: cardPosition.zIndex
                 }}
                 exit={animations.exitState}

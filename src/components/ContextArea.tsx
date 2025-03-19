@@ -7,31 +7,37 @@ const ContextArea: React.FC = () => {
   const challenge = useGameStore(state => state.gameState.challenge);
   const hoveredFact = useGameStore(state => state.hoveredFact);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
+  const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  const canMakeGuess = useGameStore(state => state.canMakeGuess);
+  const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const { colors } = useTheme();
 
+  // Generate a game status message based on the current state
+  const getGameStatusMessage = () => {
+    if (!hasSeenClue) {
+      return "Click a fact bubble to start the game";
+    }
+    if (!canMakeGuess) {
+      return "Reveal a new fact to make another guess";
+    }
+    if (!canRevealNewClue) {
+      return "Make a guess for this fact";
+    }
+    return "Choose another fact or make a guess";
+  };
+
+  // Determine what message to show: hover context or game status
+  const shouldShowHoverContext = hoveredFact !== null && (!revealedFacts.includes(hoveredFact) || revealedFacts.length === 0);
+  
+  // Determine what text to display
+  const messageToShow = shouldShowHoverContext && hoveredFact !== null && challenge && !revealedFacts.includes(hoveredFact)
+    ? `${challenge.facts[hoveredFact].factType} Fact`
+    : getGameStatusMessage();
+  
   return (
-    <div className="h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-gray-50 text-center flex items-center justify-center">
-      <div className="relative w-full h-full flex items-center justify-center">
-        {/* Invisible placeholder text to maintain space */}
-        <span className="invisible" aria-hidden="true">
-          Geographic Features & Border Info Fact
-        </span>
-        
-        {/* Actual text that appears on hover */}
-        <span 
-          className={`absolute inset-0 flex items-center justify-center text-${colors.primary} font-medium font-display transition-opacity duration-200 ${
-            hoveredFact !== null && !revealedFacts.includes(hoveredFact) 
-              ? 'opacity-100' 
-              : 'opacity-0'
-          }`}
-        >
-          {hoveredFact !== null && !revealedFacts.includes(hoveredFact) && challenge
-            ? `${challenge.facts[hoveredFact].factType} Fact`
-            : ''
-          }
-        </span>
-      </div>
-    </div>
+    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap ${shouldShowHoverContext ? 'font-display' : ''}`}>
+      {messageToShow}
+    </span>
   );
 };
 

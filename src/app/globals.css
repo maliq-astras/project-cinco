@@ -242,3 +242,11 @@ body {
     background-position: 200% center;
   }
 }
+
+/* Theme-specific focus ring style */
+.theme-focus-ring:focus {
+  --tw-ring-offset-shadow: 0 0 0 0px var(--tw-ring-offset-color);
+  --tw-ring-shadow: 0 0 0 2px var(--theme-color, rgb(59, 130, 246));
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow);
+  border-color: var(--theme-color, rgb(59, 130, 246));
+}

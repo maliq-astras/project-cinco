@@ -138,6 +138,13 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       root.style.setProperty('--primary-rgb', getColorRGB(colors.primary));
       root.style.setProperty('--secondary-rgb', getColorRGB(colors.secondary));
       root.style.setProperty('--accent-rgb', getColorRGB(colors.accent));
+      
+      // Set direct color variables for each color
+      root.style.setProperty('--color-' + colors.primary, `rgb(${getColorRGB(colors.primary)})`);
+      root.style.setProperty('--color-' + colors.secondary, `rgb(${getColorRGB(colors.secondary)})`);
+      root.style.setProperty('--color-' + colors.accent, `rgb(${getColorRGB(colors.accent)})`);
+      root.style.setProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light)})`);
+      root.style.setProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark)})`);
     }
   }, [colors]);
   
