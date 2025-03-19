@@ -1,11 +1,13 @@
 import React from 'react';
 import { Challenge } from '../types';
 import { useGameStore } from '../store/gameStore';
+import { useTheme } from '../context/ThemeContext';
 
 const ContextArea: React.FC = () => {
   const challenge = useGameStore(state => state.gameState.challenge);
   const hoveredFact = useGameStore(state => state.hoveredFact);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
+  const { colors } = useTheme();
 
   return (
     <div className="h-[40px] w-full max-w-4xl rounded-lg p-3 mb-6 bg-gray-50 text-center flex items-center justify-center">
@@ -17,7 +19,7 @@ const ContextArea: React.FC = () => {
         
         {/* Actual text that appears on hover */}
         <span 
-          className={`absolute inset-0 flex items-center justify-center text-blue-600 font-medium font-display transition-opacity duration-200 ${
+          className={`absolute inset-0 flex items-center justify-center text-${colors.primary} font-medium font-display transition-opacity duration-200 ${
             hoveredFact !== null && !revealedFacts.includes(hoveredFact) 
               ? 'opacity-100' 
               : 'opacity-0'

@@ -4,11 +4,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import { UserGuess } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
+import { useTheme } from '../context/ThemeContext';
 
 export default function GuessProgressBar() {
   // Access state from the store
   const guesses = useGameStore(state => state.gameState.guesses);
   const maxGuesses = 5; // Set a constant value or use one from config if available
+  const { colors } = useTheme();
   
   // Filter to only wrong guesses
   const wrongGuesses = guesses.filter(guess => !guess.isCorrect);
@@ -93,13 +95,13 @@ export default function GuessProgressBar() {
                   }}
                 >
                   {/* Premium gradient background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-500" />
+                  <div className={`absolute inset-0 bg-gradient-to-r from-${colors.primary} to-${colors.secondary}`} />
                   
                   {/* Subtle shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-10" />
                   
                   {/* Subtle bottom shadow for depth */}
-                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-blue-800 opacity-20" />
+                  <div className={`absolute inset-x-0 bottom-0 h-[1px] bg-${colors.dark} opacity-20`} />
                 </motion.div>
               </AnimatePresence>
             )}

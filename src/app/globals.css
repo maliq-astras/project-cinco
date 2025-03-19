@@ -198,7 +198,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 3px; /* Increased border width from 2px to 3px */
-  background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+  background: linear-gradient(90deg, rgb(var(--primary-rgb)), rgb(var(--secondary-rgb)), rgb(var(--primary-rgb)));
   background-size: 300% 300%;
   animation: borderGlow 4s linear infinite;
   -webkit-mask: 
@@ -214,21 +214,31 @@ body {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
+  padding: 2px;
+  background: linear-gradient(to right, rgb(var(--primary-rgb)), rgb(var(--secondary-rgb)), rgb(var(--accent-rgb)), rgb(var(--secondary-rgb)), rgb(var(--primary-rgb)));
+  background-size: 200% auto;
   border-radius: inherit;
-  padding: 2px; /* Border width */
-  background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
-  background-size: 300% 300%;
-  animation: borderGlow 4s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  animation: shimmer 2s infinite linear;
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card-hover-glow:hover::before {
   opacity: 1;
+}
+
+/* Add shimmer animation for hover glow */
+@keyframes shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }

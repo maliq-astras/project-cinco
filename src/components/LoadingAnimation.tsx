@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import Logo from './Logo';
+import { useTheme } from '../context/ThemeContext';
+import { CategoryType, categoryColorMap } from '../types';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -19,6 +21,19 @@ const SAMPLE_CATEGORIES = [
   'TV SHOWS',
   'FAMOUS BRANDS'
 ];
+
+// Map category names to CategoryType enum values
+const categoryNameToType: Record<string, CategoryType> = {
+  'COUNTRIES': CategoryType.COUNTRIES,
+  'MOVIES': CategoryType.MOVIES,
+  'ANIMALS': CategoryType.ANIMALS,
+  'BOOKS': CategoryType.BOOKS,
+  'ATHLETES': CategoryType.ATHLETES,
+  'MUSIC': CategoryType.MUSICAL_ARTISTS,
+  'HISTORICAL FIGURES': CategoryType.HISTORICAL_FIGURES,
+  'TV SHOWS': CategoryType.TV_SHOWS,
+  'FAMOUS BRANDS': CategoryType.FAMOUS_BRANDS
+};
 
 // Fisher-Yates shuffle algorithm to randomize array
 const shuffleArray = (array: string[]): string[] => {
@@ -36,15 +51,42 @@ interface LoadingAnimationProps {
   isChallengeFetched: boolean;
 }
 
+// Helper function to get shadow color for a category
+const getShadowColor = (color: string): string => {
+  const colorMap: Record<string, string> = {
+    // Original colors
+    'blue-600': 'rgba(59, 130, 246, 0.3)',
+    
+    // New vibrant colors
+    'emerald-600': 'rgba(5, 150, 105, 0.3)',
+    'violet-600': 'rgba(124, 58, 237, 0.3)',
+    'orange-600': 'rgba(234, 88, 12, 0.3)',
+    'fuchsia-600': 'rgba(192, 38, 211, 0.3)',
+    'red-600': 'rgba(220, 38, 38, 0.3)',
+    'amber-500': 'rgba(245, 158, 11, 0.3)',
+    'teal-500': 'rgba(20, 184, 166, 0.3)',
+    'indigo-500': 'rgba(99, 102, 241, 0.3)'
+  };
+  
+  // Extract the color name from the class (e.g. 'blue-600' -> 'blue')
+  const colorBase = color.split('-')[0];
+  const colorVariant = color.split('-')[1] || '600';
+  
+  // First try exact match, then try base color with variant, then return a neutral shadow
+  return colorMap[color] || colorMap[`${colorBase}-${colorVariant}`] || 'rgba(100, 100, 100, 0.2)';
+};
+
 export default function LoadingAnimation({ 
   finalCategory, 
   onComplete, 
   isChallengeFetched 
 }: LoadingAnimationProps) {
+  const { colors } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [currentColor, setCurrentColor] = useState(colors);
   
   // Set mounted to true after client-side hydration is complete
   useEffect(() => {
@@ -61,6 +103,15 @@ export default function LoadingAnimation({
       setCategories([...shuffled, finalCategory.toUpperCase()]);
     }
   }, [mounted, finalCategory]);
+
+  // Update current color when index changes
+  useEffect(() => {
+    if (categories.length > 0 && currentIndex < categories.length) {
+      const categoryName = categories[currentIndex];
+      const categoryType = categoryNameToType[categoryName] || CategoryType.COUNTRIES;
+      setCurrentColor(categoryColorMap[categoryType]);
+    }
+  }, [categories, currentIndex]);
 
   // Handle the animation, but only after mounting
   useEffect(() => {
@@ -169,7 +220,7 @@ export default function LoadingAnimation({
                 initial={{ width: 0 }}
                 animate={{ width: "100vw" }}
                 transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-                className="h-1 bg-blue-600/30 mx-auto"
+                className={`h-1 bg-${currentColor.primary}/30 mx-auto`}
               />
             )}
           </div>
@@ -202,13 +253,13 @@ export default function LoadingAnimation({
                       ease: [0.34, 1.56, 0.64, 1]
                     }
                   }}
-                  className={`text-blue-600 m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''}`}
+                  className={`text-${currentColor.primary} m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''}`}
                   style={{
                     fontSize: calculateFontSize(currentCategory),
                     lineHeight: 1,
                     padding: "0 12px",
                     whiteSpace: "nowrap",
-                    textShadow: isShowingFinalCategory ? '0 0 15px rgba(59, 130, 246, 0.3)' : 'none'
+                    textShadow: isShowingFinalCategory ? `0 0 15px ${getShadowColor(currentColor.primary)}` : 'none'
                   }}
                 >
                   {currentCategory}
@@ -228,7 +279,7 @@ export default function LoadingAnimation({
             transition={{ duration: 0.5, delay: 0.5 }}
             className="mt-8 flex flex-col items-center"
           >
-            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <div className={`w-10 h-10 border-4 border-${currentColor.primary} border-t-transparent rounded-full animate-spin mb-3`}></div>
             <p className="text-gray-600">Please wait, loading challenge...</p>
           </motion.div>
         )}

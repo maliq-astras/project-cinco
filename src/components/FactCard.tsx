@@ -7,6 +7,7 @@ import IconContainer from './IconContainer';
 import FactCardBack from './FactCardBack';
 import { useGameStore } from '../store/gameStore';
 import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../helpers/cardAnimationHelpers';
+import { useTheme } from '../context/ThemeContext';
 
 interface FactCardProps {
   fact: Fact<any>;
@@ -28,6 +29,7 @@ export default function FactCard({
   const [returnPosition, setReturnPosition] = useState<{ x: number, y: number } | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [frontIconSize, setFrontIconSize] = useState(40);
+  const { colors } = useTheme();
 
   // Ensure we have a valid category
   const category = fact.category ? 
@@ -172,7 +174,7 @@ export default function FactCard({
                     category={category.toLowerCase()}
                   />
                   
-                  <h3 className="text-base sm:text-lg font-semibold text-blue-800 text-center mt-4">
+                  <h3 className={`text-base sm:text-lg font-semibold text-${colors.dark} text-center mt-4`}>
                     {fact.factType}
                   </h3>
                 </div>

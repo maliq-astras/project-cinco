@@ -11,6 +11,82 @@ export enum CategoryType {
   TV_SHOWS = "TV Shows"
 }
 
+// Define theme colors for each category
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  accent: string;
+  light: string;
+  dark: string;
+}
+
+// Map categories to their colors
+export const categoryColorMap: Record<CategoryType, ThemeColors> = {
+  [CategoryType.COUNTRIES]: {
+    primary: 'blue-600',
+    secondary: 'blue-500',
+    accent: 'blue-700',
+    light: 'blue-100',
+    dark: 'blue-800'
+  },
+  [CategoryType.ANIMALS]: {
+    primary: 'emerald-600',
+    secondary: 'emerald-500',
+    accent: 'emerald-700',
+    light: 'emerald-100',
+    dark: 'emerald-800'
+  },
+  [CategoryType.MOVIES]: {
+    primary: 'violet-600',
+    secondary: 'violet-500',
+    accent: 'violet-700',
+    light: 'violet-100',
+    dark: 'violet-800'
+  },
+  [CategoryType.BOOKS]: {
+    primary: 'orange-600',
+    secondary: 'orange-500',
+    accent: 'orange-700',
+    light: 'orange-100',
+    dark: 'orange-800'
+  },
+  [CategoryType.MUSICAL_ARTISTS]: {
+    primary: 'fuchsia-600',
+    secondary: 'fuchsia-500',
+    accent: 'fuchsia-700',
+    light: 'fuchsia-100',
+    dark: 'fuchsia-800'
+  },
+  [CategoryType.ATHLETES]: {
+    primary: 'red-600',
+    secondary: 'red-500',
+    accent: 'red-700',
+    light: 'red-100',
+    dark: 'red-800'
+  },
+  [CategoryType.HISTORICAL_FIGURES]: {
+    primary: 'amber-500',
+    secondary: 'amber-400',
+    accent: 'amber-600',
+    light: 'amber-100',
+    dark: 'amber-700'
+  },
+  [CategoryType.FAMOUS_BRANDS]: {
+    primary: 'teal-500',
+    secondary: 'teal-400',
+    accent: 'teal-600',
+    light: 'teal-100',
+    dark: 'teal-700'
+  },
+  [CategoryType.TV_SHOWS]: {
+    primary: 'indigo-500',
+    secondary: 'indigo-400',
+    accent: 'indigo-600',
+    light: 'indigo-100',
+    dark: 'indigo-700'
+  }
+};
+
 // Define fact types for each category
 export type CountryFactType = "Official Language(s)" | "Flag Colors & Features" | "Notable City" | "Largest Industry" | "Population & Demographic Info" | "Origin/Founding" | "Geographic Features & Border Info" | "Wildcard";
 export type AnimalFactType = "Habitat & Global Presence" | "Diet & Ecological Role" | "Physical Characteristic" | "Size/Weight" | "Evolutionary History & Relationships" | "Social Behavior" | "Reproduction" | "Wildcard";

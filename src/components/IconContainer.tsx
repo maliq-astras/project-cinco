@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { getFactIcon } from '../helpers/iconHelpers';
+import { getFactIcon, useIconFilter } from '../helpers/iconHelpers';
 import { Fact, CategoryType } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 interface IconContainerProps {
   factType: string;
@@ -27,6 +28,9 @@ export default function IconContainer({
   children,
   category = 'countries'
 }: IconContainerProps) {
+  const { colors } = useTheme();
+  const getFilter = useIconFilter();
+  
   // Determine container size class
   const sizeClass = {
     'small': 'w-[40%] max-w-[80px]',
@@ -43,7 +47,7 @@ export default function IconContainer({
   }[size];
   
   // Only add background for unrevealed icons
-  const bgClass = isRevealed ? '' : 'bg-blue-50';
+  const bgClass = isRevealed ? '' : `bg-${colors.light}`;
   
   // Ensure category is normalized
   const normalizedCategory = category.toLowerCase();
@@ -59,7 +63,7 @@ export default function IconContainer({
             width={icon.size}
             height={icon.size}
             style={{
-              filter: icon.filter,
+              filter: getFilter(icon.category),
               opacity: icon.isRevealed ? 1 : 0.7,
               transition: 'opacity 0.3s ease'
             }}

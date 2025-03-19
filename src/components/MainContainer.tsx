@@ -10,6 +10,7 @@ import FactBubbleGrid from './FactBubbleGrid';
 import GameControls from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
 import { useGameStore } from '../store/gameStore';
+import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
 
 export default function MainContainer() {
@@ -19,6 +20,7 @@ export default function MainContainer() {
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const setWindowWidth = useGameStore(state => state.setWindowWidth);
+  const { colors } = useTheme();
 
   // We need just one state to track if we're done with all animations and ready to show the game
   const [loadingComplete, setLoadingComplete] = useState(false);
@@ -86,7 +88,7 @@ export default function MainContainer() {
       {gameState.loading ? (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-blue-600 text-2xl font-display mb-4">Loading challenge...</div>
+            <div className={`text-${colors.primary} text-2xl font-display mb-4`}>Loading challenge...</div>
             <div className="animate-pulse">Please wait</div>
           </div>
         </div>
@@ -96,7 +98,7 @@ export default function MainContainer() {
             <div className="text-red-600 text-2xl font-display mb-4">Error</div>
             <div className="mb-4">{gameState.error}</div>
             <button 
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+              className={`px-4 py-2 bg-${colors.primary} text-white rounded-lg hover:bg-${colors.accent} transition duration-200`}
               onClick={() => fetchChallenge()}
             >
               Try Again

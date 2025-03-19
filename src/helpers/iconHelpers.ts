@@ -1,6 +1,7 @@
 /**
  * Icon mapping utility for fact types across different categories
  */
+import { useTheme } from '../context/ThemeContext';
 
 // Define a type for icon mappings
 type IconMapping = { [key: string]: string };
@@ -64,43 +65,50 @@ export function getIconForFactType(factType: string, category: string = 'countri
   return categoryMap[factType] || WILDCARD_ICON;
 }
 
-// Helper function to get the appropriate filter for each icon type
-export function getIconFilter(iconName: string): string {
-  // Different blue gradient filters for different icons - always use gradients
-  switch(iconName) {
-    case 'languages':
-      return 'brightness(0) saturate(100%) invert(35%) sepia(80%) saturate(1800%) hue-rotate(230deg) brightness(95%) contrast(95%)';
-    case 'flag':
-      return 'brightness(0) saturate(100%) invert(40%) sepia(85%) saturate(1500%) hue-rotate(210deg) brightness(100%) contrast(95%)';
-    case 'cityscape':
-      return 'brightness(0) saturate(100%) invert(50%) sepia(90%) saturate(1200%) hue-rotate(200deg) brightness(100%) contrast(95%)';
-    case 'economy':
-      return 'brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1600%) hue-rotate(195deg) brightness(100%) contrast(95%)';
-    case 'demographics':
-      return 'brightness(0) saturate(100%) invert(35%) sepia(70%) saturate(2000%) hue-rotate(220deg) brightness(95%) contrast(100%)';
-    case 'history':
-      return 'brightness(0) saturate(100%) invert(30%) sepia(75%) saturate(1900%) hue-rotate(215deg) brightness(90%) contrast(95%)';
-    case 'geography':
-      return 'brightness(0) saturate(100%) invert(45%) sepia(85%) saturate(1400%) hue-rotate(190deg) brightness(100%) contrast(95%)';
-    default: // wildcard
-      return 'brightness(0) saturate(100%) invert(40%) sepia(80%) saturate(1700%) hue-rotate(205deg) brightness(95%) contrast(95%)';
-  }
+// Note: This function now needs to be used within a React component context
+// since it uses the useTheme hook
+export function useIconFilter() {
+  const { getColorFilter } = useTheme();
+  
+  // Return a function that gets the filter for a specific category
+  return (category: string = 'countries'): string => {
+    // Map category to its primary color class
+    const categoryColorMap: Record<string, string> = {
+      'countries': 'blue-600',
+      'animals': 'emerald-600',
+      'movies': 'violet-600',
+      'books': 'orange-600',
+      'musical artists': 'fuchsia-600',
+      'athletes': 'red-600',
+      'historical figures': 'amber-500',
+      'famous brands': 'teal-500',
+      'tv shows': 'indigo-500',
+    };
+    
+    // Normalize the category name
+    const normalizedCategory = category.toLowerCase();
+    
+    // Get the color class for this category
+    const colorClass = categoryColorMap[normalizedCategory] || 'blue-600';
+    
+    // Return the filter
+    return getColorFilter(colorClass);
+  };
 }
 
 // Combined function for getting fact icons - returns information needed to render the icon
 export function getFactIcon(factType: string, isRevealed: boolean = false, size: number = 32, category: string = 'countries'): {
   iconName: string;
-  filter: string;
   isRevealed: boolean;
   size: number;
+  category: string;
 } {
   const iconName = getIconForFactType(factType, category);
-  const filter = getIconFilter(iconName);
   
   return {
     iconName,
-    filter,
     isRevealed,
-    size
+    size,
+    category
   };
 } 

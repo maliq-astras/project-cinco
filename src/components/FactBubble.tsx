@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/gameStore';
-import { getFactIcon } from '../helpers/iconHelpers';
+import { getFactIcon, useIconFilter } from '../helpers/iconHelpers';
+import { useTheme } from '../context/ThemeContext';
 
 interface FactBubbleProps {
   factType: string;
@@ -24,12 +25,15 @@ export default function FactBubble({
   const setHoveredFact = useGameStore(state => state.setHoveredFact);
   
   const [isPopping, setIsPopping] = useState(false);
+  const [isPoppedOut, setIsPoppedOut] = useState(false);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
   const clickCountRef = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const DOUBLE_CLICK_TIMEOUT = 300; // Time window for double click in ms
   const POP_ANIMATION_DURATION = 500; // Animation duration in ms
   const CARD_ANIMATION_DELAY = 900; // Delay before card animation starts (includes animation duration plus extra wait)
+  const { colors } = useTheme();
+  const getFilter = useIconFilter();
 
   // Handle click/tap with double-click/tap detection
   const handleInteraction = () => {
@@ -114,8 +118,8 @@ export default function FactBubble({
     },
     hover: { 
       scale: 1.1,
-      boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
-      borderColor: "#3b82f6",
+      boxShadow: "0 10px 25px -5px rgba(var(--primary-rgb), 0.4)",
+      borderColor: "rgb(var(--primary-rgb))",
       transition: { duration: 0.2 }
     },
     tap: { 
@@ -147,9 +151,9 @@ export default function FactBubble({
           {!isRevealed && !isPopping && (
             <motion.button
               ref={buttonRef}
-              className="absolute inset-0 w-full h-full rounded-full 
-                border-gray-300 border-4
-                flex items-center justify-center"
+              className={`absolute inset-0 w-full h-full rounded-full 
+                border-${colors.light} border-4
+                flex items-center justify-center`}
               onClick={handleInteraction}
               variants={bubbleVariants}
               initial="initial"
@@ -171,7 +175,7 @@ export default function FactBubble({
                     width={icon.size}
                     height={icon.size}
                     style={{
-                      filter: icon.filter,
+                      filter: getFilter(icon.category),
                       opacity: icon.isRevealed ? 1 : 0.7,
                       transition: 'opacity 0.3s ease'
                     }}
@@ -189,7 +193,7 @@ export default function FactBubble({
               {particles.map((particle, index) => (
                 <motion.div
                   key={`particle-${index}`}
-                  className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-blue-500"
+                  className={`absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-${colors.primary}`}
                   initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                   animate={{ 
                     x: particle.x, 

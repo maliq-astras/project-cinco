@@ -4,11 +4,13 @@ import GuessProgressBar from './GuessProgressBar';
 import { animateFactBubbles, showToastMessage } from '../helpers/uiHelpers';
 import { MAX_WRONG_GUESSES, isDuplicateGuess } from '../helpers/gameLogic';
 import { useGameStore } from '../store/gameStore';
+import { useTheme } from '../context/ThemeContext';
 
 const GameControls: React.FC = () => {
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const submitGuess = useGameStore(state => state.submitGuess);
+  const { colors } = useTheme();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,11 +55,8 @@ const GameControls: React.FC = () => {
 
               <form onSubmit={handleSubmit}>
                 <input
-                  type="text"
                   placeholder="Enter your guess..."
-                  className="w-full p-3 border border-gray-200 rounded-full
-                    bg-white text-gray-900 font-display
-                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className={`w-full p-3 border border-gray-200 rounded-full bg-white text-gray-900 font-display focus:ring-2 focus:ring-${colors.primary} focus:border-${colors.primary} outline-none`}
                 />
               </form>
             </div>
@@ -67,7 +66,7 @@ const GameControls: React.FC = () => {
             </div>
           </div>
           
-          <div className="text-xl bg-blue-50 rounded-lg text-black flex items-center justify-center h-[76px] px-4 min-w-[80px] font-iceberg">
+          <div className={`text-xl bg-${colors.light} rounded-lg text-black flex items-center justify-center h-[76px] px-4 min-w-[80px] font-iceberg`}>
             {Math.floor(timeRemaining / 60)}:
             {(timeRemaining % 60).toString().padStart(2, '0')}
           </div>

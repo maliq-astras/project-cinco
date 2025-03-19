@@ -6,6 +6,7 @@ import FactCardBack from './FactCardBack';
 import { useGameStore } from '../store/gameStore';
 import { useCardStack } from '../hooks/useCardStack';
 import { calculateCardPosition, getCardAnimationVariants } from '../helpers/uiHelpers';
+import { useTheme } from '../context/ThemeContext';
 
 export default function FactCardStack() {
   // Access state and actions from the store
@@ -15,6 +16,7 @@ export default function FactCardStack() {
   const viewingFact = useGameStore(state => state.viewingFact);
   const isReturningToStack = useGameStore(state => state.isReturningToStack);
   const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
+  const { colors } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
   const visibleStackFacts = useMemo(() => {
@@ -108,7 +110,7 @@ export default function FactCardStack() {
                 onClick={(e) => onCardClicked(factIndex, i, e)}
                 onMouseEnter={() => setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
-                className={`absolute p-0 border-2 border-blue-200 rounded-lg 
+                className={`absolute p-0 border-2 border-${colors.light} rounded-lg 
                   cursor-pointer w-[120px] sm:w-[140px] h-[180px] sm:h-[200px] card-hover-glow card-in-stack
                   ${cardPosition.shadowClass}`}
                 initial={animations.initialState}

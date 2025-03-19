@@ -2,10 +2,12 @@ import React from 'react';
 import { Righteous } from 'next/font/google';
 import Logo from './Logo';
 import { useGameStore } from '../store/gameStore';
+import { useTheme } from '../context/ThemeContext';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
 const Header: React.FC = () => {
+  const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
   
   return (
@@ -13,12 +15,12 @@ const Header: React.FC = () => {
       <header className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 sm:gap-6">
           <div className="h-[90px] sm:h-[120px] md:h-[150px] lg:h-[170px]">
-            <Logo height="100%" className="text-blue-600" />
+            <Logo height="100%" className={`text-${colors.primary}`} />
           </div>
           
           {challenge?.category && (
             <h1 
-              className={`text-blue-600 m-0 ${righteous.className}`}
+              className={`text-${colors.primary} m-0 ${righteous.className}`}
               style={{ 
                 fontSize: "clamp(28px, 5vw, 46px)",
                 lineHeight: 1
