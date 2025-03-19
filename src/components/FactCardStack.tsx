@@ -16,6 +16,7 @@ export default function FactCardStack() {
   const viewingFact = useGameStore(state => state.viewingFact);
   const isReturningToStack = useGameStore(state => state.isReturningToStack);
   const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
+  const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
@@ -39,6 +40,34 @@ export default function FactCardStack() {
   } = useCardStack(visibleStackFacts);
 
   const centerIndex = Math.floor(visibleStackFacts.length / 2);
+
+  // Responsive card sizes based on screen width
+  const getCardSize = () => {
+    // iPhone-specific sizes (around 390-430px width)
+    if (windowWidth >= 375 && windowWidth <= 430) return { width: 90, height: 135 }; 
+    
+    // General sizes
+    if (windowWidth < 360) return { width: 85, height: 128 }; // Extra small mobile
+    if (windowWidth < 480) return { width: 90, height: 135 }; // Small mobile
+    if (windowWidth < 640) return { width: 100, height: 150 }; // Mobile
+    if (windowWidth < 768) return { width: 110, height: 165 }; // Small tablets
+    if (windowWidth < 1024) return { width: 120, height: 180 }; // Tablets
+    return { width: 140, height: 200 }; // Desktop
+  };
+
+  const cardSize = getCardSize();
+  
+  // Height of the container
+  const getContainerHeight = () => {
+    // iPhone-specific height
+    if (windowWidth >= 375 && windowWidth <= 430) return 150;
+    
+    if (windowWidth < 360) return 145; // Extra small devices
+    if (windowWidth < 480) return 155; // Small devices
+    if (windowWidth < 640) return 170; // Medium-small devices
+    if (windowWidth < 768) return 180; // Medium devices
+    return 220; // Large devices
+  };
 
   // Handle card click event to open a card
   const onCardClicked = (factIndex: number, index: number, e: React.MouseEvent) => {
@@ -68,7 +97,8 @@ export default function FactCardStack() {
   
   return (
     <div 
-      className="flex justify-center items-end min-h-[250px] relative py-8 card-stack-container"
+      className="flex justify-center items-end relative card-stack-container"
+      style={{ minHeight: `${getContainerHeight()}px`, paddingTop: '1rem', paddingBottom: '1rem' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       ref={stackRef}
@@ -79,7 +109,7 @@ export default function FactCardStack() {
           perspective: '1000px',
           transform: `rotateX(${handPosition.y * -3}deg) rotateY(${handPosition.x * 5}deg)`,
           width: '100%',
-          height: '220px'
+          height: `${getContainerHeight() - 20}px`
         }}
       >
         <AnimatePresence mode="popLayout">
@@ -87,6 +117,16 @@ export default function FactCardStack() {
             // Use helper function to calculate card position and styling
             const isHovered = hoveredCardIndex === i;
             const cardPosition = calculateCardPosition(i, visibleStackFacts.length, isHovered, hoveredCardIndex);
+            
+            // Scale hover effect based on screen size
+            const getHoverTranslateY = () => {
+              if (windowWidth < 480) return -15; // Less dramatic on small screens
+              if (windowWidth < 768) return -20;
+              return -30; // Full effect on larger screens
+            };
+            
+            // Adjust translateY for hover
+            const adjustedTranslateY = isHovered ? getHoverTranslateY() : cardPosition.translateY;
             
             // Special animation for the last card if it's returning to the stack
             const isLastCard = i === visibleStackFacts.length - 1;
@@ -111,12 +151,12 @@ export default function FactCardStack() {
                 onMouseEnter={() => setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
                 className={`absolute p-0 border-2 border-${colors.light} rounded-lg 
-                  cursor-pointer w-[120px] sm:w-[140px] h-[180px] sm:h-[200px] card-hover-glow card-in-stack
+                  cursor-pointer card-hover-glow card-in-stack
                   ${cardPosition.shadowClass}`}
                 initial={animations.initialState}
                 animate={{
                   x: cardPosition.translateX,
-                  y: cardPosition.translateY,
+                  y: adjustedTranslateY,
                   rotate: cardPosition.rotation,
                   scale: cardPosition.scale,
                   opacity: 1,
@@ -126,8 +166,10 @@ export default function FactCardStack() {
                 transition={animations.transitionSettings}
                 style={{
                   transformOrigin: 'bottom center',
-                  left: 'calc(50% - 60px)', // Center the card (half of card width)
+                  left: `calc(50% - ${cardSize.width / 2}px)`, // Center the card
                   bottom: '0px',
+                  width: `${cardSize.width}px`,
+                  height: `${cardSize.height}px`,
                 }}
                 layout
               >

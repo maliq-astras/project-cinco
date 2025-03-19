@@ -11,6 +11,7 @@ interface FactBubbleProps {
   isRevealed: boolean;
   'data-fact-index': number;
   className?: string;
+  style?: React.CSSProperties;
   category?: string;
 }
 
@@ -19,6 +20,7 @@ export default function FactBubble({
   isRevealed, 
   'data-fact-index': factIndex,
   className = '',
+  style = {},
   category = 'countries'
 }: FactBubbleProps) {
   const revealFact = useGameStore(state => state.revealFact);
@@ -143,6 +145,7 @@ export default function FactBubble({
   return (
     <div 
       className={`relative ${className}`}
+      style={style}
       onMouseEnter={() => setHoveredFact(factIndex)}
       onMouseLeave={() => setHoveredFact(null)}
     >
@@ -167,7 +170,14 @@ export default function FactBubble({
             >
               {/* Use the updated icon object format */}
               {(() => {
-                const icon = getFactIcon(factType, false, 32, category);
+                // Calculate icon size based on available space
+                // Adjust multipliers to make icons smaller
+                const windowWidth = window.innerWidth;
+                const sizeMultiplier = windowWidth < 480 ? 0.5 : windowWidth < 768 ? 0.55 : 0.6;
+                const containerSize = style.width ? parseInt(style.width.toString()) : windowWidth < 640 ? 65 : 80;
+                const iconSize = Math.max(28, Math.round(containerSize * sizeMultiplier));
+                
+                const icon = getFactIcon(factType, false, iconSize, category);
                 return (
                   <img 
                     src={`/icons/${icon.iconName}.svg`}

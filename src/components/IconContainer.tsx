@@ -34,16 +34,16 @@ export default function IconContainer({
   // Determine container size class
   const sizeClass = {
     'small': 'w-[40%] max-w-[80px]',
-    'medium': 'w-[25%] max-w-[100px]',
+    'medium': 'w-[28%] max-w-[100px]',
     'large': 'w-[35%] max-w-[120px]'
   }[size];
   
   // Determine icon size based on container size
   // Make icons slightly bigger when revealed (for cards)
   const calculatedIconSize = iconSize || {
-    'small': isRevealed ? 32 : 28,
-    'medium': isRevealed ? 44 : 36,
-    'large': isRevealed ? 56 : 48
+    'small': isRevealed ? 40 : 32,
+    'medium': isRevealed ? 52 : 44,
+    'large': isRevealed ? 64 : 56
   }[size];
   
   // Only add background for unrevealed icons
@@ -82,13 +82,34 @@ export function FactCardBackIcon({ fact, size = 'large' }: { fact: Fact<any>, si
   const category = fact.category ? 
     (typeof fact.category === 'string' ? fact.category : fact.category.toString()) : 
     'countries';
+  
+  // Get window width for responsive adjustments
+  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+  
+  // Calculate proportional icon size based on screen width and card size
+  let calculatedSize = size;
+  let customIconSize = undefined;
+  let customClass = "bg-white";
+  
+  // For card backs on mobile, use smaller icons
+  if (size === 'small') {
+    // Much smaller icons for card stack on mobile
+    customIconSize = windowWidth <= 360 ? 22 : windowWidth <= 480 ? 24 : 26;
+    
+    // Small container on mobile
+    customClass = windowWidth <= 480 ? "bg-white w-[36%] max-w-[70px]" : "bg-white";
+  } else if (size === 'large' && windowWidth <= 480) {
+    // Also reduce large icons on mobile
+    customIconSize = 38;
+  }
     
   return (
     <IconContainer
       factType={fact.factType}
       isRevealed={true}
-      size={size}
-      className="bg-white"
+      size={calculatedSize}
+      iconSize={customIconSize}
+      className={customClass}
       category={category.toLowerCase()}
     />
   );

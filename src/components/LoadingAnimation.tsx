@@ -196,35 +196,37 @@ export default function LoadingAnimation({
 
   return (
     <div className="fixed inset-0 bg-white flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center gap-8 w-full">
-        {/* Logo - keep it in black (default) */}
-        <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ 
-            duration: 0.8,
-            ease: [0.34, 1.56, 0.64, 1]
-          }}
-          className="h-[220px]"
-        >
-          <Logo height="100%" />
-        </motion.div>
-
-        {/* Category Slot Animation with line above */}
-        <div className="relative w-full flex flex-col items-center">
-          {/* Line container with overflow hidden */}
-          <div className="absolute top-[-12px] w-screen overflow-hidden">
-            {/* Line above category - appears when showing final category */}
-            {mounted && isShowingFinalCategory && (
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "100vw" }}
-                transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-                className={`h-1 bg-${currentColor.primary}/30 mx-auto`}
-              />
-            )}
-          </div>
-
+      <div className="flex flex-col items-center w-full h-full">
+        {/* Top half - Logo */}
+        <div className="flex-1 flex items-end justify-center pb-6">
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ 
+              duration: 0.8,
+              ease: [0.34, 1.56, 0.64, 1]
+            }}
+            className="h-[180px] sm:h-[220px]"
+          >
+            <Logo height="100%" />
+          </motion.div>
+        </div>
+        
+        {/* Center line */}
+        <div className="w-full relative my-1">
+          {/* Line in the middle - appears when showing final category */}
+          {mounted && isShowingFinalCategory && (
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: "100vw" }}
+              transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
+              className={`h-1 bg-${currentColor.primary}/30 mx-auto`}
+            />
+          )}
+        </div>
+        
+        {/* Bottom half - Category slot animation */}
+        <div className="flex-1 flex flex-col items-center justify-start pt-6">
           {/* Category container */}
           <div className="relative overflow-hidden h-[80px] flex items-center justify-center px-8 w-full max-w-[400px]">
             {mounted && categories.length > 0 ? (
@@ -269,20 +271,20 @@ export default function LoadingAnimation({
               <div className="h-[44px]"></div>
             )}
           </div>
+          
+          {/* Loading indicator */}
+          {mounted && isAnimationComplete && !isChallengeFetched && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mt-8 flex flex-col items-center"
+            >
+              <div className={`w-10 h-10 border-4 border-${currentColor.primary} border-t-transparent rounded-full animate-spin mb-3`}></div>
+              <p className="text-gray-600">Please wait, loading challenge...</p>
+            </motion.div>
+          )}
         </div>
-        
-        {/* Loading indicator */}
-        {mounted && isAnimationComplete && !isChallengeFetched && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-8 flex flex-col items-center"
-          >
-            <div className={`w-10 h-10 border-4 border-${currentColor.primary} border-t-transparent rounded-full animate-spin mb-3`}></div>
-            <p className="text-gray-600">Please wait, loading challenge...</p>
-          </motion.div>
-        )}
       </div>
     </div>
   );

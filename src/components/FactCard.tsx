@@ -41,7 +41,7 @@ export default function FactCard({
     const updateIconSize = () => {
       if (cardRef.current) {
         const cardWidth = cardRef.current.offsetWidth;
-        const newIconSize = Math.max(32, Math.round(cardWidth * 0.125));
+        const newIconSize = Math.max(40, Math.round(cardWidth * 0.18));
         setFrontIconSize(newIconSize);
       }
     };

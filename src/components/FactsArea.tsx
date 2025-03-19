@@ -7,12 +7,12 @@ import { useGameStore } from '../store/gameStore';
 // Extracted placeholder component for empty card stack
 const EmptyStackPlaceholder: React.FC = () => (
   <motion.div 
-    className="border-2 border-dashed border-gray-200 rounded-lg w-[350px] h-[180px] bg-gray-100 flex items-center justify-center absolute"
+    className="border-2 border-dashed border-gray-200 rounded-lg w-[80%] max-w-[350px] h-[120px] sm:h-[140px] md:h-[160px] bg-gray-100 flex items-center justify-center absolute"
     initial={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <div className="text-gray-400 font-display">Revealed facts will appear here</div>
+    <div className="text-gray-400 font-display text-sm sm:text-base">Revealed facts will appear here</div>
   </motion.div>
 );
 
@@ -20,9 +20,25 @@ const FactsArea: React.FC = () => {
   // Access state from the store
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const challenge = useGameStore(state => state.gameState.challenge);
+  const windowWidth = useGameStore(state => state.windowWidth);
+
+  // Calculate the appropriate height based on screen size
+  const getResponsiveHeight = () => {
+    // iPhone-specific height
+    if (windowWidth >= 375 && windowWidth <= 430) return 170;
+    
+    if (windowWidth < 360) return 165; // Extra small devices
+    if (windowWidth < 480) return 170; // Small devices
+    if (windowWidth < 640) return 190; // Medium devices
+    if (windowWidth < 768) return 200; // Medium-large devices
+    return 220; // Large devices
+  };
 
   return (
-    <div className="h-[220px] w-full max-w-4xl rounded-lg p-4 mb-6 bg-gray-50 flex items-center justify-center relative">
+    <div 
+      className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-4 sm:mb-6 bg-gray-50 flex items-center justify-center relative"
+      style={{ height: `${getResponsiveHeight()}px` }}
+    >
       {challenge && (
         <>
           {/* Placeholder that fades out when cards appear */}

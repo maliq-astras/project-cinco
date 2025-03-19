@@ -14,18 +14,35 @@ const FactBubbleGrid: React.FC = () => {
   const rows = 2;
   const totalSlots = cols * rows;
   
-  // Calculate container width based on screen size
-  const containerWidth = windowWidth < 640 
-    ? Math.min(windowWidth - 32, cols * 80) // Mobile: account for padding and bubble size
-    : Math.min(480, cols * 100); // Desktop: max width or based on columns
+  // Enhanced sizing logic for multiple breakpoints
+  // sm: 640px, md: 768px, lg: 1024px, xl: 1280px
+  const getBubbleSize = () => {
+    if (windowWidth < 640) return 65; // Mobile
+    if (windowWidth < 768) return 80; // Small tablets
+    if (windowWidth < 1024) return 90; // Larger tablets
+    if (windowWidth < 1280) return 100; // Small desktops
+    return 110; // Large desktops
+  };
+  
+  const bubbleSize = getBubbleSize();
+  
+  // Calculate gap size based on screen width
+  const gapSize = windowWidth < 640 ? 16 : windowWidth < 1024 ? 24 : 32; // 4, 6, or 8 in Tailwind scale
+  
+  // Calculate container width based on screen size and bubble sizes
+  const containerWidth = Math.min(
+    windowWidth - 32, // Account for page padding
+    (bubbleSize * cols) + (gapSize * (cols - 1)) // Bubbles + gaps
+  );
 
   return (
     <div 
-      className="grid gap-4 md:gap-6 justify-items-center"
+      className="grid justify-items-center"
       style={{ 
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
         width: containerWidth + 'px',
-        height: `${rows * (windowWidth < 640 ? 80 : 100)}px` // Fixed height based on rows
+        gap: `${gapSize}px`,
+        height: `${rows * bubbleSize + gapSize * (rows - 1)}px` // Dynamic height based on bubble size and gaps
       }}
     >
       {/* Map through all 8 positions in the grid */}
@@ -43,7 +60,8 @@ const FactBubbleGrid: React.FC = () => {
           return (
             <div 
               key={`empty-${slotIndex}`} 
-              className="w-[65px] md:w-[80px] aspect-square opacity-0"
+              style={{ width: `${bubbleSize}px` }}
+              className="aspect-square opacity-0"
             />
           );
         }
@@ -75,7 +93,8 @@ const FactBubbleGrid: React.FC = () => {
                 factType={fact.factType}
                 isRevealed={false}
                 data-fact-index={factIndex}
-                className="w-[65px] md:w-[80px]" // Smaller on mobile
+                style={{ width: `${bubbleSize}px` }}
+                className="aspect-square" // Maintain square aspect ratio
                 category={category.toString().toLowerCase()}
               />
             </motion.div>

@@ -60,25 +60,60 @@ export function formatTime(seconds: number): string {
 // Card stack UI helpers
 
 /**
- * Calculate fan angle for a card stack
+ * Calculate fan angle for a card stack, adjusted for screen size
  * @param cardCount Number of cards in the stack
  * @returns Optimal fan angle
  */
 export function calculateFanAngle(cardCount: number): number {
-  return Math.min(4, 12 / Math.max(1, cardCount));
+  // Get the current window width
+  const windowWidth = window.innerWidth;
+  
+  // Base angle calculation
+  let baseAngle = Math.min(4, 12 / Math.max(1, cardCount));
+  
+  // Adjust for screen size
+  if (windowWidth < 480) {
+    // Smaller angles on mobile
+    return baseAngle * 0.7;
+  } else if (windowWidth < 768) {
+    // Slightly reduced angles on tablets
+    return baseAngle * 0.85;
+  }
+  
+  // Full angle on desktop
+  return baseAngle;
 }
 
 /**
- * Calculate spread factor for card positioning
+ * Calculate spread factor for card positioning, adjusted for screen size
  * @param cardCount Number of cards in the stack
  * @returns Spread factor for horizontal positioning
  */
 export function calculateSpreadFactor(cardCount: number): number {
+  // Get the current window width
+  const windowWidth = window.innerWidth;
+  
+  // Adjust spread based on screen size
+  if (windowWidth < 360) {
+    // Very small mobile
+    return Math.max(20, 15 + (cardCount * 7)); 
+  } else if (windowWidth < 480) {
+    // Small mobile
+    return Math.max(25, 20 + (cardCount * 8));
+  } else if (windowWidth < 640) {
+    // Mobile
+    return Math.max(30, 25 + (cardCount * 10));
+  } else if (windowWidth < 768) {
+    // Small tablets
+    return Math.max(35, 28 + (cardCount * 12));
+  }
+  
+  // Default for larger screens
   return Math.max(40, 30 + (cardCount * 15));
 }
 
 /**
- * Calculate card position in fan layout
+ * Calculate card position in fan layout, with responsive adjustments
  * @param index Card index in the stack
  * @param cardCount Total number of cards
  * @param isHovered Whether this card is hovered
@@ -94,6 +129,7 @@ export function calculateCardPosition(
   const centerIndex = Math.floor(cardCount / 2);
   const fanAngle = calculateFanAngle(cardCount);
   const spreadFactor = calculateSpreadFactor(cardCount);
+  const windowWidth = window.innerWidth;
   
   // Base rotation and position
   const baseRotation = (index - centerIndex) * fanAngle;
@@ -113,20 +149,22 @@ export function calculateCardPosition(
     
     if (isHovered) {
       // Lift the hovered card up and forward
-      translateY = -30;
-      scale = 1.1;
+      // translateY is now handled in the component based on screen size
+      scale = windowWidth < 480 ? 1.05 : windowWidth < 768 ? 1.08 : 1.1;
       zIndex = 100; // Ensure it's on top
       rotation = 0; // Straighten the card
       shadowClass = "shadow-xl"; // Stronger shadow for lifted card
     } else if (isAdjacent) {
-      // Adjacent cards move slightly away
-      translateX = index < hoveredIndex ? translateX - 15 : translateX + 15;
+      // Adjacent cards move slightly away - scale movement based on screen size
+      const moveAmount = windowWidth < 480 ? 8 : windowWidth < 768 ? 12 : 15;
+      translateX = index < hoveredIndex ? translateX - moveAmount : translateX + moveAmount;
       zIndex = 50 + index; // Higher than non-adjacent but lower than hovered
       shadowClass = "shadow-md"; // Medium shadow for adjacent cards
     } else {
-      // Non-adjacent cards move slightly away
-      translateX = index < hoveredIndex ? translateX - 10 : translateX + 10;
-      translateY = -5; // Slight lift to create depth
+      // Non-adjacent cards move slightly away - scale movement based on screen size
+      const moveAmount = windowWidth < 480 ? 5 : windowWidth < 768 ? 8 : 10;
+      translateX = index < hoveredIndex ? translateX - moveAmount : translateX + moveAmount;
+      translateY = windowWidth < 480 ? -2 : -5; // Slight lift to create depth
     }
   }
   
@@ -196,11 +234,17 @@ export function getCardAnimationVariants(
 /**
  * Calculate 3D tilt effect based on mouse position
  * @param e Mouse event
- * @returns X and Y rotation values
+ * @returns Coordinates for the tilt effect
  */
-export function calculate3DTiltEffect(e: React.MouseEvent) {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2; // -1 to 1
-  const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2; // -1 to 1
+export function calculate3DTiltEffect(e: React.MouseEvent): { x: number, y: number } {
+  const stack = e.currentTarget;
+  const rect = stack.getBoundingClientRect();
+  
+  // Calculate mouse position relative to the center of the stack
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const x = (e.clientX - rect.left - centerX) / centerX; // -1 to 1
+  const y = (e.clientY - rect.top - centerY) / centerY; // -1 to 1
+  
   return { x, y };
 } 
