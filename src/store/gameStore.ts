@@ -20,6 +20,10 @@ interface GameStore {
   canMakeGuess: boolean;
   lastRevealedFactIndex: number | null;
   
+  // Final Five specific state
+  finalFiveTimeRemaining: number;
+  isFinalFiveActive: boolean;
+  
   // UI and animation states
   hoveredFact: number | null;
   viewingFact: number | null;
@@ -27,6 +31,7 @@ interface GameStore {
   isDrawingFromStack: boolean;
   isReturningToStack: boolean;
   isCardAnimatingOut: boolean;
+  shouldFocusInput: boolean;
   windowWidth: number;
   
   // Computed values should not be in the store interface
@@ -34,9 +39,11 @@ interface GameStore {
   // Actions
   setWindowWidth: (width: number) => void;
   decrementTimer: () => void;
+  decrementFinalFiveTimer: () => void;
   startTimer: () => void;
   resetTimer: () => void;
   setHoveredFact: (factIndex: number | null) => void;
+  setShouldFocusInput: (shouldFocus: boolean) => void;
   
   // Game logic actions
   fetchChallenge: () => Promise<void>;
@@ -59,6 +66,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   canMakeGuess: false,
   lastRevealedFactIndex: null,
   
+  // Final Five specific state
+  finalFiveTimeRemaining: 55, // 55 seconds for Final Five
+  isFinalFiveActive: false,
+  
   // UI and animation states
   hoveredFact: null,
   viewingFact: null,
@@ -66,6 +77,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   isDrawingFromStack: false,
   isReturningToStack: false,
   isCardAnimatingOut: false,
+  shouldFocusInput: false,
   windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
   
   // Basic setters
@@ -83,9 +95,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     }
   },
+  decrementFinalFiveTimer: () => {
+    const { finalFiveTimeRemaining, isFinalFiveActive } = get();
+    
+    // Only decrement if final five is active
+    if (isFinalFiveActive) {
+      if (finalFiveTimeRemaining <= 1) {
+        set({ finalFiveTimeRemaining: 0 });
+      } else {
+        set({ finalFiveTimeRemaining: finalFiveTimeRemaining - 1 });
+      }
+    }
+  },
   startTimer: () => set({ isTimerActive: true }),
   resetTimer: () => set({ timeRemaining: 300, isTimerActive: false }),
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
+  setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
   
   // Game logic actions
   fetchChallenge: async () => {
@@ -198,7 +223,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       isCardAnimatingOut: true,
       isReturningToStack: true,
-      hasSeenClue: true
+      hasSeenClue: true,
+      // Signal that we should focus the input after animation completes
+      shouldFocusInput: true
     });
     
     // Start the timer on first clue close if not already started
@@ -241,6 +268,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         // Reset the returning to stack flag after the animation completes
         setTimeout(() => {
           set({ isReturningToStack: false });
+          // The shouldFocusInput flag stays true until handled by the component
         }, 600); // Increased to match the longer animation duration
       }, 150);
     }, 300); // Increased delay to match the longer animation duration
@@ -292,15 +320,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
   triggerFinalFive: async () => {
     const { gameState } = get();
     
+    console.log("triggerFinalFive - Current challenge:", gameState.challenge);
+    
     if (!gameState.challenge) return;
     
     try {
       const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+      console.log("fetchFinalFiveOptions response:", options);
+      
       set(state => ({
         gameState: {
           ...state.gameState,
           finalFiveOptions: options
-        }
+        },
+        isFinalFiveActive: true,
+        finalFiveTimeRemaining: 55, // Reset to 55 seconds
+        isTimerActive: false // Stop the main timer
       }));
     } catch (error) {
       console.error('Error fetching final five options:', error);
@@ -313,22 +348,42 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!gameState.challenge) return;
     
     try {
+      console.log(`Verifying option "${option}" for challenge ID: ${gameState.challenge.challengeId}`);
       const data = await verifyGuessAPI(gameState.challenge.challengeId, option);
+      console.log(`API response for "${option}":`, data);
+      console.log(`Is this option correct according to API? ${data.isCorrect ? 'YES' : 'NO'}`);
       
       const newGuess: UserGuess = {
         guess: option,
         isCorrect: data.isCorrect,
         timestamp: new Date()
       };
+      console.log(`Adding new guess:`, newGuess);
       
+      // Set the game state to game over but keep Final Five active permanently
+      // This allows animations to play and the user to see the result
       set(state => ({
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
-          isGameOver: true,
-          finalFiveOptions: null
+          isGameOver: true
         }
       }));
+      
+      // Log the updated guesses
+      console.log(`Updated guesses:`, get().gameState.guesses);
+      
+      // Find the correct answer, if there is one
+      const correctGuess = get().gameState.guesses.find(g => g.isCorrect);
+      if (correctGuess) {
+        console.log(`Found correct answer: ${correctGuess.guess}`);
+      } else {
+        console.log('No correct answer found in guesses yet');
+      }
+      
+      // We're not automatically closing the Final Five modal anymore
+      // The user will need to navigate away or refresh to exit
+      
     } catch (error) {
       console.error('Error verifying final guess:', error);
     }

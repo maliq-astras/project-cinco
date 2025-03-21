@@ -1,12 +1,18 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useRef, useImperativeHandle, forwardRef } from 'react';
 import { UserGuess } from '../types';
 import GuessProgressBar from './GuessProgressBar';
 import { animateFactBubbles, showToastMessage } from '../helpers/uiHelpers';
 import { MAX_WRONG_GUESSES, isDuplicateGuess } from '../helpers/gameLogic';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
+import Timer from './Timer';
 
-const GameControls: React.FC = () => {
+// Export the handle type for typescript
+export interface GameControlsHandle {
+  focusInput: () => void;
+}
+
+const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const isTimerActive = useGameStore(state => state.isTimerActive);
@@ -15,6 +21,18 @@ const GameControls: React.FC = () => {
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const submitGuess = useGameStore(state => state.submitGuess);
   const { colors } = useTheme();
+  
+  // Create a ref for the input element
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Expose the focusInput method to parent components
+  useImperativeHandle(ref, () => ({
+    focusInput: () => {
+      if (inputRef.current && !isInputDisabled()) {
+        inputRef.current.focus();
+      }
+    }
+  }));
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,6 +98,7 @@ const GameControls: React.FC = () => {
 
               <form onSubmit={handleSubmit}>
                 <input
+                  ref={inputRef}
                   placeholder={getInputPlaceholder()}
                   className={`w-full p-2 sm:p-3 border border-gray-200 rounded-full ${isInputDisabled() ? 'bg-gray-100' : 'bg-white'} text-gray-900 font-display outline-none theme-focus-ring transition-all duration-300 ${isInputDisabled() ? 'opacity-70' : 'opacity-100'}`}
                   style={{
@@ -95,14 +114,11 @@ const GameControls: React.FC = () => {
             </div>
           </div>
           
-          <div className={`text-xl bg-${colors.light} rounded-lg text-black flex items-center justify-center h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px] font-iceberg`}>
-            {Math.floor(timeRemaining / 60)}:
-            {(timeRemaining % 60).toString().padStart(2, '0')}
-          </div>
+          <Timer seconds={timeRemaining} />
         </div>
       </div>
     </div>
   );
-};
+});
 
 export default GameControls; 

@@ -21,6 +21,12 @@ const FactsArea: React.FC = () => {
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const challenge = useGameStore(state => state.gameState.challenge);
   const windowWidth = useGameStore(state => state.windowWidth);
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+
+  // If Final Five is active, don't render the FactsArea to avoid duplicate card stacks
+  if (isFinalFiveActive) {
+    return null;
+  }
 
   // Calculate the appropriate height based on screen size
   const getResponsiveHeight = () => {

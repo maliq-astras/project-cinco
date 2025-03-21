@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import FactCard from './FactCard';
 import FinalFiveOptions from './FinalFiveOptions';
 import Header from './Header';
 import FactsArea from './FactsArea';
 import ContextArea from './ContextArea';
 import FactBubbleGrid from './FactBubbleGrid';
-import GameControls from './GameControls';
+import GameControls, { GameControlsHandle } from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
@@ -21,10 +21,14 @@ export default function MainContainer() {
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const setWindowWidth = useGameStore(state => state.setWindowWidth);
   const isTimerActive = useGameStore(state => state.isTimerActive);
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const { colors } = useTheme();
 
   // We need just one state to track if we're done with all animations and ready to show the game
   const [loadingComplete, setLoadingComplete] = useState(false);
+
+  // Create a ref for the GameControls component
+  const gameControlsRef = useRef<GameControlsHandle>(null);
 
   // Fetch challenge on mount
   useEffect(() => {
@@ -69,6 +73,21 @@ export default function MainContainer() {
       };
     }
   }, [setWindowWidth]);
+
+  // Focus the input field when shouldFocusInput is true
+  const shouldFocusInput = useGameStore(state => state.shouldFocusInput);
+  const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
+  
+  useEffect(() => {
+    if (shouldFocusInput) {
+      // Focus the input
+      setTimeout(() => {
+        gameControlsRef.current?.focusInput();
+        // Reset the flag after focusing
+        setShouldFocusInput(false);
+      }, 100);
+    }
+  }, [shouldFocusInput, setShouldFocusInput]);
 
   // Always show loading animation until we're ready to show the game
   if (!loadingComplete) {
@@ -127,17 +146,17 @@ export default function MainContainer() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center justify-center w-full max-w-lg mb-2 sm:mb-4 py-2">
-                  {!gameState.finalFiveOptions && (
+                <div className="w-full max-w-lg mb-2 sm:mb-4 py-2">
+                  {/* Hide FactBubbleGrid in Final Five mode */}
+                  {!isFinalFiveActive && (
                     <FactBubbleGrid />
-                  )}
-                  
-                  {gameState.finalFiveOptions && (
-                    <FinalFiveOptions />
                   )}
                 </div>
                 
-                <GameControls />
+                {/* Render FinalFiveOptions when active */}
+                {isFinalFiveActive && <FinalFiveOptions />}
+                
+                <GameControls ref={gameControlsRef} />
               </>
             )}
           </main>
