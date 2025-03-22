@@ -27,17 +27,29 @@ export default function FactBubble({
   const setHoveredFact = useGameStore(state => state.setHoveredFact);
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  const windowWidth = useGameStore(state => state.windowWidth);
   
   const [isPopping, setIsPopping] = useState(false);
   const [isPoppedOut, setIsPoppedOut] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const touchTimerRef = useRef<NodeJS.Timeout | null>(null);
   const clickCountRef = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const DOUBLE_CLICK_TIMEOUT = 300; // Time window for double click in ms
+  const TOUCH_CONTEXT_TIMEOUT = 500; // Time to show context before clearing on mobile
   const POP_ANIMATION_DURATION = 500; // Animation duration in ms
   const CARD_ANIMATION_DELAY = 900; // Delay before card animation starts (includes animation duration plus extra wait)
   const { colors } = useTheme();
   const getFilter = useIconFilter();
+  
+  // Detect if we're on a touch device (mobile)
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  
+  useEffect(() => {
+    // Check for touch capability when component mounts
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   // Check if this bubble is clickable based on game rules
   const isClickable = () => {
@@ -58,8 +70,15 @@ export default function FactBubble({
     if (clickCountRef.current === 1) {
       // First click/tap - start timer
       clickTimerRef.current = setTimeout(() => {
-        // Reset if no second click/tap within timeout
-        clickCountRef.current = 0;
+        // If we didn't detect a second tap, and we're on a touch device,
+        // then we'll count this as a single tap that should just show context
+        if (isTouchDevice) {
+          clickCountRef.current = 0;
+          // Single tap action for mobile: show context
+        } else {
+          // On desktop, single click doesn't do anything by itself
+          clickCountRef.current = 0;
+        }
       }, DOUBLE_CLICK_TIMEOUT);
     } else if (clickCountRef.current === 2) {
       // Double click/tap detected
@@ -79,34 +98,50 @@ export default function FactBubble({
     }
   };
 
-  // Set up touch event listeners with proper options to prevent default behavior
-  useEffect(() => {
-    const button = buttonRef.current;
-    if (!button) return;
-
-    // Function to prevent default behavior for touch events
-    const preventZoom = (e: TouchEvent) => {
-      if (e.touches.length > 1) {
-        e.preventDefault();
+  // Handle touch start - show context on mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isClickable() || isPopping) return;
+    
+    // Prevent zooming on multi-touch
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+    
+    // For mobile: set hovered fact to show context on single tap
+    setHoveredFact(factIndex);
+    setIsTouched(true);
+    
+    // Clear any existing touch timer
+    if (touchTimerRef.current) {
+      clearTimeout(touchTimerRef.current);
+    }
+  };
+  
+  // Handle touch end
+  const handleTouchEnd = () => {
+    if (!isClickable() || isPopping) return;
+    
+    // Call the interaction handler for double-tap detection
+    handleInteraction();
+    
+    // For mobile: keep context visible for a short time after touching
+    touchTimerRef.current = setTimeout(() => {
+      if (clickCountRef.current === 0) {
+        // Only clear the hover state if we're not in a double-tap sequence
+        setHoveredFact(null);
+        setIsTouched(false);
       }
-    };
-
-    // Add event listeners with passive: false to allow preventDefault
-    button.addEventListener('touchstart', preventZoom, { passive: false });
-    button.addEventListener('touchend', () => handleInteraction(), { passive: true });
-
-    // Clean up event listeners
-    return () => {
-      button.removeEventListener('touchstart', preventZoom);
-      button.removeEventListener('touchend', () => handleInteraction());
-    };
-  }, [isRevealed, isPopping, canRevealNewClue]);
+    }, TOUCH_CONTEXT_TIMEOUT);
+  };
 
   // Clean up timers on unmount
   useEffect(() => {
     return () => {
       if (clickTimerRef.current) {
         clearTimeout(clickTimerRef.current);
+      }
+      if (touchTimerRef.current) {
+        clearTimeout(touchTimerRef.current);
       }
     };
   }, []);
@@ -157,17 +192,23 @@ export default function FactBubble({
   // Get tooltip text based on state
   const getTooltipText = () => {
     if (isRevealed) return "Click to view this fact again";
-    if (!hasSeenClue) return "Double-tap to reveal your first fact";
+    if (!hasSeenClue) {
+      return isTouchDevice 
+        ? "Tap to preview, double-tap to reveal" 
+        : "Double-click to reveal your first fact";
+    }
     if (!canRevealNewClue) return "Make a guess before revealing a new fact";
-    return `Double-tap to reveal ${factType} fact`;
+    return isTouchDevice 
+      ? `Tap to preview, double-tap to reveal ${factType}` 
+      : `Double-click to reveal ${factType} fact`;
   };
 
   return (
     <div 
       className={`relative ${className}`}
       style={style}
-      onMouseEnter={() => isClickable() && setHoveredFact(factIndex)}
-      onMouseLeave={() => setHoveredFact(null)}
+      onMouseEnter={() => !isTouchDevice && isClickable() && setHoveredFact(factIndex)}
+      onMouseLeave={() => !isTouchDevice && setHoveredFact(null)}
     >
       <div className="relative w-full aspect-square">
         <AnimatePresence>
@@ -175,14 +216,16 @@ export default function FactBubble({
             <motion.button
               ref={buttonRef}
               className={`absolute inset-0 w-full h-full rounded-full 
-                border-${colors.light} border-4 
+                ${isTouched ? `border-${colors.primary}` : `border-${colors.light}`} border-4 
                 ${isClickable() ? `hover:border-${colors.primary} cursor-pointer` : 'cursor-not-allowed opacity-60'}
                 flex items-center justify-center`}
-              onClick={handleInteraction}
+              onClick={isTouchDevice ? undefined : handleInteraction}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
               variants={bubbleVariants}
               initial="initial"
               exit="exit"
-              whileHover={isClickable() ? "hover" : "initial"}
+              whileHover={isClickable() && !isTouchDevice ? "hover" : "initial"}
               whileTap={isClickable() ? "tap" : "initial"}
               aria-label={getTooltipText()}
               data-fact-index={factIndex}
@@ -193,7 +236,6 @@ export default function FactBubble({
               {(() => {
                 // Calculate icon size based on available space
                 // Adjust multipliers to make icons smaller
-                const windowWidth = window.innerWidth;
                 const sizeMultiplier = windowWidth < 480 ? 0.5 : windowWidth < 768 ? 0.55 : 0.6;
                 const containerSize = style.width ? parseInt(style.width.toString()) : windowWidth < 640 ? 65 : 80;
                 const iconSize = Math.max(28, Math.round(containerSize * sizeMultiplier));

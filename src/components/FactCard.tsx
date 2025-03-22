@@ -126,6 +126,20 @@ export default function FactCard({
     }
   };
 
+  // Handle ESC key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-overlay bg-black bg-opacity-50">
       <div className="flip-card-container" ref={cardRef}>
@@ -145,6 +159,25 @@ export default function FactCard({
           }}
           onAnimationComplete={handleAnimationComplete}
         >
+          {/* Close button - only visible when card is flipped to front */}
+          {isFlipped && !isClosing && (
+            <motion.button
+              onClick={handleClose}
+              className="absolute top-4 right-4 z-20"
+              aria-label="Close fact card"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.2 }}
+            >
+              <svg viewBox="0 0 100 100" className="w-6 h-6">
+                <g stroke={`var(--color-${colors.primary})`} strokeWidth="12" strokeLinecap="round">
+                  <path d="M30,30 L70,70" />
+                  <path d="M70,30 L30,70" />
+                </g>
+              </svg>
+            </motion.button>
+          )}
+          
           <motion.div
             className="flip-card w-full h-full"
             initial={{ rotateY: 0 }}
@@ -181,7 +214,7 @@ export default function FactCard({
                 
                 {/* Bottom half - Fact Content */}
                 <div className="flex-1 flex items-center justify-center pt-4">
-                  <p className="text-gray-800 text-sm sm:text-base text-center leading-tight sm:leading-snug">
+                  <p className="text-gray-800 text-sm sm:text-base text-left leading-tight sm:leading-snug px-1">
                     {fact.content}
                   </p>
                 </div>

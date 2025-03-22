@@ -79,23 +79,29 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
 
   return (
     <div className="py-0 sm:py-6 w-full">
+      {/* Toast messages container */}
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+        {/* Duplicate guess toast */}
+        <div 
+          id="duplicate-error" 
+          className="hidden bg-yellow-100 text-yellow-800 py-2 px-4 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-slideInRight"
+        >
+          You've already tried that guess. Try something else!
+        </div>
+
+        {/* Wrong guess toast */}
+        <div 
+          id="wrong-guess-toast" 
+          className="hidden bg-red-100 text-red-800 py-2 px-4 rounded-md text-sm font-medium border border-red-200 shadow-md animate-slideInRight"
+        >
+          Wrong answer! Try again.
+        </div>
+      </div>
+      
       <div className="w-full border-t border-gray-200 pt-2 pb-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
         <div className="flex w-full max-w-md gap-2 mx-auto">
           <div className="flex-1 flex flex-col">
             <div className="relative">
-              {/* Toast container above input */}
-              <div className="absolute -top-10 sm:-top-12 left-0 right-0 flex justify-center">
-                {/* Duplicate guess toast */}
-                <div id="duplicate-error" className="hidden bg-yellow-100 text-yellow-800 py-2 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-fadeIn">
-                  You've already tried that guess. Try something else!
-                </div>
-
-                {/* Wrong guess toast */}
-                <div id="wrong-guess-toast" className="hidden bg-red-100 text-red-800 py-2 rounded-md text-sm font-medium border border-red-200 shadow-md animate-fadeIn">
-                  Wrong answer! Try again.
-                </div>
-              </div>
-
               <form onSubmit={handleSubmit}>
                 <input
                   ref={inputRef}

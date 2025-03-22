@@ -5,7 +5,7 @@ import FactCard from './FactCard';
 import FinalFiveOptions from './FinalFiveOptions';
 import Header from './Header';
 import FactsArea from './FactsArea';
-import ContextArea from './ContextArea';
+import ContextArea, { BubbleContextArea, GameInstructionsArea } from './ContextArea';
 import FactBubbleGrid from './FactBubbleGrid';
 import GameControls, { GameControlsHandle } from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
@@ -135,23 +135,36 @@ export default function MainContainer() {
               <>
                 <FactsArea />
                 
-                {/* Center line with true full width */}
+                {/* Center line with category context */}
                 <div className="w-full relative my-2 sm:my-4 flex-shrink-0">
                   {/* Line is full width of the container */}
                   <div className="absolute inset-x-0 h-1" style={{ backgroundColor: `var(--color-${colors.primary}30)` }}></div>
                   <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-center">
                     <div className="px-6 py-1 rounded-lg relative z-10">
-                      <ContextArea />
+                      <BubbleContextArea />
                     </div>
                   </div>
                 </div>
                 
-                <div className="w-full max-w-lg mb-2 sm:mb-4 py-2">
-                  {/* Hide FactBubbleGrid in Final Five mode */}
-                  {!isFinalFiveActive && (
-                    <FactBubbleGrid />
-                  )}
+                <div className="w-full flex justify-center">
+                  <div className="w-full max-w-lg mb-2 sm:mb-4 py-2">
+                    {/* Hide FactBubbleGrid in Final Five mode */}
+                    {!isFinalFiveActive && (
+                      <FactBubbleGrid />
+                    )}
+                  </div>
                 </div>
+                
+                {/* Game instructions context area */}
+                {!isFinalFiveActive && (
+                  <div className="w-full relative my-2 flex-shrink-0">
+                    <div className="flex justify-center">
+                      <div className="px-6 py-1 rounded-lg">
+                        <GameInstructionsArea />
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Render FinalFiveOptions when active */}
                 {isFinalFiveActive && <FinalFiveOptions />}
