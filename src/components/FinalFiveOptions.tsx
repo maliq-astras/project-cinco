@@ -250,7 +250,7 @@ export default function FinalFiveOptions() {
                           height: "100%"
                         }}
                       >
-                        <g stroke="#666666" strokeWidth="12" strokeLinecap="round">
+                        <g stroke={themeColor} strokeWidth="12" strokeLinecap="round">
                           <path d="M25,25 L75,75" />
                           <path d="M75,25 L25,75" />
                         </g>
