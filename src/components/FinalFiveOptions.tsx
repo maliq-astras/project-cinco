@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Righteous } from 'next/font/google';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 import Timer from './Timer';
 import { UserGuess } from '../types';
 import { verifyGuess } from '../helpers/gameLogic';
+
+const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
 export default function FinalFiveOptions() {
   const {
@@ -147,22 +150,22 @@ export default function FinalFiveOptions() {
   
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/75 backdrop-blur-sm">
-      <div className="w-full max-w-[580px] bg-white rounded-xl shadow-2xl p-4 mx-4">
+      <div className="w-full max-w-[580px] bg-white rounded-xl shadow-2xl p-4 mx-4 md:p-6">
         {/* Header */}
         <h2 
-          className="text-2xl font-bold text-center mb-4" 
+          className={`text-4xl font-bold text-center mb-6 ${righteous.className}`}
           style={{ color: themeColor }}
         >
           FINAL 5
         </h2>
         
         {/* Message */}
-        <p className="text-center mb-6 text-gray-700">
+        <p className="text-center mb-6 text-gray-700 font-display">
           {getMessage()}
         </p>
         
-        {/* Grid of options */}
-        <div className="grid grid-cols-3 grid-rows-2 gap-4 mb-4">
+        {/* Grid of options - switches to vertical stack on mobile */}
+        <div className="flex flex-col md:grid md:grid-cols-3 md:grid-rows-2 gap-3 mb-4">
           {options.map((option, index) => {
             // Style variables
             let backgroundColor = "white";
@@ -174,56 +177,54 @@ export default function FinalFiveOptions() {
             // Set styles based on state
             if (isGameOver) {
               if (isCorrectOption(option)) {
-                // Correct answer
                 backgroundColor = themeColor;
                 textColor = "white";
                 borderWidth = "3px";
-                scale = 1.10; // Make it stand out more
-                opacity = 1; // Always fully visible
+                scale = 1.05; // Reduced scale for better proportions
+                opacity = 1;
                 console.log(`Styling ${option} as correct answer`);
               } else if (isIncorrectGuess(option)) {
-                // User's wrong guess
                 backgroundColor = "#f1f1f1";
                 textColor = "#888888";
-                opacity = animationComplete ? 0.75 : 1; // Slightly faded
+                opacity = animationComplete ? 0.75 : 1;
                 console.log(`Styling ${option} as wrong guess`);
               } else {
-                // Other options
                 backgroundColor = "#f8f8f8";
                 textColor = "#aaaaaa";
-                opacity = animationComplete ? 0 : 0.6; // Fade out completely after animation
+                opacity = animationComplete ? 0 : 0.6;
               }
             }
             
             return (
               <motion.button
                 key={`option-${index}`}
-                className="aspect-square flex items-center justify-center p-4 rounded-lg text-center relative"
+                className="flex items-center justify-center p-4 rounded-lg text-center relative md:aspect-square font-display"
                 style={{
                   backgroundColor,
                   color: textColor,
                   borderColor: themeColor,
                   borderWidth,
                   borderStyle: "solid",
+                  minHeight: "80px",
                   boxShadow: isGameOver && isCorrectOption(option) 
-                    ? `0 0 20px var(--color-${colors.primary}80)`
+                    ? `0 0 15px var(--color-${colors.primary}80)`
                     : "none",
-                  pointerEvents: isGameOver ? 'none' : 'auto' // Disable clicks after game over
+                  pointerEvents: isGameOver ? 'none' : 'auto'
                 }}
                 animate={{ 
                   scale: isGameOver && isCorrectOption(option) ? scale : 1,
                   opacity: opacity,
-                  y: isGameOver && isCorrectOption(option) ? -10 : 0 // Slight lift for correct answer
+                  y: isGameOver && isCorrectOption(option) ? -5 : 0 // Reduced lift
                 }}
                 transition={{ 
-                  duration: 0.5,
-                  scale: { type: "spring", stiffness: 400, damping: 10 }
+                  duration: 0.4,
+                  scale: { type: "spring", stiffness: 400, damping: 15 }
                 }}
                 onClick={() => !isGameOver && selectFinalFiveOption(option)}
-                whileHover={!isGameOver ? { scale: 1.03 } : {}}
+                whileHover={!isGameOver ? { scale: 1.02 } : {}}
                 whileTap={!isGameOver ? { scale: 0.98 } : {}}
               >
-                {option}
+                <span className="text-lg md:text-xl">{option}</span>
                 
                 {/* X overlay for incorrect guesses */}
                 {isGameOver && isIncorrectGuess(option) && (
@@ -236,10 +237,10 @@ export default function FinalFiveOptions() {
                       animate={{ opacity: 0.9, scale: 1 }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                       style={{ 
-                        width: "80%",
-                        height: "80%",
-                        maxWidth: "80px",
-                        maxHeight: "80px"
+                        width: "70%", // Slightly smaller X
+                        height: "70%",
+                        maxWidth: "60px",
+                        maxHeight: "60px"
                       }}
                     >
                       <svg 
@@ -262,10 +263,12 @@ export default function FinalFiveOptions() {
             );
           })}
           
-          {/* Timer in the last slot */}
+          {/* Timer */}
           <motion.div 
-            className="aspect-square flex items-center justify-center bg-gray-50 rounded-lg"
-            style={{}}
+            className="flex items-center justify-center bg-gray-50 rounded-lg md:aspect-square"
+            style={{
+              minHeight: "80px" // Match option height on mobile
+            }}
             animate={{ opacity: animationComplete ? 0 : 1 }}
             transition={{ duration: 0.5 }}
           >

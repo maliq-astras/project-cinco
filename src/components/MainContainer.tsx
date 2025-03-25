@@ -147,7 +147,7 @@ export default function MainContainer() {
                 </div>
                 
                 <div className="w-full flex justify-center">
-                  <div className="w-full max-w-lg mb-2 sm:mb-4 py-2">
+                  <div className="w-full max-w-lg mb-2 sm:mb-4 py-2 sm:pt-6">
                     {/* Hide FactBubbleGrid in Final Five mode */}
                     {!isFinalFiveActive && (
                       <FactBubbleGrid />

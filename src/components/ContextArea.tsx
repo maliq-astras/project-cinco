@@ -1,5 +1,4 @@
 import React from 'react';
-import { Challenge } from '../types';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 
@@ -19,7 +18,7 @@ export const BubbleContextArea: React.FC = () => {
     : "";
   
   return (
-    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap ${shouldShowHoverContext ? 'font-display' : ''}`}>
+    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap font-display`}>
       {messageToShow}
     </span>
   );
@@ -35,7 +34,7 @@ export const GameInstructionsArea: React.FC = () => {
   // Generate a game status message based on the current state
   const getGameStatusMessage = () => {
     if (!hasSeenClue) {
-      return "Click a fact bubble to start the game";
+      return "Double click a fact bubble to start the game";
     }
     if (!canMakeGuess) {
       return "Reveal a new fact to make another guess";
@@ -47,7 +46,7 @@ export const GameInstructionsArea: React.FC = () => {
   };
   
   return (
-    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap`}>
+    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap font-display`}>
       {getGameStatusMessage()}
     </span>
   );

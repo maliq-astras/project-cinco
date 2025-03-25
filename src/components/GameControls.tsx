@@ -84,7 +84,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
         {/* Duplicate guess toast */}
         <div 
           id="duplicate-error" 
-          className="hidden bg-yellow-100 text-yellow-800 py-2 px-4 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-slideInRight"
+          className="hidden bg-yellow-100 text-yellow-800 py-2 px-4 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-slideInRight font-mono"
         >
           You've already tried that guess. Try something else!
         </div>
@@ -92,7 +92,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
         {/* Wrong guess toast */}
         <div 
           id="wrong-guess-toast" 
-          className="hidden bg-red-100 text-red-800 py-2 px-4 rounded-md text-sm font-medium border border-red-200 shadow-md animate-slideInRight"
+          className="hidden bg-red-100 text-red-800 py-2 px-4 rounded-md text-sm font-medium border border-red-200 shadow-md animate-slideInRight font-mono"
         >
           Wrong answer! Try again.
         </div>
