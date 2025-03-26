@@ -34,6 +34,10 @@ interface GameStore {
   shouldFocusInput: boolean;
   windowWidth: number;
   
+  // Victory animation states
+  isVictoryAnimationActive: boolean;
+  victoryAnimationStep: 'bubbles' | 'summary' | 'cards' | null;
+  
   // Computed values should not be in the store interface
   
   // Actions
@@ -79,6 +83,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   isCardAnimatingOut: false,
   shouldFocusInput: false,
   windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
+  
+  // Victory animation states
+  isVictoryAnimationActive: false,
+  victoryAnimationStep: null,
   
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
@@ -298,20 +306,32 @@ export const useGameStore = create<GameStore>((set, get) => ({
             guesses: newGuesses,
             isGameOver: data.isCorrect
           },
-          // After guessing, allow revealing a new clue
           canRevealNewClue: true,
-          // Disable making another guess until they reveal a new fact
           canMakeGuess: false
         };
-        
-        // If not correct, check if we've reached the maximum number of wrong guesses
-        if (!data.isCorrect && shouldShowFinalFive(newGuesses)) {
+
+        if (data.isCorrect) {
+          return {
+            ...newState,
+            isVictoryAnimationActive: true,
+            victoryAnimationStep: 'bubbles'
+          };
+        }
+
+        if (shouldShowFinalFive(newGuesses)) {
           // Trigger final five in the next tick to allow state to update first
           setTimeout(() => triggerFinalFive(), 0);
         }
-        
+
         return newState;
       });
+
+      if (data.isCorrect) {
+        // Schedule the animation sequence
+        setTimeout(() => {
+          set({ victoryAnimationStep: 'summary' });
+        }, 1500); // After bubbles pop
+      }
     } catch (error) {
       console.error('Error verifying guess:', error);
     }

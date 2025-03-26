@@ -9,9 +9,11 @@ import ContextArea, { BubbleContextArea, GameInstructionsArea } from './ContextA
 import FactBubbleGrid from './FactBubbleGrid';
 import GameControls, { GameControlsHandle } from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
+import VictoryMessage from './VictoryMessage';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
+import { AnimatePresence } from 'framer-motion';
 
 export default function MainContainer() {
   // Use individual selectors instead to avoid type issues
@@ -22,6 +24,7 @@ export default function MainContainer() {
   const setWindowWidth = useGameStore(state => state.setWindowWidth);
   const isTimerActive = useGameStore(state => state.isTimerActive);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const { colors } = useTheme();
 
   // We need just one state to track if we're done with all animations and ready to show the game
@@ -150,7 +153,15 @@ export default function MainContainer() {
                   <div className="w-full max-w-lg mb-2 sm:mb-4 py-2 sm:pt-6">
                     {/* Hide FactBubbleGrid in Final Five mode */}
                     {!isFinalFiveActive && (
-                      <FactBubbleGrid />
+                      <div className="relative">
+                        <AnimatePresence mode="wait">
+                          {victoryAnimationStep === 'summary' ? (
+                            <VictoryMessage />
+                          ) : (
+                            <FactBubbleGrid />
+                          )}
+                        </AnimatePresence>
+                      </div>
                     )}
                   </div>
                 </div>

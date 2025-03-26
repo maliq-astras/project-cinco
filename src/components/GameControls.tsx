@@ -6,6 +6,7 @@ import { MAX_WRONG_GUESSES, isDuplicateGuess } from '../helpers/gameLogic';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 import Timer from './Timer';
+import { motion } from 'framer-motion';
 
 // Export the handle type for typescript
 export interface GameControlsHandle {
@@ -21,6 +22,8 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const submitGuess = useGameStore(state => state.submitGuess);
   const { colors } = useTheme();
+  const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
   // Create a ref for the input element
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,52 +81,61 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   };
 
   return (
-    <div className="py-0 sm:py-6 w-full">
-      {/* Toast messages container */}
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
-        {/* Duplicate guess toast */}
-        <div 
-          id="duplicate-error" 
-          className="hidden bg-yellow-100 text-yellow-800 py-2 px-4 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-slideInRight font-mono"
-        >
-          You've already tried that guess. Try something else!
-        </div>
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ 
+        opacity: isVictoryAnimationActive ? 0 : 1 
+      }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-lg mx-auto"
+    >
+      <div className="relative">
+        {/* Toast messages container */}
+        <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+          {/* Duplicate guess toast */}
+          <div 
+            id="duplicate-error" 
+            className="hidden bg-yellow-100 text-yellow-800 py-2 px-4 rounded-md text-sm font-medium border border-yellow-200 shadow-md animate-slideInRight font-mono"
+          >
+            You've already tried that guess. Try something else!
+          </div>
 
-        {/* Wrong guess toast */}
-        <div 
-          id="wrong-guess-toast" 
-          className="hidden bg-red-100 text-red-800 py-2 px-4 rounded-md text-sm font-medium border border-red-200 shadow-md animate-slideInRight font-mono"
-        >
-          Wrong answer! Try again.
+          {/* Wrong guess toast */}
+          <div 
+            id="wrong-guess-toast" 
+            className="hidden bg-red-100 text-red-800 py-2 px-4 rounded-md text-sm font-medium border border-red-200 shadow-md animate-slideInRight font-mono"
+          >
+            Wrong answer! Try again.
+          </div>
         </div>
-      </div>
-      
-      <div className="w-full border-t border-gray-200 pt-2 pb-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
-        <div className="flex w-full max-w-md gap-2 mx-auto">
-          <div className="flex-1 flex flex-col">
-            <div className="relative">
-              <form onSubmit={handleSubmit}>
-                <input
-                  ref={inputRef}
-                  placeholder={getInputPlaceholder()}
-                  className={`w-full p-2 sm:p-3 border border-gray-200 rounded-full ${isInputDisabled() ? 'bg-gray-100' : 'bg-white'} text-gray-900 font-display outline-none theme-focus-ring transition-all duration-300 ${isInputDisabled() ? 'opacity-70' : 'opacity-100'}`}
-                  style={{
-                    "--theme-color": `var(--color-${colors.primary})`
-                  } as React.CSSProperties}
-                  disabled={isInputDisabled()}
-                />
-              </form>
+        
+        <div className="w-full border-t border-gray-200 pt-2 pb-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
+          <div className="flex w-full max-w-md gap-2 mx-auto">
+            <div className="flex-1 flex flex-col">
+              <div className="relative">
+                <form onSubmit={handleSubmit}>
+                  <input
+                    ref={inputRef}
+                    placeholder={getInputPlaceholder()}
+                    className={`w-full p-2 sm:p-3 border border-gray-200 rounded-full ${isInputDisabled() ? 'bg-gray-100' : 'bg-white'} text-gray-900 font-display outline-none theme-focus-ring transition-all duration-300 ${isInputDisabled() ? 'opacity-70' : 'opacity-100'}`}
+                    style={{
+                      "--theme-color": `var(--color-${colors.primary})`
+                    } as React.CSSProperties}
+                    disabled={isInputDisabled()}
+                  />
+                </form>
+              </div>
+              
+              <div className="mt-1 sm:mt-2">
+                <GuessProgressBar />
+              </div>
             </div>
             
-            <div className="mt-1 sm:mt-2">
-              <GuessProgressBar />
-            </div>
+            <Timer seconds={timeRemaining} />
           </div>
-          
-          <Timer seconds={timeRemaining} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 });
 

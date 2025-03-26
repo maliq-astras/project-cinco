@@ -18,6 +18,8 @@ export default function FactCardStack() {
   const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
   const windowWidth = useGameStore(state => state.windowWidth);
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
+  const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const { colors } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
@@ -104,6 +106,22 @@ export default function FactCardStack() {
     return canRevealNewClue || revealedFacts.includes(factIndex);
   };
   
+  const victoryVariants = {
+    initial: { x: 0, y: 0, rotate: 0 },
+    animate: (i: number) => ({
+      x: i % 2 === 0 ? [0, -10, 0, 10, 0] : [0, 10, 0, -10, 0],
+      y: [0, -15, 0, -15, 0],
+      rotate: [0, -5, 5, -5, 0],
+      transition: {
+        duration: 2,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "reverse" as const,
+        delay: 0.5 // Add a small delay before starting the dance
+      }
+    })
+  };
+
   return (
     <div 
       className="flex justify-center items-end relative card-stack-container"
@@ -148,10 +166,44 @@ export default function FactCardStack() {
               i,
               centerIndex
             );
-            
+
+            const variants = {
+              initial: animations.initialState,
+              animate: isVictoryAnimationActive ? (
+                victoryAnimationStep === 'summary' ? {
+                  x: cardPosition.translateX,
+                  y: adjustedTranslateY,
+                  rotate: [cardPosition.rotation - 5, cardPosition.rotation + 5],
+                  scale: cardPosition.scale,
+                  opacity: isCardClickable(factIndex) ? 1 : 0.7,
+                  transition: {
+                    rotate: {
+                      duration: 1,
+                      repeat: Infinity,
+                      repeatType: "reverse" as const,
+                      ease: "easeInOut"
+                    }
+                  }
+                } : {
+                  x: cardPosition.translateX,
+                  y: adjustedTranslateY,
+                  rotate: cardPosition.rotation,
+                  scale: cardPosition.scale,
+                  opacity: isCardClickable(factIndex) ? 1 : 0.7
+                }
+              ) : {
+                x: cardPosition.translateX,
+                y: adjustedTranslateY,
+                rotate: cardPosition.rotation,
+                scale: cardPosition.scale,
+                opacity: isCardClickable(factIndex) ? 1 : 0.7
+              },
+              exit: animations.exitState
+            };
+
             return (
               <motion.div
-                key={factIndex}
+                key={`card-${factIndex}`}
                 ref={el => {
                   cardRefs.current[i] = el;
                   return undefined;
@@ -162,16 +214,11 @@ export default function FactCardStack() {
                 className={`absolute p-0 border-2 border-${colors.light} rounded-lg 
                   ${isCardClickable(factIndex) ? 'cursor-pointer card-hover-glow' : 'cursor-not-allowed opacity-70'} card-in-stack
                   ${cardPosition.shadowClass}`}
-                initial={animations.initialState}
-                animate={{
-                  x: cardPosition.translateX,
-                  y: adjustedTranslateY,
-                  rotate: cardPosition.rotation,
-                  scale: cardPosition.scale,
-                  opacity: isCardClickable(factIndex) ? 1 : 0.7,
-                  zIndex: cardPosition.zIndex
-                }}
-                exit={animations.exitState}
+                custom={i}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
                 transition={animations.transitionSettings}
                 style={{
                   transformOrigin: 'bottom center',
@@ -179,10 +226,9 @@ export default function FactCardStack() {
                   bottom: '0px',
                   width: `${cardSize.width}px`,
                   height: `${cardSize.height}px`,
+                  zIndex: revealedFacts.length - i
                 }}
-                layout
               >
-                {/* Card Content */}
                 <FactCardBack fact={facts[factIndex]} size="small" />
               </motion.div>
             );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
+import { motion } from 'framer-motion';
 
 // Component for showing bubble categories when hovering
 export const BubbleContextArea: React.FC = () => {
@@ -29,26 +30,47 @@ export const GameInstructionsArea: React.FC = () => {
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
+  const guesses = useGameStore(state => state.gameState.guesses);
+  const isGameOver = useGameStore(state => state.gameState.isGameOver);
+  const timeRemaining = useGameStore(state => state.timeRemaining);
+  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const { colors } = useTheme();
 
   // Generate a game status message based on the current state
   const getGameStatusMessage = () => {
+    if (isGameOver) {
+      // Only show "Come back tomorrow" after victory sequence and delay
+      if (victoryAnimationStep === 'summary') {
+        return "Come back tomorrow for a new challenge!";
+      }
+      return ""; // Show nothing during victory animation
+    }
+    
     if (!hasSeenClue) {
-      return "Double click a fact bubble to start the game";
+      return "Reveal a fact to start guessing...";
     }
+    
     if (!canMakeGuess) {
-      return "Reveal a new fact to make another guess";
+      return "Reveal a new fact to make another guess...";
     }
-    if (!canRevealNewClue) {
-      return "Make a guess for this fact";
-    }
-    return "Choose another fact or make a guess";
+    
+    return "Enter your guess...";
   };
   
   return (
-    <span className={`text-${colors.primary} font-medium text-center whitespace-nowrap font-display`}>
+    <motion.span 
+      className={`text-${colors.primary} font-medium text-center whitespace-normal max-w-lg font-display`}
+      initial={{ opacity: 1 }}
+      animate={{ 
+        opacity: isGameOver ? (victoryAnimationStep === 'summary' ? 1 : 0) : 1
+      }}
+      transition={{ 
+        duration: 0.8, // Slower fade out
+        delay: victoryAnimationStep === 'summary' ? 3 : 0 // 3 second delay before showing "come back tomorrow"
+      }}
+    >
       {getGameStatusMessage()}
-    </span>
+    </motion.span>
   );
 };
 

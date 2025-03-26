@@ -8,6 +8,8 @@ const FactBubbleGrid: React.FC = () => {
   const challenge = useGameStore(state => state.gameState.challenge);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const windowWidth = useGameStore(state => state.windowWidth);
+  const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
   // Always use a fixed 4x2 grid layout
   const cols = 4;
@@ -91,13 +93,18 @@ const FactBubbleGrid: React.FC = () => {
                 key={`fact-${factIndex}`}
                 layout
                 initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                animate={{ 
+                  scale: isVictoryAnimationActive ? [1, 1.3, 0] : 1, 
+                  opacity: isVictoryAnimationActive ? [1, 1, 0] : 1,
+                  rotate: isVictoryAnimationActive ? [0, 15] : 0
+                }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ 
-                  type: "spring", 
-                  stiffness: 300, 
-                  damping: 25,
-                  duration: 0.4
+                  type: isVictoryAnimationActive ? "tween" : "spring",
+                  duration: isVictoryAnimationActive ? 0.5 : undefined,
+                  stiffness: isVictoryAnimationActive ? undefined : 300,
+                  damping: isVictoryAnimationActive ? undefined : 25,
+                  delay: isVictoryAnimationActive ? slotIndex * 0.15 : 0 // Increased stagger delay
                 }}
                 className="flex items-center justify-center"
               >
