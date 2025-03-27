@@ -1,6 +1,8 @@
 /**
- * Helper functions for card animations and positioning
+ * Helper functions for FactCard animations, styling, and data processing
  */
+
+import { CSSProperties } from 'react';
 
 /**
  * Calculate the initial position for a card being drawn from a source position
@@ -124,4 +126,28 @@ export function calculateCardReturnPosition(visibleStackCount: number): { x: num
       };
     }
   }
-} 
+}
+
+/**
+ * Normalize a category value to a string
+ * @param category The category value which could be a string or any other type
+ * @param defaultCategory Default category to use if none is provided
+ * @returns Normalized category string
+ */
+export function normalizeCategory(category: string | any, defaultCategory: string = 'countries'): string {
+  if (!category) {
+    return defaultCategory;
+  }
+  
+  return typeof category === 'string' 
+    ? category 
+    : category.toString();
+}
+
+/**
+ * Inline styles for the FactCard component
+ */
+export const factCardInlineStyles = {
+  preserve3d: { transformStyle: "preserve-3d" as CSSProperties["transformStyle"] },
+  hidden: { backfaceVisibility: "hidden" as CSSProperties["backfaceVisibility"] },
+}; 
