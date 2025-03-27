@@ -51,7 +51,7 @@ const FactsArea: React.FC = () => {
 
   return (
     <div 
-      className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-2 sm:mb-4 bg-gray-50 relative"
+      className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-2 sm:mb-4 relative"
       style={{ height: `${getResponsiveHeight()}px` }}
     >
       {challenge && (

@@ -9,7 +9,7 @@ import ContextArea, { BubbleContextArea, GameInstructionsArea } from './ContextA
 import FactBubbleGrid from './FactBubbleGrid';
 import GameControls, { GameControlsHandle } from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
-import VictoryMessage from './VictoryMessage';
+import GameMessage from './GameMessage';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
@@ -25,6 +25,8 @@ export default function MainContainer() {
   const isTimerActive = useGameStore(state => state.isTimerActive);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
+  const gameOutcome = useGameStore(state => state.gameOutcome);
+  const timeRemaining = useGameStore(state => state.timeRemaining);
   const { colors } = useTheme();
 
   // We need just one state to track if we're done with all animations and ready to show the game
@@ -41,24 +43,20 @@ export default function MainContainer() {
     loadChallenge();
   }, [fetchChallenge]);
 
-  // Handle timer countdown - only start once loading is complete and timer is active
+  // Handle the timer
   useEffect(() => {
-    if (!loadingComplete) return;
-    if (!isTimerActive) return;
+    let timer: NodeJS.Timeout;
     
-    const timer = setInterval(() => {
-      if (!gameState.loading && !gameState.error && !gameState.isGameOver) {
+    if (isTimerActive && timeRemaining > 0 && !gameState.isGameOver) {
+      timer = setInterval(() => {
         decrementTimer();
-      }
-    }, 1000);
+      }, 1000);
+    }
     
-    return () => clearInterval(timer);
-  }, [gameState.loading, gameState.error, gameState.isGameOver, decrementTimer, loadingComplete, isTimerActive]);
-
-  // Handle loading animation completion
-  const handleLoadingComplete = () => {
-    setLoadingComplete(true);
-  };
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isTimerActive, timeRemaining, decrementTimer, gameState.isGameOver]);
 
   // Handle window resize
   useEffect(() => {
@@ -66,68 +64,54 @@ export default function MainContainer() {
       setWindowWidth(window.innerWidth);
     };
     
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      // Call once on mount to set initial width
-      handleResize();
-      
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
+    // Set the initial width
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [setWindowWidth]);
 
-  // Focus the input field when shouldFocusInput is true
-  const shouldFocusInput = useGameStore(state => state.shouldFocusInput);
-  const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
-  
-  useEffect(() => {
-    if (shouldFocusInput) {
-      // Focus the input
-      setTimeout(() => {
-        gameControlsRef.current?.focusInput();
-        // Reset the flag after focusing
-        setShouldFocusInput(false);
-      }, 100);
-    }
-  }, [shouldFocusInput, setShouldFocusInput]);
+  // Handle loading complete
+  const handleLoadingComplete = () => {
+    setLoadingComplete(true);
+  };
 
-  // Always show loading animation until we're ready to show the game
-  if (!loadingComplete) {
-    return (
-      <LoadingAnimation 
-        finalCategory={gameState.challenge?.category || "CATEGORIES"} 
-        onComplete={handleLoadingComplete}
-        isChallengeFetched={gameState.challenge !== null}
-      />
-    );
-  }
+  // Prepare data for game message if we're showing it
+  const showGameMessage = (victoryAnimationStep === 'summary' && gameOutcome) || gameOutcome === 'loss';
+  const getGameMessageProps = () => {
+    // Find correct answer if it exists
+    const correctGuess = gameState.guesses.find(g => g.isCorrect);
+    // If no correct guess is found but we have a loss, find the correct option from finalFiveOptions
+    let correctAnswer = correctGuess?.guess || '';
+    
+    // For standard win, calculate number of tries
+    const numberOfTries = correctGuess ? gameState.guesses.indexOf(correctGuess) + 1 : 0;
+    
+    // Calculate time spent (300 - timeRemaining for normal game)
+    const timeSpent = 300 - timeRemaining;
+    
+    return {
+      outcome: gameOutcome || 'loss', // Default to 'loss' if gameOutcome is null
+      correctAnswer,
+      numberOfTries,
+      timeSpent,
+    };
+  };
 
-  // STEP 3: Show the main game after animations are complete
   return (
-    <div 
-      className="flex flex-col items-center justify-between min-h-screen max-w-6xl mx-auto px-4 pt-4 pb-0 sm:pb-8"
-    >
-      {/* Loading and error handling */}
-      {gameState.loading ? (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className={`text-${colors.primary} text-2xl font-display mb-4`}>Loading challenge...</div>
-            <div className="animate-pulse">Please wait</div>
-          </div>
-        </div>
-      ) : gameState.error ? (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-red-600 text-2xl font-display mb-4">Error</div>
-            <div className="mb-4">{gameState.error}</div>
-            <button 
-              className={`px-4 py-2 bg-${colors.primary} text-white rounded-lg hover:bg-${colors.accent} transition duration-200`}
-              onClick={() => fetchChallenge()}
-            >
-              Try Again
-            </button>
-          </div>
+    <div className="flex flex-col min-h-screen w-full items-center bg-white text-gray-800">
+      {!loadingComplete ? (
+        <div className="flex-1 flex items-center justify-center w-full">
+          <LoadingAnimation 
+            finalCategory={gameState.challenge?.category || "Travel"} 
+            onComplete={handleLoadingComplete}
+            isChallengeFetched={!!gameState.challenge}
+          />
         </div>
       ) : (
         <>
@@ -155,8 +139,8 @@ export default function MainContainer() {
                     {!isFinalFiveActive && (
                       <div className="relative">
                         <AnimatePresence mode="wait">
-                          {victoryAnimationStep === 'summary' ? (
-                            <VictoryMessage />
+                          {showGameMessage ? (
+                            <GameMessage {...getGameMessageProps()} />
                           ) : (
                             <FactBubbleGrid />
                           )}
@@ -180,7 +164,10 @@ export default function MainContainer() {
                 {/* Render FinalFiveOptions when active */}
                 {isFinalFiveActive && <FinalFiveOptions />}
                 
-                <GameControls ref={gameControlsRef} />
+                {/* Only show GameControls when the game is not in a summary or loss state */}
+                {!(showGameMessage) && (
+                  <GameControls ref={gameControlsRef} />
+                )}
               </>
             )}
           </main>

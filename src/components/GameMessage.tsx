@@ -1,28 +1,70 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Righteous } from 'next/font/google';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 
-const VictoryMessage: React.FC = () => {
-  const guesses = useGameStore(state => state.gameState.guesses);
-  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
-  const timeRemaining = useGameStore(state => state.timeRemaining);
+const righteous = Righteous({ weight: '400', subsets: ['latin'] });
+
+// Game outcome type to handle all possible scenarios
+export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
+
+interface GameMessageProps {
+  outcome: GameOutcome;
+  correctAnswer: string;
+  numberOfTries?: number;
+  timeSpent: number; // in seconds
+}
+
+const GameMessage: React.FC<GameMessageProps> = ({ 
+  outcome, 
+  correctAnswer, 
+  numberOfTries = 0,
+  timeSpent
+}) => {
   const { colors } = useTheme();
   
-  const correctGuess = guesses.find(g => g.isCorrect);
-  if (!correctGuess) return null;
-  
-  // Number of tries is the index of the correct guess plus 1
-  const numberOfTries = guesses.indexOf(correctGuess) + 1;
-  
-  // Confetti pieces configuration
-  const confettiPieces = Array.from({ length: 20 }).map((_, i) => ({
+  // Confetti pieces configuration - only for win scenarios
+  const showConfetti = outcome === 'standard-win' || outcome === 'final-five-win';
+  const confettiPieces = showConfetti ? Array.from({ length: 20 }).map((_, i) => ({
     id: i,
     size: Math.random() * 8 + 4,
     color: i % 2 === 0 ? `var(--color-${colors.primary})` : `var(--color-${colors.accent})`,
     angle: (i * 18) % 360,
     delay: i * 0.05
-  }));
+  })) : [];
+
+  // Format time spent
+  const minutes = Math.floor(timeSpent / 60);
+  const seconds = timeSpent % 60;
+  const timeFormatted = `${minutes}m ${seconds}s`;
+
+  // Get message text based on outcome
+  const getMessage = () => {
+    switch(outcome) {
+      case 'standard-win':
+        return (
+          <div>
+            You guessed <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
+          </div>
+        );
+      case 'final-five-win':
+        return (
+          <div>
+            Solved <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span> in the{' '}
+            <span className={`font-bold text-${colors.primary} ${righteous.className}`}>FINAL 5</span>!
+          </div>
+        );
+      case 'loss':
+        return (
+          <div>
+            Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span>.
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="w-full flex justify-center items-center relative" style={{ minHeight: '160px' }}>
@@ -32,8 +74,8 @@ const VictoryMessage: React.FC = () => {
         transition={{ duration: 0.6 }}
         className="relative px-4"
       >
-        {/* Confetti animation */}
-        {confettiPieces.map(piece => (
+        {/* Confetti animation - only for win scenarios */}
+        {showConfetti && confettiPieces.map(piece => (
           <motion.div
             key={piece.id}
             className="absolute left-1/2 top-1/2"
@@ -65,19 +107,19 @@ const VictoryMessage: React.FC = () => {
           />
         ))}
         
-        {/* Victory text */}
+        {/* Message text */}
         <motion.div
           className="text-xl sm:text-2xl font-display text-center flex flex-col items-center gap-4"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <div>
-            You guessed <span className={`font-bold text-${colors.primary}`}>{correctGuess.guess}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
-          </div>
+          {getMessage()}
+          
+          {/* Time display - show for all outcomes */}
           <div className="flex items-center gap-3 text-base">
             <span className={`text-${colors.primary}`}>
-              {Math.floor((300 - timeRemaining) / 60)}m {(300 - timeRemaining) % 60}s
+              {timeFormatted}
             </span>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -100,4 +142,4 @@ const VictoryMessage: React.FC = () => {
   );
 };
 
-export default VictoryMessage; 
+export default GameMessage; 

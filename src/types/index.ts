@@ -134,6 +134,7 @@ export interface UserGuess {
   guess: string;
   isCorrect: boolean;
   timestamp: Date;
+  isFinalFiveGuess?: boolean;
 }
 
 export interface UserProgress {

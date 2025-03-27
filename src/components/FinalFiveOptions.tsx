@@ -16,8 +16,10 @@ export default function FinalFiveOptions() {
     gameState: { finalFiveOptions, isGameOver, guesses, challenge },
     finalFiveTimeRemaining,
     isFinalFiveActive,
+    gameOutcome,
     decrementFinalFiveTimer,
-    selectFinalFiveOption
+    selectFinalFiveOption,
+    closeFinalFive
   } = useGameStore();
   
   const { colors } = useTheme();
@@ -95,7 +97,8 @@ export default function FinalFiveOptions() {
               ...state.gameState,
               isGameOver: true
             },
-            finalFiveTimeRemaining: 0
+            finalFiveTimeRemaining: 0,
+            gameOutcome: 'loss'
           }));
         }
       }, 1000);
@@ -139,7 +142,7 @@ export default function FinalFiveOptions() {
       return "Select the correct answer";
     }
     
-    const hasWon = guesses.some((g: UserGuess) => g.isCorrect);
+    const hasWon = gameOutcome === 'final-five-win';
     return hasWon 
       ? "Correct! You found the answer!"
       : "Incorrect. The correct answer is highlighted.";
@@ -275,11 +278,32 @@ export default function FinalFiveOptions() {
             <Timer 
               seconds={finalFiveTimeRemaining} 
               isGameOver={isGameOver} 
-              hasWon={guesses.some((g: UserGuess) => g.isCorrect)}
+              hasWon={gameOutcome === 'final-five-win'}
               isSquare={true} 
             />
           </motion.div>
         </div>
+
+        {/* Close button - only visible after game is over */}
+        {isGameOver && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+            className="flex justify-center mt-6"
+          >
+            <button
+              className="px-8 py-3 rounded-full font-display font-bold text-white transition-all"
+              style={{ 
+                backgroundColor: themeColor,
+                boxShadow: `0 4px 12px rgba(0, 0, 0, 0.15)`
+              }}
+              onClick={closeFinalFive}
+            >
+              Continue
+            </button>
+          </motion.div>
+        )}
       </div>
     </div>
   );

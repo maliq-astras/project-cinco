@@ -9,6 +9,7 @@ import {
   shouldShowFinalFive
 } from '../helpers/gameLogic';
 import { getFactBubblePosition } from '../helpers/uiHelpers';
+import { GameOutcome } from '../components/GameMessage';
 
 interface GameStore {
   // Core game state
@@ -37,6 +38,7 @@ interface GameStore {
   // Victory animation states
   isVictoryAnimationActive: boolean;
   victoryAnimationStep: 'bubbles' | 'summary' | 'cards' | null;
+  gameOutcome: GameOutcome | null;
   
   // Computed values should not be in the store interface
   
@@ -58,6 +60,7 @@ interface GameStore {
   submitGuess: (guess: string) => Promise<void>;
   triggerFinalFive: () => Promise<void>;
   selectFinalFiveOption: (option: string) => Promise<void>;
+  closeFinalFive: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -87,6 +90,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Victory animation states
   isVictoryAnimationActive: false,
   victoryAnimationStep: null,
+  gameOutcome: null,
   
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
@@ -314,7 +318,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           return {
             ...newState,
             isVictoryAnimationActive: true,
-            victoryAnimationStep: 'bubbles'
+            victoryAnimationStep: 'bubbles',
+            gameOutcome: 'standard-win'
           };
         }
 
@@ -348,6 +353,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
       console.log("fetchFinalFiveOptions response:", options);
       
+      // If the Final Five is triggered by timeout (no more time)
+      const isTimeExpired = get().timeRemaining <= 0;
+      
       set(state => ({
         gameState: {
           ...state.gameState,
@@ -355,7 +363,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         },
         isFinalFiveActive: true,
         finalFiveTimeRemaining: 55, // Reset to 55 seconds
-        isTimerActive: false // Stop the main timer
+        isTimerActive: false, // Stop the main timer
+        gameOutcome: isTimeExpired ? 'loss' : state.gameOutcome // Set 'loss' if time expired
       }));
     } catch (error) {
       console.error('Error fetching final five options:', error);
@@ -376,18 +385,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const newGuess: UserGuess = {
         guess: option,
         isCorrect: data.isCorrect,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isFinalFiveGuess: true
       };
       console.log(`Adding new guess:`, newGuess);
       
-      // Set the game state to game over but keep Final Five active permanently
-      // This allows animations to play and the user to see the result
+      // Set the game state to game over and update gameOutcome
       set(state => ({
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
           isGameOver: true
-        }
+        },
+        gameOutcome: data.isCorrect ? 'final-five-win' : 'loss',
+        victoryAnimationStep: 'summary', // Always set to summary for both win and loss
+        isVictoryAnimationActive: data.isCorrect
       }));
       
       // Log the updated guesses
@@ -400,12 +412,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
       } else {
         console.log('No correct answer found in guesses yet');
       }
-      
-      // We're not automatically closing the Final Five modal anymore
-      // The user will need to navigate away or refresh to exit
-      
     } catch (error) {
       console.error('Error verifying final guess:', error);
     }
+  },
+  
+  closeFinalFive: () => {
+    set(state => ({
+      isFinalFiveActive: false,
+      victoryAnimationStep: state.gameOutcome !== null ? 'summary' : null,
+      isVictoryAnimationActive: state.gameOutcome === 'final-five-win'
+    }));
   }
 })); 

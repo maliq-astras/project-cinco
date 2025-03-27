@@ -67,8 +67,8 @@ export function checkIsGameOver(guesses: UserGuess[]): boolean {
 }
 
 export function shouldShowFinalFive(guesses: UserGuess[]): boolean {
-  // Check if we've reached the maximum number of wrong guesses
-  const wrongGuesses = guesses.filter(g => !g.isCorrect);
+  // Check if we've reached the maximum number of wrong guesses (excluding Final Five guesses)
+  const wrongGuesses = guesses.filter(g => !g.isCorrect && !g.isFinalFiveGuess);
   return wrongGuesses.length >= MAX_WRONG_GUESSES;
 }
 

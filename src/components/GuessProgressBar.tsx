@@ -12,8 +12,8 @@ export default function GuessProgressBar() {
   const maxGuesses = 5; // Set a constant value or use one from config if available
   const { colors } = useTheme();
   
-  // Filter to only wrong guesses
-  const wrongGuesses = guesses.filter(guess => !guess.isCorrect);
+  // Filter to only wrong guesses (excluding Final Five guesses)
+  const wrongGuesses = guesses.filter(guess => !guess.isCorrect && !guess.isFinalFiveGuess);
   const wrongGuessCount = wrongGuesses.length;
   
   // State to track animation
