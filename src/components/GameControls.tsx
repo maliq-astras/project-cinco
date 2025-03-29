@@ -109,9 +109,11 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
           </div>
         </div>
         
-        <div className="w-full border-t border-gray-200 pt-2 pb-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
+        <div className="w-full border-t border-gray-200 px-2 pt-3 pb-2 sm:px-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
           <div className="flex w-full max-w-md gap-2 mx-auto">
-            <div className="flex-1 flex flex-col">
+            <Timer seconds={timeRemaining} />
+
+            <div className="flex-1 flex flex-col justify-between">
               <div className="relative">
                 <form onSubmit={handleSubmit}>
                   <input
@@ -126,12 +128,30 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                 </form>
               </div>
               
-              <div className="mt-1 sm:mt-2">
+              <div className="mt-1">
                 <GuessProgressBar />
               </div>
             </div>
-            
-            <Timer seconds={timeRemaining} />
+
+            <div className="flex flex-col justify-between h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px]">
+              <button 
+                className="flex items-center justify-center h-[32px] sm:h-[36px] hover:bg-gray-50 transition-colors"
+                style={{ color: `var(--color-${colors.primary})` }}
+              >
+                <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              <div className="h-[2px]" style={{ backgroundColor: `var(--color-${colors.primary}40)` }} />
+              <button 
+                className="flex items-center justify-center h-[32px] sm:h-[36px] hover:bg-gray-50 transition-colors"
+                style={{ color: `var(--color-${colors.primary})` }}
+              >
+                <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

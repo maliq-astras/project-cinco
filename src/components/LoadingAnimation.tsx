@@ -285,6 +285,19 @@ export default function LoadingAnimation({
             </motion.div>
           )}
         </div>
+
+        {/* Skip button - only shown when challenge is fetched */}
+        {isChallengeFetched && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            onClick={onComplete}
+            className={`absolute bottom-4 sm:bottom-8 right-4 sm:right-8 text-black ${righteous.className} text-xl sm:text-2xl md:text-3xl hover:opacity-70 transition-opacity px-2 py-1`}
+          >
+            SKIP &gt;&gt;
+          </motion.button>
+        )}
       </div>
     </div>
   );
