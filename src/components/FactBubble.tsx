@@ -13,6 +13,7 @@ interface FactBubbleProps {
   className?: string;
   style?: React.CSSProperties;
   category?: string;
+  id?: string;
 }
 
 export default function FactBubble({ 
@@ -21,7 +22,8 @@ export default function FactBubble({
   'data-fact-index': factIndex,
   className = '',
   style = {},
-  category = 'countries'
+  category = 'countries',
+  id
 }: FactBubbleProps) {
   const revealFact = useGameStore(state => state.revealFact);
   const setHoveredFact = useGameStore(state => state.setHoveredFact);

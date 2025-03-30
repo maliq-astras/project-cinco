@@ -51,6 +51,7 @@ const FactsArea: React.FC = () => {
 
   return (
     <div 
+      id="facts-area"
       className="w-full max-w-4xl rounded-lg p-2 sm:p-3 md:p-4 mb-2 sm:mb-4 relative"
       style={{ height: `${getResponsiveHeight()}px` }}
     >

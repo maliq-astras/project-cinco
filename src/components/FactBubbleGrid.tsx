@@ -51,6 +51,7 @@ const FactBubbleGrid: React.FC = () => {
   return (
     <div className="w-full flex justify-center">
       <div 
+        id="bubble-grid"
         className="grid justify-items-center"
         style={{ 
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -91,6 +92,7 @@ const FactBubbleGrid: React.FC = () => {
             <AnimatePresence mode="popLayout" key={`slot-${slotIndex}`}>
               <motion.div
                 key={`fact-${factIndex}`}
+                id={slotIndex === 0 ? 'bubble-0' : undefined}
                 layout
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ 

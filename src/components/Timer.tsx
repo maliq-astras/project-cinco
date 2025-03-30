@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import { useGameStore } from '../store/gameStore';
 
 interface TimerProps {
   seconds: number;
@@ -17,15 +18,16 @@ interface TimerProps {
  * A reusable timer component that displays time in M:SS format
  * with consistent styling throughout the app
  */
-export default function Timer({ 
+const Timer: React.FC<TimerProps> = ({ 
   seconds, 
   isGameOver = false, 
   hasWon = false,
   isCompact = false,
   isSquare = false,
   className = ''
-}: TimerProps) {
+}) => {
   const { colors } = useTheme();
+  const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
 
   // Format the timer as M:SS
   const formatTime = (seconds: number) => {
@@ -40,9 +42,8 @@ export default function Timer({
       return {
         scale: [1, 1.1, 1],
         transition: {
-          duration: 0.5,
+          duration: 1,
           repeat: Infinity,
-          repeatType: 'reverse' as const
         }
       };
     }
@@ -97,17 +98,24 @@ export default function Timer({
   };
   
   return (
-    <motion.div 
-      className={timerClasses}
-      style={timerStyle}
-      animate={{
-        ...getTimerAnimation(),
-        boxShadow: seconds <= 10 && !isGameOver
-          ? `0 0 15px rgba(var(--color-${colors.primary}-rgb), 0.4)`
-          : 'none'
-      }}
+    <div 
+      id="game-timer"
+      className={`flex items-center justify-center h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px] ${isVictoryAnimationActive ? 'opacity-0' : ''}`}
     >
-      {formatTime(seconds)}
-    </motion.div>
+      <motion.div 
+        className={timerClasses}
+        style={timerStyle}
+        animate={{
+          ...getTimerAnimation(),
+          boxShadow: seconds <= 10 && !isGameOver
+            ? `0 0 15px rgba(var(--color-${colors.primary}-rgb), 0.4)`
+            : 'none'
+        }}
+      >
+        {formatTime(seconds)}
+      </motion.div>
+    </div>
   );
-} 
+};
+
+export default Timer; 
