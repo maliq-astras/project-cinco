@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
@@ -26,6 +26,40 @@ export default function FinalFiveOptions() {
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<boolean[]>([false, false, false, false, false]);
+  const [allCardsFlipped, setAllCardsFlipped] = useState(false);
+  const [startTimer, setStartTimer] = useState(false);
+  
+  // Sequentially flip each card when component loads
+  useEffect(() => {
+    const flipCardSequentially = (index: number) => {
+      if (index >= 5) {
+        // All cards have been flipped
+        setAllCardsFlipped(true);
+        // Start the timer after all cards have flipped
+        setTimeout(() => {
+          setStartTimer(true);
+        }, 500);
+        return;
+      }
+      
+      setTimeout(() => {
+        setFlippedCards(prev => {
+          const newFlipped = [...prev];
+          newFlipped[index] = true;
+          return newFlipped;
+        });
+        
+        // Flip the next card
+        flipCardSequentially(index + 1);
+      }, 500); // Slower flip animation (was 300ms)
+    };
+    
+    // Start the flip sequence
+    if (isFinalFiveActive && !allCardsFlipped) {
+      flipCardSequentially(0);
+    }
+  }, [isFinalFiveActive, allCardsFlipped]);
   
   // Check all options against the API when game is over
   useEffect(() => {
@@ -76,18 +110,21 @@ export default function FinalFiveOptions() {
   // Start the animation sequence after we've found the correct answer
   useEffect(() => {
     if (isGameOver && correctAnswer) {
-      // Delay to allow the correct answer styling to be visible before fading out others
+      // First delay to allow the correct answer styling to be visible
       const timer = setTimeout(() => {
+        // Fade out non-relevant cards
         setAnimationComplete(true);
+        
+        // Only after everything has faded, show the continue button
       }, 1500);
       
       return () => clearTimeout(timer);
     }
   }, [isGameOver, correctAnswer]);
   
-  // Timer logic
+  // Timer logic - only start when all cards are flipped and startTimer is true
   useEffect(() => {
-    if (isFinalFiveActive && finalFiveTimeRemaining > 0 && !isGameOver) {
+    if (isFinalFiveActive && finalFiveTimeRemaining > 0 && !isGameOver && startTimer) {
       const timer = setInterval(() => {
         decrementFinalFiveTimer();
         
@@ -105,7 +142,22 @@ export default function FinalFiveOptions() {
       
       return () => clearInterval(timer);
     }
-  }, [isFinalFiveActive, finalFiveTimeRemaining, isGameOver, decrementFinalFiveTimer]);
+  }, [isFinalFiveActive, finalFiveTimeRemaining, isGameOver, decrementFinalFiveTimer, startTimer]);
+  
+  // State for controlling the Continue button visibility
+  const [showContinueButton, setShowContinueButton] = useState(false);
+  
+  // Show continue button after animations complete
+  useEffect(() => {
+    if (animationComplete && isGameOver) {
+      // Delay showing the continue button until after fade animations
+      const timer = setTimeout(() => {
+        setShowContinueButton(true);
+      }, 600); // Wait for fade animations to complete
+      
+      return () => clearTimeout(timer);
+    }
+  }, [animationComplete, isGameOver]);
   
   // Don't render if not active or no options
   if (!finalFiveOptions?.length || !isFinalFiveActive) {
@@ -134,6 +186,10 @@ export default function FinalFiveOptions() {
   
   // Message shown to user
   const getMessage = () => {
+    if (!allCardsFlipped) {
+      return "Cards are being revealed...";
+    }
+    
     if (loading) {
       return "Determining the correct answer...";
     }
@@ -160,14 +216,14 @@ export default function FinalFiveOptions() {
         exit={{ y: "100%" }}
         transition={{ 
           type: "tween", 
-          duration: 0.4,
-          ease: [0.16, 1, 0.3, 1], // Custom ease that is more CPU-friendly than spring
-          willChange: "transform" // Hint to browser to optimize the animation
+          duration: 0.3,
+          ease: [0.16, 1, 0.3, 1],
+          willChange: "transform"
         }}
         style={{ 
-          backfaceVisibility: "hidden", // Helps with performance
+          backfaceVisibility: "hidden",
           WebkitBackfaceVisibility: "hidden",
-          transform: "translateZ(0)", // Force GPU acceleration
+          transform: "translateZ(0)",
           WebkitTransform: "translateZ(0)" 
         }}
       >
@@ -187,143 +243,185 @@ export default function FinalFiveOptions() {
           {getMessage()}
         </p>
         
-        {/* Grid of options - switches to vertical stack on mobile */}
-        <div className="flex flex-col md:grid md:grid-cols-3 md:grid-rows-2 gap-3 mb-4">
+        {/* Grid of cards - 3-2 layout with timer in the bottom center */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto max-w-[500px]">
           {options.map((option, index) => {
-            // Style variables
-            let backgroundColor = "white";
-            let textColor = "black";
-            let borderWidth = "2px";
-            let scale = 1;
-            let opacity = 1;
+            const isFlipped = flippedCards[index];
             
-            // Set styles based on state
-            if (isGameOver) {
-              if (isCorrectOption(option)) {
-                backgroundColor = themeColor;
-                textColor = "white";
-                borderWidth = "3px";
-                scale = 1.05; // Reduced scale for better proportions
-                opacity = 1;
-                console.log(`Styling ${option} as correct answer`);
-              } else if (isIncorrectGuess(option)) {
-                backgroundColor = "#f1f1f1";
-                textColor = "#888888";
-                opacity = animationComplete ? 0.75 : 1;
-                console.log(`Styling ${option} as wrong guess`);
-              } else {
-                backgroundColor = "#f8f8f8";
-                textColor = "#aaaaaa";
-                opacity = animationComplete ? 0 : 0.6;
-              }
-            }
+            // Front/back styling
+            let frontBg = `var(--color-${colors.primary})`;
+            let backBg = isGameOver && isCorrectOption(option) ? frontBg : "white";
+            let textColor = isGameOver && isCorrectOption(option) ? "white" : "black";
             
             return (
-              <motion.button
-                key={`option-${index}`}
-                className="flex items-center justify-center p-4 rounded-lg text-center relative md:aspect-square font-display"
-                style={{
-                  backgroundColor,
-                  color: textColor,
-                  borderColor: themeColor,
-                  borderWidth,
-                  borderStyle: "solid",
-                  minHeight: "80px",
-                  boxShadow: isGameOver && isCorrectOption(option) 
-                    ? `0 0 15px var(--color-${colors.primary}80)`
-                    : "none",
-                  pointerEvents: isGameOver ? 'none' : 'auto'
-                }}
+              <motion.div 
+                key={`option-${index}`} 
+                className="relative aspect-square w-full perspective-1000"
                 animate={{ 
-                  scale: isGameOver && isCorrectOption(option) ? scale : 1,
-                  opacity: opacity,
-                  y: isGameOver && isCorrectOption(option) ? -5 : 0 // Reduced lift
+                  opacity: isGameOver && animationComplete && !isCorrectOption(option) && !isIncorrectGuess(option) 
+                    ? 0 
+                    : isGameOver && animationComplete && isIncorrectGuess(option)
+                    ? 0.75
+                    : 1
                 }}
-                transition={{ 
-                  duration: 0.4,
-                  scale: { type: "spring", stiffness: 400, damping: 15 }
+                transition={{ duration: 0.5 }}
+                style={{ 
+                  perspective: "1000px",
+                  minHeight: "100px",
+                  maxWidth: "160px", 
+                  margin: "0 auto",
+                  pointerEvents: !isFlipped || isGameOver ? "none" : "auto"
                 }}
-                onClick={() => !isGameOver && selectFinalFiveOption(option)}
-                whileHover={!isGameOver ? { scale: 1.02 } : {}}
-                whileTap={!isGameOver ? { scale: 0.98 } : {}}
               >
-                <span className="text-lg md:text-xl">{option}</span>
-                
-                {/* X overlay for incorrect guesses */}
-                {isGameOver && isIncorrectGuess(option) && (
+                <motion.div
+                  className="w-full h-full relative preserve-3d"
+                  initial={{ rotateY: 0 }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                  transition={{
+                    type: "spring", 
+                    stiffness: 200, // Less stiff for slower animation
+                    damping: 25,   // More damping for slower animation
+                    duration: 0.8   // Longer duration
+                  }}
+                  style={{ 
+                    transformStyle: "preserve-3d",
+                    WebkitTransformStyle: "preserve-3d"
+                  }}
+                >
+                  {/* Front of card - Number 5 */}
                   <div 
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                    aria-hidden="true"
+                    className={`absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md ${righteous.className}`}
+                    style={{ 
+                      backgroundColor: frontBg,
+                      color: "white",
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      fontSize: "3.5rem",
+                      fontWeight: "bold",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+                    }}
                   >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 0.9, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                      style={{ 
-                        width: "70%", // Slightly smaller X
-                        height: "70%",
-                        maxWidth: "60px",
-                        maxHeight: "60px"
-                      }}
-                    >
-                      <svg 
-                        viewBox="0 0 100 100" 
-                        xmlns="http://www.w3.org/2000/svg"
-                        style={{
-                          width: "100%",
-                          height: "100%"
-                        }}
-                      >
-                        <g stroke={themeColor} strokeWidth="12" strokeLinecap="round">
-                          <path d="M25,25 L75,75" />
-                          <path d="M75,25 L25,75" />
-                        </g>
-                      </svg>
-                    </motion.div>
+                    5
                   </div>
-                )}
-              </motion.button>
+                  
+                  {/* Back of card - Option text */}
+                  <div 
+                    className="absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md font-display border-2"
+                    style={{ 
+                      backgroundColor: backBg,
+                      color: textColor,
+                      borderColor: themeColor,
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      transform: "rotateY(180deg)",
+                      WebkitTransform: "rotateY(180deg)",
+                      boxShadow: isGameOver && isCorrectOption(option) 
+                        ? `0 0 15px var(--color-${colors.primary}80)`
+                        : "0 4px 8px rgba(0,0,0,0.1)",
+                      padding: "0.5rem"
+                    }}
+                    onClick={() => !isGameOver && selectFinalFiveOption(option)}
+                  >
+                    <span className="text-lg md:text-xl text-center">
+                      {option}
+                    </span>
+                    
+                    {/* X overlay for incorrect guesses */}
+                    {isGameOver && isIncorrectGuess(option) && (
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                        aria-hidden="true"
+                      >
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 0.9, scale: 1 }}
+                          transition={{ duration: 0.3, delay: 0.2 }}
+                          style={{ 
+                            width: "70%",
+                            height: "70%",
+                            maxWidth: "60px",
+                            maxHeight: "60px"
+                          }}
+                        >
+                          <svg 
+                            viewBox="0 0 100 100" 
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{
+                              width: "100%",
+                              height: "100%"
+                            }}
+                          >
+                            <g stroke={themeColor} strokeWidth="12" strokeLinecap="round">
+                              <path d="M25,25 L75,75" />
+                              <path d="M75,25 L25,75" />
+                            </g>
+                          </svg>
+                        </motion.div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </motion.div>
             );
           })}
           
-          {/* Timer */}
-          <motion.div 
-            className="flex items-center justify-center bg-gray-50 rounded-lg md:aspect-square"
-            style={{
-              minHeight: "80px" // Match option height on mobile
-            }}
-            animate={{ opacity: animationComplete ? 0 : 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Timer 
-              seconds={finalFiveTimeRemaining} 
-              isGameOver={isGameOver} 
-              hasWon={gameOutcome === 'final-five-win'}
-              isSquare={true} 
-            />
-          </motion.div>
-        </div>
-
-        {/* Close button - only visible after game is over */}
-        {isGameOver && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
-            className="flex justify-center mt-6 pb-4 md:pb-0"
-          >
-            <button
-              className="px-8 py-3 rounded-full font-display font-bold text-white transition-all"
-              style={{ 
-                backgroundColor: themeColor,
-                boxShadow: `0 4px 12px rgba(0, 0, 0, 0.15)`
+          {/* Timer - as part of the grid */}
+          {allCardsFlipped && (
+            <motion.div 
+              className="relative aspect-square w-full flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ 
+                opacity: isGameOver && animationComplete ? 0 : 1,
+                scale: 1 
               }}
-              onClick={closeFinalFive}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+              style={{ 
+                minHeight: "100px",
+                maxWidth: "160px",
+                margin: "0 auto"
+              }}
             >
-              Continue
-            </button>
-          </motion.div>
-        )}
+              <div 
+                className="w-full h-full rounded-xl flex items-center justify-center shadow-md"
+              >
+                <Timer 
+                  seconds={finalFiveTimeRemaining} 
+                  isGameOver={isGameOver} 
+                  hasWon={gameOutcome === 'final-five-win'}
+                  finalFive={true}
+                />
+              </div>
+            </motion.div>
+          )}
+        </div>
+        
+        {/* Fixed-height container for the continue button to prevent layout shift */}
+        <div className="h-14 relative">
+          {/* Continue button - only visible after animations complete */}
+          <AnimatePresence>
+            {isGameOver && showContinueButton && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-x-0 flex justify-center"
+              >
+                <button
+                  className="px-8 py-3 rounded-full font-display font-bold text-white transition-all"
+                  style={{ 
+                    backgroundColor: themeColor,
+                    boxShadow: `0 4px 12px rgba(0, 0, 0, 0.15)`
+                  }}
+                  onClick={closeFinalFive}
+                >
+                  Continue
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   );

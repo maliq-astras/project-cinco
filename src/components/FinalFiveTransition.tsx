@@ -27,9 +27,9 @@ export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransi
     setIsTransitioning(true);
     
     try {
-      // First fetch the options (can happen in background)
+      // Get options first (can take some time)
       await triggerFinalFive();
-      // Then start the Final Five
+      // Then transition to Final Five with no delay
       onStart();
     } catch (error) {
       console.error("Error transitioning to Final Five:", error);
@@ -57,11 +57,8 @@ export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransi
         // Hide countdown immediately to avoid animation conflicts
         setShowCountdown(false);
         
-        // Start transition with a small delay
-        // This gives time for the countdown to animate out
-        setTimeout(() => {
-          handleStart();
-        }, 400);
+        // Start transition immediately instead of with a delay
+        handleStart();
         return;
       }
       

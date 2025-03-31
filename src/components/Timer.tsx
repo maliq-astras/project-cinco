@@ -11,6 +11,7 @@ interface TimerProps {
   hasWon?: boolean;
   isCompact?: boolean;
   isSquare?: boolean; // Square timer used in FinalFiveOptions
+  finalFive?: boolean; // Special styling for Final Five screen
   className?: string;
 }
 
@@ -24,6 +25,7 @@ const Timer: React.FC<TimerProps> = ({
   hasWon = false,
   isCompact = false,
   isSquare = false,
+  finalFive = false,
   className = ''
 }) => {
   const { colors } = useTheme();
@@ -80,11 +82,14 @@ const Timer: React.FC<TimerProps> = ({
   // Base classes needed for layout
   const baseClasses = `font-iceberg flex items-center justify-center`;
   
-  // Different styling for square vs regular timer
+  // Different styling for different timer types
   let timerClasses;
   
-  if (isSquare) {
-    // Square timer with border - used in FinalFiveOptions
+  if (finalFive) {
+    // Final Five timer - square with border and semi-transparent background 
+    timerClasses = `${baseClasses} ${bgClass} ${className} aspect-square w-full h-full text-3xl rounded-lg border-2`;
+  } else if (isSquare) {
+    // Square timer with border - used in other places
     timerClasses = `${baseClasses} ${bgClass} ${className} aspect-square w-full h-full max-w-[150px] max-h-[150px] text-3xl rounded-lg border-2`;
   } else {
     // Timer used in GameControls
@@ -96,6 +101,15 @@ const Timer: React.FC<TimerProps> = ({
     borderColor: `var(--color-${colors.primary})`,
     color: `var(--color-${colors.primary})`
   };
+  
+  // For Final Five, we need to adjust the styling while keeping the border
+  if (finalFive) {
+    return (
+      <div className={timerClasses} style={timerStyle}>
+        {formatTime(seconds)}
+      </div>
+    );
+  }
   
   return (
     <div 
