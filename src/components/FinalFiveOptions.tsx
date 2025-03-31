@@ -152,8 +152,28 @@ export default function FinalFiveOptions() {
   const themeColor = `var(--color-${colors.primary})`;
   
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/75 backdrop-blur-sm">
-      <div className="w-full max-w-[580px] bg-white rounded-xl shadow-2xl p-4 mx-4 md:p-6">
+    <div className="fixed inset-0 z-40 flex md:items-center justify-center bg-black/75 backdrop-blur-sm">
+      <motion.div 
+        className="w-full max-w-[580px] bg-white md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto"
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ 
+          type: "tween", 
+          duration: 0.4,
+          ease: [0.16, 1, 0.3, 1], // Custom ease that is more CPU-friendly than spring
+          willChange: "transform" // Hint to browser to optimize the animation
+        }}
+        style={{ 
+          backfaceVisibility: "hidden", // Helps with performance
+          WebkitBackfaceVisibility: "hidden",
+          transform: "translateZ(0)", // Force GPU acceleration
+          WebkitTransform: "translateZ(0)" 
+        }}
+      >
+        {/* Small handle for mobile - only visible on small screens */}
+        <div className="w-16 h-1 bg-gray-300 rounded-full mx-auto mb-4 md:hidden"></div>
+        
         {/* Header */}
         <h2 
           className={`text-4xl font-bold text-center mb-6 ${righteous.className}`}
@@ -163,7 +183,7 @@ export default function FinalFiveOptions() {
         </h2>
         
         {/* Message */}
-        <p className="text-center mb-6 text-gray-700 font-display">
+        <p className="text-left mb-6 text-gray-700 font-display">
           {getMessage()}
         </p>
         
@@ -290,7 +310,7 @@ export default function FinalFiveOptions() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.6 }}
-            className="flex justify-center mt-6"
+            className="flex justify-center mt-6 pb-4 md:pb-0"
           >
             <button
               className="px-8 py-3 rounded-full font-display font-bold text-white transition-all"
@@ -304,7 +324,7 @@ export default function FinalFiveOptions() {
             </button>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 } 

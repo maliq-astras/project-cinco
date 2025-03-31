@@ -24,6 +24,8 @@ interface GameStore {
   // Final Five specific state
   finalFiveTimeRemaining: number;
   isFinalFiveActive: boolean;
+  showFinalFiveTransition: boolean;
+  finalFiveTransitionReason: 'time' | 'guesses' | null;
   
   // UI and animation states
   hoveredFact: number | null;
@@ -61,6 +63,7 @@ interface GameStore {
   triggerFinalFive: () => Promise<void>;
   selectFinalFiveOption: (option: string) => Promise<void>;
   closeFinalFive: () => void;
+  startFinalFive: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -76,6 +79,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Final Five specific state
   finalFiveTimeRemaining: 55, // 55 seconds for Final Five
   isFinalFiveActive: false,
+  showFinalFiveTransition: false,
+  finalFiveTransitionReason: null,
   
   // UI and animation states
   hoveredFact: null,
@@ -97,10 +102,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   decrementTimer: () => {
     const { timeRemaining, triggerFinalFive, isTimerActive } = get();
     
-    // Only decrement if timer is active
     if (isTimerActive) {
       if (timeRemaining <= 1) {
-        set({ timeRemaining: 0 });
+        set({ 
+          timeRemaining: 0,
+          showFinalFiveTransition: true,
+          finalFiveTransitionReason: 'time'
+        });
         triggerFinalFive();
       } else {
         set({ timeRemaining: timeRemaining - 1 });
@@ -290,8 +298,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { gameState, triggerFinalFive, hasSeenClue, canMakeGuess } = get();
     
     if (!gameState.challenge) return;
-    if (!hasSeenClue) return; // Can't guess without seeing a clue
-    if (!canMakeGuess) return; // Can't guess twice without revealing a new fact
+    if (!hasSeenClue) return;
+    if (!canMakeGuess) return;
     
     try {
       const data = await verifyGuessAPI(gameState.challenge.challengeId, guess);
@@ -324,18 +332,25 @@ export const useGameStore = create<GameStore>((set, get) => ({
         }
 
         if (shouldShowFinalFive(newGuesses)) {
-          // Trigger final five in the next tick to allow state to update first
-          setTimeout(() => triggerFinalFive(), 0);
+          // First return state without showing the transition
+          // to allow the sparks animation to complete
+          setTimeout(() => {
+            set({
+              showFinalFiveTransition: true,
+              finalFiveTransitionReason: 'guesses'
+            });
+          }, 1500); // 1.5 seconds delay to show the sparks animation
+          
+          return newState;
         }
 
         return newState;
       });
 
       if (data.isCorrect) {
-        // Schedule the animation sequence
         setTimeout(() => {
           set({ victoryAnimationStep: 'summary' });
-        }, 1500); // After bubbles pop
+        }, 1500);
       }
     } catch (error) {
       console.error('Error verifying guess:', error);
@@ -345,26 +360,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
   triggerFinalFive: async () => {
     const { gameState } = get();
     
-    console.log("triggerFinalFive - Current challenge:", gameState.challenge);
-    
     if (!gameState.challenge) return;
     
     try {
       const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
-      console.log("fetchFinalFiveOptions response:", options);
-      
-      // If the Final Five is triggered by timeout (no more time)
-      const isTimeExpired = get().timeRemaining <= 0;
       
       set(state => ({
         gameState: {
           ...state.gameState,
           finalFiveOptions: options
-        },
-        isFinalFiveActive: true,
-        finalFiveTimeRemaining: 55, // Reset to 55 seconds
-        isTimerActive: false, // Stop the main timer
-        gameOutcome: isTimeExpired ? 'loss' : state.gameOutcome // Set 'loss' if time expired
+        }
       }));
     } catch (error) {
       console.error('Error fetching final five options:', error);
@@ -423,5 +428,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
       victoryAnimationStep: state.gameOutcome !== null ? 'summary' : null,
       isVictoryAnimationActive: state.gameOutcome === 'final-five-win'
     }));
+  },
+  
+  startFinalFive: () => {
+    set({
+      showFinalFiveTransition: false,
+      isFinalFiveActive: true,
+      finalFiveTimeRemaining: 55,
+      isTimerActive: false
+    });
   }
 })); 

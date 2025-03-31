@@ -32,6 +32,7 @@ export default function FactCard({
     isFlipped, 
     isDrawn, 
     isClosing, 
+    canClose,
     returnPosition, 
     handleClose, 
     handleAnimationComplete,
@@ -62,21 +63,33 @@ export default function FactCard({
           onAnimationComplete={handleAnimationComplete}
         >
           {/* Close button - only visible when card is flipped to front */}
-          {isFlipped && !isClosing && (
+          {isFlipped && !isClosing && canClose && (
             <motion.button
               onClick={handleClose}
               className={factCardStyles.closeButton}
               aria-label="Close fact card"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.2 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1]
+              }}
             >
-              <svg viewBox="0 0 100 100" className={factCardStyles.closeButtonIcon}>
+              <motion.svg 
+                viewBox="0 0 100 100" 
+                className={factCardStyles.closeButtonIcon}
+                initial={{ rotate: -90 }}
+                animate={{ rotate: 0 }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.4, 0, 0.2, 1]
+                }}
+              >
                 <g stroke={`var(--color-${colors.primary})`} strokeWidth="12" strokeLinecap="round">
                   <path d="M30,30 L70,70" />
                   <path d="M70,30 L30,70" />
                 </g>
-              </svg>
+              </motion.svg>
             </motion.button>
           )}
           

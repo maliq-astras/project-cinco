@@ -35,9 +35,9 @@ const FactBubbleGrid: React.FC = () => {
 
   // Calculate fixed height for different screen sizes - to prevent layout shifts
   const getContainerHeight = () => {
-    if (windowWidth < 380) return 155; // Fixed height for small mobile
-    if (windowWidth < 480) return 165; // Fixed height for medium mobile
-    if (windowWidth < 640) return 175; // Fixed height for large mobile
+    if (windowWidth < 380) return 140; // Fixed height for small mobile
+    if (windowWidth < 480) return 150; // Fixed height for medium mobile
+    if (windowWidth < 640) return 160; // Fixed height for large mobile
     // For larger screens, dynamically calculate based on bubble and gap
     return rows * bubbleSize + gapSize * (rows - 1);
   };
@@ -49,7 +49,7 @@ const FactBubbleGrid: React.FC = () => {
   );
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center" style={{ marginTop: "0.5rem" }}>
       <div 
         id="bubble-grid"
         className="grid justify-items-center"

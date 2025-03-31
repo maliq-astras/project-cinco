@@ -15,6 +15,8 @@ import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
 import { AnimatePresence } from 'framer-motion';
 import Navigation from './Navigation';
+import FinalFiveTransition from './FinalFiveTransition';
+import { motion } from 'framer-motion';
 
 export default function MainContainer() {
   // Use individual selectors instead to avoid type issues
@@ -29,6 +31,9 @@ export default function MainContainer() {
   const gameOutcome = useGameStore(state => state.gameOutcome);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const { colors } = useTheme();
+  const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
+  const finalFiveTransitionReason = useGameStore(state => state.finalFiveTransitionReason);
+  const startFinalFive = useGameStore(state => state.startFinalFive);
 
   // We need just one state to track if we're done with all animations and ready to show the game
   const [loadingComplete, setLoadingComplete] = useState(false);
@@ -119,57 +124,117 @@ export default function MainContainer() {
           <Navigation />
           <Header />
 
-          <main className="w-full flex-1 flex flex-col items-center justify-between py-2 sm:py-3">
+          <main className="w-full flex-1 flex flex-col items-center justify-between">
             {gameState.challenge && (
               <>
-                <FactsArea />
-                
-                {/* Center line with category context */}
-                <div className="w-full relative my-1 sm:my-2 flex-shrink-0">
-                  {/* Line is full width of the container */}
-                  <div className="absolute inset-x-0 h-1" style={{ backgroundColor: `var(--color-${colors.primary}30)` }}></div>
-                  <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-center">
-                    <div className="px-4 py-1 rounded-lg relative z-10">
-                      <BubbleContextArea />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="w-full flex justify-center">
-                  <div className="w-full max-w-lg mb-1 sm:mb-2 py-1 sm:pt-3">
-                    {/* Hide FactBubbleGrid in Final Five mode */}
-                    {!isFinalFiveActive && (
-                      <div className="relative">
-                        <AnimatePresence mode="wait">
-                          {showGameMessage ? (
-                            <GameMessage {...getGameMessageProps()} />
-                          ) : (
-                            <FactBubbleGrid />
-                          )}
-                        </AnimatePresence>
+                {/* Final Five Transition Container - Absolute overlay */}
+                <AnimatePresence>
+                  {showFinalFiveTransition && (
+                    <motion.div
+                      key="final-five-transition"
+                      className="absolute inset-0 flex items-center justify-center z-10"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.8, delay: 2.4 }}
+                    >
+                      <FinalFiveTransition 
+                        reason={finalFiveTransitionReason || 'guesses'} 
+                        onStart={startFinalFive}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Main game content - Full structure with correct spacing */}
+                <AnimatePresence>
+                  {!showFinalFiveTransition && (
+                    <motion.div
+                      key="game-content"
+                      className="w-full flex-1 flex flex-col items-center pt-1 pb-2 sm:py-2 gap-1"
+                      initial={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      {/* Top section */}
+                      <div className="w-full flex justify-center">
+                        <FactsArea />
                       </div>
-                    )}
-                  </div>
-                </div>
-                
-                {/* Game instructions context area */}
-                {!isFinalFiveActive && (
-                  <div className="w-full relative my-1 flex-shrink-0">
-                    <div className="flex justify-center">
-                      <div className="px-4 py-1 rounded-lg">
-                        <GameInstructionsArea />
+                      
+                      {/* Middle section - center of the screen */}
+                      <div className="flex-1 flex flex-col justify-center w-full" style={{ gap: "1rem" }}>
+                        {/* Center line with category context - fade out first */}
+                        <motion.div 
+                          className="w-full relative flex-shrink-0 mb-2"
+                          initial={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <div className="absolute inset-x-0 h-1" style={{ backgroundColor: `var(--color-${colors.primary}30)` }}></div>
+                          <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-center">
+                            <div className="px-4 py-1 rounded-lg relative z-10">
+                              <BubbleContextArea />
+                            </div>
+                          </div>
+                        </motion.div>
+
+                        {/* Fact Bubbles Area - fade out second */}
+                        <motion.div 
+                          className="w-full flex justify-center mb-2"
+                          style={{ marginTop: "0.75rem" }}
+                          initial={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.6, delay: 0.3 }}
+                        >
+                          <div className="w-full max-w-lg mb-0 py-0 sm:pt-1">
+                            {!isFinalFiveActive && (
+                              <div className="relative">
+                                {showGameMessage ? (
+                                  <GameMessage {...getGameMessageProps()} />
+                                ) : (
+                                  <FactBubbleGrid />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                      
+                      {/* Bottom section - at the bottom of the screen */}
+                      <div className="w-full mt-auto">
+                        {/* Game instructions - fade out third */}
+                        {!isFinalFiveActive && (
+                          <motion.div 
+                            className="w-full relative my-1 flex-shrink-0"
+                            initial={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.6, delay: 0.6 }}
+                          >
+                            <div className="flex justify-center">
+                              <div className="px-4 py-1 rounded-lg">
+                                <GameInstructionsArea />
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Game Controls - fade out last */}
+                        {!showGameMessage && !isFinalFiveActive && (
+                          <motion.div
+                            className="w-full flex justify-center mb-2"
+                            initial={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.6, delay: 0.9 }}
+                          >
+                            <GameControls ref={gameControlsRef} />
+                          </motion.div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 {/* Render FinalFiveOptions when active */}
                 {isFinalFiveActive && <FinalFiveOptions />}
-                
-                {/* Only show GameControls when the game is not in a summary or loss state */}
-                {!(showGameMessage) && (
-                  <GameControls ref={gameControlsRef} />
-                )}
               </>
             )}
           </main>

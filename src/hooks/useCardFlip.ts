@@ -18,6 +18,7 @@ export function useCardFlip({
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDrawn, setIsDrawn] = useState(!sourcePosition);
   const [isClosing, setIsClosing] = useState(false);
+  const [canClose, setCanClose] = useState(false);
   const [returnPosition, setReturnPosition] = useState<{ x: number, y: number } | null>(null);
 
   // Memoize animation settings to prevent unnecessary re-renders
@@ -51,13 +52,15 @@ export function useCardFlip({
   // Handle click outside the card
   const handleClickOutside = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (target.classList.contains('modal-overlay')) {
+    if (target.classList.contains('modal-overlay') && canClose) {
       handleClose();
     }
-  }, []);
+  }, [canClose]);
 
   // Handle closing the card
   const handleClose = useCallback(() => {
+    if (!canClose) return;
+
     // First flip the card back
     setIsFlipped(false);
     setIsClosing(true);
@@ -73,7 +76,7 @@ export function useCardFlip({
         if (onClose) onClose();
       }, 500);
     }, 400);
-  }, [closeFactCard, visibleStackCount, onClose]);
+  }, [closeFactCard, visibleStackCount, onClose, canClose]);
 
   // Setup animations and event listeners
   useEffect(() => {
@@ -88,6 +91,13 @@ export function useCardFlip({
         // Then start the flip animation after a short delay
         const flipTimer = setTimeout(() => {
           setIsFlipped(true);
+          
+          // Allow closing after 2 seconds
+          const closeTimer = setTimeout(() => {
+            setCanClose(true);
+          }, 2000);
+          
+          return () => clearTimeout(closeTimer);
         }, 300);
         
         return () => clearTimeout(flipTimer);
@@ -101,6 +111,13 @@ export function useCardFlip({
       // If not drawing from stack, just do the flip animation
       const timer = setTimeout(() => {
         setIsFlipped(true);
+        
+        // Allow closing after 2 seconds
+        const closeTimer = setTimeout(() => {
+          setCanClose(true);
+        }, 2000);
+        
+        return () => clearTimeout(closeTimer);
       }, 300);
       
       return () => {
@@ -117,7 +134,7 @@ export function useCardFlip({
   // Handle ESC key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && canClose) {
         handleClose();
       }
     };
@@ -126,7 +143,7 @@ export function useCardFlip({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleClose]);
+  }, [handleClose, canClose]);
 
   // Handle animation completion
   const handleAnimationComplete = useCallback(() => {
@@ -139,6 +156,7 @@ export function useCardFlip({
     isFlipped,
     isDrawn,
     isClosing,
+    canClose,
     returnPosition,
     handleClose,
     handleAnimationComplete,

@@ -129,6 +129,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                         "--theme-color": `var(--color-${colors.primary})`
                       } as React.CSSProperties}
                       disabled={isInputDisabled()}
+                      autoComplete="off"
                     />
                   </form>
                 </div>
