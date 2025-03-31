@@ -39,11 +39,8 @@ export const GameInstructionsArea: React.FC = () => {
   // Generate a game status message based on the current state
   const getGameStatusMessage = () => {
     if (isGameOver) {
-      // Only show "Come back tomorrow" after victory sequence and delay
-      if (victoryAnimationStep === 'summary') {
-        return "Come back tomorrow for a new challenge!";
-      }
-      return ""; // Show nothing during victory animation
+      // Don't show any instruction message during or after game over
+      return "";
     }
     
     if (!hasSeenClue) {
@@ -62,12 +59,9 @@ export const GameInstructionsArea: React.FC = () => {
       className={`text-${colors.primary} font-medium text-center whitespace-normal max-w-lg font-display`}
       initial={{ opacity: 1 }}
       animate={{ 
-        opacity: isGameOver ? (victoryAnimationStep === 'summary' ? 1 : 0) : 1
+        opacity: isGameOver ? 0 : 1
       }}
-      transition={{ 
-        duration: 0.8, // Slower fade out
-        delay: victoryAnimationStep === 'summary' ? 3 : 0 // 3 second delay before showing "come back tomorrow"
-      }}
+      transition={{ duration: 0.8 }}
     >
       {getGameStatusMessage()}
     </motion.span>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useGameStore } from '../store/gameStore';
@@ -23,6 +23,33 @@ const GameMessage: React.FC<GameMessageProps> = ({
   timeSpent
 }) => {
   const { colors } = useTheme();
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+  const finalFiveTimeRemaining = useGameStore(state => state.finalFiveTimeRemaining);
+  const gameState = useGameStore(state => state.gameState);
+  const [showTomorrowMessage, setShowTomorrowMessage] = useState(false);
+  
+  // Get the most recent guess to determine if user ran out of time or picked wrong
+  const latestGuess = gameState.guesses.length > 0 
+    ? gameState.guesses[gameState.guesses.length - 1] 
+    : null;
+  const pickedWrongAnswer = latestGuess && !latestGuess.isCorrect && latestGuess.isFinalFiveGuess;
+  
+  // Find correct answer from guesses if possible
+  const [actualCorrectAnswer, setActualCorrectAnswer] = useState(correctAnswer);
+  
+  useEffect(() => {
+    if (outcome === 'loss' && (!correctAnswer || correctAnswer.trim() === '')) {
+      // Try to find correct answer from guesses
+      const correctGuess = gameState.guesses.find(g => g.isCorrect);
+      if (correctGuess) {
+        setActualCorrectAnswer(correctGuess.guess);
+      } else if (gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0) {
+        // If no correct guess found, we can try to set the first option as a fallback
+        // This is just a temporary measure - the real solution is to ensure the correct answer is passed
+        setActualCorrectAnswer(gameState.finalFiveOptions[0]);
+      }
+    }
+  }, [outcome, correctAnswer, gameState.guesses, gameState.finalFiveOptions]);
   
   // Confetti pieces configuration - only for win scenarios
   const showConfetti = outcome === 'standard-win' || outcome === 'final-five-win';
@@ -38,27 +65,62 @@ const GameMessage: React.FC<GameMessageProps> = ({
   const minutes = Math.floor(timeSpent / 60);
   const seconds = timeSpent % 60;
   const timeFormatted = `${minutes}m ${seconds}s`;
+  
+  // Determine if we should show time (only for standard wins)
+  const shouldShowTime = outcome === 'standard-win';
+  
+  // Effect to show "Come back tomorrow" message after a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTomorrowMessage(true);
+    }, 2000); // 2 seconds after the main message appears
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // Get message text based on outcome
   const getMessage = () => {
+    const displayAnswer = actualCorrectAnswer || correctAnswer;
+    
     switch(outcome) {
       case 'standard-win':
         return (
           <div>
-            You guessed <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
+            You guessed <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
           </div>
         );
       case 'final-five-win':
         return (
           <div>
-            Solved <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span> in the{' '}
+            Solved <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span> in the{' '}
             <span className={`font-bold text-${colors.primary} ${righteous.className}`}>FINAL 5</span>!
           </div>
         );
       case 'loss':
+        // Handle Final Five losses differently
+        if (isFinalFiveActive) {
+          // If final five active and picked wrong answer
+          if (pickedWrongAnswer) {
+            return (
+              <div>
+                Incorrect guess! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
+              </div>
+            );
+          } 
+          // If ran out of time during Final Five
+          else if (finalFiveTimeRemaining === 0) {
+            return (
+              <div>
+                Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
+              </div>
+            );
+          }
+        }
+        
+        // Default loss message (ran out of time in main game)
         return (
           <div>
-            Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{correctAnswer}</span>.
+            Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
           </div>
         );
       default:
@@ -116,26 +178,42 @@ const GameMessage: React.FC<GameMessageProps> = ({
         >
           {getMessage()}
           
-          {/* Time display - show for all outcomes */}
-          <div className="flex items-center gap-3 text-base">
-            <span className={`text-${colors.primary}`}>
-              {timeFormatted}
-            </span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className={`h-5 w-5 text-${colors.primary} cursor-pointer hover:opacity-80 transition-opacity`}
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" 
-              />
-            </svg>
-          </div>
+          {/* Time display - only for standard wins */}
+          {shouldShowTime && (
+            <div className="flex items-center gap-3 text-base">
+              <span className={`text-${colors.primary}`}>
+                {timeFormatted}
+              </span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 text-${colors.primary} cursor-pointer hover:opacity-80 transition-opacity`}
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" 
+                />
+              </svg>
+            </div>
+          )}
+          
+          {/* "Come back tomorrow" message (animated in after a delay) */}
+          <AnimatePresence>
+            {showTomorrowMessage && (
+              <motion.div 
+                className={`text-base font-medium mt-4 text-${colors.primary}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                Come back tomorrow for a new challenge!
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </motion.div>
     </div>

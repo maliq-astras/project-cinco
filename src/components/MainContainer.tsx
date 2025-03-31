@@ -37,6 +37,8 @@ export default function MainContainer() {
 
   // We need just one state to track if we're done with all animations and ready to show the game
   const [loadingComplete, setLoadingComplete] = useState(false);
+  // State to track if we're in landscape mode on a small screen
+  const [isSmallLandscape, setIsSmallLandscape] = useState(false);
 
   // Create a ref for the GameControls component
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -64,21 +66,34 @@ export default function MainContainer() {
     };
   }, [isTimerActive, timeRemaining, decrementTimer, gameState.isGameOver]);
 
-  // Handle window resize
+  // Handle window resize and orientation changes
   useEffect(() => {
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      setWindowWidth(width);
+      
+      // Check if we're in landscape on a small screen
+      // Consider a device "small" if it's less than 768px wide in portrait
+      // In landscape, that means the height would be less than 768px
+      const isSmall = height < 768;
+      const isLandscape = width > height;
+      
+      setIsSmallLandscape(isSmall && isLandscape);
     };
     
-    // Set the initial width
+    // Set the initial values
     handleResize();
     
-    // Add event listener
+    // Add event listeners
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
     
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, [setWindowWidth]);
 
@@ -108,6 +123,57 @@ export default function MainContainer() {
       timeSpent,
     };
   };
+
+  // If in small landscape mode, show a warning overlay
+  if (isSmallLandscape) {
+    return (
+      <div className="fixed inset-0 bg-white flex flex-col items-center justify-center p-6 z-50">
+        <div className="w-16 h-16 mb-4 animate-pulse">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.162 4H7.838C6.823 4 6 4.823 6 5.838V18.162C6 19.177 6.823 20 7.838 20H16.162C17.177 20 18 19.177 18 18.162V5.838C18 4.823 17.177 4 16.162 4Z" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+            <path d="M10 17L14 17" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold mb-2" style={{ color: `var(--color-${colors.primary})` }}>Rotate Your Device</h2>
+        <p className="text-center mb-4">
+          This game works best in portrait mode on smaller screens.
+          Please rotate your device to continue playing.
+        </p>
+        <div className="w-12 h-12 animate-spin-slow">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C13.6569 18 15.1569 17.3284 16.2426 16.2426" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+            <path d="M17 14L16.2427 16.2426L14 15.4853" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+            <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C10.3431 6 8.84315 6.67157 7.75736 7.75736" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+            <path d="M7 10L7.75736 7.75736L10 8.51472" 
+                  stroke={`var(--color-${colors.primary})`} 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen w-full items-center bg-white text-gray-800">

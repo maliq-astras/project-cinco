@@ -377,7 +377,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   selectFinalFiveOption: async (option: string) => {
-    const { gameState } = get();
+    const { gameState, finalFiveTimeRemaining } = get();
     
     if (!gameState.challenge) return;
     
@@ -395,6 +395,49 @@ export const useGameStore = create<GameStore>((set, get) => ({
       };
       console.log(`Adding new guess:`, newGuess);
       
+      // If this guess was incorrect, try to find the correct answer
+      let correctAnswer = '';
+      if (!data.isCorrect && gameState.finalFiveOptions) {
+        // First check if we already have a correct guess in our history
+        const existingCorrectGuess = gameState.guesses.find(g => g.isCorrect);
+        if (existingCorrectGuess) {
+          correctAnswer = existingCorrectGuess.guess;
+        } else {
+          // We need to check all other options to find the correct one
+          console.log('Checking all options to find the correct answer');
+          for (const potentialAnswer of gameState.finalFiveOptions) {
+            if (potentialAnswer === option) continue; // Skip the one we just verified
+            
+            try {
+              const result = await verifyGuessAPI(gameState.challenge.challengeId, potentialAnswer);
+              if (result.isCorrect) {
+                correctAnswer = potentialAnswer;
+                console.log(`Found correct answer: ${correctAnswer}`);
+                // Add this as a "hidden" guess so it's in our guesses array
+                const correctGuess: UserGuess = {
+                  guess: potentialAnswer,
+                  isCorrect: true,
+                  timestamp: new Date(),
+                  isFinalFiveGuess: true,
+                  isHidden: true // Mark as hidden so it doesn't show in history
+                };
+                
+                set(state => ({
+                  gameState: {
+                    ...state.gameState,
+                    guesses: [...state.gameState.guesses, correctGuess]
+                  }
+                }));
+                
+                break;
+              }
+            } catch (error) {
+              console.error(`Error verifying option ${potentialAnswer}:`, error);
+            }
+          }
+        }
+      }
+      
       // Set the game state to game over and update gameOutcome
       set(state => ({
         gameState: {
@@ -403,9 +446,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
           isGameOver: true
         },
         gameOutcome: data.isCorrect ? 'final-five-win' : 'loss',
-        victoryAnimationStep: 'summary', // Always set to summary for both win and loss
+        victoryAnimationStep: data.isCorrect ? 'summary' : null, // Only set summary step if it's a win
         isVictoryAnimationActive: data.isCorrect
       }));
+      
+      // After a short delay, always set victoryAnimationStep to 'summary'
+      // This ensures the message flows properly for both win and loss
+      if (!data.isCorrect) {
+        setTimeout(() => {
+          set({
+            victoryAnimationStep: 'summary'
+          });
+        }, 1500); // Delay to allow animations to complete
+      }
       
       // Log the updated guesses
       console.log(`Updated guesses:`, get().gameState.guesses);

@@ -135,6 +135,7 @@ export interface UserGuess {
   isCorrect: boolean;
   timestamp: Date;
   isFinalFiveGuess?: boolean;
+  isHidden?: boolean; // Used to track correct answers found after game over that shouldn't show in history
 }
 
 export interface UserProgress {

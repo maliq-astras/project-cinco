@@ -58,6 +58,10 @@ const config: Config = {
           '0%, 100%': { transform: 'rotate(-3deg)' },
           '50%': { transform: 'rotate(3deg)' },
         },
+        spinSlow: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
         bounce: {
           '0%, 100%': { 
             transform: 'translateY(0)',
@@ -94,6 +98,7 @@ const config: Config = {
         'wave-slow': 'waveSlow 3s ease-in-out infinite',
         'shake': 'shake 0.7s cubic-bezier(.36,.07,.19,.97) infinite',
         'wiggle': 'wiggle 0.6s ease-in-out infinite',
+        'spin-slow': 'spinSlow 3s linear infinite',
         'bounce': 'bounce 0.5s infinite',
         'pulse': 'pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'fadeIn': 'fadeIn 0.3s ease-out forwards',

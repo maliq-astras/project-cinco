@@ -71,10 +71,6 @@ export default function FinalFiveOptions() {
         
         // Check each option that hasn't been guessed yet
         for (const option of finalFiveOptions) {
-          // Skip options we've already verified
-          const alreadyGuessed = guesses.some(g => g.guess === option);
-          if (alreadyGuessed) continue;
-          
           try {
             const result = await verifyGuess(challenge.challengeId, option);
             console.log(`API verification for ${option}:`, result);
@@ -126,6 +122,12 @@ export default function FinalFiveOptions() {
   useEffect(() => {
     if (isFinalFiveActive && finalFiveTimeRemaining > 0 && !isGameOver && startTimer) {
       const timer = setInterval(() => {
+        // Don't decrement if game is over (redundant check for safety)
+        if (isGameOver) {
+          clearInterval(timer);
+          return;
+        }
+        
         decrementFinalFiveTimer();
         
         if (finalFiveTimeRemaining <= 1) {
@@ -206,6 +208,32 @@ export default function FinalFiveOptions() {
   
   // Theme color for borders
   const themeColor = `var(--color-${colors.primary})`;
+  
+  // Handle clicking an option
+  const handleOptionClick = async (option: string) => {
+    if (isGameOver || loading || !challenge) return;
+    
+    setLoading(true);
+    
+    try {
+      // This function also updates global game state
+      await selectFinalFiveOption(option);
+      
+      // Locally set the correct answer if this was correct
+      const wasCorrect = await verifyGuess(challenge.challengeId, option);
+      if (wasCorrect.isCorrect) {
+        setCorrectAnswer(option);
+      } else {
+        // If we guessed incorrectly, find the correct answer
+        console.log("Finding correct answer after incorrect guess");
+        // The check for the correct answer will run in the useEffect
+      }
+    } catch (error) {
+      console.error("Error selecting option:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
   return (
     <div className="fixed inset-0 z-40 flex md:items-center justify-center bg-black/75 backdrop-blur-sm">
@@ -320,7 +348,7 @@ export default function FinalFiveOptions() {
                         : "0 4px 8px rgba(0,0,0,0.1)",
                       padding: "0.5rem"
                     }}
-                    onClick={() => !isGameOver && selectFinalFiveOption(option)}
+                    onClick={() => !isGameOver && handleOptionClick(option)}
                   >
                     <span className="text-lg md:text-xl text-center">
                       {option}
