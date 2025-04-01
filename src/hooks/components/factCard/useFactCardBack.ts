@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { factCardBackStyles, getCardBackgroundStyle } from '../styles/factCardBackStyles';
+import { useTheme } from '../../../context/ThemeContext';
+import { factCardBackStyles, getCardBackgroundStyle } from '../../../styles/factCardBackStyles';
 
 interface UseFactCardBackProps {
   isFinalFive: boolean;

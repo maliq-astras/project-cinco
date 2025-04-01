@@ -3,7 +3,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Spark from './Spark';
-import { useGuessProgressBar } from '../hooks/useGuessProgressBar';
+import { useGuessProgressBar } from '../hooks';
+import { SparkProps } from '../hooks/animation/useSparkAnimation';
 
 /**
  * Displays a progress bar for user guesses with animation effects
@@ -75,7 +76,7 @@ export default function GuessProgressBar() {
               className={guessProgressBarStyles.sparkContainer}
               {...containerAnimation}
             >
-              {sparks.map((spark, index) => (
+              {sparks.map((spark: SparkProps, index: number) => (
                 <Spark 
                   key={index} 
                   {...spark}

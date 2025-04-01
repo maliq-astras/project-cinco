@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { calculate3DTiltEffect } from '../helpers/uiHelpers';
+import { calculate3DTiltEffect } from '../../helpers/uiHelpers';
 
 /**
  * Custom hook for managing card stack interactions and animations

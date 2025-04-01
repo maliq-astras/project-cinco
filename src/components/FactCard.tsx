@@ -6,7 +6,7 @@ import { Fact } from '../types';
 import IconContainer from './IconContainer';
 import FactCardBack from './FactCardBack';
 import { factCardStyles } from '../styles/factCardStyles';
-import { useFactCard } from '../hooks/useFactCard';
+import { useFactCard } from '../hooks';
 
 interface FactCardProps {
   fact: Fact<any>;

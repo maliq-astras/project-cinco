@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useSpark } from '../hooks/useSpark';
+import { useSpark } from '../hooks';
 
 interface SparkProps {
   delay: number;

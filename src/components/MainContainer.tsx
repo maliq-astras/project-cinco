@@ -4,16 +4,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import FactCard from './FactCard';
 import FinalFiveOptions from './FinalFiveOptions';
 import Header from './Header';
-import FactsArea from './FactsArea';
-import ContextArea, { BubbleContextArea, GameInstructionsArea } from './ContextArea';
+import FactCardStackContainer from './FactCardStackContainer';
 import FactBubbleGrid from './FactBubbleGrid';
 import GameControls, { GameControlsHandle } from './GameControls';
 import LoadingAnimation from './LoadingAnimation';
 import GameMessage from './GameMessage';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
-import Logo from './Logo';
 import { AnimatePresence } from 'framer-motion';
+import { BubbleContextArea, GameInstructionsArea } from './ContextArea';
 import Navigation from './Navigation';
 import FinalFiveTransition from './FinalFiveTransition';
 import { motion } from 'framer-motion';
@@ -238,7 +237,7 @@ export default function MainContainer() {
                     >
                       {/* Top section */}
                       <div className="w-full flex justify-center">
-                        <FactsArea />
+                        <FactCardStackContainer />
                       </div>
                       
                       {/* Middle section - center of the screen */}

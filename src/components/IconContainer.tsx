@@ -3,8 +3,7 @@
 import React, { useMemo } from 'react';
 import { getFactIcon, useIconFilter } from '../helpers/iconHelpers';
 import { useTheme } from '../context/ThemeContext';
-import { useIconSize } from '../hooks/useIconSize';
-import { useIconStyles } from '../hooks/useIconStyles';
+import { useIconSize, useIconStyles } from '../hooks/components/iconContainer';
 import { iconContainerStyles } from '../styles/iconStyles';
 
 interface IconContainerProps {

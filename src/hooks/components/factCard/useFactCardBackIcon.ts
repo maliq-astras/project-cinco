@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Fact } from '../types';
-import { getFactIcon } from '../helpers/iconHelpers';
+import { Fact } from '../../../types';
+import { getFactIcon } from '../../../helpers/iconHelpers';
 
 interface UseFactCardBackIconProps {
   fact: Fact<any>;

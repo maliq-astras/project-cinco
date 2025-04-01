@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { UserGuess } from '../types';
-import { handleToastNotification } from '../helpers/guessProgressBarHelpers';
+import { UserGuess } from '../../../types';
+import { handleToastNotification } from '../../../helpers/guessProgressBarHelpers';
 
 interface UseGuessProgressProps {
   guesses: UserGuess[];

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useGameStore } from '../store/gameStore';
-import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../helpers/factCardHelpers';
-import { useMemoizedFlipTransition } from './useMemoizedFlipTransition';
-import { useCardTransition } from './useCardTransition';
+import { useGameStore } from '../../store/gameStore';
+import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../../helpers/factCardHelpers';
+import { useMemoizedFlipTransition, useCardTransition } from '../animation';
 
 interface UseCardFlipProps {
   sourcePosition: { x: number, y: number } | null;

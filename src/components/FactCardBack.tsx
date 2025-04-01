@@ -3,7 +3,7 @@
 import React from 'react';
 import { Fact } from '../types';
 import FactCardBackIcon from './FactCardBackIcon';
-import { useFactCardBack } from '../hooks/useFactCardBack';
+import { useFactCardBack } from '../hooks';
 
 interface FactCardBackProps {
   fact: Fact<any>;

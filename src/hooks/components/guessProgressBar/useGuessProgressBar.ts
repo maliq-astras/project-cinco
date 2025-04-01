@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useGameStore } from '../store/gameStore';
-import { useTheme } from '../context/ThemeContext';
+import { useGameStore } from '../../../store/gameStore';
+import { useTheme } from '../../../context/ThemeContext';
 import { useGuessProgress } from './useGuessProgress';
-import { useSparkAnimation } from './useSparkAnimation';
-import { getGradientBackground, getBottomShadowStyle } from '../helpers/guessProgressBarHelpers';
-import { progressAnimations, segmentTransition, guessProgressBarStyles } from '../styles/guessProgressBarStyles';
+import { useSparkAnimation } from '../../animation/useSparkAnimation';
+import { getGradientBackground, getBottomShadowStyle } from '../../../helpers/guessProgressBarHelpers';
+import { progressAnimations, segmentTransition, guessProgressBarStyles } from '../../../styles/guessProgressBarStyles';
 
 interface UseGuessProgressBarProps {
   maxGuesses?: number;

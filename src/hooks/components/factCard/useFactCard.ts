@@ -1,12 +1,11 @@
 import { useRef, useMemo } from 'react';
-import { Fact } from '../types';
-import { useGameStore } from '../store/gameStore';
-import { useTheme } from '../context/ThemeContext';
-import { useCardFlip } from './useCardFlip';
-import { useResponsiveCard } from './useResponsiveCard';
-import { useCardAnimations } from './useCardAnimations';
-import { factCardInlineStyles, normalizeCategory } from '../helpers/factCardHelpers';
-import { factCardStyles } from '../styles/factCardStyles';
+import { Fact } from '../../../types';
+import { useGameStore } from '../../../store/gameStore';
+import { useTheme } from '../../../context/ThemeContext';
+import { useCardFlip, useResponsiveCard } from '../../card';
+import { useCardAnimations } from '../../animation';
+import { factCardInlineStyles, normalizeCategory } from '../../../helpers/factCardHelpers';
+import { factCardStyles } from '../../../styles/factCardStyles';
 
 interface UseFactCardProps {
   fact: Fact<any>;

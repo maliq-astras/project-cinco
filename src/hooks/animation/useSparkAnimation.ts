@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-interface SparkProps {
+export interface SparkProps {
   delay: number;
   x: number | string;
   y: number | string;
