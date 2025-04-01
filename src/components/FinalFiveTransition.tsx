@@ -15,6 +15,7 @@ interface FinalFiveTransitionProps {
 export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransitionProps) {
   const { colors } = useTheme();
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
+  const hardMode = useGameStore(state => state.hardMode);
   const [autoStartTimer, setAutoStartTimer] = useState<number | null>(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -37,15 +38,17 @@ export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransi
     }
   };
   
-  // Start auto-start timer after 15 seconds
+  // Start auto-start timer after 15 seconds of inactivity
   useEffect(() => {
+    const INACTIVITY_DELAY = 15000; // 15 seconds before showing countdown
+    
     const timer = setTimeout(() => {
       // Don't show countdown if already transitioning
       if (!isTransitioning) {
         setShowCountdown(true);
         setAutoStartTimer(5);
       }
-    }, 15000);
+    }, INACTIVITY_DELAY);
     
     return () => clearTimeout(timer);
   }, [isTransitioning]);
@@ -57,8 +60,11 @@ export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransi
         // Hide countdown immediately to avoid animation conflicts
         setShowCountdown(false);
         
-        // Start transition immediately instead of with a delay
-        handleStart();
+        // Brief delay before starting Final Five
+        setTimeout(() => {
+          // Start transition immediately instead of with a delay
+          handleStart();
+        }, 500);
         return;
       }
       
@@ -78,16 +84,18 @@ export default function FinalFiveTransition({ reason, onStart }: FinalFiveTransi
   }, [isTransitioning, showCountdown]);
   
   const getMessage = () => {
+    const timeLimit = hardMode ? "5" : "55";
+    
     if (reason === 'time') {
       return (
         <>
-          Time's up! But here's your chance at glory in the <span style={{ color: `var(--color-${colors.primary})` }} className={righteous.className}>FINAL 5</span>! Choose the correct answer from 5 options in an intense 55-second showdown. Ready to become a champion?
+          Time's up! But here's your chance at glory in the <span style={{ color: `var(--color-${colors.primary})` }} className={righteous.className}>FINAL 5</span>! Choose the correct answer from 5 options in an intense {timeLimit}-second showdown{hardMode ? " (Hard Mode)" : ""}. Ready to become a champion?
         </>
       );
     }
     return (
       <>
-        5 guesses down, but victory awaits in the <span style={{ color: `var(--color-${colors.primary})` }} className={righteous.className}>FINAL 5</span>! You'll have 55 seconds to pick the right answer from 5 carefully selected options. This is your moment to shine!
+        5 guesses down, but victory awaits in the <span style={{ color: `var(--color-${colors.primary})` }} className={righteous.className}>FINAL 5</span>! You'll have {timeLimit} seconds to pick the right answer from 5 carefully selected options{hardMode ? " (Hard Mode)" : ""}. This is your moment to shine!
       </>
     );
   };

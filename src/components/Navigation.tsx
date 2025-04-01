@@ -18,6 +18,8 @@ export default function Navigation() {
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
+  const hardMode = useGameStore(state => state.hardMode);
+  const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
   
   // Only show How to Play during active gameplay (not during Final Five or game over)
   const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
@@ -75,7 +77,19 @@ export default function Navigation() {
     <>
       <div className="w-full bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end items-center h-10 sm:h-12 lg:h-14">
+          <div className="flex justify-between items-center h-10 sm:h-12 lg:h-14">
+            {/* Hard Mode Badge */}
+            <div className="flex items-center">
+              {(hardMode || isHardModeEnabled) && (
+                <div 
+                  className="py-1 px-2.5 rounded-md text-xs sm:text-sm font-medium text-white"
+                  style={{ backgroundColor: `var(--color-${colors.primary})` }}
+                >
+                  HARD MODE
+                </div>
+              )}
+            </div>
+            
             <nav className="flex items-center space-x-4">
               <div className="relative" ref={dropdownRef}>
                 <button 

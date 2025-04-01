@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { Inter } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useGameStore } from '../store/gameStore';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,9 +23,13 @@ const languages = [
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   const { colors, darkMode, toggleDarkMode } = useTheme();
   
+  // Use separate selectors for each state value to avoid the infinite loop
+  const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
+  const setHardModeEnabled = useGameStore(state => state.setHardModeEnabled);
+  const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  
   // These would be hooked up to actual state management in a real implementation
   // Dark mode is now managed by ThemeContext
-  const [isHardMode, setIsHardMode] = React.useState(false);
   const [isRandomizer, setIsRandomizer] = React.useState(false);
   const [isHighContrast, setIsHighContrast] = React.useState(false);
   const [selectedLanguage, setSelectedLanguage] = React.useState('en');
@@ -66,15 +71,16 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   };
   
   // Toggle switch component with theme color
-  const ToggleSwitch = ({ isOn, onToggle }: { isOn: boolean; onToggle: () => void }) => (
+  const ToggleSwitch = ({ isOn, onToggle, disabled = false }: { isOn: boolean; onToggle: () => void; disabled?: boolean }) => (
     <button 
       onClick={onToggle}
-      className={`w-12 h-6 rounded-full p-1 transition-colors`}
+      className={`w-12 h-6 rounded-full p-1 transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       style={{ 
         backgroundColor: isOn 
           ? `var(--color-${colors.primary})` 
           : 'rgb(209, 213, 219)' // gray-300
       }}
+      disabled={disabled}
     >
       <div 
         className={`w-4 h-4 rounded-full bg-white transform transition-transform ${isOn ? 'translate-x-6' : 'translate-x-0'}`}
@@ -113,9 +119,16 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium text-gray-800 dark:text-gray-200">Hard Mode</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">No hints, fewer guesses</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Less time to guess!</p>
+            {hasSeenClue && (
+              <p className="text-xs text-red-500 mt-1">Cannot change difficulty after game has started</p>
+            )}
           </div>
-          <ToggleSwitch isOn={isHardMode} onToggle={() => setIsHardMode(!isHardMode)} />
+          <ToggleSwitch 
+            isOn={isHardModeEnabled} 
+            onToggle={() => setHardModeEnabled(!isHardModeEnabled)} 
+            disabled={hasSeenClue}
+          />
         </div>
 
         {/* Randomizer Toggle */}

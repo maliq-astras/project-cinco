@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { FormEvent, useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { UserGuess } from '../types';
 import GuessProgressBar from './GuessProgressBar';
 import { showToastMessage } from '../helpers/uiHelpers';
@@ -21,6 +21,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const submitGuess = useGameStore(state => state.submitGuess);
+  const hardMode = useGameStore(state => state.hardMode);
   const { colors } = useTheme();
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
@@ -93,6 +94,10 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     return !hasSeenClue || !canMakeGuess;
   };
 
+  // Hard mode indicator
+  useEffect(() => {
+  }, [hardMode]);
+
   return (
     <div 
       id="game-controls"
@@ -136,7 +141,9 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
           
           <div className="w-full border-t border-gray-200 px-2 pt-3 pb-2 sm:px-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
             <div id="facts-area" className="flex w-full max-w-md gap-2 mx-auto">
-              <Timer seconds={timeRemaining} />
+              <div className="relative">
+                <Timer seconds={timeRemaining} />
+              </div>
 
               <div className="flex-1 flex flex-col justify-between">
                 <div className="relative">

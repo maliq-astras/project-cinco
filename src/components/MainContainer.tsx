@@ -30,6 +30,8 @@ export default function MainContainer() {
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const gameOutcome = useGameStore(state => state.gameOutcome);
   const timeRemaining = useGameStore(state => state.timeRemaining);
+  const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
+  const resetTimer = useGameStore(state => state.resetTimer);
   const { colors } = useTheme();
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const finalFiveTransitionReason = useGameStore(state => state.finalFiveTransitionReason);
@@ -39,6 +41,14 @@ export default function MainContainer() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   // State to track if we're in landscape mode on a small screen
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
+
+  // Initialize the timer based on hard mode setting on page load (before game starts)
+  useEffect(() => {
+    if (!isTimerActive && !gameState.isGameOver) {
+      // This ensures the timer display reflects hard mode setting on page load
+      resetTimer();
+    }
+  }, [isHardModeEnabled, isTimerActive, gameState.isGameOver, resetTimer]);
 
   // Create a ref for the GameControls component
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -53,17 +63,22 @@ export default function MainContainer() {
 
   // Handle the timer
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    
-    if (isTimerActive && timeRemaining > 0 && !gameState.isGameOver) {
-      timer = setInterval(() => {
-        decrementTimer();
+    // Only create the timer when active and not game over
+    if (isTimerActive && !gameState.isGameOver) {
+      const timer = setInterval(() => {
+        // Get the current timeRemaining directly from the store to avoid stale values
+        const currentTimeRemaining = useGameStore.getState().timeRemaining;
+        
+        if (currentTimeRemaining > 0 && !useGameStore.getState().gameState.isGameOver) {
+          decrementTimer();
+        } else {
+          clearInterval(timer);
+        }
       }, 1000);
+      
+      // Cleanup function always returns a new function
+      return () => clearInterval(timer);
     }
-    
-    return () => {
-      if (timer) clearInterval(timer);
-    };
   }, [isTimerActive, timeRemaining, decrementTimer, gameState.isGameOver]);
 
   // Handle window resize and orientation changes

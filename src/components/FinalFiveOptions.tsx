@@ -19,7 +19,8 @@ export default function FinalFiveOptions() {
     gameOutcome,
     decrementFinalFiveTimer,
     selectFinalFiveOption,
-    closeFinalFive
+    closeFinalFive,
+    hardMode
   } = useGameStore();
   
   const { colors, darkMode } = useTheme();
@@ -29,6 +30,11 @@ export default function FinalFiveOptions() {
   const [flippedCards, setFlippedCards] = useState<boolean[]>([false, false, false, false, false]);
   const [allCardsFlipped, setAllCardsFlipped] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
+  const [timerReachedZero, setTimerReachedZero] = useState(false);
+  
+  // Log initial state when component mounts
+  useEffect(() => {
+  }, []);
   
   // Sequentially flip each card when component loads
   useEffect(() => {
@@ -67,16 +73,12 @@ export default function FinalFiveOptions() {
       if (isGameOver && finalFiveOptions && finalFiveOptions.length > 0 && !correctAnswer && challenge) {
         setLoading(true);
         
-        console.log("Checking all options with API to find the correct answer");
-        
         // Check each option that hasn't been guessed yet
         for (const option of finalFiveOptions) {
           try {
             const result = await verifyGuess(challenge.challengeId, option);
-            console.log(`API verification for ${option}:`, result);
             
             if (result.isCorrect) {
-              console.log(`Found correct answer via API: ${option}`);
               setCorrectAnswer(option);
               break; // Stop once we find the correct answer
             }
@@ -97,7 +99,6 @@ export default function FinalFiveOptions() {
     if (isGameOver && !correctAnswer) {
       const found = guesses.find((g: UserGuess) => g.isCorrect);
       if (found) {
-        console.log(`Found correct answer in guesses: ${found.guess}`);
         setCorrectAnswer(found.guess);
       }
     }
@@ -130,21 +131,28 @@ export default function FinalFiveOptions() {
         
         decrementFinalFiveTimer();
         
-        if (finalFiveTimeRemaining <= 1) {
-          useGameStore.setState(state => ({
-            gameState: {
-              ...state.gameState,
-              isGameOver: true
-            },
-            finalFiveTimeRemaining: 0,
-            gameOutcome: 'loss'
-          }));
+        // Access the latest state directly from the store instead of using the stale closure value
+        const currentTimeRemaining = useGameStore.getState().finalFiveTimeRemaining;
+        if (currentTimeRemaining <= 1) {
+          clearInterval(timer);
+          setTimerReachedZero(true);
+          // End game due to time out
+          setTimeout(() => {
+            useGameStore.setState(state => ({
+              gameState: {
+                ...state.gameState,
+                isGameOver: true
+              },
+              finalFiveTimeRemaining: 0,
+              gameOutcome: 'loss'
+            }));
+          }, 1000);
         }
       }, 1000);
       
       return () => clearInterval(timer);
     }
-  }, [isFinalFiveActive, finalFiveTimeRemaining, isGameOver, decrementFinalFiveTimer, startTimer]);
+  }, [isFinalFiveActive, finalFiveTimeRemaining, isGameOver, decrementFinalFiveTimer, startTimer, hardMode]);
   
   // State for controlling the Continue button visibility
   const [showContinueButton, setShowContinueButton] = useState(false);
@@ -197,7 +205,7 @@ export default function FinalFiveOptions() {
     }
     
     if (!isGameOver) {
-      return "Select the correct answer";
+      return `Select the correct answer${hardMode ? " (Hard Mode: 5 seconds)" : ""}`;
     }
     
     const hasWon = gameOutcome === 'final-five-win';
@@ -246,7 +254,6 @@ export default function FinalFiveOptions() {
         setCorrectAnswer(option);
       } else {
         // If we guessed incorrectly, find the correct answer
-        console.log("Finding correct answer after incorrect guess");
         // The check for the correct answer will run in the useEffect
       }
     } catch (error) {

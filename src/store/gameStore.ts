@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Challenge, UserGuess } from '../types';
 import { 
   initialGameState, 
@@ -20,6 +21,11 @@ interface GameStore {
   canRevealNewClue: boolean;
   canMakeGuess: boolean;
   lastRevealedFactIndex: number | null;
+  
+  // Hard mode settings
+  hardMode: boolean;
+  isHardModeEnabled: boolean; // Can be toggled before game starts
+  setHardModeEnabled: (enabled: boolean) => void;
   
   // Final Five specific state
   finalFiveTimeRemaining: number;
@@ -66,18 +72,38 @@ interface GameStore {
   startFinalFive: () => void;
 }
 
-export const useGameStore = create<GameStore>((set, get) => ({
+export const useGameStore = create<GameStore>()(
+  persist(
+    (set, get) => ({
   // Initial state
   gameState: initialGameState,
-  timeRemaining: 300, // 5 minutes
+  timeRemaining: 300, // 5 minutes in normal mode
   isTimerActive: false,
   hasSeenClue: false,
   canRevealNewClue: true,
   canMakeGuess: false,
   lastRevealedFactIndex: null,
   
+  // Hard mode settings
+  hardMode: false, // Current game's hard mode state (can't be changed after start)
+  isHardModeEnabled: false, // Setting that can be toggled before game starts
+  setHardModeEnabled: (enabled: boolean) => {
+    // Only allow changing if no game is in progress
+    const { hasSeenClue } = get();
+    if (!hasSeenClue) {
+      set({ isHardModeEnabled: enabled });
+      
+      // Reset the timer immediately to show the correct time based on hard mode
+      const timeRemaining = enabled ? 55 : 300;
+      set({ 
+        timeRemaining,
+        finalFiveTimeRemaining: enabled ? 5 : 55 // Also update Final Five timer when toggling hard mode
+      });
+    }
+  },
+  
   // Final Five specific state
-  finalFiveTimeRemaining: 55, // 55 seconds for Final Five
+  finalFiveTimeRemaining: 55, // Will be set to 5 in hard mode when game starts
   isFinalFiveActive: false,
   showFinalFiveTransition: false,
   finalFiveTransitionReason: null,
@@ -100,35 +126,46 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
   decrementTimer: () => {
-    const { timeRemaining, triggerFinalFive, isTimerActive } = get();
+    const { timeRemaining, isTimerActive, gameState, isFinalFiveActive, showFinalFiveTransition } = get();
     
     if (isTimerActive) {
-      if (timeRemaining <= 1) {
+      if (timeRemaining <= 1 && !isFinalFiveActive && !showFinalFiveTransition && !gameState.isGameOver) {
         set({ 
           timeRemaining: 0,
           showFinalFiveTransition: true,
-          finalFiveTransitionReason: 'time'
+          finalFiveTransitionReason: 'time',
+          isTimerActive: false // Stop the main timer
         });
-        triggerFinalFive();
       } else {
         set({ timeRemaining: timeRemaining - 1 });
       }
     }
   },
   decrementFinalFiveTimer: () => {
-    const { finalFiveTimeRemaining, isFinalFiveActive } = get();
+    const { finalFiveTimeRemaining, isFinalFiveActive, hardMode } = get();
     
-    // Only decrement if final five is active
-    if (isFinalFiveActive) {
-      if (finalFiveTimeRemaining <= 1) {
-        set({ finalFiveTimeRemaining: 0 });
-      } else {
-        set({ finalFiveTimeRemaining: finalFiveTimeRemaining - 1 });
-      }
+    if (finalFiveTimeRemaining <= 0) {
+      return;
     }
+    
+    set({ finalFiveTimeRemaining: finalFiveTimeRemaining - 1 });
   },
-  startTimer: () => set({ isTimerActive: true }),
-  resetTimer: () => set({ timeRemaining: 300, isTimerActive: false }),
+  startTimer: () => {
+    // Ensure we're setting the timer active state properly
+    set({ isTimerActive: true });
+  },
+  resetTimer: () => {
+    const { isHardModeEnabled } = get();
+    
+    // Set timer based on hard mode
+    const timeRemaining = isHardModeEnabled ? 55 : 300;
+    
+    // Lock in the hard mode setting once the game starts
+    set({
+      timeRemaining,
+      hardMode: isHardModeEnabled,
+    });
+  },
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
   
@@ -238,7 +275,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   closeFactCard: () => {
-    const { isTimerActive, hasSeenClue } = get();
+    const { 
+      isTimerActive,
+      hasSeenClue, 
+      resetTimer,
+      startTimer
+    } = get();
     
     set({
       isCardAnimatingOut: true,
@@ -248,9 +290,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       shouldFocusInput: true
     });
     
-    // Start the timer on first clue close if not already started
+    // Start timer and lock in hard mode when first fact card is closed
     if (!isTimerActive && !hasSeenClue) {
-      set({ isTimerActive: true });
+      resetTimer();
+      startTimer();
     }
   },
   
@@ -295,7 +338,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   submitGuess: async (guess: string) => {
-    const { gameState, triggerFinalFive, hasSeenClue, canMakeGuess } = get();
+    const { gameState, hasSeenClue, canMakeGuess, isFinalFiveActive, showFinalFiveTransition } = get();
     
     if (!gameState.challenge) return;
     if (!hasSeenClue) return;
@@ -331,7 +374,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           };
         }
 
-        if (shouldShowFinalFive(newGuesses)) {
+        if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
           // First return state without showing the transition
           // to allow the sparks animation to complete
           setTimeout(() => {
@@ -358,21 +401,44 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   triggerFinalFive: async () => {
-    const { gameState } = get();
+    const { gameState, hardMode } = get();
     
-    if (!gameState.challenge) return;
+    set({ 
+      showFinalFiveTransition: true,
+      isFinalFiveActive: false,
+      finalFiveTimeRemaining: hardMode ? 5 : 55 // Set correct timer when Final Five is triggered
+    });
     
     try {
-      const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+      // First fetch the final five options
+      if (gameState.challenge && !gameState.finalFiveOptions) {
+        const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+        
+        // Store the options in the state
+        set(state => ({
+          gameState: {
+            ...state.gameState,
+            finalFiveOptions: options
+          }
+        }));
+      }
       
-      set(state => ({
-        gameState: {
-          ...state.gameState,
-          finalFiveOptions: options
-        }
-      }));
+      // After the transition, load the options
+      setTimeout(() => {
+        set({ 
+          showFinalFiveTransition: false,
+          isFinalFiveActive: true 
+        });
+      }, 4000);
     } catch (error) {
-      console.error('Error fetching final five options:', error);
+      console.error('Error fetching Final Five options:', error);
+      // Still continue with the transition even if there's an error
+      setTimeout(() => {
+        set({ 
+          showFinalFiveTransition: false,
+          isFinalFiveActive: true 
+        });
+      }, 4000);
     }
   },
   
@@ -382,10 +448,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (!gameState.challenge) return;
     
     try {
-      console.log(`Verifying option "${option}" for challenge ID: ${gameState.challenge.challengeId}`);
       const data = await verifyGuessAPI(gameState.challenge.challengeId, option);
-      console.log(`API response for "${option}":`, data);
-      console.log(`Is this option correct according to API? ${data.isCorrect ? 'YES' : 'NO'}`);
       
       const newGuess: UserGuess = {
         guess: option,
@@ -393,7 +456,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         timestamp: new Date(),
         isFinalFiveGuess: true
       };
-      console.log(`Adding new guess:`, newGuess);
       
       // If this guess was incorrect, try to find the correct answer
       let correctAnswer = '';
@@ -404,7 +466,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
           correctAnswer = existingCorrectGuess.guess;
         } else {
           // We need to check all other options to find the correct one
-          console.log('Checking all options to find the correct answer');
           for (const potentialAnswer of gameState.finalFiveOptions) {
             if (potentialAnswer === option) continue; // Skip the one we just verified
             
@@ -412,7 +473,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
               const result = await verifyGuessAPI(gameState.challenge.challengeId, potentialAnswer);
               if (result.isCorrect) {
                 correctAnswer = potentialAnswer;
-                console.log(`Found correct answer: ${correctAnswer}`);
                 // Add this as a "hidden" guess so it's in our guesses array
                 const correctGuess: UserGuess = {
                   guess: potentialAnswer,
@@ -459,17 +519,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
           });
         }, 1500); // Delay to allow animations to complete
       }
-      
-      // Log the updated guesses
-      console.log(`Updated guesses:`, get().gameState.guesses);
-      
-      // Find the correct answer, if there is one
-      const correctGuess = get().gameState.guesses.find(g => g.isCorrect);
-      if (correctGuess) {
-        console.log(`Found correct answer: ${correctGuess.guess}`);
-      } else {
-        console.log('No correct answer found in guesses yet');
-      }
     } catch (error) {
       console.error('Error verifying final guess:', error);
     }
@@ -484,11 +533,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   startFinalFive: () => {
+    const { hardMode } = get();
+    
+    const finalFiveTime = hardMode ? 5 : 55;
+    
     set({
-      showFinalFiveTransition: false,
-      isFinalFiveActive: true,
-      finalFiveTimeRemaining: 55,
-      isTimerActive: false
+      finalFiveTimeRemaining: finalFiveTime,
+      isFinalFiveActive: true
     });
   }
-})); 
+}),
+    {
+      name: 'cinco-game-storage', // Unique name for localStorage key
+      partialize: (state) => ({ 
+        // Only persist the hard mode setting
+        isHardModeEnabled: state.isHardModeEnabled 
+      }),
+    }
+  )
+); 
