@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../helpers/factCardHelpers';
+import { useMemoizedFlipTransition } from './useMemoizedFlipTransition';
+import { useCardTransition } from './useCardTransition';
 
 interface UseCardFlipProps {
   sourcePosition: { x: number, y: number } | null;
@@ -37,17 +39,13 @@ export function useCardFlip({
     } : getCardReturnPosition(returnPosition);
   }, [isClosing, returnPosition]);
   
-  const cardTransition = useMemo(() => ({
-    duration: sourcePosition || isClosing ? 0.7 : 0.3,
-    ease: "easeInOut" as const
-  }), [sourcePosition, isClosing]);
+  // Use custom animation hooks for transitions
+  const cardTransition = useCardTransition({
+    isDrawingFromSource: !!sourcePosition,
+    isReturning: isClosing
+  });
 
-  const flipTransition = useMemo(() => ({
-    type: "spring" as const,
-    stiffness: 70,
-    damping: 15,
-    duration: 0.9
-  }), []);
+  const flipTransition = useMemoizedFlipTransition();
 
   // Handle click outside the card
   const handleClickOutside = useCallback((e: MouseEvent) => {

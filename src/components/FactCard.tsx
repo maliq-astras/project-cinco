@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Fact } from '../types';
 import IconContainer from './IconContainer';
@@ -9,6 +9,7 @@ import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
 import { useCardFlip } from '../hooks/useCardFlip';
 import { useResponsiveCard } from '../hooks/useResponsiveCard';
+import { useCardAnimations } from '../hooks/useCardAnimations';
 import { factCardInlineStyles, normalizeCategory } from '../helpers/factCardHelpers';
 import { factCardStyles } from '../styles/factCardStyles';
 
@@ -21,9 +22,11 @@ export default function FactCard({
   fact, 
   visibleStackCount = 0,
 }: FactCardProps) {
+  // Refs
+  const cardRef = useRef<HTMLDivElement>(null);
+  
   // Access state from the store
   const sourcePosition = useGameStore(state => state.cardSourcePosition);
-  const cardRef = useRef<HTMLDivElement>(null);
   const { colors } = useTheme();
 
   // Use custom hooks for card logic
@@ -33,10 +36,8 @@ export default function FactCard({
     isDrawn, 
     isClosing, 
     canClose,
-    returnPosition, 
     handleClose, 
     handleAnimationComplete,
-    // Use the animation properties from the hook
     initialAnimation,
     cardAnimation,
     cardTransition,
@@ -45,17 +46,23 @@ export default function FactCard({
     sourcePosition, 
     visibleStackCount 
   });
+  
+  // Use animation hook for reusable animations
+  const {
+    closeButtonAnimations,
+    closeButtonIconAnimations,
+    colorStyle: factTypeStyle,
+    strokeStyle
+  } = useCardAnimations({
+    primaryColor: colors.primary
+  });
 
-  // Normalize the category
-  const category = normalizeCategory(fact.category);
-  
-  // Get dynamic styles with primary color
-  const factTypeClasses = factCardStyles.getFactTypeClasses(colors.primary);
-  
-  // Custom style for the fact type text color
-  const factTypeStyle: React.CSSProperties = {
-    color: `var(--color-${colors.primary})`
-  };
+  // Memoized values
+  const category = useMemo(() => normalizeCategory(fact.category), [fact.category]);
+  const factTypeClasses = useMemo(() => 
+    factCardStyles.getFactTypeClasses(colors.primary), 
+    [colors.primary]
+  );
 
   return (
     <div className={factCardStyles.modalOverlay}>
@@ -73,24 +80,14 @@ export default function FactCard({
               onClick={handleClose}
               className={factCardStyles.closeButton}
               aria-label="Close fact card"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ 
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1]
-              }}
+              {...closeButtonAnimations}
             >
               <motion.svg 
                 viewBox="0 0 100 100" 
                 className={factCardStyles.closeButtonIcon}
-                initial={{ rotate: -90 }}
-                animate={{ rotate: 0 }}
-                transition={{
-                  duration: 0.3,
-                  ease: [0.4, 0, 0.2, 1]
-                }}
+                {...closeButtonIconAnimations}
               >
-                <g stroke={`var(--color-${colors.primary})`} strokeWidth="12" strokeLinecap="round">
+                <g stroke={strokeStyle} strokeWidth="12" strokeLinecap="round">
                   <path d="M30,30 L70,70" />
                   <path d="M70,30 L30,70" />
                 </g>
