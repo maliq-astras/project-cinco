@@ -22,7 +22,7 @@ export default function FinalFiveOptions() {
     closeFinalFive
   } = useGameStore();
   
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -209,6 +209,27 @@ export default function FinalFiveOptions() {
   // Theme color for borders
   const themeColor = `var(--color-${colors.primary})`;
   
+  // Front/back styling based on card state and dark mode
+  const getCardStyles = (option: string) => {
+    // Front of card (with number 5)
+    const frontBg = `var(--color-${colors.primary})`;
+    
+    // Back of card background based on game state and dark mode
+    let backBg = "white"; 
+    if (darkMode) backBg = "rgb(31, 41, 55)"; // gray-800
+    if (isGameOver && isCorrectOption(option)) backBg = frontBg;
+    
+    // Text color based on game state and dark mode
+    let textColor = darkMode ? "white" : "black";
+    if (isGameOver && isCorrectOption(option)) textColor = "white";
+    
+    return {
+      frontBg,
+      backBg,
+      textColor
+    };
+  };
+  
   // Handle clicking an option
   const handleOptionClick = async (option: string) => {
     if (isGameOver || loading || !challenge) return;
@@ -238,7 +259,7 @@ export default function FinalFiveOptions() {
   return (
     <div className="fixed inset-0 z-40 flex md:items-center justify-center bg-black/75 backdrop-blur-sm">
       <motion.div 
-        className="w-full max-w-[580px] bg-white md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto"
+        className="w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto"
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
@@ -256,7 +277,7 @@ export default function FinalFiveOptions() {
         }}
       >
         {/* Small handle for mobile - only visible on small screens */}
-        <div className="w-16 h-1 bg-gray-300 rounded-full mx-auto mb-4 md:hidden"></div>
+        <div className="w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-4 md:hidden"></div>
         
         {/* Header */}
         <h2 
@@ -267,7 +288,7 @@ export default function FinalFiveOptions() {
         </h2>
         
         {/* Message */}
-        <p className="text-left mb-6 text-gray-700 font-display">
+        <p className="text-left mb-6 text-gray-700 dark:text-gray-300 font-display">
           {getMessage()}
         </p>
         
@@ -277,9 +298,7 @@ export default function FinalFiveOptions() {
             const isFlipped = flippedCards[index];
             
             // Front/back styling
-            let frontBg = `var(--color-${colors.primary})`;
-            let backBg = isGameOver && isCorrectOption(option) ? frontBg : "white";
-            let textColor = isGameOver && isCorrectOption(option) ? "white" : "black";
+            const { frontBg, backBg, textColor } = getCardStyles(option);
             
             return (
               <motion.div 

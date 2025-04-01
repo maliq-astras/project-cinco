@@ -49,8 +49,13 @@ export default function FactCard({
   // Normalize the category
   const category = normalizeCategory(fact.category);
   
-  // Get dynamic styles
-  const factTypeClasses = factCardStyles.getFactTypeClasses(colors.dark);
+  // Get dynamic styles with primary color
+  const factTypeClasses = factCardStyles.getFactTypeClasses(colors.primary);
+  
+  // Custom style for the fact type text color
+  const factTypeStyle: React.CSSProperties = {
+    color: `var(--color-${colors.primary})`
+  };
 
   return (
     <div className={factCardStyles.modalOverlay}>
@@ -103,7 +108,7 @@ export default function FactCard({
           >
             {/* Card Back (blue with white icon) - visible first */}
             <div className={factCardStyles.cardBack} style={factCardInlineStyles.hidden}>
-              <FactCardBack fact={fact} />
+              <FactCardBack fact={fact} inStack={false} />
             </div>
 
             {/* Card Front (white with fact content) - visible after flip */}
@@ -122,7 +127,7 @@ export default function FactCard({
                     category={category.toLowerCase()}
                   />
                   
-                  <h3 className={factTypeClasses}>
+                  <h3 className={factTypeClasses} style={factTypeStyle}>
                     {fact.factType}
                   </h3>
                 </div>

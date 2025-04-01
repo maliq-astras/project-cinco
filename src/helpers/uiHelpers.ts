@@ -24,35 +24,6 @@ export function showToastMessage(elementId: string, duration: number = 2000): vo
   }
 }
 
-export function animateFactBubbles(): void {
-  const factBubbles = document.querySelectorAll('[data-fact-index]');
-  factBubbles.forEach((bubble, index) => {
-    // Remove any existing animations first
-    bubble.classList.remove('animate-shake', 'animate-wiggle', 'animate-bounce', 'animate-pulse');
-    
-    // Apply a different animation based on the index
-    switch (index % 4) {
-      case 0:
-        bubble.classList.add('animate-shake');
-        break;
-      case 1:
-        bubble.classList.add('animate-wiggle');
-        break;
-      case 2:
-        bubble.classList.add('animate-bounce');
-        break;
-      case 3:
-        bubble.classList.add('animate-pulse');
-        break;
-    }
-    
-    // Remove the animation class after it completes
-    setTimeout(() => {
-      bubble.classList.remove('animate-shake', 'animate-wiggle', 'animate-bounce', 'animate-pulse');
-    }, 1000);
-  });
-}
-
 export function formatTime(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
 }

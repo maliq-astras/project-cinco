@@ -86,14 +86,14 @@ const GameMessage: React.FC<GameMessageProps> = ({
       case 'standard-win':
         return (
           <div>
-            You guessed <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
+            You guessed <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>{displayAnswer}</span> in {numberOfTries} {numberOfTries === 1 ? 'try' : 'tries'}!
           </div>
         );
       case 'final-five-win':
         return (
           <div>
-            Solved <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span> in the{' '}
-            <span className={`font-bold text-${colors.primary} ${righteous.className}`}>FINAL 5</span>!
+            Solved <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>{displayAnswer}</span> in the{' '}
+            <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }} className={righteous.className}>FINAL 5</span>!
           </div>
         );
       case 'loss':
@@ -103,7 +103,7 @@ const GameMessage: React.FC<GameMessageProps> = ({
           if (pickedWrongAnswer) {
             return (
               <div>
-                Incorrect guess! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
+                Incorrect guess! The answer was <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>{displayAnswer}</span>.
               </div>
             );
           } 
@@ -111,7 +111,7 @@ const GameMessage: React.FC<GameMessageProps> = ({
           else if (finalFiveTimeRemaining === 0) {
             return (
               <div>
-                Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
+                Out of time! The answer was <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>{displayAnswer}</span>.
               </div>
             );
           }
@@ -120,7 +120,7 @@ const GameMessage: React.FC<GameMessageProps> = ({
         // Default loss message (ran out of time in main game)
         return (
           <div>
-            Out of time! The answer was <span className={`font-bold text-${colors.primary}`}>{displayAnswer}</span>.
+            Out of time! The answer was <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>{displayAnswer}</span>.
           </div>
         );
       default:
@@ -181,12 +181,13 @@ const GameMessage: React.FC<GameMessageProps> = ({
           {/* Time display - only for standard wins */}
           {shouldShowTime && (
             <div className="flex items-center gap-3 text-base">
-              <span className={`text-${colors.primary}`}>
+              <span style={{ color: `var(--color-${colors.primary})` }}>
                 {timeFormatted}
               </span>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
-                className={`h-5 w-5 text-${colors.primary} cursor-pointer hover:opacity-80 transition-opacity`}
+                className="h-5 w-5 cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ color: `var(--color-${colors.primary})` }}
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -205,7 +206,8 @@ const GameMessage: React.FC<GameMessageProps> = ({
           <AnimatePresence>
             {showTomorrowMessage && (
               <motion.div 
-                className={`text-base font-medium mt-4 text-${colors.primary}`}
+                className="text-base font-medium mt-4"
+                style={{ color: `var(--color-${colors.primary})` }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}

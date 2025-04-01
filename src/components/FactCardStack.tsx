@@ -20,7 +20,7 @@ export default function FactCardStack() {
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
   const visibleStackFacts = useMemo(() => {
@@ -211,8 +211,8 @@ export default function FactCardStack() {
                 onClick={(e) => onCardClicked(factIndex, i, e)}
                 onMouseEnter={() => isCardClickable(factIndex) && setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
-                className={`absolute p-0 border-2 border-${colors.light} rounded-lg 
-                  ${isCardClickable(factIndex) ? 'cursor-pointer card-hover-glow' : 'cursor-not-allowed opacity-70'} card-in-stack
+                className={`absolute p-0 border-0 rounded-lg 
+                  ${isCardClickable(factIndex) ? `cursor-pointer ${darkMode ? '' : 'card-hover-glow'}` : 'cursor-not-allowed opacity-70'} card-in-stack
                   ${cardPosition.shadowClass}`}
                 custom={i}
                 variants={variants}
@@ -229,7 +229,7 @@ export default function FactCardStack() {
                   zIndex: revealedFacts.length - i
                 }}
               >
-                <FactCardBack fact={facts[factIndex]} size="small" />
+                <FactCardBack fact={facts[factIndex]} size="small" inStack={true} />
               </motion.div>
             );
           })}

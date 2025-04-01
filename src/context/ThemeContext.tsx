@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { CategoryType, ThemeColors, categoryColorMap } from '../types';
 import { useGameStore } from '../store/gameStore';
 
@@ -9,15 +9,21 @@ const defaultTheme: ThemeColors = categoryColorMap[CategoryType.COUNTRIES];
 
 // Create the context
 interface ThemeContextType {
-  colors: ThemeColors;
+  colors: ThemeColors; // Adjusted colors for current theme mode
   category: CategoryType | null;
-  getColorFilter: (colorClass?: string) => string; // New function to get CSS filter
+  getColorFilter: (colorClass?: string) => string;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+  getAdjustedColorClass: (colorClass: string) => string;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
   colors: defaultTheme,
   category: null,
-  getColorFilter: () => '' // Default empty filter
+  getColorFilter: () => '',
+  darkMode: false,
+  toggleDarkMode: () => {},
+  getAdjustedColorClass: (colorClass) => colorClass,
 });
 
 // Helper function to convert tailwind color class to RGB values
@@ -28,46 +34,55 @@ const getColorRGB = (colorClass: string): string => {
     'blue-600': '37, 99, 235',
     'blue-500': '59, 130, 246',
     'blue-700': '29, 78, 216',
+    'blue-400': '96, 165, 250',
     
     // Emerald (Animals)
     'emerald-600': '5, 150, 105',
     'emerald-500': '16, 185, 129',
     'emerald-700': '4, 120, 87',
+    'emerald-400': '52, 211, 153',
     
     // Violet (Movies)
     'violet-600': '124, 58, 237',
     'violet-500': '139, 92, 246',
     'violet-700': '109, 40, 217',
+    'violet-400': '167, 139, 250',
     
     // Orange (Books)
     'orange-600': '234, 88, 12',
     'orange-500': '249, 115, 22',
     'orange-700': '194, 65, 12',
+    'orange-400': '251, 146, 60',
     
     // Fuchsia (Musical Artists)
     'fuchsia-600': '192, 38, 211',
     'fuchsia-500': '217, 70, 239',
     'fuchsia-700': '162, 28, 175',
+    'fuchsia-400': '232, 121, 249',
     
     // Red (Athletes)
     'red-600': '220, 38, 38',
     'red-500': '239, 68, 68',
     'red-700': '185, 28, 28',
+    'red-400': '248, 113, 113',
     
     // Amber (Historical Figures)
     'amber-500': '245, 158, 11',
     'amber-400': '251, 191, 36',
     'amber-600': '217, 119, 6',
+    'amber-300': '252, 211, 77',
     
     // Teal (Famous Brands)
     'teal-500': '20, 184, 166',
     'teal-400': '45, 212, 191',
     'teal-600': '13, 148, 136',
+    'teal-300': '94, 234, 212',
     
     // Indigo (TV Shows)
     'indigo-500': '99, 102, 241',
     'indigo-400': '129, 140, 248',
-    'indigo-600': '79, 70, 229'
+    'indigo-600': '79, 70, 229',
+    'indigo-300': '165, 180, 252'
   };
   
   return colorMap[colorClass] || '37, 99, 235'; // Default to blue-600
@@ -115,9 +130,46 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Get the current challenge category from the game store
   const challenge = useGameStore(state => state.gameState.challenge);
   
+  // Dark mode state
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check if dark mode preference is saved in localStorage
+    if (typeof window !== 'undefined') {
+      const savedDarkMode = localStorage.getItem('darkMode');
+      return savedDarkMode ? JSON.parse(savedDarkMode) : false;
+    }
+    return false;
+  });
+  
+  // Toggle dark mode function
+  const toggleDarkMode = () => {
+    setDarkMode((prev: boolean) => {
+      const newValue = !prev;
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('darkMode', JSON.stringify(newValue));
+      }
+      return newValue;
+    });
+  };
+  
   // Determine colors based on the challenge category
   const category = challenge?.category || CategoryType.COUNTRIES;
-  const colors = categoryColorMap[category] || defaultTheme;
+  const baseColors = categoryColorMap[category] || defaultTheme;
+  
+  // Create theme-adjusted colors for better consistency across light/dark modes
+  const colors = {
+    primary: darkMode ? baseColors.primary.replace('600', '500').replace('700', '600') : baseColors.primary,
+    secondary: darkMode ? baseColors.secondary.replace('600', '500').replace('700', '600') : baseColors.secondary,
+    accent: darkMode ? baseColors.accent.replace('600', '500').replace('700', '600') : baseColors.accent,
+    light: baseColors.light,
+    dark: baseColors.dark
+  };
+  
+  // Helper function to adjust any color class for current theme mode
+  const getAdjustedColorClass = (colorClass: string): string => {
+    if (!darkMode) return colorClass;
+    return colorClass.replace('600', '500').replace('700', '600').replace('800', '700');
+  };
   
   // Create a getColorFilter function that uses the current theme's primary color by default
   const getColorFilter = (colorClass?: string): string => {
@@ -135,23 +187,50 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       root.style.setProperty('--accent-color', colors.accent);
       
       // Set RGB variants for rgba() usage
-      root.style.setProperty('--primary-rgb', getColorRGB(colors.primary));
-      root.style.setProperty('--secondary-rgb', getColorRGB(colors.secondary));
-      root.style.setProperty('--accent-rgb', getColorRGB(colors.accent));
+      const primaryRGB = getColorRGB(colors.primary);
+      const secondaryRGB = getColorRGB(colors.secondary);
+      const accentRGB = getColorRGB(colors.accent);
       
-      // Set direct color variables for each color
-      root.style.setProperty('--color-' + colors.primary, `rgb(${getColorRGB(colors.primary)})`);
-      root.style.setProperty('--color-' + colors.secondary, `rgb(${getColorRGB(colors.secondary)})`);
-      root.style.setProperty('--color-' + colors.accent, `rgb(${getColorRGB(colors.accent)})`);
+      root.style.setProperty('--primary-rgb', primaryRGB);
+      root.style.setProperty('--secondary-rgb', secondaryRGB);
+      root.style.setProperty('--accent-rgb', accentRGB);
+
+      // For individual color/selector classes
+      root.style.setProperty(`--color-${colors.primary}-rgb`, primaryRGB);
+      root.style.setProperty(`--color-${colors.secondary}-rgb`, secondaryRGB);
+      root.style.setProperty(`--color-${colors.accent}-rgb`, accentRGB);
+      
+      // Apply the colors
+      root.style.setProperty('--color-' + colors.primary, `rgb(${primaryRGB})`);
+      root.style.setProperty('--color-' + colors.secondary, `rgb(${secondaryRGB})`);
+      root.style.setProperty('--color-' + colors.accent, `rgb(${accentRGB})`);
       root.style.setProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light)})`);
       root.style.setProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark)})`);
+      
+      // Apply additional CSS variable for dark mode specific styling
+      if (darkMode) {
+        root.style.setProperty('--dark-mode-bg', '0, 0, 0'); // Pure black
+        root.style.setProperty('--dark-mode-card-bg', '17, 17, 17'); // Very dark gray
+      }
     }
-  }, [colors]);
+  }, [colors, darkMode]);
+  
+  // Apply the dark mode class to html element when darkMode changes
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
   
   const value = {
     colors,
     category,
-    getColorFilter
+    getColorFilter,
+    darkMode,
+    toggleDarkMode,
+    getAdjustedColorClass
   };
   
   return (

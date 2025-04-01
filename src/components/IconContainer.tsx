@@ -28,7 +28,7 @@ export default function IconContainer({
   children,
   category = 'countries'
 }: IconContainerProps) {
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   const getFilter = useIconFilter();
   
   // Determine container size class
@@ -47,13 +47,19 @@ export default function IconContainer({
   }[size];
   
   // Only add background for unrevealed icons
-  const bgClass = isRevealed ? '' : `bg-${colors.light}`;
+  const bgClass = isRevealed ? '' : 'dark:bg-gray-700';
   
   // Ensure category is normalized
   const normalizedCategory = category.toLowerCase();
   
   return (
-    <div className={`${sizeClass} aspect-square rounded-full flex items-center justify-center ${bgClass} ${className}`}>
+    <div 
+      className={`${sizeClass} aspect-square rounded-full flex items-center justify-center ${bgClass} ${className}`}
+      style={{
+        backgroundColor: isRevealed ? undefined : `var(--color-${colors.light})`,
+        boxShadow: undefined
+      }}
+    >
       {children || (() => {
         const icon = getFactIcon(factType, isRevealed, calculatedIconSize, normalizedCategory);
         return (
@@ -64,8 +70,9 @@ export default function IconContainer({
             height={icon.size}
             style={{
               filter: getFilter(icon.category),
-              opacity: icon.isRevealed ? 1 : 0.7,
-              transition: 'opacity 0.3s ease'
+              opacity: icon.isRevealed ? (darkMode ? 1.15 : 1) : 0.7,
+              transition: 'opacity 0.3s ease',
+              transform: darkMode && icon.isRevealed ? 'scale(1.05)' : undefined
             }}
           />
         );
@@ -77,40 +84,50 @@ export default function IconContainer({
 /**
  * Specialized version for fact card backs
  */
-export function FactCardBackIcon({ fact, size = 'large' }: { fact: Fact<any>, size?: 'small' | 'large' }) {
+interface FactCardBackIconProps {
+  fact: Fact<any>;
+  size?: 'small' | 'large';
+  isRevealed?: boolean;
+}
+
+export function FactCardBackIcon({ 
+  fact, 
+  size = 'large',
+  isRevealed = false
+}: FactCardBackIconProps) {
+  const { colors, darkMode } = useTheme();
+  
   // Get category from fact or default to 'countries'
   const category = fact.category ? 
     (typeof fact.category === 'string' ? fact.category : fact.category.toString()) : 
     'countries';
   
-  // Get window width for responsive adjustments
-  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+  // Calculate icon size based on container size - make icons bigger
+  const customIconSize = size === 'small' 
+    ? 48 // Increased from 40 for small size
+    : 76; // Increased from 64 for large size
   
-  // Calculate proportional icon size based on screen width and card size
-  let calculatedSize = size;
-  let customIconSize = undefined;
-  let customClass = "bg-white";
+  // Get the icon information
+  const icon = getFactIcon(fact.factType, isRevealed, customIconSize, category.toLowerCase());
   
-  // For card backs on mobile, use smaller icons
-  if (size === 'small') {
-    // Much smaller icons for card stack on mobile
-    customIconSize = windowWidth <= 360 ? 22 : windowWidth <= 480 ? 24 : 26;
-    
-    // Small container on mobile
-    customClass = windowWidth <= 480 ? "bg-white w-[36%] max-w-[70px]" : "bg-white";
-  } else if (size === 'large' && windowWidth <= 480) {
-    // Also reduce large icons on mobile
-    customIconSize = 38;
-  }
-    
   return (
-    <IconContainer
-      factType={fact.factType}
-      isRevealed={true}
-      size={calculatedSize}
-      iconSize={customIconSize}
-      className={customClass}
-      category={category.toLowerCase()}
-    />
+    <div 
+      className={`flex items-center justify-center`}
+      style={{ background: 'transparent' }}
+    >
+      <img 
+        src={`/icons/${icon.iconName}.svg`}
+        alt={fact.factType}
+        width={icon.size}
+        height={icon.size}
+        style={{
+          filter: "brightness(0) invert(1)",
+          WebkitFilter: "brightness(0) invert(1)", // For Safari support
+          opacity: 1,
+          maxWidth: "100%",
+          background: 'transparent' // Ensure transparent background
+        }}
+      />
+    </div>
   );
-} 
+}

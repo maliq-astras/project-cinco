@@ -1,7 +1,7 @@
 import React, { FormEvent, useRef, useImperativeHandle, forwardRef } from 'react';
 import { UserGuess } from '../types';
 import GuessProgressBar from './GuessProgressBar';
-import { animateFactBubbles, showToastMessage } from '../helpers/uiHelpers';
+import { showToastMessage } from '../helpers/uiHelpers';
 import { MAX_WRONG_GUESSES, isDuplicateGuess } from '../helpers/gameLogic';
 import { useGameStore } from '../store/gameStore';
 import { useTheme } from '../context/ThemeContext';
@@ -51,14 +51,22 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
       // Show duplicate error message
       showToastMessage('duplicate-error');
       
-      // Animate fact bubbles
-      animateFactBubbles();
-      
       return;
     }
     
     submitGuess(guess);
     inputEl.value = '';
+  };
+
+  // Handle skip button click - submit a skipped guess
+  const handleSkip = () => {
+    if (!hasSeenClue || !canMakeGuess) return;
+    
+    // Submit a special "skipped" guess
+    submitGuess("___SKIPPED___");
+    
+    // Show custom toast
+    showToastMessage('skip-message');
   };
 
   // Generate a descriptive message based on the game state
@@ -77,6 +85,11 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
 
   // Determine if input should be disabled
   const isInputDisabled = () => {
+    return !hasSeenClue || !canMakeGuess;
+  };
+
+  // Determine if skip button should be disabled
+  const isSkipDisabled = () => {
     return !hasSeenClue || !canMakeGuess;
   };
 
@@ -111,6 +124,14 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
             >
               Wrong answer! Try again.
             </div>
+
+            {/* Skip message toast */}
+            <div 
+              id="skip-message" 
+              className="hidden bg-blue-100 text-blue-800 py-2 px-4 rounded-md text-sm font-medium border border-blue-200 shadow-md animate-slideInRight font-mono"
+            >
+              Skipped! Reveal another clue.
+            </div>
           </div>
           
           <div className="w-full border-t border-gray-200 px-2 pt-3 pb-2 sm:px-0 sm:py-3 sm:border-0 sm:flex sm:flex-col sm:items-center z-10">
@@ -124,7 +145,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                       id="game-input"
                       ref={inputRef}
                       placeholder={getInputPlaceholder()}
-                      className={`w-full p-2 sm:p-3 border border-gray-200 rounded-full ${isInputDisabled() ? 'bg-gray-100' : 'bg-white'} text-gray-900 font-display outline-none theme-focus-ring transition-all duration-300 ${isInputDisabled() ? 'opacity-70' : 'opacity-100'}`}
+                      className={`w-full p-2 sm:p-3 border border-gray-200 dark:border-gray-700 rounded-full ${isInputDisabled() ? 'bg-gray-100 dark:bg-gray-800' : 'bg-white dark:bg-gray-900'} text-gray-900 dark:text-gray-100 font-display outline-none theme-focus-ring transition-all duration-300 ${isInputDisabled() ? 'opacity-70' : 'opacity-100'}`}
                       style={{
                         "--theme-color": `var(--color-${colors.primary})`
                       } as React.CSSProperties}
@@ -142,23 +163,39 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
               </div>
 
               <div id="game-controls-right" className="flex flex-col justify-between h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px]">
-                <button 
-                  className="flex items-center justify-center h-[32px] sm:h-[36px] hover:bg-gray-50 transition-colors"
+                {/* Info button */}
+                <motion.button 
+                  className="flex items-center justify-center h-[32px] sm:h-[36px] rounded-full"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   style={{ color: `var(--color-${colors.primary})` }}
+                  initial={{ scale: 0.95 }}
                 >
-                  <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                </button>
+                </motion.button>
+                
                 <div className="h-[2px]" style={{ backgroundColor: `var(--color-${colors.primary}40)` }} />
-                <button 
-                  className="flex items-center justify-center h-[32px] sm:h-[36px] hover:bg-gray-50 transition-colors"
-                  style={{ color: `var(--color-${colors.primary})` }}
+                
+                {/* Skip button */}
+                <motion.button 
+                  className="flex items-center justify-center h-[32px] sm:h-[36px] rounded-full"
+                  whileHover={!isSkipDisabled() ? { scale: 1.1 } : {}}
+                  whileTap={!isSkipDisabled() ? { scale: 0.95 } : {}}
+                  style={{ 
+                    color: `var(--color-${colors.primary})`,
+                    opacity: isSkipDisabled() ? 0.5 : 1,
+                    cursor: isSkipDisabled() ? 'not-allowed' : 'pointer'
+                  }}
+                  onClick={handleSkip}
+                  disabled={isSkipDisabled()}
+                  initial={{ scale: 0.95 }}
                 >
-                  <svg className="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                   </svg>
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>

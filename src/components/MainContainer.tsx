@@ -127,7 +127,7 @@ export default function MainContainer() {
   // If in small landscape mode, show a warning overlay
   if (isSmallLandscape) {
     return (
-      <div className="fixed inset-0 bg-white flex flex-col items-center justify-center p-6 z-50">
+      <div className="fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center p-6 z-50">
         <div className="w-16 h-16 mb-4 animate-pulse">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.162 4H7.838C6.823 4 6 4.823 6 5.838V18.162C6 19.177 6.823 20 7.838 20H16.162C17.177 20 18 19.177 18 18.162V5.838C18 4.823 17.177 4 16.162 4Z" 
@@ -142,8 +142,8 @@ export default function MainContainer() {
                   strokeLinejoin="round"/>
           </svg>
         </div>
-        <h2 className="text-xl font-bold mb-2" style={{ color: `var(--color-${colors.primary})` }}>Rotate Your Device</h2>
-        <p className="text-center mb-4">
+        <h2 className="text-xl font-bold mb-2 dark:text-white" style={{ color: `var(--color-${colors.primary})` }}>Rotate Your Device</h2>
+        <p className="text-center mb-4 dark:text-gray-200">
           This game works best in portrait mode on smaller screens.
           Please rotate your device to continue playing.
         </p>
@@ -176,7 +176,7 @@ export default function MainContainer() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full items-center bg-white text-gray-800">
+    <div className="flex flex-col min-h-screen w-full items-center bg-white dark:bg-black text-gray-800 dark:text-gray-100">
       {!loadingComplete ? (
         <div className="flex-1 flex items-center justify-center w-full">
           <LoadingAnimation 

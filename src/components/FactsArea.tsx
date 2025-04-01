@@ -8,12 +8,12 @@ import { useTheme } from '../context/ThemeContext';
 // Extracted placeholder component for empty card stack
 const EmptyStackPlaceholder: React.FC = () => (
   <motion.div 
-    className="border-2 border-dashed border-gray-200 rounded-lg w-[80%] max-w-[350px] h-[120px] sm:h-[140px] md:h-[160px] bg-gray-100 flex items-center justify-center absolute"
+    className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg w-[80%] max-w-[350px] h-[120px] sm:h-[140px] md:h-[160px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center absolute"
     initial={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <div className="text-gray-400 font-display text-sm sm:text-base">Revealed facts will appear here</div>
+    <div className="text-gray-400 dark:text-gray-500 font-display text-sm sm:text-base">Revealed facts will appear here</div>
   </motion.div>
 );
 

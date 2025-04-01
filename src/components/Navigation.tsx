@@ -8,7 +8,7 @@ import { useGameStore } from '../store/gameStore';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Navigation() {
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -73,13 +73,13 @@ export default function Navigation() {
 
   return (
     <>
-      <div className="w-full bg-white border-b border-gray-100">
+      <div className="w-full bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center h-10 sm:h-12 lg:h-14">
             <nav className="flex items-center space-x-4">
               <div className="relative" ref={dropdownRef}>
                 <button 
-                  className={`p-1.5 rounded-full hover:bg-gray-100 ${isDropdownOpen ? 'bg-gray-100' : ''}`} 
+                  className={`p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 ${isDropdownOpen ? 'bg-gray-100 dark:bg-gray-900' : ''}`} 
                   style={{ color: `var(--color-${colors.primary})` }}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
@@ -91,7 +91,7 @@ export default function Navigation() {
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <div 
-                    className="absolute right-0 sm:right-0 -left-24 sm:left-auto mt-2 w-48 rounded-lg shadow-lg py-1 bg-white border-2 z-50"
+                    className="absolute right-0 sm:right-0 -left-24 sm:left-auto mt-2 w-48 rounded-lg shadow-lg py-1 bg-white dark:bg-black border-2 z-50"
                     style={{ borderColor: `var(--color-${colors.primary})` }}
                   >
                     {menuItems.map((item, index) => (
@@ -101,7 +101,7 @@ export default function Navigation() {
                           item.onClick();
                           setIsDropdownOpen(false);
                         }}
-                        className={`${inter.className} w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition-colors`}
+                        className={`${inter.className} w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors`}
                         style={{ color: `var(--color-${colors.primary})` }}
                       >
                         <span>{item.label}</span>
@@ -125,13 +125,13 @@ export default function Navigation() {
                   </div>
                 )}
               </div>
-              <button className="p-1.5 rounded-full hover:bg-gray-100" style={{ color: `var(--color-${colors.primary})` }}>
+              <button className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900" style={{ color: `var(--color-${colors.primary})` }}>
                 <svg className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </button>
               <button 
-                className="p-1.5 rounded-full hover:bg-gray-100" 
+                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900" 
                 style={{ color: `var(--color-${colors.primary})` }}
                 onClick={() => setIsSettingsOpen(true)}
               >

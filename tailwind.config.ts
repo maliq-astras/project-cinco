@@ -4,6 +4,7 @@ const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   safelist: [
     // Primary colors
     'text-blue-600', 'bg-blue-600', 'hover:bg-blue-700', 'border-blue-600', 'hover:border-blue-600', 'text-blue-800', 'bg-blue-50', 'bg-blue-500', 'bg-blue-700', 'bg-blue-100', 'bg-blue-800', 'border-4', 'border-blue-600', 'bg-blue-600/30',
@@ -105,7 +106,23 @@ const config: Config = {
         'fadeOut': 'fadeOut 0.3s ease-in forwards',
         'slideInRight': 'slideInRight 0.3s ease-out forwards',
         'slideOutRight': 'slideOutRight 0.3s ease-in forwards'
-      }
+      },
+      colors: {
+        // Override gray colors to ensure they have no blue tint
+        gray: {
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0a0a0a',
+        },
+      },
     },
   },
   plugins: [],

@@ -20,10 +20,10 @@ const languages = [
 ];
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
-  const { colors } = useTheme();
+  const { colors, darkMode, toggleDarkMode } = useTheme();
   
   // These would be hooked up to actual state management in a real implementation
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
+  // Dark mode is now managed by ThemeContext
   const [isHardMode, setIsHardMode] = React.useState(false);
   const [isRandomizer, setIsRandomizer] = React.useState(false);
   const [isHighContrast, setIsHighContrast] = React.useState(false);
@@ -86,11 +86,11 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   const settingsContent = (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold" style={{ color: `var(--color-${colors.primary})` }}>Settings</h2>
+        <h2 className="text-xl font-bold dark:text-white" style={{ color: darkMode ? 'white' : `var(--color-${colors.primary})` }}>Settings</h2>
         <button 
           onClick={onClose}
-          className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-          style={{ color: `var(--color-${colors.primary})` }}
+          className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          style={{ color: darkMode ? 'white' : `var(--color-${colors.primary})` }}
           aria-label="Close settings"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,17 +103,17 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Theme Toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium text-gray-800">Dark Mode</p>
-            <p className="text-sm text-gray-500">Switch between light and dark theme</p>
+            <p className="font-medium text-gray-800 dark:text-gray-200">Dark Mode</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Switch between light and dark theme</p>
           </div>
-          <ToggleSwitch isOn={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
+          <ToggleSwitch isOn={darkMode} onToggle={toggleDarkMode} />
         </div>
 
         {/* Hard Mode Toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium text-gray-800">Hard Mode</p>
-            <p className="text-sm text-gray-500">No hints, fewer guesses</p>
+            <p className="font-medium text-gray-800 dark:text-gray-200">Hard Mode</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">No hints, fewer guesses</p>
           </div>
           <ToggleSwitch isOn={isHardMode} onToggle={() => setIsHardMode(!isHardMode)} />
         </div>
@@ -121,8 +121,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Randomizer Toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium text-gray-800">Randomizer</p>
-            <p className="text-sm text-gray-500">Get random categories each day</p>
+            <p className="font-medium text-gray-800 dark:text-gray-200">Randomizer</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Get random categories each day</p>
           </div>
           <ToggleSwitch isOn={isRandomizer} onToggle={() => setIsRandomizer(!isRandomizer)} />
         </div>
@@ -130,23 +130,23 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* High Contrast Mode */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium text-gray-800">High Contrast Mode</p>
-            <p className="text-sm text-gray-500">Increase color contrast</p>
+            <p className="font-medium text-gray-800 dark:text-gray-200">High Contrast Mode</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Increase color contrast</p>
           </div>
           <ToggleSwitch isOn={isHighContrast} onToggle={() => setIsHighContrast(!isHighContrast)} />
         </div>
 
         {/* Language Dropdown */}
         <div className="flex flex-col">
-          <label htmlFor="language" className="font-medium text-gray-800 mb-1">Language</label>
+          <label htmlFor="language" className="font-medium text-gray-800 dark:text-gray-200 mb-1">Language</label>
           <select 
             id="language"
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white"
             style={{ 
               borderColor: `var(--color-${colors.primary})`, 
-              color: `var(--color-${colors.primary})` 
+              color: darkMode ? 'white' : `var(--color-${colors.primary})` 
             }}
           >
             {languages.map((lang) => (
@@ -158,8 +158,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-gray-200 pt-4">
-        <p className="text-xs text-gray-500 text-center">
+      <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-4">
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
           Settings will be saved automatically.
         </p>
       </div>
@@ -171,19 +171,24 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     return (
       <AnimatePresence>
         <motion.div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 bg-black bg-opacity-70 z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-lg"
+            className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg"
+            style={{ 
+              borderTop: `4px solid var(--color-${colors.primary})`,
+              borderLeft: `1px solid var(--color-${colors.primary})`,
+              borderRight: `1px solid var(--color-${colors.primary})`
+            }}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'tween', duration: 0.3 }}
           >
-            <div className="w-full h-1 bg-gray-200 rounded-full mx-auto my-2 max-w-[4rem]"></div>
+            <div className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]"></div>
             <div className={`${inter.className} p-6 max-h-[80vh] overflow-y-auto`}>
               {settingsContent}
             </div>
@@ -196,10 +201,15 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   // For desktop, render a centered modal
   return (
     <div 
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50"
       onClick={handleOverlayClick}
     >
-      <div className={`${inter.className} bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto`}>
+      <div 
+        className={`${inter.className} bg-white dark:bg-black rounded-xl shadow-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto`}
+        style={{ 
+          border: `2px solid var(--color-${colors.primary})`
+        }}
+      >
         {settingsContent}
       </div>
     </div>

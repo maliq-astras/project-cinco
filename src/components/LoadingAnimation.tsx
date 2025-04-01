@@ -5,9 +5,84 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import Logo from './Logo';
 import { useTheme } from '../context/ThemeContext';
-import { CategoryType, categoryColorMap } from '../types';
+import { CategoryType, categoryColorMap, ThemeColors } from '../types';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
+
+// Helper function to convert tailwind color class to RGB values
+const getColorRGB = (colorClass: string): string => {
+  // This is a simplified mapping of tailwind colors to RGB values
+  const colorMap: Record<string, string> = {
+    // Blues (Countries)
+    'blue-600': '37, 99, 235',
+    'blue-500': '59, 130, 246',
+    'blue-400': '96, 165, 250',
+    'blue-700': '29, 78, 216',
+    
+    // Emerald (Animals)
+    'emerald-600': '5, 150, 105',
+    'emerald-500': '16, 185, 129',
+    'emerald-400': '52, 211, 153',
+    'emerald-700': '4, 120, 87',
+    
+    // Violet (Movies)
+    'violet-600': '124, 58, 237',
+    'violet-500': '139, 92, 246',
+    'violet-400': '167, 139, 250',
+    'violet-700': '109, 40, 217',
+    
+    // Orange (Books)
+    'orange-600': '234, 88, 12',
+    'orange-500': '249, 115, 22',
+    'orange-400': '251, 146, 60',
+    'orange-700': '194, 65, 12',
+    
+    // Fuchsia (Musical Artists)
+    'fuchsia-600': '192, 38, 211',
+    'fuchsia-500': '217, 70, 239',
+    'fuchsia-400': '232, 121, 249',
+    'fuchsia-700': '162, 28, 175',
+    
+    // Red (Athletes)
+    'red-600': '220, 38, 38',
+    'red-500': '239, 68, 68',
+    'red-400': '248, 113, 113',
+    'red-700': '185, 28, 28',
+    
+    // Amber (Historical Figures)
+    'amber-600': '217, 119, 6',
+    'amber-500': '245, 158, 11',
+    'amber-400': '251, 191, 36',
+    'amber-300': '252, 211, 77',
+    
+    // Teal (Famous Brands)
+    'teal-600': '13, 148, 136',
+    'teal-500': '20, 184, 166',
+    'teal-400': '45, 212, 191',
+    'teal-300': '94, 234, 212',
+    
+    // Indigo (TV Shows)
+    'indigo-600': '79, 70, 229',
+    'indigo-500': '99, 102, 241',
+    'indigo-400': '129, 140, 248',
+    'indigo-300': '165, 180, 252'
+  };
+  
+  // If the color isn't directly in the map, try to derive it
+  if (!colorMap[colorClass]) {
+    const [colorName, shade] = colorClass.split('-');
+    // Try different shades if the exact one isn't available
+    const alternativeShades = ['600', '500', '400', '700'];
+    for (const altShade of alternativeShades) {
+      const alternative = `${colorName}-${altShade}`;
+      if (colorMap[alternative]) {
+        return colorMap[alternative];
+      }
+    }
+  }
+  
+  return colorMap[colorClass] || '59, 130, 246'; // Default to blue-500
+};
 
 // Sample categories to cycle through
 const SAMPLE_CATEGORIES = [
@@ -30,6 +105,7 @@ const categoryNameToType: Record<string, CategoryType> = {
   'BOOKS': CategoryType.BOOKS,
   'ATHLETES': CategoryType.ATHLETES,
   'MUSIC': CategoryType.MUSICAL_ARTISTS,
+  'MUSICAL ARTISTS': CategoryType.MUSICAL_ARTISTS,
   'HISTORICAL FIGURES': CategoryType.HISTORICAL_FIGURES,
   'TV SHOWS': CategoryType.TV_SHOWS,
   'FAMOUS BRANDS': CategoryType.FAMOUS_BRANDS
@@ -54,26 +130,66 @@ interface LoadingAnimationProps {
 // Helper function to get shadow color for a category
 const getShadowColor = (color: string): string => {
   const colorMap: Record<string, string> = {
-    // Original colors
-    'blue-600': 'rgba(59, 130, 246, 0.3)',
+    // Blues (Countries)
+    'blue-600': 'rgba(37, 99, 235, 0.3)',
+    'blue-500': 'rgba(59, 130, 246, 0.3)',
+    'blue-400': 'rgba(96, 165, 250, 0.3)',
     
-    // New vibrant colors
+    // Emerald (Animals)
     'emerald-600': 'rgba(5, 150, 105, 0.3)',
+    'emerald-500': 'rgba(16, 185, 129, 0.3)',
+    'emerald-400': 'rgba(52, 211, 153, 0.3)',
+    
+    // Violet (Movies)
     'violet-600': 'rgba(124, 58, 237, 0.3)',
+    'violet-500': 'rgba(139, 92, 246, 0.3)',
+    'violet-400': 'rgba(167, 139, 250, 0.3)',
+    
+    // Orange (Books)
     'orange-600': 'rgba(234, 88, 12, 0.3)',
+    'orange-500': 'rgba(249, 115, 22, 0.3)',
+    'orange-400': 'rgba(251, 146, 60, 0.3)',
+    
+    // Fuchsia (Musical Artists)
     'fuchsia-600': 'rgba(192, 38, 211, 0.3)',
+    'fuchsia-500': 'rgba(217, 70, 239, 0.3)',
+    'fuchsia-400': 'rgba(232, 121, 249, 0.3)',
+    
+    // Red (Athletes)
     'red-600': 'rgba(220, 38, 38, 0.3)',
+    'red-500': 'rgba(239, 68, 68, 0.3)',
+    'red-400': 'rgba(248, 113, 113, 0.3)',
+    
+    // Amber (Historical Figures)
+    'amber-600': 'rgba(217, 119, 6, 0.3)',
     'amber-500': 'rgba(245, 158, 11, 0.3)',
+    'amber-400': 'rgba(251, 191, 36, 0.3)',
+    
+    // Teal (Famous Brands)
+    'teal-600': 'rgba(13, 148, 136, 0.3)',
     'teal-500': 'rgba(20, 184, 166, 0.3)',
-    'indigo-500': 'rgba(99, 102, 241, 0.3)'
+    'teal-400': 'rgba(45, 212, 191, 0.3)',
+    
+    // Indigo (TV Shows)
+    'indigo-600': 'rgba(79, 70, 229, 0.3)',
+    'indigo-500': 'rgba(99, 102, 241, 0.3)',
+    'indigo-400': 'rgba(129, 140, 248, 0.3)'
   };
   
-  // Extract the color name from the class (e.g. 'blue-600' -> 'blue')
-  const colorBase = color.split('-')[0];
-  const colorVariant = color.split('-')[1] || '600';
+  // If the color isn't in the map, try to derive it from the base color
+  if (!colorMap[color]) {
+    const [colorName, shade] = color.split('-');
+    // Try different shades if the exact one isn't available
+    const alternativeShades = ['500', '600', '400'];
+    for (const altShade of alternativeShades) {
+      const alternative = `${colorName}-${altShade}`;
+      if (colorMap[alternative]) {
+        return colorMap[alternative];
+      }
+    }
+  }
   
-  // First try exact match, then try base color with variant, then return a neutral shadow
-  return colorMap[color] || colorMap[`${colorBase}-${colorVariant}`] || 'rgba(100, 100, 100, 0.2)';
+  return colorMap[color] || 'rgba(100, 100, 100, 0.2)';
 };
 
 export default function LoadingAnimation({ 
@@ -81,12 +197,12 @@ export default function LoadingAnimation({
   onComplete, 
   isChallengeFetched 
 }: LoadingAnimationProps) {
-  const { colors } = useTheme();
+  const { darkMode, getAdjustedColorClass, colors } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
-  const [currentColor, setCurrentColor] = useState(colors);
+  const [currentColor, setCurrentColor] = useState<ThemeColors>(categoryColorMap[CategoryType.COUNTRIES]);
   
   // Set mounted to true after client-side hydration is complete
   useEffect(() => {
@@ -165,6 +281,23 @@ export default function LoadingAnimation({
     return () => clearTimeout(timeoutId);
   }, [categories, currentIndex, isChallengeFetched, onComplete, mounted]);
 
+  // Get the theme-adjusted primary color with adjustments for dark mode
+  const getThemeAdjustedPrimaryColor = () => {
+    const colorClass = darkMode ? 
+      getAdjustedColorClass(currentColor.primary) : 
+      currentColor.primary;
+      
+    // Ensure we have the RGB values for this color ready
+    const rgb = getColorRGB(colorClass);
+    
+    // If we have RGB values, use them directly instead of relying on CSS variables
+    return {
+      colorClass,
+      rgb,
+      cssVar: `var(--color-${colorClass})`
+    };
+  };
+
   // Watch for when challenge is fetched after animation completes
   useEffect(() => {
     if (!mounted) return;
@@ -174,7 +307,7 @@ export default function LoadingAnimation({
       return () => clearTimeout(timeoutId);
     }
   }, [isAnimationComplete, isChallengeFetched, onComplete, mounted]);
-  
+
   // Helper function to calculate appropriate font size based on text length
   const calculateFontSize = (text: string) => {
     if (!text) return "clamp(28px, 5vw, 44px)";
@@ -195,7 +328,7 @@ export default function LoadingAnimation({
   const isShowingFinalCategory = currentIndex === categories.length - 1;
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center">
+    <div className="fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center">
       <div className="flex flex-col items-center w-full h-full">
         {/* Top half - Logo */}
         <div className="flex-1 flex items-end justify-center pb-6">
@@ -220,7 +353,10 @@ export default function LoadingAnimation({
               initial={{ width: 0 }}
               animate={{ width: "100vw" }}
               transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-              className={`h-1 bg-${currentColor.primary}/30 mx-auto`}
+              className="h-1 mx-auto"
+              style={{ 
+                backgroundColor: `rgba(${getThemeAdjustedPrimaryColor().rgb}, 0.3)` 
+              }}
             />
           )}
         </div>
@@ -255,13 +391,16 @@ export default function LoadingAnimation({
                       ease: [0.34, 1.56, 0.64, 1]
                     }
                   }}
-                  className={`text-${currentColor.primary} m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''}`}
+                  className={`m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''}`}
                   style={{
+                    color: `rgb(${getThemeAdjustedPrimaryColor().rgb})`,
                     fontSize: calculateFontSize(currentCategory),
                     lineHeight: 1,
                     padding: "0 12px",
                     whiteSpace: "nowrap",
-                    textShadow: isShowingFinalCategory ? `0 0 15px ${getShadowColor(currentColor.primary)}` : 'none'
+                    textShadow: isShowingFinalCategory 
+                      ? `0 0 15px ${getShadowColor(getThemeAdjustedPrimaryColor().colorClass)}`
+                      : (darkMode ? `0 0 8px rgba(${getThemeAdjustedPrimaryColor().rgb}, 0.5)` : 'none')
                   }}
                 >
                   {currentCategory}
@@ -280,8 +419,14 @@ export default function LoadingAnimation({
               transition={{ duration: 0.5, delay: 0.5 }}
               className="mt-8 flex flex-col items-center"
             >
-              <div className={`w-10 h-10 border-4 border-${currentColor.primary} border-t-transparent rounded-full animate-spin mb-3`}></div>
-              <p className="text-gray-600">Please wait, loading challenge...</p>
+              <div 
+                className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin mb-3" 
+                style={{ 
+                  borderColor: `rgb(${getThemeAdjustedPrimaryColor().rgb})`, 
+                  borderTopColor: 'transparent' 
+                }}
+              ></div>
+              <p className="text-gray-600 dark:text-gray-300">Please wait, loading challenge...</p>
             </motion.div>
           )}
         </div>
@@ -293,7 +438,7 @@ export default function LoadingAnimation({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             onClick={onComplete}
-            className={`absolute bottom-4 sm:bottom-8 right-4 sm:right-8 text-black ${righteous.className} text-xl sm:text-2xl md:text-3xl hover:opacity-70 transition-opacity px-2 py-1`}
+            className={`absolute bottom-4 sm:bottom-8 right-4 sm:right-8 text-black dark:text-white ${righteous.className} text-xl sm:text-2xl md:text-3xl hover:opacity-70 transition-opacity px-2 py-1`}
           >
             SKIP &gt;&gt;
           </motion.button>

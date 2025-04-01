@@ -15,16 +15,17 @@ const Header: React.FC = () => {
       <header id="header-area" className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-3 sm:gap-6">
           <div className="h-[99px] sm:h-[132px] md:h-[165px] lg:h-[187px]">
-            <Logo height="100%" className={`text-${colors.primary}`} />
+            <Logo height="100%"/>
           </div>
           
           {challenge?.category && (
             <h1 
               id="category-title"
-              className={`text-${colors.primary} m-0 ${righteous.className}`}
+              className={`m-0 ${righteous.className}`}
               style={{ 
                 fontSize: "clamp(28px, 5vw, 46px)",
-                lineHeight: 1
+                lineHeight: 1,
+                color: `var(--color-${colors.primary})`
               }}
             >
               {challenge.category.toUpperCase()}

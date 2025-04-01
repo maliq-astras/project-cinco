@@ -216,25 +216,36 @@ export default function FactBubble({
         <AnimatePresence>
           {!isRevealed && !isPopping && (
             <motion.button
-              ref={buttonRef}
-              className={`absolute inset-0 w-full h-full rounded-full 
-                ${isTouched ? `border-${colors.primary}` : `border-${colors.light}`} border-4 
-                ${isClickable() ? `hover:border-${colors.primary} cursor-pointer` : 'cursor-not-allowed opacity-60'}
-                flex items-center justify-center`}
-              onClick={isTouchDevice ? undefined : handleInteraction}
+              key={`bubble-${factIndex}`}
+              className={`relative w-full h-full rounded-full overflow-hidden bg-white dark:bg-gray-800 border-2 shadow-md dark:shadow-lg flex items-center justify-center transition-colors ${isTouched ? 'scale-95' : ''} ${
+                isClickable() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+              }`}
+              style={{
+                borderColor: `var(--color-${colors.primary})`,
+                transform: isPoppedOut ? 'scale(1.1)' : 'scale(1)'
+              }}
+              onClick={handleInteraction}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              variants={bubbleVariants}
-              initial="initial"
-              exit="exit"
-              whileHover={isClickable() && !isTouchDevice ? "hover" : "initial"}
-              whileTap={isClickable() ? "tap" : "initial"}
-              aria-label={getTooltipText()}
-              data-fact-index={factIndex}
-              // Add touch-action CSS property to prevent browser handling of all touch actions
-              style={{ touchAction: 'none' }}
+              onMouseEnter={() => !isTouchDevice && setHoveredFact(factIndex)}
+              onMouseLeave={() => !isTouchDevice && setHoveredFact(null)}
+              whileHover={{ scale: isClickable() && !isPopping ? 1.05 : 1 }}
+              whileTap={{ scale: isClickable() && !isPopping ? 0.95 : 1 }}
+              animate={{
+                scale: isPopping ? [1, 1.2, 0] : 1,
+                opacity: isPopping ? [1, 1, 0] : 1
+              }}
+              transition={{
+                scale: { 
+                  duration: isPopping ? 0.5 : 0.2,
+                  ease: isPopping ? [0.42, 0, 0.58, 1] : [0.4, 0, 0.2, 1]
+                },
+                opacity: { 
+                  duration: isPopping ? 0.5 : 0.2,
+                  ease: isPopping ? [0.42, 0, 0.58, 1] : [0.4, 0, 0.2, 1]
+                }
+              }}
             >
-              {/* Use the updated icon object format */}
               {(() => {
                 // Calculate icon size based on available space
                 // Adjust multipliers to make icons smaller

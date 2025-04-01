@@ -270,26 +270,41 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
         }
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/75" />
+      {/* Mask-based overlay approach */}
+      <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            WebkitMaskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cmask id='mask'%3E%3Crect width='100%25' height='100%25' fill='white'/%3E%3Crect x='${parseFloat(spotlightStyles.left)}' y='${parseFloat(spotlightStyles.top)}' width='${parseFloat(spotlightStyles.width)}' height='${parseFloat(spotlightStyles.height)}' rx='8' fill='black'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' mask='url(%23mask)' fill='black'/%3E%3C/svg%3E")`,
+            maskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cmask id='mask'%3E%3Crect width='100%25' height='100%25' fill='white'/%3E%3Crect x='${parseFloat(spotlightStyles.left)}' y='${parseFloat(spotlightStyles.top)}' width='${parseFloat(spotlightStyles.width)}' height='${parseFloat(spotlightStyles.height)}' rx='8' fill='black'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' mask='url(%23mask)' fill='black'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
 
-      {/* Spotlight effect */}
+      {/* White border around the spotlight */}
       <div
-        className="absolute transition-all duration-300 ease-in-out"
+        className="absolute transition-all duration-300 ease-in-out z-20"
         style={{
-          ...spotlightStyles,
-          boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.75)',
-          borderRadius: '8px',
+          top: parseFloat(spotlightStyles.top) - 2 + 'px',
+          left: parseFloat(spotlightStyles.left) - 2 + 'px',
+          width: parseFloat(spotlightStyles.width) + 4 + 'px',
+          height: parseFloat(spotlightStyles.height) + 4 + 'px',
+          borderRadius: '10px',
           pointerEvents: 'none',
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'brightness(1.25) contrast(1.1)',
-          WebkitBackdropFilter: 'brightness(1.25) contrast(1.1)'
+          border: '2px solid white',
+          boxShadow: '0 0 15px 3px rgba(255, 255, 255, 0.7)',
+          backgroundColor: 'transparent',
         }}
       />
 
       {/* Tutorial text box */}
       <motion.div 
-        className={`${inter.className} fixed bg-white rounded-lg shadow-xl p-6 sm:p-4 border-2`}
+        className={`${inter.className} fixed bg-white rounded-lg shadow-xl p-6 sm:p-4 border-2 z-30`}
         style={{
           borderColor: `var(--color-${colors.primary})`,
         }}
@@ -331,7 +346,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
       {/* Progress indicator and continue message */}
       <motion.div 
-        className="fixed left-0 right-0 flex flex-col items-center pointer-events-none"
+        className="fixed left-0 right-0 flex flex-col items-center pointer-events-none z-30"
         initial={{ opacity: 0 }}
         animate={{ 
           opacity: 1,

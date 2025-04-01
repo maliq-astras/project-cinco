@@ -91,31 +91,22 @@ export default function GuessProgressBar() {
     if (wrongGuessCount > prevWrongGuessCount.current) {
       setIsShaking(true);
       
-      // Show the toast notification
-      const toast = document.getElementById('wrong-guess-toast');
-      if (toast) {
-        toast.classList.remove('hidden');
-        
-        setTimeout(() => {
-          toast.classList.add('animate-fadeOut');
+      // Show the toast notification only if the last guess wasn't skipped
+      const lastGuess = guesses[guesses.length - 1];
+      if (lastGuess && lastGuess.guess !== "___SKIPPED___") {
+        const toast = document.getElementById('wrong-guess-toast');
+        if (toast) {
+          toast.classList.remove('hidden');
+          
           setTimeout(() => {
-            toast.classList.remove('animate-fadeIn', 'animate-fadeOut');
-            toast.classList.add('hidden');
-          }, 300);
-        }, 2000);
+            toast.classList.add('animate-fadeOut');
+            setTimeout(() => {
+              toast.classList.remove('animate-fadeIn', 'animate-fadeOut');
+              toast.classList.add('hidden');
+            }, 300);
+          }, 2000);
+        }
       }
-      
-      // Shake all fact bubbles together for wrong guesses
-      const factBubbles = document.querySelectorAll('[data-fact-index]');
-      factBubbles.forEach(bubble => {
-        // Remove any existing animations first to avoid conflicts
-        bubble.classList.remove('animate-shake', 'animate-wiggle', 'animate-bounce', 'animate-pulse');
-        // Use a non-infinite shake for wrong guesses
-        (bubble as HTMLElement).style.animation = 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both';
-        setTimeout(() => {
-          (bubble as HTMLElement).style.animation = '';
-        }, 500);
-      });
       
       // Reset shake after animation completes
       setTimeout(() => {
@@ -124,7 +115,7 @@ export default function GuessProgressBar() {
     }
     
     prevWrongGuessCount.current = wrongGuessCount;
-  }, [wrongGuessCount]);
+  }, [wrongGuessCount, guesses]);
 
   // Generate spark positions
   const generateSparks = () => {
@@ -179,7 +170,7 @@ export default function GuessProgressBar() {
         {Array.from({ length: maxGuesses }).map((_, index) => (
           <div 
             key={index}
-            className={`flex-1 relative ${index > 0 ? 'border-l-2 border-white' : ''} bg-gray-200 overflow-hidden`}
+            className={`flex-1 relative ${index > 0 ? 'border-l-2 border-white dark:border-gray-900' : ''} bg-gray-200 dark:bg-gray-700 overflow-hidden`}
           >
             {index < animatedCount && (
               <AnimatePresence>
