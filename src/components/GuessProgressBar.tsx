@@ -1,74 +1,53 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGameStore } from '../store/gameStore';
-import { useTheme } from '../context/ThemeContext';
-import { useGuessProgress } from '../hooks/useGuessProgress';
-import { useSparkAnimation } from '../hooks/useSparkAnimation';
 import Spark from './Spark';
-import { guessProgressBarStyles, progressAnimations, segmentTransition } from '../styles/guessProgressBarStyles';
-import { getGradientBackground, getBottomShadowStyle } from '../helpers/guessProgressBarHelpers';
+import { useGuessProgressBar } from '../hooks/useGuessProgressBar';
 
+/**
+ * Displays a progress bar for user guesses with animation effects
+ * Shows sparks animation when all guesses are used
+ */
 export default function GuessProgressBar() {
-  // Access state from the store
-  const guesses = useGameStore(state => state.gameState.guesses);
-  const maxGuesses = 5; // Set a constant value or use one from config if available
-  const { colors } = useTheme();
-  
-  // Use custom hooks for progress and animations
-  const { 
+  // Use comprehensive hook for all logic and state
+  const {
+    // State
     animatedCount,
-    isShaking,
-    showSparks
-  } = useGuessProgress({
-    guesses,
-    maxGuesses
-  });
-  
-  // Get spark animations
-  const { 
+    showSparks,
+    
+    // Animation properties
     sparks,
     containerAnimation,
-    pulseAnimation
-  } = useSparkAnimation({
-    primaryColor: `var(--color-${colors.primary})`,
-    secondaryColor: `var(--color-${colors.secondary})`
-  });
-  
-  // Memoize gradient style
-  const gradientStyle = useMemo(() => 
-    getGradientBackground(colors.primary, colors.secondary),
-    [colors.primary, colors.secondary]
-  );
-  
-  // Memoize bottom shadow style
-  const shadowStyle = useMemo(() => 
-    getBottomShadowStyle(colors.dark),
-    [colors.dark]
-  );
+    pulseAnimation,
+    
+    // Styles
+    gradientStyle,
+    shadowStyle,
+    barClassName,
+    
+    // Data
+    segments,
+    
+    // Style constants
+    guessProgressBarStyles
+  } = useGuessProgressBar();
   
   return (
     <div className={guessProgressBarStyles.container}>
-      <div 
-        className={`${guessProgressBarStyles.progressBar} ${isShaking ? progressAnimations.shake : ''}`}
-      >
-        {Array.from({ length: maxGuesses }).map((_, index) => (
+      <div className={barClassName}>
+        {segments.map(segment => (
           <div 
-            key={index}
-            className={`${guessProgressBarStyles.progressSegment} ${index > 0 ? guessProgressBarStyles.progressSegmentBorder : ''}`}
+            key={segment.index}
+            className={segment.className}
           >
-            {index < animatedCount && (
+            {segment.isActive && (
               <AnimatePresence>
                 <motion.div 
                   className={guessProgressBarStyles.filledSegment}
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ 
-                    duration: segmentTransition.duration,
-                    ease: segmentTransition.ease,
-                    delay: index * segmentTransition.staggerDelay // Stagger the animations
-                  }}
+                  transition={segment.transitionProps}
                 >
                   {/* Premium gradient background */}
                   <div 
@@ -103,6 +82,17 @@ export default function GuessProgressBar() {
                 />
               ))}
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Final pulse glow effect when the bar is full */}
+        <AnimatePresence>
+          {showSparks && (
+            <motion.div 
+              className={guessProgressBarStyles.pulseEffect} 
+              style={gradientStyle}
+              {...pulseAnimation}
+            />
           )}
         </AnimatePresence>
       </div>

@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Fact } from '../types';
-import { FactCardBackIcon } from './IconContainer';
-import { useTheme } from '../context/ThemeContext';
+import FactCardBackIcon from './FactCardBackIcon';
+import { useFactCardBack } from '../hooks/useFactCardBack';
 
 interface FactCardBackProps {
   fact: Fact<any>;
@@ -13,6 +13,10 @@ interface FactCardBackProps {
   inStack?: boolean;
 }
 
+/**
+ * Component that displays the back side of a fact card
+ * Used in the card stack and when cards are flipped
+ */
 export default function FactCardBack({ 
   fact, 
   size = 'large', 
@@ -20,17 +24,17 @@ export default function FactCardBack({
   isRevealed = false,
   inStack = false
 }: FactCardBackProps) {
-  const { colors } = useTheme();
+  // Use the custom hook for styles and classes
+  const { backgroundStyle, containerClasses } = useFactCardBack({
+    isFinalFive,
+    isRevealed,
+    inStack
+  });
   
   return (
     <div 
-      className={`w-full h-full flex flex-col items-center justify-center p-4 sm:p-6 relative rounded-lg
-        ${isFinalFive ? 'bg-gray-50 dark:bg-gray-800' : ''}
-        ${isRevealed ? 'revealed-fact' : ''}
-        ${inStack ? 'border border-white/40 dark:border-white/20' : ''}`}
-      style={{
-        background: !isFinalFive ? `var(--color-${colors.primary})` : undefined
-      }}
+      className={containerClasses}
+      style={backgroundStyle}
     >
       <FactCardBackIcon fact={fact} size={size} />
     </div>

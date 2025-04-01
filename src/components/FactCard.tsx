@@ -1,68 +1,60 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Fact } from '../types';
 import IconContainer from './IconContainer';
 import FactCardBack from './FactCardBack';
-import { useGameStore } from '../store/gameStore';
-import { useTheme } from '../context/ThemeContext';
-import { useCardFlip } from '../hooks/useCardFlip';
-import { useResponsiveCard } from '../hooks/useResponsiveCard';
-import { useCardAnimations } from '../hooks/useCardAnimations';
-import { factCardInlineStyles, normalizeCategory } from '../helpers/factCardHelpers';
 import { factCardStyles } from '../styles/factCardStyles';
+import { useFactCard } from '../hooks/useFactCard';
 
 interface FactCardProps {
   fact: Fact<any>;
   visibleStackCount?: number;
 }
 
+/**
+ * Component for displaying a single fact card
+ * Handles animations for drawing, flipping, and returning cards
+ */
 export default function FactCard({ 
   fact, 
   visibleStackCount = 0,
 }: FactCardProps) {
-  // Refs
-  const cardRef = useRef<HTMLDivElement>(null);
-  
-  // Access state from the store
-  const sourcePosition = useGameStore(state => state.cardSourcePosition);
-  const { colors } = useTheme();
-
-  // Use custom hooks for card logic
-  const { iconSize } = useResponsiveCard(cardRef);
-  const { 
-    isFlipped, 
-    isDrawn, 
-    isClosing, 
+  // Use comprehensive hook for all card logic and state
+  const {
+    // Refs
+    cardRef,
+    
+    // State
+    isFlipped,
+    isDrawn,
+    isClosing,
     canClose,
-    handleClose, 
+    
+    // Event handlers
+    handleClose,
     handleAnimationComplete,
+    
+    // Animation properties
     initialAnimation,
     cardAnimation,
     cardTransition,
-    flipTransition
-  } = useCardFlip({ 
-    sourcePosition, 
-    visibleStackCount 
-  });
-  
-  // Use animation hook for reusable animations
-  const {
+    flipTransition,
     closeButtonAnimations,
     closeButtonIconAnimations,
-    colorStyle: factTypeStyle,
-    strokeStyle
-  } = useCardAnimations({
-    primaryColor: colors.primary
+    
+    // Styling and data
+    factTypeStyle,
+    strokeStyle,
+    factTypeClasses,
+    category,
+    iconSize,
+    cardStyles
+  } = useFactCard({
+    fact,
+    visibleStackCount
   });
-
-  // Memoized values
-  const category = useMemo(() => normalizeCategory(fact.category), [fact.category]);
-  const factTypeClasses = useMemo(() => 
-    factCardStyles.getFactTypeClasses(colors.primary), 
-    [colors.primary]
-  );
 
   return (
     <div className={factCardStyles.modalOverlay}>
@@ -101,17 +93,17 @@ export default function FactCard({
             initial={{ rotateY: 0 }}
             animate={{ rotateY: isFlipped && isDrawn && !isClosing ? 180 : 0 }}
             transition={flipTransition}
-            style={factCardInlineStyles.preserve3d}
+            style={cardStyles.preserve3d}
           >
             {/* Card Back (blue with white icon) - visible first */}
-            <div className={factCardStyles.cardBack} style={factCardInlineStyles.hidden}>
+            <div className={factCardStyles.cardBack} style={cardStyles.hidden}>
               <FactCardBack fact={fact} inStack={false} />
             </div>
 
             {/* Card Front (white with fact content) - visible after flip */}
             <div 
               className={factCardStyles.cardFront}
-              style={factCardInlineStyles.hidden}
+              style={cardStyles.hidden}
             >
               <div className={factCardStyles.cardContent}>
                 {/* Top half - Icon and Fact Type */}
