@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
-import { useTheme } from '../context/ThemeContext';
+import { useGameTutorial } from '../hooks/components/gameTutorial';
+import { gameTutorialStyles } from '../styles/gameTutorialStyles';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -75,185 +76,14 @@ interface GameTutorialProps {
 }
 
 export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [spotlightStyles, setSpotlightStyles] = useState({
-    top: '0px',
-    left: '0px',
-    width: '0px',
-    height: '0px'
-  });
-  const [textBoxStyles, setTextBoxStyles] = useState({
-    top: '0px',
-    left: '0px',
-    width: '0px'
-  });
-  const { colors } = useTheme();
-
-  // Reset to first step when tutorial is opened
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentStep(0);
-    }
-  }, [isOpen]);
-  
-  useEffect(() => {
-    if (isOpen) {
-      const currentTarget = tutorialSteps[currentStep].target;
-      const element = document.getElementById(currentTarget);
-      
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        const padding = 16;
-        const textPadding = 24;
-        const isMobile = window.innerWidth < 640;
-        const navigationHeight = 120; // Height of navigation area
-        const viewportHeight = window.innerHeight;
-        
-        // Spotlight styles
-        setSpotlightStyles({
-          top: `${rect.top - padding}px`,
-          left: `${rect.left - padding}px`,
-          width: `${rect.width + padding * 2}px`,
-          height: `${rect.height + padding * 2}px`
-        });
-
-        // Calculate text box position
-        const textBoxWidth = isMobile ? Math.min(window.innerWidth - 32, 400) : 300;
-        let textTop = rect.top;
-        let textLeft = rect.left;
-
-        if (isMobile) {
-          // Center the text box horizontally
-          textLeft = (window.innerWidth - textBoxWidth) / 2;
-          
-          // Position text box based on element's position in viewport
-          const viewportMiddle = viewportHeight / 2;
-          
-          if (rect.top + rect.height / 2 < viewportMiddle) {
-            // If element is in upper half, place text below with space for navigation
-            textTop = Math.min(
-              rect.bottom + textPadding * 2,
-              viewportHeight - 200 - navigationHeight
-            );
-          } else {
-            // If element is in lower half, place text above
-            textTop = Math.max(80, rect.top - 160 - textPadding);
-          }
-        } else {
-          // Desktop positioning logic
-          switch (tutorialSteps[currentStep].textPosition) {
-            case 'right':
-              textLeft = rect.right + textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'left':
-              textLeft = rect.left - textBoxWidth - textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'top':
-              textTop = Math.max(16, rect.top - 160 - textPadding);
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-            case 'bottom':
-              textTop = Math.min(
-                rect.bottom + textPadding * 2,
-                viewportHeight - 200 - navigationHeight
-              );
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-          }
-        }
-
-        // Ensure text box stays within viewport bounds and doesn't overlap navigation
-        textLeft = Math.max(16, Math.min(textLeft, window.innerWidth - textBoxWidth - 16));
-        textTop = Math.max(16, Math.min(textTop, window.innerHeight - 200));
-
-        setTextBoxStyles({
-          top: `${textTop}px`,
-          left: `${textLeft}px`,
-          width: `${textBoxWidth}px`
-        });
-      }
-    }
-  }, [currentStep, isOpen]);
-
-  // Update the resize handler with similar logic
-  useEffect(() => {
-    const handleResize = () => {
-      const currentTarget = tutorialSteps[currentStep].target;
-      const element = document.getElementById(currentTarget);
-      
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        const padding = 16;
-        const textPadding = 24;
-        const isMobile = window.innerWidth < 640;
-        const navigationHeight = 120; // Height of navigation area
-        const viewportHeight = window.innerHeight;
-        
-        setSpotlightStyles({
-          top: `${rect.top - padding}px`,
-          left: `${rect.left - padding}px`,
-          width: `${rect.width + padding * 2}px`,
-          height: `${rect.height + padding * 2}px`
-        });
-
-        const textBoxWidth = isMobile ? Math.min(window.innerWidth - 32, 400) : 300;
-        let textTop = rect.top;
-        let textLeft = rect.left;
-
-        if (isMobile) {
-          textLeft = (window.innerWidth - textBoxWidth) / 2;
-          
-          const elementMiddle = rect.top + rect.height / 2;
-          const viewportMiddle = viewportHeight / 2;
-          
-          if (elementMiddle < viewportMiddle) {
-            textTop = Math.min(
-              rect.bottom + textPadding * 2,
-              viewportHeight - 200 - navigationHeight
-            );
-          } else {
-            textTop = Math.max(80, rect.top - 160 - textPadding);
-          }
-        } else {
-          switch (tutorialSteps[currentStep].textPosition) {
-            case 'right':
-              textLeft = rect.right + textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'left':
-              textLeft = rect.left - textBoxWidth - textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'top':
-              textTop = Math.max(16, rect.top - 160 - textPadding);
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-            case 'bottom':
-              textTop = Math.min(
-                rect.bottom + textPadding * 2,
-                viewportHeight - 200 - navigationHeight
-              );
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-          }
-        }
-
-        textLeft = Math.max(16, Math.min(textLeft, window.innerWidth - textBoxWidth - 16));
-        textTop = Math.max(16, Math.min(textTop, window.innerHeight - 200));
-
-        setTextBoxStyles({
-          top: `${textTop}px`,
-          left: `${textLeft}px`,
-          width: `${textBoxWidth}px`
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [currentStep]);
+  const {
+    currentStep,
+    spotlightStyles,
+    textBoxStyles,
+    colors,
+    tutorialSteps,
+    handleClick
+  } = useGameTutorial({ isOpen, onClose });
 
   if (!isOpen) return null;
 
@@ -261,74 +91,33 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-50 cursor-pointer"
-      onClick={() => {
-        if (currentStep < tutorialSteps.length - 1) {
-          setCurrentStep(currentStep + 1);
-        } else {
-          onClose();
-        }
-      }}
+      className={gameTutorialStyles.container}
+      onClick={handleClick}
     >
-      {/* Mask-based overlay approach */}
-      <div className="absolute inset-0" style={{ pointerEvents: 'none' }}>
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            WebkitMaskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cmask id='mask'%3E%3Crect width='100%25' height='100%25' fill='white'/%3E%3Crect x='${parseFloat(spotlightStyles.left)}' y='${parseFloat(spotlightStyles.top)}' width='${parseFloat(spotlightStyles.width)}' height='${parseFloat(spotlightStyles.height)}' rx='8' fill='black'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' mask='url(%23mask)' fill='black'/%3E%3C/svg%3E")`,
-            maskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cmask id='mask'%3E%3Crect width='100%25' height='100%25' fill='white'/%3E%3Crect x='${parseFloat(spotlightStyles.left)}' y='${parseFloat(spotlightStyles.top)}' width='${parseFloat(spotlightStyles.width)}' height='${parseFloat(spotlightStyles.height)}' rx='8' fill='black'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' mask='url(%23mask)' fill='black'/%3E%3C/svg%3E")`,
-          }}
-        />
+      {/* Mask-based overlay */}
+      <div className={gameTutorialStyles.overlay} style={{ pointerEvents: 'none' }}>
+        <div style={gameTutorialStyles.overlayMask(spotlightStyles)} />
       </div>
 
       {/* White border around the spotlight */}
       <div
-        className="absolute transition-all duration-300 ease-in-out z-20"
-        style={{
-          top: parseFloat(spotlightStyles.top) - 2 + 'px',
-          left: parseFloat(spotlightStyles.left) - 2 + 'px',
-          width: parseFloat(spotlightStyles.width) + 4 + 'px',
-          height: parseFloat(spotlightStyles.height) + 4 + 'px',
-          borderRadius: '10px',
-          pointerEvents: 'none',
-          border: '2px solid white',
-          boxShadow: '0 0 15px 3px rgba(255, 255, 255, 0.7)',
-          backgroundColor: 'transparent',
-        }}
+        className={gameTutorialStyles.spotlightWrapper}
+        style={gameTutorialStyles.spotlight(spotlightStyles)}
       />
 
       {/* Tutorial text box */}
       <motion.div 
-        className={`${inter.className} fixed bg-white rounded-lg shadow-xl p-6 sm:p-4 border-2 z-30`}
+        className={`${inter.className} ${gameTutorialStyles.textBox}`}
         style={{
-          borderColor: `var(--color-${colors.primary})`,
+          borderColor: `var(--color-${colors.primary})`
         }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ 
-          opacity: 1,
-          scale: 1,
-          x: parseFloat(textBoxStyles.left),
-          y: parseFloat(textBoxStyles.top),
-          width: parseFloat(textBoxStyles.width)
-        }}
-        transition={{ 
-          duration: 0.4,
-          ease: [0.4, 0, 0.2, 1],
-          layout: {
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1]
-          }
-        }}
+        {...gameTutorialStyles.textBoxAnimation}
+        animate={gameTutorialStyles.textBoxAnimation.animate(textBoxStyles)}
         layout
         onClick={(e) => e.stopPropagation()}
       >
         <motion.h3 
-          className="text-xl sm:text-lg font-semibold mb-3 sm:mb-2" 
+          className={gameTutorialStyles.textBoxTitle}
           style={{ color: `var(--color-${colors.primary})` }}
           layout="position"
           transition={{ duration: 0.4 }}
@@ -336,7 +125,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
           {currentTutorialStep.title}
         </motion.h3>
         <motion.p 
-          className="text-gray-600 text-base sm:text-sm leading-relaxed"
+          className={gameTutorialStyles.textBoxDescription}
           layout="position"
           transition={{ duration: 0.4 }}
         >
@@ -346,33 +135,13 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
       {/* Progress indicator and continue message */}
       <motion.div 
-        className="fixed left-0 right-0 flex flex-col items-center pointer-events-none z-30"
-        initial={{ opacity: 0 }}
-        animate={{ 
-          opacity: 1,
-          y: Math.max(
-            16,
-            Math.min(
-              window.innerHeight - 100,
-              Math.min(
-                parseFloat(spotlightStyles.top) - 60,
-                parseFloat(textBoxStyles.top) - 60
-              )
-            )
-          )
-        }}
-        transition={{ 
-          duration: 0.4,
-          ease: [0.4, 0, 0.2, 1],
-          layout: {
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1]
-          }
-        }}
+        className={gameTutorialStyles.progressContainer}
+        {...gameTutorialStyles.progressAnimation}
+        animate={gameTutorialStyles.progressAnimation.animate(spotlightStyles, textBoxStyles)}
         layout
       >
         <motion.div 
-          className="flex space-x-2 mb-3"
+          className={gameTutorialStyles.progressDots}
           layout
           transition={{ duration: 0.4 }}
         >
@@ -380,7 +149,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
             <motion.div
               key={index}
               layout
-              className="w-1.5 h-1.5 rounded-full transition-colors"
+              className={gameTutorialStyles.progressDot}
               style={{
                 backgroundColor: index === currentStep 
                   ? `var(--color-${colors.primary})`
@@ -390,7 +159,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
           ))}
         </motion.div>
         <motion.p 
-          className="text-white text-sm font-medium opacity-75"
+          className={gameTutorialStyles.progressText}
           style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
           layout
           transition={{ duration: 0.4 }}

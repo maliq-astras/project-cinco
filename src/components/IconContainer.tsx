@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { getFactIcon, useIconFilter } from '../helpers/iconHelpers';
-import { useTheme } from '../context/ThemeContext';
-import { useIconSize, useIconStyles } from '../hooks/components/iconContainer';
+import React from 'react';
+import { useIconContainer } from '../hooks/components/iconContainer';
 import { iconContainerStyles } from '../styles/iconStyles';
 
 interface IconContainerProps {
@@ -29,50 +27,20 @@ export default function IconContainer({
   children,
   category = 'countries'
 }: IconContainerProps) {
-  // Get theme context
-  const { darkMode } = useTheme();
-  
-  // Get icon filter function
-  const getFilter = useIconFilter();
-  
-  // Normalize category
-  const normalizedCategory = useMemo(() => 
-    category.toLowerCase(), 
-    [category]
-  );
-  
-  // Get size classes and calculated icon size
-  const { 
-    containerSizeClass, 
-    calculatedIconSize 
-  } = useIconSize({ 
-    size, 
-    isRevealed, 
-    customIconSize: iconSize 
-  });
-  
-  // Get the icon filter based on category
-  const iconFilter = useMemo(() => 
-    getFilter(normalizedCategory), 
-    [getFilter, normalizedCategory]
-  );
-  
-  // Get icon styles
-  const { 
-    containerStyle, 
-    bgClass, 
-    iconStyle 
-  } = useIconStyles({
+  const {
+    containerSizeClass,
+    containerStyle,
+    bgClass,
+    iconStyle,
+    icon,
+    factType: iconFactType
+  } = useIconContainer({
+    factType,
     isRevealed,
-    category: normalizedCategory,
-    iconFilter
+    size,
+    iconSize,
+    category
   });
-  
-  // Get icon information
-  const icon = useMemo(() => 
-    getFactIcon(factType, isRevealed, calculatedIconSize, normalizedCategory),
-    [factType, isRevealed, calculatedIconSize, normalizedCategory]
-  );
   
   return (
     <div 
@@ -82,7 +50,7 @@ export default function IconContainer({
       {children || (
         <img 
           src={`/icons/${icon.iconName}.svg`}
-          alt={factType}
+          alt={iconFactType}
           width={icon.size}
           height={icon.size}
           style={iconStyle}
