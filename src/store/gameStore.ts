@@ -10,7 +10,9 @@ import {
   shouldShowFinalFive
 } from '../helpers/gameLogic';
 import { getFactBubblePosition } from '../helpers/uiHelpers';
-import { GameOutcome } from '../components/GameMessage';
+
+// Define the GameOutcome type locally if it can't be imported
+type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
 
 interface GameStore {
   // Core game state
@@ -21,6 +23,8 @@ interface GameStore {
   canRevealNewClue: boolean;
   canMakeGuess: boolean;
   lastRevealedFactIndex: number | null;
+  isPendingFinalFiveTransition: boolean; // New state to track pending transition
+  isProcessingGuess: boolean; // Track when a guess is being processed
   
   // Hard mode settings
   hardMode: boolean;
@@ -42,6 +46,9 @@ interface GameStore {
   isCardAnimatingOut: boolean;
   shouldFocusInput: boolean;
   windowWidth: number;
+  isSettingsPanelOpen: boolean;
+  isTutorialOpen: boolean;
+  shouldPauseTimer: boolean;
   
   // Victory animation states
   isVictoryAnimationActive: boolean;
@@ -67,9 +74,14 @@ interface GameStore {
   completeCardAnimation: () => void;
   submitGuess: (guess: string) => Promise<void>;
   triggerFinalFive: () => Promise<void>;
+  prefetchFinalFiveOptions: () => Promise<void>;
   selectFinalFiveOption: (option: string) => Promise<void>;
   closeFinalFive: () => void;
   startFinalFive: () => void;
+  
+  // Add methods to control the settings panel and tutorial
+  setSettingsPanelOpen: (isOpen: boolean) => void;
+  setTutorialOpen: (isOpen: boolean) => void;
 }
 
 export const useGameStore = create<GameStore>()(
@@ -83,6 +95,8 @@ export const useGameStore = create<GameStore>()(
   canRevealNewClue: true,
   canMakeGuess: false,
   lastRevealedFactIndex: null,
+  isPendingFinalFiveTransition: false,
+  isProcessingGuess: false,
   
   // Hard mode settings
   hardMode: false, // Current game's hard mode state (can't be changed after start)
@@ -117,6 +131,9 @@ export const useGameStore = create<GameStore>()(
   isCardAnimatingOut: false,
   shouldFocusInput: false,
   windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
+  isSettingsPanelOpen: false,
+  isTutorialOpen: false,
+  shouldPauseTimer: false,
   
   // Victory animation states
   isVictoryAnimationActive: false,
@@ -126,23 +143,60 @@ export const useGameStore = create<GameStore>()(
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
   decrementTimer: () => {
-    const { timeRemaining, isTimerActive, gameState, isFinalFiveActive, showFinalFiveTransition } = get();
+    const { 
+      timeRemaining, 
+      isTimerActive, 
+      gameState, 
+      isFinalFiveActive, 
+      showFinalFiveTransition, 
+      viewingFact,
+      isSettingsPanelOpen,
+      shouldPauseTimer
+    } = get();
+    
+    // Don't decrement if timer should be paused (e.g., during tutorial)
+    if (shouldPauseTimer) return;
     
     if (isTimerActive) {
       if (timeRemaining <= 1 && !isFinalFiveActive && !showFinalFiveTransition && !gameState.isGameOver) {
+        // First close any open fact card if there is one
+        if (viewingFact !== null) {
+          // Force close the card without animation
+          set({
+            viewingFact: null,
+            cardSourcePosition: null,
+            isDrawingFromStack: false,
+            isReturningToStack: false,
+            isCardAnimatingOut: false
+          });
+        }
+        
+        // Close settings panel if it's open
+        if (isSettingsPanelOpen) {
+          set({ isSettingsPanelOpen: false });
+        }
+        
+        // Then start the Final Five transition
         set({ 
           timeRemaining: 0,
           showFinalFiveTransition: true,
           finalFiveTransitionReason: 'time',
-          isTimerActive: false // Stop the main timer
+          isTimerActive: false, // Stop the main timer
+          isPendingFinalFiveTransition: true // Prevent further interactions
         });
+
+        // Prefetch final five options as soon as transition starts
+        get().prefetchFinalFiveOptions();
       } else {
         set({ timeRemaining: timeRemaining - 1 });
       }
     }
   },
   decrementFinalFiveTimer: () => {
-    const { finalFiveTimeRemaining, isFinalFiveActive, hardMode } = get();
+    const { finalFiveTimeRemaining, isFinalFiveActive, hardMode, shouldPauseTimer } = get();
+    
+    // Don't decrement if timer should be paused (e.g., during tutorial)
+    if (shouldPauseTimer) return;
     
     if (finalFiveTimeRemaining <= 0) {
       return;
@@ -192,7 +246,12 @@ export const useGameStore = create<GameStore>()(
   },
   
   revealFact: (factIndex: number) => {
-    const { gameState, canRevealNewClue, lastRevealedFactIndex } = get();
+    const { gameState, canRevealNewClue, lastRevealedFactIndex, isPendingFinalFiveTransition } = get();
+    
+    // Prevent revealing facts if there's a pending transition to Final Five
+    if (isPendingFinalFiveTransition) {
+      return;
+    }
     
     // Check if we can reveal a new clue
     if (!canRevealNewClue && !gameState.revealedFacts.includes(factIndex)) {
@@ -259,7 +318,12 @@ export const useGameStore = create<GameStore>()(
   },
   
   handleCardClick: (factIndex: number, sourcePosition: { x: number, y: number }) => {
-    const { viewingFact, canRevealNewClue, gameState } = get();
+    const { viewingFact, canRevealNewClue, gameState, isPendingFinalFiveTransition } = get();
+    
+    // Prevent revealing facts if there's a pending transition to Final Five
+    if (isPendingFinalFiveTransition) {
+      return;
+    }
     
     // Check if we can reveal a new clue
     if (!canRevealNewClue && !gameState.revealedFacts.includes(factIndex)) return;
@@ -344,6 +408,9 @@ export const useGameStore = create<GameStore>()(
     if (!hasSeenClue) return;
     if (!canMakeGuess) return;
     
+    // Set processing state to true when submitting
+    set({ isProcessingGuess: true });
+    
     try {
       const data = await verifyGuessAPI(gameState.challenge.challengeId, guess);
       
@@ -362,7 +429,8 @@ export const useGameStore = create<GameStore>()(
             isGameOver: data.isCorrect
           },
           canRevealNewClue: true,
-          canMakeGuess: false
+          canMakeGuess: false,
+          isProcessingGuess: false // Reset processing state
         };
 
         if (data.isCorrect) {
@@ -375,13 +443,21 @@ export const useGameStore = create<GameStore>()(
         }
 
         if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
-          // First return state without showing the transition
-          // to allow the sparks animation to complete
+          // Immediately set pending state to prevent further interactions
+          set({
+            ...newState,
+            isPendingFinalFiveTransition: true
+          });
+          
+          // Then show the transition after delay
           setTimeout(() => {
             set({
               showFinalFiveTransition: true,
               finalFiveTransitionReason: 'guesses'
             });
+
+            // Prefetch final five options as soon as transition starts
+            get().prefetchFinalFiveOptions();
           }, 1500); // 1.5 seconds delay to show the sparks animation
           
           return newState;
@@ -397,6 +473,30 @@ export const useGameStore = create<GameStore>()(
       }
     } catch (error) {
       console.error('Error verifying guess:', error);
+      // Reset processing state even if there's an error
+      set({ isProcessingGuess: false });
+    }
+  },
+  
+  // Helper function to prefetch final five options
+  prefetchFinalFiveOptions: async () => {
+    const { gameState } = get();
+    
+    // Only fetch if we haven't already fetched options
+    if (gameState.challenge && !gameState.finalFiveOptions) {
+      try {
+        const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+        
+        // Store the options in the state
+        set(state => ({
+          gameState: {
+            ...state.gameState,
+            finalFiveOptions: options
+          }
+        }));
+      } catch (error) {
+        console.error('Error prefetching Final Five options:', error);
+      }
     }
   },
   
@@ -406,11 +506,12 @@ export const useGameStore = create<GameStore>()(
     set({ 
       showFinalFiveTransition: true,
       isFinalFiveActive: false,
+      isPendingFinalFiveTransition: false, // Reset pending state when showing the transition
       finalFiveTimeRemaining: hardMode ? 5 : 55 // Set correct timer when Final Five is triggered
     });
     
     try {
-      // First fetch the final five options
+      // Check if we already have options (they should be prefetched)
       if (gameState.challenge && !gameState.finalFiveOptions) {
         const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
         
@@ -423,13 +524,13 @@ export const useGameStore = create<GameStore>()(
         }));
       }
       
-      // After the transition, load the options
+      // After the transition, load the options (with minimal delay)
       setTimeout(() => {
         set({ 
           showFinalFiveTransition: false,
           isFinalFiveActive: true 
         });
-      }, 4000);
+      }, 500); // Changed from 4000ms to 500ms
     } catch (error) {
       console.error('Error fetching Final Five options:', error);
       // Still continue with the transition even if there's an error
@@ -438,7 +539,7 @@ export const useGameStore = create<GameStore>()(
           showFinalFiveTransition: false,
           isFinalFiveActive: true 
         });
-      }, 4000);
+      }, 50); // Changed from 4000ms to 500ms
     }
   },
   
@@ -539,7 +640,18 @@ export const useGameStore = create<GameStore>()(
     
     set({
       finalFiveTimeRemaining: finalFiveTime,
-      isFinalFiveActive: true
+      isFinalFiveActive: true,
+      isPendingFinalFiveTransition: false // Reset the pending state
+    });
+  },
+  
+  // Add methods to control the settings panel and tutorial
+  setSettingsPanelOpen: (isOpen: boolean) => set({ isSettingsPanelOpen: isOpen }),
+  setTutorialOpen: (isOpen: boolean) => {
+    // Always set both states to the same value
+    set({ 
+      isTutorialOpen: isOpen,
+      shouldPauseTimer: isOpen
     });
   }
 }),

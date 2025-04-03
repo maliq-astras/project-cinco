@@ -11,16 +11,21 @@ interface MenuItem {
 export const useNavigation = () => {
   const { colors, darkMode } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   
-  // Get relevant game states to determine when to show "How to Play"
+  // Use state from gameStore instead of local state
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const hardMode = useGameStore(state => state.hardMode);
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
+  const isSettingsOpen = useGameStore(state => state.isSettingsPanelOpen);
+  const isTutorialOpen = useGameStore(state => state.isTutorialOpen);
+  
+  // Use methods from gameStore
+  const setSettingsPanelOpen = useGameStore(state => state.setSettingsPanelOpen);
+  const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
+  
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Only show How to Play during active gameplay (not during Final Five or game over)
   const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
@@ -42,7 +47,7 @@ export const useNavigation = () => {
     { 
       label: 'How to Play?', 
       onClick: () => {
-        setIsTutorialOpen(true);
+        setTutorialOpen(true);
         setIsDropdownOpen(false);
       },
       showArrow: false // This doesn't navigate away
@@ -79,15 +84,15 @@ export const useNavigation = () => {
   };
 
   const openSettings = () => {
-    setIsSettingsOpen(true);
+    setSettingsPanelOpen(true);
   };
 
   const closeSettings = () => {
-    setIsSettingsOpen(false);
+    setSettingsPanelOpen(false);
   };
 
   const closeTutorial = () => {
-    setIsTutorialOpen(false);
+    setTutorialOpen(false);
   };
 
   return {

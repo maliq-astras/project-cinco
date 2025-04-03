@@ -210,10 +210,9 @@ export function useFinalFiveModal() {
     // Front of card (with number 5)
     const frontBg = `var(--color-${colors.primary})`;
     
-    // Back of card background based on game state and dark mode
-    let backBg = "white"; 
-    if (darkMode) backBg = "rgb(31, 41, 55)"; // gray-800
-    if (isGameOver && isCorrectOption(option)) backBg = frontBg;
+    // Back of card background based on game state - using rgba with the color's RGB values
+    let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
+    if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
     
     // Text color based on game state and dark mode
     let textColor = darkMode ? "white" : "black";

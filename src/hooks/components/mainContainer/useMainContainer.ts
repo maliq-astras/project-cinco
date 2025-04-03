@@ -103,7 +103,18 @@ export function useMainContainer() {
   const getGameMessageProps = () => {
     // Find correct answer if it exists
     const correctGuess = gameState.guesses.find(g => g.isCorrect);
+    
+    // Default correct answer from correct guess
     let correctAnswer = correctGuess?.guess || '';
+
+    // If we're in Final Five mode and there's no correct guess (time ran out or wrong answer)
+    // but we do have options, we need to find the correct answer from the options
+    // We won't have it immediately, but the useEndGameMessage hook will find it
+    if (!correctAnswer && gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0) {
+      // Let the hook handle finding the correct answer asynchronously
+      // Just pass an empty string for now
+      correctAnswer = '';
+    }
     
     // Calculate number of tries
     const numberOfTries = correctGuess ? gameState.guesses.indexOf(correctGuess) + 1 : 0;

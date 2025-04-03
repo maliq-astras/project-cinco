@@ -18,15 +18,26 @@ interface UseFinalFiveIntroReturn {
   message: string;
   colors: { primary: string };
   hardMode: boolean;
+  isLoading: boolean;
 }
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {
   const { colors } = useTheme();
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   const hardMode = useGameStore(state => state.hardMode);
+  const finalFiveOptions = useGameStore(state => state.gameState.finalFiveOptions);
   const [autoStartTimer, setAutoStartTimer] = useState<number | null>(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Check if options are already loaded
+  useEffect(() => {
+    // Options are already loaded (prefetched)
+    if (finalFiveOptions && finalFiveOptions.length > 0) {
+      setIsLoading(false);
+    }
+  }, [finalFiveOptions]);
   
   // Handles fetching options and transitioning to Final Five
   const handleStart = async () => {
@@ -35,14 +46,26 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     
     setIsTransitioning(true);
     
+    // If options aren't loaded yet, show loading state
+    if (!finalFiveOptions || finalFiveOptions.length === 0) {
+      setIsLoading(true);
+    }
+    
     try {
-      // Get options first (can take some time)
-      await triggerFinalFive();
-      // Then transition to Final Five with no delay
+      // Start the transition first (immediately)
       onStart();
+      
+      // Then fetch options in the background
+      triggerFinalFive().catch(error => {
+        console.error("Error fetching Final Five options:", error);
+      }).finally(() => {
+        // Hide loading spinner when done, regardless of success/failure
+        setIsLoading(false);
+      });
     } catch (error) {
       console.error("Error transitioning to Final Five:", error);
       setIsTransitioning(false);
+      setIsLoading(false);
     }
   };
   
@@ -103,6 +126,7 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     autoStartTimer,
     message,
     colors,
-    hardMode
+    hardMode,
+    isLoading
   };
 }; 

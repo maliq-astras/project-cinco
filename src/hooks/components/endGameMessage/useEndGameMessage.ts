@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
+import { verifyGuess } from '../../../helpers/gameLogic';
 
 export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
 
@@ -54,6 +55,30 @@ export const useEndGameMessage = ({
   
   // Find correct answer from guesses if possible
   const [actualCorrectAnswer, setActualCorrectAnswer] = useState(correctAnswer);
+  const [isSearchingCorrectAnswer, setIsSearchingCorrectAnswer] = useState(false);
+  
+  // Helper function to find the correct answer from the final five options
+  const findCorrectAnswer = useCallback(async () => {
+    if (!gameState.challenge || !gameState.finalFiveOptions || gameState.finalFiveOptions.length === 0) {
+      return;
+    }
+    
+    setIsSearchingCorrectAnswer(true);
+    
+    for (const option of gameState.finalFiveOptions) {
+      try {
+        const result = await verifyGuess(gameState.challenge.challengeId, option);
+        if (result.isCorrect) {
+          setActualCorrectAnswer(option);
+          break;
+        }
+      } catch (error) {
+        console.error(`Error verifying option ${option}:`, error);
+      }
+    }
+    
+    setIsSearchingCorrectAnswer(false);
+  }, [gameState.challenge, gameState.finalFiveOptions]);
   
   useEffect(() => {
     if (outcome === 'loss' && (!correctAnswer || correctAnswer.trim() === '')) {
@@ -62,11 +87,11 @@ export const useEndGameMessage = ({
       if (correctGuess) {
         setActualCorrectAnswer(correctGuess.guess);
       } else if (gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0) {
-        // If no correct guess found, we can try to set the first option as a fallback
-        setActualCorrectAnswer(gameState.finalFiveOptions[0]);
+        // If no correct guess found, we need to find the actual correct answer in the options
+        findCorrectAnswer();
       }
     }
-  }, [outcome, correctAnswer, gameState.guesses, gameState.finalFiveOptions]);
+  }, [outcome, correctAnswer, gameState.guesses, gameState.finalFiveOptions, findCorrectAnswer]);
   
   // Confetti pieces configuration - only for win scenarios
   const showConfetti = outcome === 'standard-win' || outcome === 'final-five-win';
@@ -112,20 +137,26 @@ export const useEndGameMessage = ({
           displayAnswer
         };
       case 'loss':
-        if (isFinalFiveActive) {
-          if (pickedWrongAnswer) {
-            return {
-              type: 'loss-final-five-wrong',
-              displayAnswer
-            };
-          } 
-          if (finalFiveTimeRemaining === 0) {
-            return {
-              type: 'loss-final-five-time',
-              displayAnswer
-            };
-          }
+        // Check if any guesses were made in Final Five
+        const hasFinalFiveGuesses = gameState.guesses.some(g => g.isFinalFiveGuess);
+        
+        // Check specifically for wrong guesses in Final Five
+        if (hasFinalFiveGuesses) {
+          return {
+            type: 'loss-final-five-wrong',
+            displayAnswer
+          };
+        } 
+        
+        // Final five time ran out (check specifically for final five)
+        if (gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0 && finalFiveTimeRemaining === 0) {
+          return {
+            type: 'loss-final-five-time',
+            displayAnswer
+          };
         }
+        
+        // Regular time ran out (not in final five)
         return {
           type: 'loss-time',
           displayAnswer

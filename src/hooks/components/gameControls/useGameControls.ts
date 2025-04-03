@@ -17,6 +17,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const submitGuess = useGameStore(state => state.submitGuess);
   const hardMode = useGameStore(state => state.hardMode);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const { colors } = useTheme();
   
   // Create a ref for the input element
@@ -39,6 +40,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     if (!guess) return;
     if (!hasSeenClue) return; // Can't guess without seeing a clue
     if (!canMakeGuess) return; // Can't guess without revealing a new fact first
+    if (isProcessingGuess) return; // Don't allow submitting while processing
     
     // Check if this guess has been made before
     if (isDuplicateGuess(guesses, guess)) {
@@ -53,7 +55,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
 
   // Handle skip button click - submit a skipped guess
   const handleSkip = () => {
-    if (!hasSeenClue || !canMakeGuess) return;
+    if (!hasSeenClue || !canMakeGuess || isProcessingGuess) return;
     
     // Submit a special "skipped" guess
     submitGuess("___SKIPPED___");
@@ -64,26 +66,18 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
 
   // Generate a descriptive message based on the game state
   const getInputPlaceholder = () => {
-    if (!hasSeenClue) {
-      return "Reveal a fact to start guessing...";
-    }
-    if (!canMakeGuess) {
-      return "Reveal a new fact to make another guess...";
-    }
-    if (!canRevealNewClue) {
-      return "Enter your guess...";
-    }
-    return "Enter your guess...";
+    // Return an empty string since instructions are already displayed in the context area
+    return "";
   };
 
   // Determine if input should be disabled
   const isInputDisabled = () => {
-    return !hasSeenClue || !canMakeGuess;
+    return !hasSeenClue || !canMakeGuess || isProcessingGuess;
   };
 
   // Determine if skip button should be disabled
   const isSkipDisabled = () => {
-    return !hasSeenClue || !canMakeGuess;
+    return !hasSeenClue || !canMakeGuess || isProcessingGuess;
   };
 
   return {

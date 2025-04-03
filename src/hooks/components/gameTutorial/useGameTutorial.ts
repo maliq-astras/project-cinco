@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../../../context/ThemeContext';
+import { useGameStore } from '../../../store/gameStore';
 
 interface TutorialStep {
   target: string;
@@ -8,7 +9,8 @@ interface TutorialStep {
   textPosition: 'left' | 'right' | 'top' | 'bottom';
 }
 
-const tutorialSteps: TutorialStep[] = [
+// Create the tutorial steps as a function that takes hardMode as a parameter
+const createTutorialSteps = (hardMode: boolean): TutorialStep[] => [
   {
     target: 'header-area',
     title: 'Welcome to Fact 5!',
@@ -48,7 +50,9 @@ const tutorialSteps: TutorialStep[] = [
   {
     target: 'game-timer',
     title: 'Time Limit',
-    description: 'You have 5 minutes to solve the puzzle. Keep an eye on the timer to track your remaining time!',
+    description: hardMode 
+      ? 'You have 55 seconds to solve the puzzle in hard mode. Keep an eye on the timer to track your remaining time!'
+      : 'You have 5 minutes to solve the puzzle. Keep an eye on the timer to track your remaining time!',
     textPosition: 'top',
   },
   {
@@ -71,6 +75,7 @@ interface UseGameTutorialProps {
 }
 
 export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
+  const { colors } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [spotlightStyles, setSpotlightStyles] = useState({
     top: '0px',
@@ -83,14 +88,23 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     left: '0px',
     width: '0px'
   });
-  const { colors } = useTheme();
 
-  // Reset to first step when tutorial is opened
+  // Get the hardMode status and timer pause functions
+  const hardMode = useGameStore(state => state.hardMode);
+  const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
+  
+  // Use the dynamic tutorial steps based on game mode
+  const tutorialSteps = createTutorialSteps(hardMode);
+
+  // Reset step when tutorial is closed and manage timer pausing
   useEffect(() => {
-    if (isOpen) {
+    // The tutorial is opening or closing
+    setTutorialOpen(isOpen);
+    
+    if (!isOpen) {
       setCurrentStep(0);
     }
-  }, [isOpen]);
+  }, [isOpen, setTutorialOpen]);
 
   const updatePositions = () => {
     if (isOpen) {

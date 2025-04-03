@@ -31,12 +31,8 @@ export const useTimer = ({
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
   
-  // Get the appropriate background class
-  const bgClass = timerStyles.getBgClass(colors.primary);
-  
   // Generate the class for the timer based on props
   const timerClasses = timerStyles.getTimerClasses(
-    bgClass,
     className,
     isSquare,
     finalFive

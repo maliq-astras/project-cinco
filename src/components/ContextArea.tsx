@@ -21,13 +21,34 @@ export const BubbleContextArea: React.FC = () => {
  * Component for showing game instructions based on current game state
  */
 export const GameInstructionsArea: React.FC = () => {
-  const { message, textClassName, animationProps } = useGameInstructions();
+  const { 
+    message, 
+    textClassName, 
+    animationProps, 
+    loadingAnimation, 
+    isProcessingGuess, 
+    textColor 
+  } = useGameInstructions();
   
   return (
     <motion.span 
       className={textClassName}
       {...animationProps}
     >
+      {isProcessingGuess && (
+        <motion.span 
+          className="inline-block mr-2 w-4 h-4"
+          style={{ 
+            border: `2px solid var(--color-${textColor})`,
+            borderTopColor: 'transparent',
+            borderRadius: '50%',
+            display: 'inline-block',
+            verticalAlign: 'middle',
+            marginTop: '-2px'
+          }}
+          {...loadingAnimation}
+        />
+      )}
       {message}
     </motion.span>
   );
