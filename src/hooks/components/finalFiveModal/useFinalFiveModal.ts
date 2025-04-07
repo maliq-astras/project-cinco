@@ -176,7 +176,12 @@ export function useFinalFiveModal() {
   
   // Helper to check if user guessed an option incorrectly
   const isIncorrectGuess = useCallback((option: string): boolean => {
-    return guesses.some((g: UserGuess) => !g.isCorrect && g.guess === option);
+    // Only mark as incorrect if the guess was made during Final Five
+    return guesses.some((g: UserGuess) => 
+      !g.isCorrect && 
+      g.isFinalFiveGuess && 
+      g.guess.toLowerCase() === option.toLowerCase()
+    );
   }, [guesses]);
   
   // Helper to determine if an option should be visible after game over

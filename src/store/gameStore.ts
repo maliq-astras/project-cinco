@@ -485,7 +485,15 @@ export const useGameStore = create<GameStore>()(
     // Only fetch if we haven't already fetched options
     if (gameState.challenge && !gameState.finalFiveOptions) {
       try {
-        const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+        // Get previous guesses (excluding skipped ones) to filter options
+        const previousGuesses = gameState.guesses
+          .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
+          .map(g => g.guess);
+        
+        const options = await fetchFinalFiveOptionsAPI(
+          gameState.challenge.challengeId,
+          previousGuesses
+        );
         
         // Store the options in the state
         set(state => ({
@@ -513,7 +521,15 @@ export const useGameStore = create<GameStore>()(
     try {
       // Check if we already have options (they should be prefetched)
       if (gameState.challenge && !gameState.finalFiveOptions) {
-        const options = await fetchFinalFiveOptionsAPI(gameState.challenge.challengeId);
+        // Get previous guesses (excluding skipped ones) to filter options
+        const previousGuesses = gameState.guesses
+          .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___") 
+          .map(g => g.guess);
+        
+        const options = await fetchFinalFiveOptionsAPI(
+          gameState.challenge.challengeId,
+          previousGuesses
+        );
         
         // Store the options in the state
         set(state => ({
@@ -530,7 +546,7 @@ export const useGameStore = create<GameStore>()(
           showFinalFiveTransition: false,
           isFinalFiveActive: true 
         });
-      }, 500); // Changed from 4000ms to 500ms
+      }, 50); // Changed from 4000ms to 500ms
     } catch (error) {
       console.error('Error fetching Final Five options:', error);
       // Still continue with the transition even if there's an error

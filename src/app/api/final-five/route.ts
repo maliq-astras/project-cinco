@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     });
     
   } catch (error) {
-    console.error('Error generating Final 5:', error);
+    console.error('Error generating final five options:', error);
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }
@@ -72,6 +72,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const challengeId = searchParams.get('id');
+    const previousGuessesParam = searchParams.get('previousGuesses');
     
     if (!challengeId) {
       return NextResponse.json(
@@ -94,11 +95,38 @@ export async function GET(request: Request) {
         { status: 404 }
       );
     }
+
+    // Parse previous guesses if provided
+    let previousGuesses: string[] = [];
+    if (previousGuessesParam) {
+      try {
+        previousGuesses = JSON.parse(previousGuessesParam);
+      } catch (e) {
+        console.error('Error parsing previousGuesses:', e);
+      }
+    }
+
+    // Filter alternatives if we have previous guesses
+    let availableAlternatives = challenge.alternatives;
+    if (previousGuesses.length > 0) {
+      // Normalize previous guesses
+      const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
+        guess.trim().toLowerCase()
+      );
+      
+      // Filter out alternatives that have already been guessed
+      availableAlternatives = availableAlternatives.filter((alt: string) => 
+        !normalizedPreviousGuesses.includes(alt.trim().toLowerCase())
+      );
+    }
+    
+    // Ensure we only return 4 alternatives (plus the correct answer)
+    availableAlternatives = availableAlternatives.slice(0, 4);
     
     // Create the final five options (the correct answer + 4 alternatives)
     const options = [
       challenge.answer,
-      ...challenge.alternatives.slice(0, 4)
+      ...availableAlternatives
     ];
     
     // Shuffle the options

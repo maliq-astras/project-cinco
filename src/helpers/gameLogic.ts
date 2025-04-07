@@ -51,7 +51,29 @@ export async function verifyGuess(challengeId: string, guess: string): Promise<{
   return await response.json();
 }
 
-export async function fetchFinalFiveOptions(challengeId: string): Promise<string[]> {
+export async function fetchFinalFiveOptions(challengeId: string, previousGuesses?: string[]): Promise<string[]> {
+  // If previous guesses are provided, use POST method to filter options
+  if (previousGuesses && previousGuesses.length > 0) {
+    const response = await fetch('/api/final-five', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        challengeId,
+        previousGuesses,
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch final five options');
+    }
+    
+    const data = await response.json();
+    return data.options;
+  }
+
+  // Otherwise use GET method (backward compatibility)
   const response = await fetch(`/api/final-five?id=${challengeId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch final five options');
