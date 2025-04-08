@@ -6,7 +6,13 @@ if (!process.env.MONGODB_URI) {
 }
 
 const uri = process.env.MONGODB_URI;
-const options = {};
+const options = {
+  maxPoolSize: 10,
+  minPoolSize: 5,
+  maxIdleTimeMS: 60000, // 1 minute
+  connectTimeoutMS: 5000, // 5 seconds
+  socketTimeoutMS: 10000, // 10 seconds
+};
 
 // Global type for MongoDB client
 declare global {
@@ -24,13 +30,22 @@ if (process.env.NODE_ENV === 'development') {
   }
   clientPromise = global._mongoClientPromise;
 } else {
-  // In production, create a new connection
+  // In production, create a new connection with pooling
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
 
+// Cache the database connection
+let cachedDb: any = null;
+
 export async function connectToDatabase() {
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
-  return { db, client };
+  if (cachedDb) {
+    return { db: cachedDb, client };
+  }
+
+  const connectedClient = await clientPromise;
+  const db = connectedClient.db(process.env.MONGODB_DB);
+  cachedDb = db;
+  
+  return { db, client: connectedClient };
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../context/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 
@@ -10,61 +11,61 @@ interface TutorialStep {
 }
 
 // Create the tutorial steps as a function that takes hardMode as a parameter
-const createTutorialSteps = (hardMode: boolean): TutorialStep[] => [
+const createTutorialSteps = (hardMode: boolean, t: Function): TutorialStep[] => [
   {
     target: 'header-area',
-    title: 'Welcome to Fact 5!',
-    description: 'Discover hidden facts and use your deductive skills to solve the daily puzzle. Each day brings a new challenge to test your knowledge!',
+    title: t('tutorial.steps.welcome.title'),
+    description: t('tutorial.steps.welcome.description'),
     textPosition: 'right',
   },
   {
     target: 'category-title',
-    title: 'Daily Category',
-    description: "Today's mystery category is shown here. Your goal is to figure out what connects all the facts you'll discover. What could it be?",
+    title: t('tutorial.steps.category.title'),
+    description: t('tutorial.steps.category.description'),
     textPosition: 'right',
   },
   {
     target: 'facts-area',
-    title: 'Fact Cards',
-    description: 'As you reveal facts, they\'ll appear here. Click any revealed card to review its information.',
+    title: t('tutorial.steps.factCards.title'),
+    description: t('tutorial.steps.factCards.description'),
     textPosition: 'right',
   },
   {
     target: 'bubble-grid',
-    title: 'Hidden Facts',
-    description: 'These bubbles contain hidden facts that will help you solve the category.',
+    title: t('tutorial.steps.hiddenFacts.title'),
+    description: t('tutorial.steps.hiddenFacts.description'),
     textPosition: 'left',
   },
   {
     target: 'bubble-0',
-    title: 'Reveal Facts',
-    description: 'Double-click any bubble to reveal its fact! Start with this one to begin your journey.',
+    title: t('tutorial.steps.revealFacts.title'),
+    description: t('tutorial.steps.revealFacts.description'),
     textPosition: 'right',
   },
   {
     target: 'game-input',
-    title: 'Make Your Guesses',
-    description: 'Type your guesses here. Try to figure out what category matches all the facts you discover!',
+    title: t('tutorial.steps.guesses.title'),
+    description: t('tutorial.steps.guesses.description'),
     textPosition: 'top',
   },
   {
     target: 'game-timer',
-    title: 'Time Limit',
+    title: t('tutorial.steps.timeLimit.title'),
     description: hardMode 
-      ? 'You have 55 seconds to solve the puzzle in hard mode. Keep an eye on the timer to track your remaining time!'
-      : 'You have 5 minutes to solve the puzzle. Keep an eye on the timer to track your remaining time!',
+      ? t('tutorial.steps.timeLimit.description.hard')
+      : t('tutorial.steps.timeLimit.description.normal'),
     textPosition: 'top',
   },
   {
     target: 'game-progress',
-    title: 'Guess Limit',
-    description: 'You have 5 guesses to solve the puzzle. The progress bar shows how many guesses you have left.',
+    title: t('tutorial.steps.guessLimit.title'),
+    description: t('tutorial.steps.guessLimit.description'),
     textPosition: 'top',
   },
   {
     target: 'game-controls-right',
-    title: 'Helpful Tools',
-    description: 'Use the info button (i) to learn more about fact categories, or the skip button to pass on a guess if you\'re stuck.',
+    title: t('tutorial.steps.tools.title'),
+    description: t('tutorial.steps.tools.description'),
     textPosition: 'top',
   }
 ];
@@ -75,6 +76,7 @@ interface UseGameTutorialProps {
 }
 
 export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
+  const { t } = useTranslation('common');
   const { colors } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [spotlightStyles, setSpotlightStyles] = useState({
@@ -94,7 +96,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
   const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
   
   // Use the dynamic tutorial steps based on game mode
-  const tutorialSteps = createTutorialSteps(hardMode);
+  const tutorialSteps = createTutorialSteps(hardMode, t);
 
   // Reset step when tutorial is closed and manage timer pausing
   useEffect(() => {
@@ -202,6 +204,9 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     textBoxStyles,
     colors,
     tutorialSteps,
-    handleClick
+    handleClick,
+    continueText: currentStep === tutorialSteps.length - 1 
+      ? t('tutorial.navigation.finish')
+      : t('tutorial.navigation.continue')
   };
 }; 

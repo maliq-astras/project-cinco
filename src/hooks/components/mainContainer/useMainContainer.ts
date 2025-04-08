@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
 import { GameControlsHandle } from '../../components/gameControls';
+import { useLanguage } from '../../../context/LanguageContext';
 
 export function useMainContainer() {
   // Access game state
@@ -27,6 +28,7 @@ export function useMainContainer() {
   // Component state
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
+  const { language } = useLanguage();
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -38,13 +40,13 @@ export function useMainContainer() {
     }
   }, [isHardModeEnabled, isTimerActive, gameState.isGameOver, resetTimer]);
 
-  // Fetch challenge on mount
+  // Fetch challenge on mount or when language changes
   useEffect(() => {
     const loadChallenge = async () => {
-      await fetchChallenge();
+      await fetchChallenge(language);
     };
     loadChallenge();
-  }, [fetchChallenge]);
+  }, [fetchChallenge, language]);
 
   // Handle the timer
   useEffect(() => {

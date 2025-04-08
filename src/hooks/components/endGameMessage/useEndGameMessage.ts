@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { verifyGuess } from '../../../helpers/gameLogic';
 
 export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
@@ -42,6 +43,7 @@ export const useEndGameMessage = ({
   timeSpent
 }: UseEndGameMessageProps): UseEndGameMessageReturn => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const finalFiveTimeRemaining = useGameStore(state => state.finalFiveTimeRemaining);
   const gameState = useGameStore(state => state.gameState);
@@ -106,7 +108,7 @@ export const useEndGameMessage = ({
   // Format time spent
   const minutes = Math.floor(timeSpent / 60);
   const seconds = timeSpent % 60;
-  const timeFormatted = `${minutes}m ${seconds}s`;
+  const timeFormatted = t('game.endGame.timeSpent', { minutes, seconds });
   
   // Determine if we should show time (only for standard wins)
   const shouldShowTime = outcome === 'standard-win';

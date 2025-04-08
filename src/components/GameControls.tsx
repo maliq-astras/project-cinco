@@ -1,11 +1,13 @@
 import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import GuessProgressBar from './GuessProgressBar';
 import Timer from './Timer';
 import { useGameControls, GameControlsHandle } from '../hooks/components/gameControls';
 import { gameControlsStyles } from '../styles/gameControlsStyles';
 
 const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
+  const { t } = useTranslation();
   const {
     inputRef,
     timeRemaining,
@@ -30,17 +32,17 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
           <div className={gameControlsStyles.toastContainer}>
             {/* Duplicate guess toast */}
             <div id="duplicate-error" className={gameControlsStyles.duplicateToast}>
-              You've already tried that guess. Try something else!
+              {t('game.status.duplicate')}
             </div>
 
             {/* Wrong guess toast */}
             <div id="wrong-guess-toast" className={gameControlsStyles.wrongGuessToast}>
-              Wrong answer! Try again.
+              {t('game.status.incorrect')}
             </div>
 
             {/* Skip message toast */}
             <div id="skip-message" className={gameControlsStyles.skipToast}>
-              Skipped! Reveal another clue.
+              {t('game.status.skipped')}
             </div>
           </div>
           
@@ -80,6 +82,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                   className={gameControlsStyles.controlButton}
                   {...gameControlsStyles.buttonAnimation}
                   style={{ color: `var(--color-${colors.primary})` }}
+                  aria-label={t('ui.buttons.info')}
                 >
                   <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -102,6 +105,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                   }}
                   onClick={handleSkip}
                   disabled={isSkipDisabled()}
+                  aria-label={t('ui.buttons.skip')}
                 >
                   <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />

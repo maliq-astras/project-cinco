@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsPanel, languages } from '../hooks/components/settingsPanel';
 import { settingsPanelStyles } from '../styles/settingsPanelStyles';
+import { useTranslation } from 'react-i18next';
+import { SUPPORTED_LANGUAGES } from '../context/LanguageContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -12,6 +14,7 @@ interface SettingsPanelProps {
 }
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const {
     colors,
     darkMode,
@@ -51,13 +54,13 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           className={settingsPanelStyles.titleClass}
           style={settingsPanelStyles.title(darkMode, colors.primary)}
         >
-          Settings
+          {t('ui.buttons.settings')}
         </h2>
         <button 
           onClick={onClose}
           className={settingsPanelStyles.closeButtonClass}
           style={settingsPanelStyles.closeButton(darkMode, colors.primary)}
-          aria-label="Close settings"
+          aria-label={`${t('ui.buttons.close')} ${t('ui.buttons.settings').toLowerCase()}`}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -69,8 +72,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Theme Toggle */}
         <div className={settingsPanelStyles.settingRow}>
           <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>Dark Mode</p>
-            <p className={settingsPanelStyles.settingDescription}>Switch between light and dark theme</p>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.darkMode')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.darkModeDesc')}</p>
           </div>
           <ToggleSwitch isOn={darkMode} onToggle={toggleDarkMode} />
         </div>
@@ -78,10 +81,10 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Hard Mode Toggle */}
         <div className={settingsPanelStyles.settingRow}>
           <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>Hard Mode</p>
-            <p className={settingsPanelStyles.settingDescription}>Less time to guess!</p>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.hardMode')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.hardModeDesc')}</p>
             {hasSeenClue && (
-              <p className={settingsPanelStyles.settingErrorText}>Cannot change difficulty after game has started</p>
+              <p className={settingsPanelStyles.settingErrorText}>{t('ui.settings.cannotChangeDifficulty')}</p>
             )}
           </div>
           <ToggleSwitch 
@@ -94,8 +97,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Randomizer Toggle */}
         <div className={settingsPanelStyles.settingRow}>
           <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>Randomizer</p>
-            <p className={settingsPanelStyles.settingDescription}>Get random categories each day</p>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.randomizer')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.randomizerDesc')}</p>
           </div>
           <ToggleSwitch isOn={isRandomizer} onToggle={toggleRandomizer} />
         </div>
@@ -103,15 +106,15 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* High Contrast Mode */}
         <div className={settingsPanelStyles.settingRow}>
           <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>High Contrast Mode</p>
-            <p className={settingsPanelStyles.settingDescription}>Increase color contrast</p>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.highContrast')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
           </div>
           <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
         </div>
 
         {/* Language Dropdown */}
         <div className={settingsPanelStyles.languageContainer}>
-          <label htmlFor="language" className={settingsPanelStyles.languageLabel}>Language</label>
+          <label htmlFor="language" className={settingsPanelStyles.languageLabel}>{t('ui.language.select')}</label>
           <select 
             id="language"
             value={selectedLanguage}
@@ -120,8 +123,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
           >
             {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
+              <option 
+                key={lang.code} 
+                value={lang.code}
+                disabled={!SUPPORTED_LANGUAGES.includes(lang.code)}
+              >
+                {SUPPORTED_LANGUAGES.includes(lang.code) ? t(`ui.language.${lang.code}`) : lang.name}
               </option>
             ))}
           </select>
@@ -130,7 +137,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
 
       <div className={settingsPanelStyles.footer}>
         <p className={settingsPanelStyles.footerText}>
-          Settings will be saved automatically.
+          {t('ui.settings.autoSave')}
         </p>
       </div>
     </>

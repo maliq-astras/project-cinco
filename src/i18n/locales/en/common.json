@@ -1,0 +1,236 @@
+{
+  "app": {
+    "title": "Fact 5",
+    "subtitle": "Daily Trivia Challenge",
+    "description": "Test your knowledge with daily trivia challenges"
+  },
+  "game": {
+    "instructions": {
+      "doubleTap": "Double-tap",
+      "doubleClick": "Double-click",
+      "revealToBegin": "{{action}} to reveal a fact and begin...",
+      "revealNew": "Reveal a new fact to make another guess...",
+      "enterGuess": "Enter your guess..."
+    },
+    "input": {
+      "placeholder": "Type your guess here...",
+      "disabled": "Please click a fact first"
+    },
+    "facts": {
+      "empty": "No facts loaded yet",
+      "placeholder": "Revealed facts will appear here"
+    },
+    "status": {
+      "guessing": "Guessing...",
+      "correct": "Correct!",
+      "incorrect": "Wrong answer! Try again.",
+      "duplicate": "You've already tried that guess. Try something else!",
+      "skipped": "Skipped! Reveal another clue.",
+      "gameOver": "Game Over",
+      "victory": "You won!",
+      "rotateDevice": "Rotate Your Device",
+      "rotateDescription": "This game works best in portrait mode on smaller screens. Please rotate your device to continue playing."
+    },
+    "finalFive": {
+      "title": "Final Five Challenge",
+      "intro": "Time for the Final Five!",
+      "instructions": "Select the correct fact for each category",
+      "timeUp": "Time's up! But there's still a chance in the FINAL 5 round! Choose the correct answer from 5 options in a {{timeLimit}}-second showdown. Ready to become a champion?",
+      "guessesUp": "5 guesses down, but victory awaits in the FINAL 5! You'll have {{timeLimit}} seconds to pick the right answer from 5 options. This is your moment to shine!",
+      "revealingCards": "Cards are being revealed...",
+      "checkingAnswer": "Determining the correct answer...",
+      "selectAnswer": "Select the correct answer",
+      "selectAnswerHard": "Select the correct answer (Hard Mode: 5 seconds)",
+      "correctAnswer": "Correct! You found the answer!",
+      "incorrectAnswer": "Incorrect. The correct answer is highlighted.",
+      "startButton": "Start FINAL 5"
+    },
+    "endGame": {
+      "standardWin": "You guessed {{answer}} in {{tries}} {{count}}!",
+      "standardWin_one": "You guessed {{answer}} in {{tries}} try!",
+      "standardWin_other": "You guessed {{answer}} in {{tries}} tries!",
+      "finalFiveWin": "Solved {{answer}} in the FINAL 5!",
+      "lossWrongGuess": "Incorrect guess! The answer was {{answer}}.",
+      "lossTimeUp": "Out of time! The answer was {{answer}}.",
+      "comeBackTomorrow": "Come back tomorrow for a new challenge!",
+      "timeSpent": "{{minutes}}m {{seconds}}s",
+      "share": "Share"
+    }
+  },
+  "loading": {
+    "message": "Please wait, loading challenge...",
+    "skip": "SKIP"
+  },
+  "ui": {
+    "buttons": {
+      "start": "Start",
+      "skip": "Skip",
+      "next": "Next",
+      "play": "Play",
+      "continue": "Continue",
+      "tryAgain": "Try Again",
+      "settings": "Settings",
+      "close": "Close",
+      "info": "Information",
+      "profile": "Profile"
+    },
+    "timer": {
+      "timeRemaining": "Time Remaining"
+    },
+    "language": {
+      "select": "Select Language",
+      "en": "English",
+      "es": "Spanish",
+      "other": "Coming Soon!"
+    },
+    "navigation": {
+      "menu": "Navigation Menu",
+      "howToPlay": "How to Play?",
+      "about": "F.A.Q.",
+      "viewStats": "View Statistics",
+      "reportBug": "Report a Bug",
+      "feedback": "Feedback"
+    },
+    "settings": {
+      "darkMode": "Dark Mode",
+      "darkModeDesc": "Switch between light and dark theme",
+      "hardMode": "Hard Mode",
+      "hardModeDesc": "Less time to guess!",
+      "cannotChangeDifficulty": "Cannot change difficulty after game has started",
+      "randomizer": "Randomizer",
+      "randomizerDesc": "Get random categories each day",
+      "highContrast": "High Contrast Mode",
+      "highContrastDesc": "Increase color contrast",
+      "autoSave": "Settings will be saved automatically."
+    }
+  },
+  "categories": {
+    "science": "Science",
+    "history": "History",
+    "geography": "Geography",
+    "entertainment": "Entertainment",
+    "sports": "Sports",
+    "art": "Art",
+    "literature": "Literature",
+    "technology": "Technology",
+    "music": "Music",
+    "food": "Food",
+    "travel": "Travel",
+    "countries": "Countries",
+    "animals": "Animals",
+    "movies": "Movies",
+    "books": "Books",
+    "musical artists": "Musical Artists",
+    "athletes": "Athletes",
+    "historical figures": "Historical Figures",
+    "famous brands": "Famous Brands",
+    "tv shows": "TV Shows"
+  },
+  "factTypes": {
+    "language(s)": "Language(s)",
+    "flag": "Flag",
+    "cities": "Cities",
+    "economy": "Economy",
+    "demographics": "Demographics",
+    "origin": "Origin",
+    "geography & climate": "Geography & Climate",
+    "wildcard": "Wildcard",
+    
+    "habitat": "Habitat",
+    "ecology": "Ecology",
+    "rare features": "Rare Features",
+    "size/weight": "Size/Weight",
+    "evolutionary history": "Evolutionary History",
+    "social behavior": "Social Behavior",
+    "reproduction": "Reproduction",
+    
+    "director": "Director",
+    "premiere": "Premiere",
+    "character(s)": "Character(s)",
+    "genre": "Genre",
+    "critical reception": "Critical Reception",
+    "box office": "Box Office",
+    "production": "Production",
+    
+    "author": "Author",
+    "publication": "Publication",
+    "plot": "Plot",
+    "narrative style": "Narrative Style",
+    
+    "background": "Background",
+    "era": "Era",
+    "songs & albums": "Songs & Albums",
+    "achievements": "Achievements",
+    "collaborations": "Collaborations",
+    "chart performance": "Chart Performance",
+    
+    "personal life": "Personal Life",
+    "affiliations": "Affiliations",
+    "nationality": "Nationality",
+    "physique": "Physique",
+    "stats": "Stats",
+    
+    "occupation": "Occupation",
+    "important dates": "Important Dates",
+    "legacy": "Legacy",
+    "physical appearance": "Physical Appearance",
+    
+    "industry": "Industry",
+    "logo": "Logo",
+    "location": "Location",
+    "signature product": "Signature Product",
+    "financials": "Financials",
+    "brand culture": "Brand Culture",
+    
+    "debut": "Debut",
+    "network/platform": "Network/Platform",
+    "visual style": "Visual Style"
+  },
+  "tutorial": {
+    "navigation": {
+      "continue": "Click anywhere to continue",
+      "finish": "Click anywhere to finish"
+    },
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Fact 5!",
+        "description": "Discover hidden facts and use your deductive skills to solve the daily puzzle. Each day brings a new challenge to test your knowledge!"
+      },
+      "category": {
+        "title": "Daily Category",
+        "description": "Today's mystery category is shown here. Your goal is to figure out what connects all the facts you'll discover. What could it be?"
+      },
+      "factCards": {
+        "title": "Fact Cards",
+        "description": "As you reveal facts, they'll appear here. Click any revealed card to review its information."
+      },
+      "hiddenFacts": {
+        "title": "Hidden Facts",
+        "description": "These bubbles contain hidden facts that will help you solve the category."
+      },
+      "revealFacts": {
+        "title": "Reveal Facts",
+        "description": "Double-click any bubble to reveal its fact! Start with this one to begin your journey."
+      },
+      "guesses": {
+        "title": "Make Your Guesses",
+        "description": "Type your guesses here. Try to figure out what category matches all the facts you discover!"
+      },
+      "timeLimit": {
+        "title": "Time Limit",
+        "description": {
+          "normal": "You have 5 minutes to solve the puzzle. Keep an eye on the timer to track your remaining time!",
+          "hard": "You have 55 seconds to solve the puzzle in hard mode. Keep an eye on the timer to track your remaining time!"
+        }
+      },
+      "guessLimit": {
+        "title": "Guess Limit",
+        "description": "You have 5 guesses to solve the puzzle. The progress bar shows how many guesses you have left."
+      },
+      "tools": {
+        "title": "Helpful Tools",
+        "description": "Use the info button (i) to learn more about fact categories, or the skip button to pass on a guess if you're stuck."
+      }
+    }
+  }
+} 

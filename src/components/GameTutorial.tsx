@@ -82,7 +82,8 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     textBoxStyles,
     colors,
     tutorialSteps,
-    handleClick
+    handleClick,
+    continueText
   } = useGameTutorial({ isOpen, onClose });
 
   if (!isOpen) return null;
@@ -164,7 +165,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
           layout
           transition={{ duration: 0.4 }}
         >
-          {currentStep === tutorialSteps.length - 1 ? 'Click anywhere to finish' : 'Click anywhere to continue'}
+          {continueText}
         </motion.p>
       </motion.div>
     </div>

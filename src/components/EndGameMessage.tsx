@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useEndGameMessage, GameOutcome } from '../hooks/components/endGameMessage';
 import { endGameMessageStyles } from '../styles/endGameMessageStyles';
+import { useTranslation } from 'react-i18next';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -29,6 +30,8 @@ export default function EndGameMessage({
     colors
   } = useEndGameMessage({ outcome, correctAnswer, numberOfTries, timeSpent });
 
+  const { t } = useTranslation();
+
   const getMessage = () => {
     const { type, displayAnswer, numberOfTries: tries } = messageData;
     const answerSpan = (
@@ -44,28 +47,58 @@ export default function EndGameMessage({
 
     switch(type) {
       case 'standard-win':
+        // Split the translation into parts using the answer as delimiter
+        const standardWinParts = t('game.endGame.standardWin', { 
+          answer: '{{answer}}', 
+          tries, 
+          count: tries 
+        }).split('{{answer}}');
+        
         return (
           <div>
-            You guessed {answerSpan} in {tries} {tries === 1 ? 'try' : 'tries'}!
+            {standardWinParts[0]}
+            {answerSpan}
+            {standardWinParts[1]}
           </div>
         );
       case 'final-five-win':
+        // Split the translation into parts using the answer as delimiter
+        const finalFiveWinParts = t('game.endGame.finalFiveWin', { 
+          answer: '{{answer}}' 
+        }).split('{{answer}}');
+        
         return (
           <div>
-            Solved {answerSpan} in the {finalFiveSpan}!
+            {finalFiveWinParts[0]}
+            {answerSpan}
+            {finalFiveWinParts[1]}
           </div>
         );
       case 'loss-final-five-wrong':
+        // Split the translation into parts using the answer as delimiter
+        const lossWrongGuessParts = t('game.endGame.lossWrongGuess', { 
+          answer: '{{answer}}' 
+        }).split('{{answer}}');
+        
         return (
           <div>
-            Incorrect guess! The answer was {answerSpan}.
+            {lossWrongGuessParts[0]}
+            {answerSpan}
+            {lossWrongGuessParts[1]}
           </div>
         );
       case 'loss-final-five-time':
       case 'loss-time':
+        // Split the translation into parts using the answer as delimiter
+        const lossTimeUpParts = t('game.endGame.lossTimeUp', { 
+          answer: '{{answer}}' 
+        }).split('{{answer}}');
+        
         return (
           <div>
-            Out of time! The answer was {answerSpan}.
+            {lossTimeUpParts[0]}
+            {answerSpan}
+            {lossTimeUpParts[1]}
           </div>
         );
     }
@@ -89,7 +122,9 @@ export default function EndGameMessage({
               backgroundColor: piece.color,
               borderRadius: '50%',
               position: 'absolute',
-              transform: 'translate(-50%, -50%)'
+              transform: 'translate(-50%, -50%)',
+              left: '50%',
+              top: '50%'
             }}
           />
         ))}
@@ -114,7 +149,9 @@ export default function EndGameMessage({
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
+                aria-label={t('game.endGame.share')}
               >
+                <title>{t('game.endGame.share')}</title>
                 <path 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
@@ -133,7 +170,7 @@ export default function EndGameMessage({
                 style={{ color: `var(--color-${colors.primary})` }}
                 {...endGameMessageStyles.tomorrowMessageAnimation}
               >
-                Come back tomorrow for a new challenge!
+                {t('game.endGame.comeBackTomorrow')}
               </motion.div>
             )}
           </AnimatePresence>

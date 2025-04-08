@@ -23,8 +23,8 @@ export const initialGameState: GameState = {
   finalFiveOptions: null
 };
 
-export async function fetchChallenge(): Promise<Challenge> {
-  const response = await fetch('/api/daily-challenge');
+export async function fetchChallenge(language: string = 'en'): Promise<Challenge> {
+  const response = await fetch(`/api/daily-challenge?lang=${language}`);
   if (!response.ok) {
     throw new Error('Failed to fetch challenge');
   }
@@ -32,7 +32,7 @@ export async function fetchChallenge(): Promise<Challenge> {
   return data;
 }
 
-export async function verifyGuess(challengeId: string, guess: string): Promise<{ isCorrect: boolean }> {
+export async function verifyGuess(challengeId: string, guess: string, language: string = 'en'): Promise<{ isCorrect: boolean }> {
   const response = await fetch('/api/verify-guess', {
     method: 'POST',
     headers: {
@@ -40,7 +40,8 @@ export async function verifyGuess(challengeId: string, guess: string): Promise<{
     },
     body: JSON.stringify({
       challengeId,
-      guess
+      guess,
+      language
     }),
   });
   
@@ -51,7 +52,7 @@ export async function verifyGuess(challengeId: string, guess: string): Promise<{
   return await response.json();
 }
 
-export async function fetchFinalFiveOptions(challengeId: string, previousGuesses?: string[]): Promise<string[]> {
+export async function fetchFinalFiveOptions(challengeId: string, previousGuesses?: string[], language: string = 'en'): Promise<string[]> {
   // If previous guesses are provided, use POST method to filter options
   if (previousGuesses && previousGuesses.length > 0) {
     const response = await fetch('/api/final-five', {
@@ -62,6 +63,7 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
       body: JSON.stringify({
         challengeId,
         previousGuesses,
+        language
       }),
     });
     
@@ -74,7 +76,7 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
   }
 
   // Otherwise use GET method (backward compatibility)
-  const response = await fetch(`/api/final-five?id=${challengeId}`);
+  const response = await fetch(`/api/final-five?id=${challengeId}&lang=${language}`);
   if (!response.ok) {
     throw new Error('Failed to fetch final five options');
   }

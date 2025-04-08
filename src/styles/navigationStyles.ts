@@ -10,7 +10,7 @@ export const navigationStyles = {
   hardModeBadge: (primaryColor: string): CSSProperties => ({
     backgroundColor: `var(--color-${primaryColor})`
   }),
-  hardModeBadgeText: "py-1 px-2.5 rounded-md text-xs sm:text-sm font-medium text-white",
+  hardModeBadgeText: "py-1 px-2.5 rounded-md text-xs sm:text-sm font-medium text-white uppercase",
   
   // Nav Items
   nav: "flex items-center space-x-4",

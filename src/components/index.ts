@@ -9,4 +9,5 @@ export { default as LoadingAnimation } from './LoadingAnimation';
 export { default as EndGameMessage } from './EndGameMessage';
 export { BubbleContextArea, GameInstructionsArea } from './ContextArea';
 export { default as Navigation } from './Navigation';
-export { default as FinalFiveIntro } from './FinalFiveIntro'; 
+export { default as FinalFiveIntro } from './FinalFiveIntro';
+export { default as NavDropdownMenu } from './NavDropdownMenu'; 

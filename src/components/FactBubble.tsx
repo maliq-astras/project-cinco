@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useFactBubble } from '../hooks';
 import { factBubbleStyles, getBubbleClassNames } from '../styles/factBubbleStyles';
+import { getFactTypeName } from '../helpers/i18nHelpers';
 
 interface FactBubbleProps {
   factType: string;
@@ -28,6 +30,8 @@ export default function FactBubble({
   category = 'countries',
   id
 }: FactBubbleProps) {
+  const { t } = useTranslation();
+  
   const {
     // State
     isPopping,
@@ -63,6 +67,9 @@ export default function FactBubble({
     isTouched
   });
 
+  // Get translated fact type
+  const translatedFactType = getFactTypeName(factType, t);
+
   return (
     <div 
       className={`relative ${className}`}
@@ -87,7 +94,7 @@ export default function FactBubble({
             >
               <img 
                 src={`/icons/${icon.iconName}.svg`}
-                alt={factType}
+                alt={translatedFactType}
                 width={icon.size}
                 height={icon.size}
                 style={{

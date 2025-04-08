@@ -4,6 +4,7 @@ import { Righteous } from 'next/font/google';
 import Timer from './Timer';
 import { useFinalFiveIntro } from '../hooks/components/finalFiveIntro';
 import { finalFiveIntroStyles } from '../styles/finalFiveIntroStyles';
+import { useTranslation } from 'react-i18next';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -23,6 +24,8 @@ export default function FinalFiveIntro({ reason, onStart }: FinalFiveIntroProps)
     hardMode,
     isLoading
   } = useFinalFiveIntro({ reason, onStart });
+
+  const { t } = useTranslation();
 
   // Transform the message into JSX by wrapping "FINAL 5" in a styled span
   const messageJSX = message.split('FINAL 5').map((part, i, arr) => (
@@ -70,7 +73,7 @@ export default function FinalFiveIntro({ reason, onStart }: FinalFiveIntroProps)
               <span>Loading...</span>
             </div>
           ) : (
-            "Start Final 5"
+            t('game.finalFive.startButton')
           )}
         </motion.button>
         

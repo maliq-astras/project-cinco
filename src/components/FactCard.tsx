@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Fact } from '../types';
 import IconContainer from './IconContainer';
 import FactCardBack from './FactCardBack';
 import { factCardStyles } from '../styles/factCardStyles';
 import { useFactCard } from '../hooks';
+import { getFactTypeName } from '../helpers/i18nHelpers';
 
 interface FactCardProps {
   fact: Fact<any>;
@@ -21,6 +23,8 @@ export default function FactCard({
   fact, 
   visibleStackCount = 0,
 }: FactCardProps) {
+  const { t } = useTranslation();
+  
   // Use comprehensive hook for all card logic and state
   const {
     // Refs
@@ -117,7 +121,7 @@ export default function FactCard({
                   />
                   
                   <h3 className={factTypeClasses} style={factTypeStyle}>
-                    {fact.factType}
+                    {getFactTypeName(fact.factType, t)}
                   </h3>
                 </div>
                 

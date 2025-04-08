@@ -1,11 +1,11 @@
 // src/app/api/final-five/route.ts
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge, UserProgress } from '@/types';
+import { Challenge, ChallengeTranslation } from '@/types';
 
 export async function POST(request: Request) {
   try {
-    const { challengeId, previousGuesses = [] } = await request.json();
+    const { challengeId, previousGuesses = [], language = 'en' } = await request.json();
     
     if (!challengeId) {
       return NextResponse.json(
@@ -27,26 +27,51 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
+
+    // Get all translations for this challenge
+    const translations = await db.collection<ChallengeTranslation>('challenge_translations')
+      .find({ challengeId })
+      .toArray();
+
+    // Get the answer in the requested language
+    let answer = challenge.answer;
+    let alternatives = challenge.alternatives;
+
+    // If language is not English, try to get the translation
+    if (language !== 'en') {
+      const translation = translations.find(t => t.language === language);
+      if (translation) {
+        answer = translation.answer;
+        alternatives = translation.alternatives;
+      }
+    }
     
     // Normalize previous guesses
     const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
       guess.trim().toLowerCase()
     );
+
+    // Get all possible answers in all languages
+    const allAnswers = [challenge.answer.toLowerCase()];
+    translations.forEach(translation => {
+      allAnswers.push(translation.answer.toLowerCase());
+    });
     
-    // Filter out alternatives that have already been guessed
-    let availableAlternatives = challenge.alternatives.filter(alt => 
-      !normalizedPreviousGuesses.includes(alt.trim().toLowerCase())
-    );
-    
-    // If we don't have enough alternatives, we'll just use what we have
-    // In production, you might want to generate more alternatives
+    // Filter out alternatives that:
+    // 1. Have already been guessed
+    // 2. Are answers in any language
+    let availableAlternatives = alternatives.filter(alt => {
+      const normalizedAlt = alt.trim().toLowerCase();
+      return !normalizedPreviousGuesses.includes(normalizedAlt) &&
+             !allAnswers.includes(normalizedAlt);
+    });
     
     // Ensure we only return 4 alternatives (plus the correct answer)
     availableAlternatives = availableAlternatives.slice(0, 4);
     
     // Create the Final 5 options with the correct answer and 4 alternatives
     const finalFiveOptions = [
-      challenge.answer,
+      answer,
       ...availableAlternatives
     ];
     
@@ -54,13 +79,10 @@ export async function POST(request: Request) {
     const shuffledOptions = finalFiveOptions.sort(() => Math.random() - 0.5);
     
     return NextResponse.json({
-      options: shuffledOptions,
-      // Mark which one is correct for easy testing - remove in production!
-      // correctAnswer: challenge.answer 
+      options: shuffledOptions
     });
-    
   } catch (error) {
-    console.error('Error generating final five options:', error);
+    console.error('Error fetching Final Five options:', error);
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }
@@ -73,6 +95,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const challengeId = searchParams.get('id');
     const previousGuessesParam = searchParams.get('previousGuesses');
+    const language = searchParams.get('lang') || 'en';
     
     if (!challengeId) {
       return NextResponse.json(
@@ -84,7 +107,7 @@ export async function GET(request: Request) {
     const { db } = await connectToDatabase();
     
     // Get the challenge with the answer and alternatives
-    const challenge = await db.collection('challenges').findOne(
+    const challenge = await db.collection<Challenge>('challenges').findOne(
       { challengeId },
       { projection: { answer: 1, alternatives: 1 } }
     );
@@ -94,6 +117,24 @@ export async function GET(request: Request) {
         { error: 'Challenge not found' }, 
         { status: 404 }
       );
+    }
+
+    // Get all translations for this challenge
+    const translations = await db.collection<ChallengeTranslation>('challenge_translations')
+      .find({ challengeId })
+      .toArray();
+
+    // Get the answer in the requested language
+    let answer = challenge.answer;
+    let alternatives = challenge.alternatives;
+
+    // If language is not English, try to get the translation
+    if (language !== 'en') {
+      const translation = translations.find(t => t.language === language);
+      if (translation) {
+        answer = translation.answer;
+        alternatives = translation.alternatives;
+      }
     }
 
     // Parse previous guesses if provided
@@ -106,35 +147,43 @@ export async function GET(request: Request) {
       }
     }
 
-    // Filter alternatives if we have previous guesses
-    let availableAlternatives = challenge.alternatives;
-    if (previousGuesses.length > 0) {
-      // Normalize previous guesses
-      const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
-        guess.trim().toLowerCase()
-      );
-      
-      // Filter out alternatives that have already been guessed
-      availableAlternatives = availableAlternatives.filter((alt: string) => 
-        !normalizedPreviousGuesses.includes(alt.trim().toLowerCase())
-      );
-    }
+    // Get all possible answers in all languages
+    const allAnswers = [challenge.answer.toLowerCase()];
+    translations.forEach(translation => {
+      allAnswers.push(translation.answer.toLowerCase());
+    });
+
+    // Normalize previous guesses
+    const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
+      guess.trim().toLowerCase()
+    );
+    
+    // Filter out alternatives that:
+    // 1. Have already been guessed
+    // 2. Are answers in any language
+    let availableAlternatives = alternatives.filter(alt => {
+      const normalizedAlt = alt.trim().toLowerCase();
+      return !normalizedPreviousGuesses.includes(normalizedAlt) &&
+             !allAnswers.includes(normalizedAlt);
+    });
     
     // Ensure we only return 4 alternatives (plus the correct answer)
     availableAlternatives = availableAlternatives.slice(0, 4);
     
     // Create the final five options (the correct answer + 4 alternatives)
     const options = [
-      challenge.answer,
+      answer,
       ...availableAlternatives
     ];
     
     // Shuffle the options
     const shuffledOptions = options.sort(() => Math.random() - 0.5);
     
-    return NextResponse.json({ options: shuffledOptions });
+    return NextResponse.json({
+      options: shuffledOptions
+    });
   } catch (error) {
-    console.error('Error getting final five options:', error);
+    console.error('Error fetching Final Five options:', error);
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }

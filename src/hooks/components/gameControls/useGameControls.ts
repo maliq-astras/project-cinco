@@ -1,4 +1,5 @@
 import { FormEvent, useRef, useImperativeHandle, Ref } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
 import { showToastMessage } from '../../../helpers/uiHelpers';
@@ -9,6 +10,7 @@ export interface GameControlsHandle {
 }
 
 export const useGameControls = (ref: Ref<GameControlsHandle>) => {
+  const { t } = useTranslation();
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
@@ -66,8 +68,11 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
 
   // Generate a descriptive message based on the game state
   const getInputPlaceholder = () => {
-    // Return an empty string since instructions are already displayed in the context area
-    return "";
+    if (!hasSeenClue) {
+      return t('game.input.disabled');
+    }
+    
+    return t('game.input.placeholder');
   };
 
   // Determine if input should be disabled

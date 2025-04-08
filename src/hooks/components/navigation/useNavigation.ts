@@ -6,6 +6,7 @@ interface MenuItem {
   label: string;
   onClick: () => void;
   showArrow: boolean;
+  ariaLabel?: string;
 }
 
 export const useNavigation = () => {
@@ -45,34 +46,38 @@ export const useNavigation = () => {
   // Define all menu items, we'll filter based on game state later
   const allMenuItems: MenuItem[] = [
     { 
-      label: 'How to Play?', 
+      label: 'ui.navigation.howToPlay', 
       onClick: () => {
         setTutorialOpen(true);
         setIsDropdownOpen(false);
       },
-      showArrow: false // This doesn't navigate away
+      showArrow: false, // This doesn't navigate away
+      ariaLabel: 'ui.navigation.howToPlay'
     },
     { 
-      label: 'F.A.Q.', 
+      label: 'ui.navigation.about', 
       onClick: () => console.log('FAQ clicked'),
-      showArrow: true  // This would navigate to another page
+      showArrow: true,  // This would navigate to another page
+      ariaLabel: 'ui.navigation.about'
     },
     { 
-      label: 'Report a Bug', 
+      label: 'ui.navigation.reportBug', 
       onClick: () => console.log('Report Bug clicked'),
-      showArrow: true  // This would navigate to another page
+      showArrow: true,  // This would navigate to another page
+      ariaLabel: 'ui.navigation.reportBug'
     },
     { 
-      label: 'Feedback', 
+      label: 'ui.navigation.feedback', 
       onClick: () => console.log('Feedback clicked'),
-      showArrow: true  // This would navigate to another page
+      showArrow: true,  // This would navigate to another page
+      ariaLabel: 'ui.navigation.feedback'
     },
   ];
   
   // Filter menu items based on game state
   const menuItems = allMenuItems.filter(item => {
     // Only include How to Play if we should show it
-    if (item.label === 'How to Play?') {
+    if (item.label === 'ui.navigation.howToPlay') {
       return shouldShowHowToPlay;
     }
     // Include all other menu items always

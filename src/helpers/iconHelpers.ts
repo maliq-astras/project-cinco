@@ -11,23 +11,23 @@ const WILDCARD_ICON = 'wildcard';
 
 // Icon mapping for countries category
 const countryIcons: IconMapping = {
-  'Official Language(s)': 'languages',
-  'Flag Colors & Features': 'flag',
-  'Notable City': 'cityscape',
-  'Largest Industry': 'economy',
-  'Population & Demographic Info': 'demographics',
-  'Origin/Founding': 'history',
-  'Geographic Features & Border Info': 'geography',
+  'Language(s)': 'languages',
+  'Flag': 'flag',
+  'Cities': 'cityscape',
+  'Economy': 'economy',
+  'Demographics': 'demographics',
+  'Origin': 'history',
+  'Geography & Climate': 'geography',
   'Wildcard': 'wildcard'
 };
 
 // Animal fact types icon mapping
 const animalIcons: IconMapping = {
-  'Habitat & Global Presence': 'habitat',
-  'Diet & Ecological Role': 'ecological-role',
-  'Physical Characteristic': 'characteristic',
+  'Habitat': 'habitat',
+  'Ecology': 'ecological-role',
+  'Rare Features': 'characteristic',
   'Size/Weight': 'sizeweight',
-  'Evolutionary History & Relationships': 'evolution',
+  'Evolutionary History': 'evolution',
   'Social Behavior': 'socialanimal',
   'Reproduction': 'reproduction',
   'Wildcard': 'wildcard'
@@ -36,12 +36,12 @@ const animalIcons: IconMapping = {
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
   'Director': 'director',
-  'Release Era': 'release-date',
-  'Notable Character': 'character',
+  'Premiere': 'release-date',
+  'Character(s)': 'character',
   'Genre': 'genre',
-  'Critical Reception/Awards': 'awards',
-  'Box Office Performance': 'boxoffice',
-  'Production Studio': 'studio',
+  'Critical Reception': 'awards',
+  'Box Office': 'boxoffice',
+  'Production': 'studio',
   'Wildcard': 'wildcard'
 };
 

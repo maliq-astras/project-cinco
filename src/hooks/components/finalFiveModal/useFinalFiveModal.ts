@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { verifyGuess } from '../../../helpers/gameLogic';
 import { UserGuess } from '../../../types';
 
@@ -21,6 +22,7 @@ export function useFinalFiveModal() {
   } = useGameStore();
   
   const { colors, darkMode } = useTheme();
+  const { t } = useTranslation();
   
   // Local state
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
@@ -193,22 +195,24 @@ export function useFinalFiveModal() {
   // Helper to get the message to display
   const getMessage = useCallback(() => {
     if (!allCardsFlipped) {
-      return "Cards are being revealed...";
+      return t('game.finalFive.revealingCards');
     }
     
     if (loading) {
-      return "Determining the correct answer...";
+      return t('game.finalFive.checkingAnswer');
     }
     
     if (!isGameOver) {
-      return `Select the correct answer${hardMode ? " (Hard Mode: 5 seconds)" : ""}`;
+      return hardMode 
+        ? t('game.finalFive.selectAnswerHard')
+        : t('game.finalFive.selectAnswer');
     }
     
     const hasWon = gameOutcome === 'final-five-win';
     return hasWon 
-      ? "Correct! You found the answer!"
-      : "Incorrect. The correct answer is highlighted.";
-  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome]);
+      ? t('game.finalFive.correctAnswer')
+      : t('game.finalFive.incorrectAnswer');
+  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome, t]);
   
   // Helper to get card styles
   const getCardStyles = useCallback((option: string) => {

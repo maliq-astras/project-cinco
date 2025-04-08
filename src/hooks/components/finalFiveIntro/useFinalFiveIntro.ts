@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { Righteous } from 'next/font/google';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
@@ -23,6 +24,7 @@ interface UseFinalFiveIntroReturn {
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   const hardMode = useGameStore(state => state.hardMode);
   const finalFiveOptions = useGameStore(state => state.gameState.finalFiveOptions);
@@ -116,8 +118,8 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
   
   const timeLimit = hardMode ? "5" : "55";
   const message = reason === 'time'
-    ? `Time's up! But here's your chance at glory in the FINAL 5! Choose the correct answer from 5 options in an intense ${timeLimit}-second showdown${hardMode ? " (Hard Mode)" : ""}. Ready to become a champion?`
-    : `5 guesses down, but victory awaits in the FINAL 5! You'll have ${timeLimit} seconds to pick the right answer from 5 carefully selected options${hardMode ? " (Hard Mode)" : ""}. This is your moment to shine!`;
+    ? t('game.finalFive.timeUp', { timeLimit })
+    : t('game.finalFive.guessesUp', { timeLimit });
 
   return {
     handleStart,

@@ -1,0 +1,236 @@
+{
+  "app": {
+    "title": "Fact 5",
+    "subtitle": "Desafío Diario de Trivia",
+    "description": "Pon a prueba tus conocimientos con desafíos de trivia diarios"
+  },
+  "game": {
+    "instructions": {
+      "doubleTap": "Toca dos veces",
+      "doubleClick": "Haz doble clic",
+      "revealToBegin": "{{action}} para revelar un dato y comenzar...",
+      "revealNew": "Revela un nuevo dato para hacer otra suposición...",
+      "enterGuess": "Ingresa tu respuesta..."
+    },
+    "input": {
+      "placeholder": "Escribe tu respuesta aquí...",
+      "disabled": "Haz clic en un dato primero"
+    },
+    "facts": {
+      "empty": "Aún no se han cargado datos",
+      "placeholder": "Los datos revelados aparecerán aquí"
+    },
+    "status": {
+      "guessing": "Adivinando...",
+      "correct": "¡Correcto!",
+      "incorrect": "¡Respuesta incorrecta! Intenta de nuevo.",
+      "duplicate": "Ya has intentado esa respuesta. ¡Prueba con otra!",
+      "skipped": "¡Omitido! Revela otra pista.",
+      "gameOver": "Fin del Juego",
+      "victory": "¡Has ganado!",
+      "rotateDevice": "Gira tu Dispositivo",
+      "rotateDescription": "Este juego funciona mejor en modo vertical en pantallas pequeñas. Por favor, gira tu dispositivo para continuar jugando."
+    },
+    "finalFive": {
+      "title": "Desafío Final de Cinco",
+      "intro": "¡Es hora del Final de Cinco!",
+      "instructions": "Selecciona el dato correcto para cada categoría",
+      "timeUp": "¡Se acabó el tiempo! Pero todavía hay una oportunidad en la ronda FINAL 5. Elige la respuesta correcta entre 5 opciones en un duelo de {{timeLimit}} segundos. ¿Listo para convertirte en campeón?",
+      "guessesUp": "5 intentos agotados, ¡pero la victoria te espera en el FINAL 5! Tendrás {{timeLimit}} segundos para elegir la respuesta correcta entre 5 opciones. ¡Este es tu momento de brillar!",
+      "revealingCards": "Las cartas se están revelando...",
+      "checkingAnswer": "Determinando la respuesta correcta...",
+      "selectAnswer": "Selecciona la respuesta correcta",
+      "selectAnswerHard": "Selecciona la respuesta correcta (Modo Difícil: 5 segundos)",
+      "correctAnswer": "¡Correcto! ¡Encontraste la respuesta!",
+      "incorrectAnswer": "Incorrecto. La respuesta correcta está resaltada.",
+      "startButton": "Iniciar FINAL 5"
+    },
+    "endGame": {
+      "standardWin": "¡Adivinaste {{answer}} en {{tries}} {{count}}!",
+      "standardWin_one": "¡Adivinaste {{answer}} en {{tries}} intento!",
+      "standardWin_other": "¡Adivinaste {{answer}} en {{tries}} intentos!",
+      "finalFiveWin": "¡Resolviste {{answer}} en el FINAL 5!",
+      "lossWrongGuess": "¡Respuesta incorrecta! La respuesta era {{answer}}.",
+      "lossTimeUp": "¡Se acabó el tiempo! La respuesta era {{answer}}.",
+      "comeBackTomorrow": "¡Vuelve mañana para un nuevo desafío!",
+      "timeSpent": "{{minutes}}m {{seconds}}s",
+      "share": "Compartir"
+    }
+  },
+  "loading": {
+    "message": "Espera por favor, cargando desafío...",
+    "skip": "SALTAR"
+  },
+  "ui": {
+    "buttons": {
+      "start": "Iniciar",
+      "skip": "Omitir",
+      "next": "Siguiente",
+      "play": "Jugar",
+      "continue": "Continuar",
+      "tryAgain": "Intentar de Nuevo",
+      "settings": "Configuración",
+      "close": "Cerrar",
+      "info": "Información",
+      "profile": "Perfil"
+    },
+    "timer": {
+      "timeRemaining": "Tiempo Restante"
+    },
+    "language": {
+      "select": "Seleccionar Idioma",
+      "en": "Inglés",
+      "es": "Español",
+      "other": "¡Próximamente!"
+    },
+    "navigation": {
+      "menu": "Menú de Navegación",
+      "howToPlay": "¿Cómo Jugar?",
+      "about": "Preguntas Frecuentes",
+      "viewStats": "Ver Estadísticas",
+      "reportBug": "Reportar un Error",
+      "feedback": "Comentarios"
+    },
+    "settings": {
+      "darkMode": "Modo Oscuro",
+      "darkModeDesc": "Alterna entre tema claro y oscuro",
+      "hardMode": "Modo Difícil",
+      "hardModeDesc": "¡Menos tiempo para adivinar!",
+      "cannotChangeDifficulty": "No se puede cambiar la dificultad después de iniciar el juego",
+      "randomizer": "Aleatorizador",
+      "randomizerDesc": "Obtén categorías aleatorias cada día",
+      "highContrast": "Modo de Alto Contraste",
+      "highContrastDesc": "Aumenta el contraste de colores",
+      "autoSave": "La configuración se guardará automáticamente."
+    }
+  },
+  "categories": {
+    "science": "Ciencia",
+    "history": "Historia",
+    "geography": "Geografía",
+    "entertainment": "Entretenimiento",
+    "sports": "Deportes",
+    "art": "Arte",
+    "literature": "Literatura",
+    "technology": "Tecnología",
+    "music": "Música",
+    "food": "Comida",
+    "travel": "Viajes",
+    "countries": "Países",
+    "animals": "Animales",
+    "movies": "Películas",
+    "books": "Libros",
+    "musical artists": "Artistas Musicales",
+    "athletes": "Atletas",
+    "historical figures": "Figuras Históricas",
+    "famous brands": "Marcas Famosas",
+    "tv shows": "Series de TV"
+  },
+  "factTypes": {
+    "language(s)": "Idioma(s)",
+    "flag": "Bandera",
+    "cities": "Ciudades",
+    "economy": "Economía",
+    "demographics": "Demografía",
+    "origin": "Origen",
+    "geography & climate": "Geografía y Clima",
+    "wildcard": "Comodín",
+    
+    "habitat": "Hábitat",
+    "ecology": "Ecología",
+    "rare features": "Características Únicas",
+    "size/weight": "Tamaño/Peso",
+    "evolutionary history": "Historia Evolutiva",
+    "social behavior": "Comportamiento Social",
+    "reproduction": "Reproducción",
+    
+    "director": "Director",
+    "premiere": "Estreno",
+    "character(s)": "Personaje(s)",
+    "genre": "Género",
+    "critical reception": "Recepción Crítica",
+    "box office": "Taquilla",
+    "production": "Producción",
+    
+    "author": "Autor",
+    "publication": "Publicación",
+    "plot": "Trama",
+    "narrative style": "Estilo Narrativo",
+    
+    "background": "Antecedentes",
+    "era": "Época",
+    "songs & albums": "Canciones y Álbumes",
+    "achievements": "Logros",
+    "collaborations": "Colaboraciones",
+    "chart performance": "Rendimiento en Listas",
+    
+    "personal life": "Vida Personal",
+    "affiliations": "Afiliaciones",
+    "nationality": "Nacionalidad",
+    "physique": "Físico",
+    "stats": "Estadísticas",
+    
+    "occupation": "Ocupación",
+    "important dates": "Fechas Importantes",
+    "legacy": "Legado",
+    "physical appearance": "Apariencia Física",
+    
+    "industry": "Industria",
+    "logo": "Logo",
+    "location": "Ubicación",
+    "signature product": "Producto Distintivo",
+    "financials": "Finanzas",
+    "brand culture": "Cultura de Marca",
+    
+    "debut": "Debut",
+    "network/platform": "Canal/Plataforma",
+    "visual style": "Estilo Visual"
+  },
+  "tutorial": {
+    "navigation": {
+      "continue": "Haz clic en cualquier lugar para continuar",
+      "finish": "Haz clic en cualquier lugar para terminar"
+    },
+    "steps": {
+      "welcome": {
+        "title": "¡Bienvenido a Fact 5!",
+        "description": "Descubre datos ocultos y usa tus habilidades deductivas para resolver el rompecabezas diario. ¡Cada día trae un nuevo desafío para poner a prueba tus conocimientos!"
+      },
+      "category": {
+        "title": "Categoría del Día",
+        "description": "La categoría misteriosa de hoy se muestra aquí. Tu objetivo es descubrir qué conecta todos los datos que encontrarás. ¿Qué podría ser?"
+      },
+      "factCards": {
+        "title": "Tarjetas de Datos",
+        "description": "A medida que reveles datos, aparecerán aquí. Haz clic en cualquier tarjeta revelada para revisar su información."
+      },
+      "hiddenFacts": {
+        "title": "Datos Ocultos",
+        "description": "Estas burbujas contienen datos ocultos que te ayudarán a resolver la categoría."
+      },
+      "revealFacts": {
+        "title": "Revelar Datos",
+        "description": "¡Haz doble clic en cualquier burbuja para revelar su dato! Comienza con esta para iniciar tu viaje."
+      },
+      "guesses": {
+        "title": "Haz tus Suposiciones",
+        "description": "Escribe tus respuestas aquí. ¡Intenta descubrir qué categoría coincide con todos los datos que descubras!"
+      },
+      "timeLimit": {
+        "title": "Límite de Tiempo",
+        "description": {
+          "normal": "Tienes 5 minutos para resolver el rompecabezas. ¡Mantén un ojo en el temporizador para ver el tiempo restante!",
+          "hard": "Tienes 55 segundos para resolver el rompecabezas en modo difícil. ¡Mantén un ojo en el temporizador para ver el tiempo restante!"
+        }
+      },
+      "guessLimit": {
+        "title": "Límite de Intentos",
+        "description": "Tienes 5 intentos para resolver el rompecabezas. La barra de progreso muestra cuántos intentos te quedan."
+      },
+      "tools": {
+        "title": "Herramientas Útiles",
+        "description": "Usa el botón de información (i) para aprender más sobre las categorías de datos, o el botón de omitir para pasar un intento si estás atascado."
+      }
+    }
+  }
+} 

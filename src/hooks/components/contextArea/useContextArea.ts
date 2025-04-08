@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
 import { contextAreaStyles, getContextTextClassNames } from '../../../styles/contextAreaStyles';
@@ -7,6 +8,7 @@ import { contextAreaStyles, getContextTextClassNames } from '../../../styles/con
  * Hook to manage the bubble context area state and logic
  */
 export function useBubbleContext() {
+  const { t } = useTranslation('common');
   const challenge = useGameStore(state => state.gameState.challenge);
   const hoveredFact = useGameStore(state => state.hoveredFact);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
@@ -19,7 +21,7 @@ export function useBubbleContext() {
       !revealedFacts.includes(hoveredFact);
       
     if (shouldShowHoverContext) {
-      return challenge?.facts[hoveredFact].factType;
+      return t(`factTypes.${challenge?.facts[hoveredFact].factType.toLowerCase()}`, challenge?.facts[hoveredFact].factType);
     }
     
     return "";
@@ -37,6 +39,7 @@ export function useBubbleContext() {
  * Hook to manage the game instructions area state and logic
  */
 export function useGameInstructions() {
+  const { t } = useTranslation('common');
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
@@ -80,19 +83,21 @@ export function useGameInstructions() {
     }
     
     if (showLoading) {
-      return "Guessing...";
+      return t('game.status.guessing', 'Guessing...');
     }
     
     if (!hasSeenClue) {
-      const action = isTouchDevice ? "Double-tap" : "Double-click";
-      return `${action} to reveal a fact and begin...`;
+      const action = isTouchDevice ? 
+        t('game.instructions.doubleTap', 'Double-tap') : 
+        t('game.instructions.doubleClick', 'Double-click');
+      return t('game.instructions.revealToBegin', '{{action}} to reveal a fact and begin...', { action });
     }
     
     if (!canMakeGuess) {
-      return "Reveal a new fact to make another guess...";
+      return t('game.instructions.revealNew', 'Reveal a new fact to make another guess...');
     }
     
-    return "Enter your guess...";
+    return t('game.instructions.enterGuess', 'Enter your guess...');
   };
 
   // Animation properties

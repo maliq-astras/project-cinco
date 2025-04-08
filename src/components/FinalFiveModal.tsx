@@ -7,6 +7,7 @@ import { useFinalFiveModal } from '../hooks';
 import Timer from './Timer';
 import FinalFiveCard from './FinalFiveCard';
 import { finalFiveStyles } from '../styles/finalFiveStyles';
+import { useTranslation } from 'react-i18next';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -37,6 +38,8 @@ export default function FinalFiveModal() {
     handleOptionClick,
     closeFinalFive
   } = useFinalFiveModal();
+
+  const { t } = useTranslation();
   
   // Don't render if not active or no options
   if (!options.length || !isFinalFiveActive) {
@@ -71,7 +74,7 @@ export default function FinalFiveModal() {
           className={`${finalFiveStyles.header} ${righteous.className}`}
           style={{ color: themeColor }}
         >
-          FINAL 5
+          {t('game.finalFive.title')}
         </h2>
         
         {/* Message */}
@@ -151,7 +154,7 @@ export default function FinalFiveModal() {
                   }}
                   onClick={closeFinalFive}
                 >
-                  Continue
+                  {t('ui.buttons.continue')}
                 </button>
               </motion.div>
             )}

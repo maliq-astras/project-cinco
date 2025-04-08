@@ -3,9 +3,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
+import { useTranslation } from 'react-i18next';
 import Logo from './Logo';
 import { useLoadingAnimation } from '../hooks/components/loadingAnimation';
 import { loadingAnimationStyles } from '../styles/loadingAnimationStyles';
+import { getCategoryName } from '../helpers/i18nHelpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -20,6 +22,7 @@ export default function LoadingAnimation({
   onComplete, 
   isChallengeFetched 
 }: LoadingAnimationProps) {
+  const { t } = useTranslation('common');
   const {
     mounted,
     currentCategory,
@@ -37,6 +40,9 @@ export default function LoadingAnimation({
 
   // Get the theme-adjusted color information
   const colorInfo = getThemeAdjustedPrimaryColor();
+
+  // Get translated category name
+  const translatedCategory = currentCategory ? getCategoryName(currentCategory, t) : '';
 
   return (
     <div className={loadingAnimationStyles.container}>
@@ -80,10 +86,10 @@ export default function LoadingAnimation({
                     colorInfo.rgb,
                     colorInfo.colorClass,
                     darkMode,
-                    currentCategory
+                    translatedCategory
                   )}
                 >
-                  {currentCategory}
+                  {translatedCategory}
                 </motion.h1>
               </AnimatePresence>
             ) : (
@@ -101,7 +107,7 @@ export default function LoadingAnimation({
                 className="animate-spin" 
                 style={loadingAnimationStyles.loadingSpinner(colorInfo.rgb)}
               ></div>
-              <p className={loadingAnimationStyles.loadingText}>Please wait, loading challenge...</p>
+              <p className={loadingAnimationStyles.loadingText}>{t('loading.message', 'Please wait, loading challenge...')}</p>
             </motion.div>
           )}
         </div>
@@ -113,7 +119,7 @@ export default function LoadingAnimation({
             onClick={completeAnimation}
             className={`${loadingAnimationStyles.skipButton} ${righteous.className}`}
           >
-            SKIP &gt;&gt;
+            {t('loading.skip', 'SKIP')} &gt;&gt;
           </motion.button>
         )}
       </div>

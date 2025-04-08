@@ -67,7 +67,7 @@ interface GameStore {
   setShouldFocusInput: (shouldFocus: boolean) => void;
   
   // Game logic actions
-  fetchChallenge: () => Promise<void>;
+  fetchChallenge: (language: string) => Promise<void>;
   revealFact: (factIndex: number) => void;
   handleCardClick: (factIndex: number, sourcePosition: { x: number, y: number }) => void;
   closeFactCard: () => void;
@@ -151,11 +151,12 @@ export const useGameStore = create<GameStore>()(
       showFinalFiveTransition, 
       viewingFact,
       isSettingsPanelOpen,
-      shouldPauseTimer
+      shouldPauseTimer,
+      isProcessingGuess
     } = get();
     
-    // Don't decrement if timer should be paused (e.g., during tutorial)
-    if (shouldPauseTimer) return;
+    // Don't decrement if timer should be paused (e.g., during tutorial or guess verification)
+    if (shouldPauseTimer || isProcessingGuess) return;
     
     if (isTimerActive) {
       if (timeRemaining <= 1 && !isFinalFiveActive && !showFinalFiveTransition && !gameState.isGameOver) {
@@ -193,10 +194,16 @@ export const useGameStore = create<GameStore>()(
     }
   },
   decrementFinalFiveTimer: () => {
-    const { finalFiveTimeRemaining, isFinalFiveActive, hardMode, shouldPauseTimer } = get();
+    const { 
+      finalFiveTimeRemaining, 
+      isFinalFiveActive, 
+      hardMode, 
+      shouldPauseTimer,
+      isProcessingGuess
+    } = get();
     
-    // Don't decrement if timer should be paused (e.g., during tutorial)
-    if (shouldPauseTimer) return;
+    // Don't decrement if timer should be paused (e.g., during tutorial or guess verification)
+    if (shouldPauseTimer || isProcessingGuess) return;
     
     if (finalFiveTimeRemaining <= 0) {
       return;
@@ -224,9 +231,9 @@ export const useGameStore = create<GameStore>()(
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
   
   // Game logic actions
-  fetchChallenge: async () => {
+  fetchChallenge: async (language: string = 'en') => {
     try {
-      const challenge = await fetchChallengeAPI();
+      const challenge = await fetchChallengeAPI(language);
       set(state => ({
         gameState: {
           ...state.gameState,
@@ -412,7 +419,57 @@ export const useGameStore = create<GameStore>()(
     set({ isProcessingGuess: true });
     
     try {
-      const data = await verifyGuessAPI(gameState.challenge.challengeId, guess);
+      // Special case for skipped guesses - handle immediately without API call
+      if (guess === "___SKIPPED___") {
+        const newGuess: UserGuess = {
+          guess,
+          isCorrect: false,
+          timestamp: new Date()
+        };
+        
+        set(state => {
+          const newGuesses = [...state.gameState.guesses, newGuess];
+          const newState = {
+            gameState: {
+              ...state.gameState,
+              guesses: newGuesses,
+              isGameOver: false
+            },
+            canRevealNewClue: true,
+            canMakeGuess: false,
+            isProcessingGuess: false // Reset processing state immediately
+          };
+
+          if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
+            // Immediately set pending state to prevent further interactions
+            set({
+              ...newState,
+              isPendingFinalFiveTransition: true
+            });
+            
+            // Then show the transition after delay
+            setTimeout(() => {
+              set({
+                showFinalFiveTransition: true,
+                finalFiveTransitionReason: 'guesses'
+              });
+
+              // Prefetch final five options as soon as transition starts
+              get().prefetchFinalFiveOptions();
+            }, 1500); // 1.5 seconds delay to show the sparks animation
+            
+            return newState;
+          }
+
+          return newState;
+        });
+        
+        return; // Exit early for skipped guesses
+      }
+      
+      // Get the current language from localStorage
+      const language = localStorage.getItem('i18nextLng') || 'en';
+      const data = await verifyGuessAPI(gameState.challenge.challengeId, guess, language);
       
       const newGuess: UserGuess = {
         guess,
@@ -490,9 +547,13 @@ export const useGameStore = create<GameStore>()(
           .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
           .map(g => g.guess);
         
+        // Get the current language from localStorage
+        const language = localStorage.getItem('i18nextLng') || 'en';
+        
         const options = await fetchFinalFiveOptionsAPI(
           gameState.challenge.challengeId,
-          previousGuesses
+          previousGuesses,
+          language
         );
         
         // Store the options in the state
@@ -565,7 +626,9 @@ export const useGameStore = create<GameStore>()(
     if (!gameState.challenge) return;
     
     try {
-      const data = await verifyGuessAPI(gameState.challenge.challengeId, option);
+      // Get the current language from localStorage
+      const language = localStorage.getItem('i18nextLng') || 'en';
+      const data = await verifyGuessAPI(gameState.challenge.challengeId, option, language);
       
       const newGuess: UserGuess = {
         guess: option,
@@ -587,7 +650,7 @@ export const useGameStore = create<GameStore>()(
             if (potentialAnswer === option) continue; // Skip the one we just verified
             
             try {
-              const result = await verifyGuessAPI(gameState.challenge.challengeId, potentialAnswer);
+              const result = await verifyGuessAPI(gameState.challenge.challengeId, potentialAnswer, language);
               if (result.isCorrect) {
                 correctAnswer = potentialAnswer;
                 // Add this as a "hidden" guess so it's in our guesses array

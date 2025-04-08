@@ -4,6 +4,7 @@ import { CategoryType } from '../../src/types';
 // Base interface for all category generators
 export interface ChallengeGenerator {
   generate(count: number, startDate: Date): any[];
+  getData(): any[];
 }
 
 // Helper function to create date strings
@@ -31,6 +32,13 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
     answer: string;
     facts: Record<string, string>;
     alternatives: string[];
+    translations?: {
+      es?: {
+        facts: Record<string, string>;
+        answer: string;
+        alternatives: string[];
+      }
+    }
   }[];
 
   constructor(
@@ -41,6 +49,10 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
     this.category = category;
     this.factTypes = factTypes;
     this.subjectPool = subjectPool;
+  }
+
+  getData(): any[] {
+    return this.subjectPool;
   }
 
   generate(count: number, startDate: Date): any[] {

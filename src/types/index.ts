@@ -88,15 +88,15 @@ export const categoryColorMap: Record<CategoryType, ThemeColors> = {
 };
 
 // Define fact types for each category
-export type CountryFactType = "Official Language(s)" | "Flag Colors & Features" | "Notable City" | "Largest Industry" | "Population & Demographic Info" | "Origin/Founding" | "Geographic Features & Border Info" | "Wildcard";
-export type AnimalFactType = "Habitat & Global Presence" | "Diet & Ecological Role" | "Physical Characteristic" | "Size/Weight" | "Evolutionary History & Relationships" | "Social Behavior" | "Reproduction" | "Wildcard";
-export type MovieFactType = "Director" | "Release Era" | "Notable Character" | "Genre" | "Critical Reception/Awards" | "Box Office Performance" | "Production Studio" | "Wildcard";
-export type BookFactType = "Author" | "Publication Date" | "Notable Character" | "Genre" | "Critical Reception/Awards" | "Sales & Popularity" | "Publishing House" | "Wildcard";
-export type MusicalArtistFactType = "Genre" | "Notable Album" | "Release Date" | "Awards & Nominations" | "Collaborators" | "Wildcard";
-export type AthleteFactType = "Sport" | "Achievements" | "Team" | "Physical Attributes" | "Career Highlights" | "Wildcard";
-export type HistoricalFigureFactType = "Notable Achievement" | "Era" | "Associated Country" | "Contribution" | "Personal Life" | "Wildcard";
-export type FamousBrandFactType = "Founder" | "Founding Year" | "Product" | "Headquarters Location" | "Year Founded" | "Wildcard";
-export type TvShowFactType = "Creator" | "Premiere Date" | "Notable Character" | "Genre" | "Awards & Nominations" | "Network" | "Wildcard";
+export type CountryFactType = "Language(s)" | "Flag" | "Cities" | "Economy" | "Demographics" | "Origin" | "Geography & Climate" | "Wildcard";
+export type AnimalFactType = "Habitat" | "Ecology" | "Rare Features" | "Size/Weight" | "Evolutionary History" | "Social Behavior" | "Reproduction" | "Wildcard";
+export type MovieFactType = "Director" | "Premiere" | "Character(s)" | "Genre" | "Critical Reception" | "Box Office" | "Production" | "Wildcard";
+export type BookFactType = "Author" | "Publication" | "Character(s)" | "Genre" | "Critical Reception" | "Plot" | "Narrative Style" | "Wildcard";
+export type MusicalArtistFactType = "Genre" | "Background" | "Era" | "Songs & Albums" | "Achievements" | "Collaborations" | "Chart Performance" | "Wildcard";
+export type AthleteFactType = "Personal Life" | "Affiliations" | "Era" | "Nationality" | "Physique" | "Stats"| "Achievements" | "Wildcard";
+export type HistoricalFigureFactType = "Occupation" | "Important Dates" | "Nationality" | "Legacy" | "Physical Appearance" | "Background" | "Personal Life" | "Wildcard";
+export type FamousBrandFactType = "Industry" | "Origin" | "Logo" | "Location" | "Signature Product" | "Financials" | "Brand Culture" | "Wildcard";
+export type TvShowFactType = "Genre" | "Debut" | "Production" | "Character(s)" | "Reception" | "Network/Platform" | "Visual Style" |"Wildcard";
 // Define other fact types similarly...
 
 // Map categories to their fact types
@@ -126,6 +126,14 @@ export interface Challenge {
   date: string;
   category: CategoryType;
   facts: Fact<CategoryType>[];
+  answer: string;
+  alternatives: string[];
+}
+
+export interface ChallengeTranslation {
+  challengeId: string;
+  language: string;
+  facts: Record<string, string>;
   answer: string;
   alternatives: string[];
 }
