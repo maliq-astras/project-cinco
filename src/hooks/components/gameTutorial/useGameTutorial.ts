@@ -39,7 +39,7 @@ const createTutorialSteps = (hardMode: boolean, t: Function): TutorialStep[] => 
   {
     target: 'bubble-0',
     title: t('tutorial.steps.revealFacts.title'),
-    description: t('tutorial.steps.revealFacts.description'),
+    description: t('tutorial.steps.revealFacts.description', 'Drag any bubble to the card area to reveal its fact! Start with this one to begin your journey.'),
     textPosition: 'right',
   },
   {

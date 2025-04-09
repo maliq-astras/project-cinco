@@ -87,10 +87,7 @@ export function useGameInstructions() {
     }
     
     if (!hasSeenClue) {
-      const action = isTouchDevice ? 
-        t('game.instructions.doubleTap', 'Double-tap') : 
-        t('game.instructions.doubleClick', 'Double-click');
-      return t('game.instructions.revealToBegin', '{{action}} to reveal a fact and begin...', { action });
+      return t('game.instructions.dragToBegin', 'Drag a bubble to reveal a fact and begin...');
     }
     
     if (!canMakeGuess) {

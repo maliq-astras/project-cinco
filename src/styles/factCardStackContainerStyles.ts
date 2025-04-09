@@ -9,7 +9,7 @@ export const factCardStackContainerStyles = {
   innerContainer: "flex flex-col sm:flex-row items-center sm:justify-between w-full h-full",
   
   // Card stack wrapper
-  cardStackWrapper: "w-full",
+  cardStackWrapper: "w-full transition-opacity duration-300 ease-out",
   
   // Placeholder styles
   placeholder: {

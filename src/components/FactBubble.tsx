@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useFactBubble } from '../hooks';
+import { useDragState } from '../hooks/useDragState';
 import { factBubbleStyles, getBubbleClassNames } from '../styles/factBubbleStyles';
 import { getFactTypeName } from '../helpers/i18nHelpers';
 
@@ -31,11 +32,11 @@ export default function FactBubble({
   id
 }: FactBubbleProps) {
   const { t } = useTranslation();
+  const setIsDragging = useDragState(state => state.setIsDragging);
   
   const {
     // State
     isPopping,
-    isTouched,
     isClickable,
     
     // UI Elements
@@ -47,13 +48,12 @@ export default function FactBubble({
     bubbleAnimation,
     
     // Handlers
-    handleInteraction,
-    handleTouchStart,
-    handleTouchEnd,
+    handleDragEnd,
     mouseHandlers,
     
     // Styling
-    getIconFilter
+    getIconFilter,
+    popPosition
   } = useFactBubble({
     factType,
     isRevealed,
@@ -63,12 +63,18 @@ export default function FactBubble({
 
   // Get appropriate classNames
   const bubbleClassNames = getBubbleClassNames({
-    isClickable,
-    isTouched
+    isClickable
   });
 
   // Get translated fact type
   const translatedFactType = getFactTypeName(factType, t);
+
+  // Handle drag start
+  const handleDragStart = () => {
+    if (isClickable) {
+      setIsDragging(true);
+    }
+  };
 
   return (
     <div 
@@ -85,12 +91,20 @@ export default function FactBubble({
               style={{
                 borderColor: `var(--color-${colors.primary})`
               }}
-              onClick={handleInteraction}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
+              drag={isClickable}
+              dragConstraints={false}
+              dragElastic={0.1}
+              dragMomentum={false}
+              dragSnapToOrigin={true}
+              onDragStart={handleDragStart}
+              onDragEnd={(event, info) => {
+                setIsDragging(false);
+                handleDragEnd(event, info);
+              }}
               whileHover={{ scale: isClickable ? 1.05 : 1 }}
               whileTap={{ scale: isClickable ? 0.95 : 1 }}
-              animate={bubbleAnimation}
+              animate={isPopping ? bubbleAnimation : {}}
+              whileDrag={{ zIndex: 50 }}
             >
               <img 
                 src={`/icons/${icon.iconName}.svg`}
@@ -100,8 +114,13 @@ export default function FactBubble({
                 style={{
                   filter: getIconFilter(icon.category),
                   opacity: isClickable ? 0.7 : 0.4,
-                  transition: 'opacity 0.3s ease'
+                  transition: 'opacity 0.3s ease',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  WebkitUserSelect: 'none',
+                  WebkitTouchCallout: 'none'
                 }}
+                draggable="false"
               />
             </motion.button>
           )}
@@ -115,6 +134,12 @@ export default function FactBubble({
                 <motion.div
                   key={`particle-${index}`}
                   className={`${factBubbleStyles.particle} bg-${colors.primary}`}
+                  style={{
+                    position: 'fixed',
+                    left: popPosition.x,
+                    top: popPosition.y,
+                    transform: 'translate(-50%, -50%)'
+                  }}
                   initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                   animate={{ 
                     x: particle.x, 

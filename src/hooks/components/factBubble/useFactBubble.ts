@@ -1,46 +1,9 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { getFactIcon, useIconFilter } from '../../../helpers/iconHelpers';
 import { useTheme } from '../../../context/ThemeContext';
 import { useCardAnimations } from '../../animation';
-
-// Internal custom hook for double tap/click detection
-function useDoubleInteraction(
-  onDoubleInteraction: () => void, 
-  dependencies: any[] = []
-) {
-  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const clickCountRef = useRef(0);
-  const DOUBLE_CLICK_TIMEOUT = 300;
-  
-  const handleInteraction = useEffect(() => {
-    return () => {
-      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-    };
-  }, []);
-  
-  const triggerInteraction = () => {
-    clickCountRef.current += 1;
-    
-    if (clickCountRef.current === 1) {
-      // First interaction - start timer
-      clickTimerRef.current = setTimeout(() => {
-        clickCountRef.current = 0;
-      }, DOUBLE_CLICK_TIMEOUT);
-    } else if (clickCountRef.current === 2) {
-      // Double interaction detected
-      if (clickTimerRef.current) {
-        clearTimeout(clickTimerRef.current);
-        clickTimerRef.current = null;
-      }
-      
-      onDoubleInteraction();
-      clickCountRef.current = 0;
-    }
-  };
-  
-  return triggerInteraction;
-}
+import { getFactIcon, useIconFilter } from '../../../helpers/iconHelpers';
+import { useDragState } from '../../useDragState';
 
 // Internal custom hook for particle generation
 function useParticles(count = 8) {
@@ -82,6 +45,7 @@ export function useFactBubble({
   const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
   const getFilter = useIconFilter();
+  const setWasFactRevealed = useDragState(state => state.setWasFactRevealed);
   
   // Use shared card animations
   const { colorStyle } = useCardAnimations({
@@ -90,24 +54,15 @@ export function useFactBubble({
   
   // Local state
   const [isPopping, setIsPopping] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  
-  // Refs for touch handling
-  const touchTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [popPosition, setPopPosition] = useState({ x: 0, y: 0 });
   
   // Constants
-  const TOUCH_CONTEXT_TIMEOUT = 500;
   const CARD_ANIMATION_DELAY = 900;
 
   // Detect if we're on a touch device
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
-    // Clean up timers on unmount
-    return () => {
-      if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
-    };
   }, []);
 
   // Check if bubble is clickable
@@ -118,47 +73,41 @@ export function useFactBubble({
   // Create particles for pop animation
   const particles = useParticles(8);
 
-  // Handle double interaction (click or tap)
-  const handleDoubleInteraction = () => {
+  // Handle drag end
+  const handleDragEnd = (event: any, info: any) => {
     if (isRevealed || isPopping || !isClickable) return;
-    
-    // Start pop animation
-    setIsPopping(true);
-    
-    // Trigger reveal after animation completes
-    setTimeout(() => {
-      revealFact(factIndex);
-    }, CARD_ANIMATION_DELAY);
-  };
-  
-  const handleInteraction = useDoubleInteraction(handleDoubleInteraction);
 
-  // Handle touch start (for mobile)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (isRevealed || isPopping || !isClickable) return;
+    // Get the card area element
+    const cardArea = document.querySelector('.fact-card-stack-container');
+    if (!cardArea) return;
+
+    const cardRect = cardArea.getBoundingClientRect();
     
-    // Prevent zooming on multi-touch
-    if (e.touches.length > 1) e.preventDefault();
-    
-    // Show context on single tap
-    setHoveredFact(factIndex);
-    setIsTouched(true);
-    
-    if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
-  };
-  
-  // Handle touch end (for mobile)
-  const handleTouchEnd = () => {
-    if (isRevealed || isPopping || !isClickable) return;
-    
-    // Start double-tap detection
-    handleInteraction();
-    
-    // Keep context visible briefly
-    touchTimerRef.current = setTimeout(() => {
-      setHoveredFact(null);
-      setIsTouched(false);
-    }, TOUCH_CONTEXT_TIMEOUT);
+    // Check if the bubble was dropped within the card area
+    const isOverCardArea = 
+      info.point.x >= cardRect.left &&
+      info.point.x <= cardRect.right &&
+      info.point.y >= cardRect.top &&
+      info.point.y <= cardRect.bottom;
+
+    if (isOverCardArea) {
+      // Set the pop position to where the bubble was dropped
+      setPopPosition({ x: info.point.x, y: info.point.y });
+      
+      // Start pop animation
+      setIsPopping(true);
+      
+      // Mark that a fact was revealed
+      setWasFactRevealed(true);
+      
+      // Trigger reveal after animation completes
+      setTimeout(() => {
+        revealFact(factIndex);
+      }, CARD_ANIMATION_DELAY);
+    } else {
+      // No fact was revealed on this drag
+      setWasFactRevealed(false);
+    }
   };
 
   // Calculate responsive icon size
@@ -175,24 +124,26 @@ export function useFactBubble({
     if (isRevealed) return "Click to view this fact again";
     if (!hasSeenClue) {
       return isTouchDevice 
-        ? "Tap to preview, double-tap to reveal" 
-        : "Double-click to reveal your first fact";
+        ? "Drag to reveal" 
+        : "Drag to reveal your first fact";
     }
     if (!canRevealNewClue) return "Make a guess before revealing a new fact";
     return isTouchDevice 
-      ? `Tap to preview, double-tap to reveal ${factType}` 
-      : `Double-click to reveal ${factType} fact`;
+      ? `Drag to reveal ${factType}` 
+      : `Drag to reveal ${factType} fact`;
   }, [isRevealed, hasSeenClue, canRevealNewClue, isTouchDevice, factType]);
 
   // Animation properties
   const bubbleAnimation = useMemo(() => ({
-    scale: isPopping ? [1, 1.2, 0] : 1,
-    opacity: isPopping ? [1, 1, 0] : 1,
+    scale: [1, 1.2, 0],
+    opacity: [1, 1, 0],
+    x: popPosition.x,
+    y: popPosition.y,
     transition: {
-      duration: isPopping ? 0.5 : 0.2,
-      ease: isPopping ? [0.42, 0, 0.58, 1] : [0.4, 0, 0.2, 1]
+      duration: 0.5,
+      ease: [0.42, 0, 0.58, 1]
     }
-  }), [isPopping]);
+  }), [popPosition]);
 
   // Mouse interaction handlers
   const mouseHandlers = useMemo(() => ({
@@ -202,7 +153,6 @@ export function useFactBubble({
 
   return {
     isPopping,
-    isTouched,
     isTouchDevice,
     isClickable,
     tooltipText,
@@ -211,10 +161,9 @@ export function useFactBubble({
     colors,
     colorStyle,
     bubbleAnimation,
-    handleInteraction,
-    handleTouchStart,
-    handleTouchEnd,
+    handleDragEnd,
     mouseHandlers,
-    getIconFilter: getFilter
+    getIconFilter: getFilter,
+    popPosition
   };
 } 

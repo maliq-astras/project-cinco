@@ -5,6 +5,9 @@
     "description": "Pon a prueba tus conocimientos con desafíos de trivia diarios"
   },
   "game": {
+    "actions": {
+      "dropToReveal": "Suelta aquí para revelar"
+    },
     "instructions": {
       "doubleTap": "Toca dos veces",
       "doubleClick": "Haz doble clic",
@@ -210,7 +213,7 @@
       },
       "revealFacts": {
         "title": "Revelar Datos",
-        "description": "¡Haz doble clic en cualquier burbuja para revelar su dato! Comienza con esta para iniciar tu viaje."
+        "description": "¡Arrastra cualquier burbuja al área de tarjetas para revelar su dato! Comienza con esta para iniciar tu viaje."
       },
       "guesses": {
         "title": "Haz tus Suposiciones",

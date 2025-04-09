@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
+import { useDragState } from '../../useDragState';
 
 /**
  * Hook for managing the container around the fact card stack
@@ -13,6 +14,9 @@ export function useFactCardStackContainer() {
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const { colors } = useTheme();
+  const isDragging = useDragState(state => state.isDragging);
+  const wasFactRevealed = useDragState(state => state.wasFactRevealed);
+  const [isHidden, setIsHidden] = useState(false);
 
   // Calculate the appropriate height based on screen size
   const getResponsiveHeight = () => {
@@ -30,6 +34,21 @@ export function useFactCardStackContainer() {
   const containerStyles = useMemo(() => ({
     height: `${getResponsiveHeight()}px`
   }), [windowWidth]);
+
+  // Handle delayed showing of cards
+  useEffect(() => {
+    if (isDragging) {
+      setIsHidden(true);
+    } else {
+      // Add a delay before showing the cards again
+      // Use a longer delay if a fact was revealed to allow for pop animation
+      const delay = wasFactRevealed ? 1800 : 300;
+      const timer = setTimeout(() => {
+        setIsHidden(false);
+      }, delay);
+      return () => clearTimeout(timer);
+    }
+  }, [isDragging, wasFactRevealed]);
 
   // Determine if placeholder should be shown
   const shouldShowPlaceholder = revealedFacts.length === 0 && !isVictoryAnimationActive;
@@ -52,6 +71,7 @@ export function useFactCardStackContainer() {
     cardStackVisibilityClass,
     
     // Theme
-    colors
+    colors,
+    isHidden
   };
 } 

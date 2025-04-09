@@ -9,7 +9,6 @@ export const factBubbleStyles = {
   // States
   clickable: "cursor-pointer",
   notClickable: "cursor-not-allowed opacity-50",
-  touched: "scale-95",
   
   // Particles
   particle: "absolute top-1/2 left-1/2 w-2 h-2 rounded-full"
@@ -20,14 +19,12 @@ export const factBubbleStyles = {
  */
 export function getBubbleClassNames({
   isClickable,
-  isTouched
+  isTouched = false
 }: {
   isClickable: boolean,
-  isTouched: boolean
+  isTouched?: boolean
 }) {
   return `${factBubbleStyles.bubble} ${
-    isTouched ? factBubbleStyles.touched : ''
-  } ${
     isClickable ? factBubbleStyles.clickable : factBubbleStyles.notClickable
   }`.trim();
 } 

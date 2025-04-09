@@ -5,6 +5,9 @@
     "description": "Test your knowledge with daily trivia challenges"
   },
   "game": {
+    "actions": {
+      "dropToReveal": "Drop here to reveal"
+    },
     "instructions": {
       "doubleTap": "Double-tap",
       "doubleClick": "Double-click",
@@ -210,7 +213,7 @@
       },
       "revealFacts": {
         "title": "Reveal Facts",
-        "description": "Double-click any bubble to reveal its fact! Start with this one to begin your journey."
+        "description": "Drag any bubble to the card area to reveal its fact! Start with this one to begin your journey."
       },
       "guesses": {
         "title": "Make Your Guesses",
