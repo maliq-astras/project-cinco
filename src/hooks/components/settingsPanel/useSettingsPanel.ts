@@ -17,7 +17,7 @@ interface UseSettingsPanelProps {
 }
 
 export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => {
-  const { colors, darkMode, toggleDarkMode } = useTheme();
+  const { colors, darkMode, toggleDarkMode, highContrastMode, toggleHighContrastMode } = useTheme();
   const { t } = useTranslation();
   const { language, changeLanguage, isLanguageLocked } = useLanguage();
   
@@ -29,7 +29,6 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   
   // These would be hooked up to actual state management in a real implementation
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-  const [isHighContrast, setIsHighContrast] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -79,10 +78,6 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     setIsSoundEnabled(!isSoundEnabled);
   };
   
-  const toggleHighContrast = () => {
-    setIsHighContrast(!isHighContrast);
-  };
-  
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (isLanguageLocked) return; // Don't change language if it's locked
     
@@ -104,8 +99,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     hasSeenClue,
     isSoundEnabled,
     toggleSound,
-    isHighContrast,
-    toggleHighContrast,
+    isHighContrast: highContrastMode,
+    toggleHighContrast: toggleHighContrastMode,
     selectedLanguage,
     handleLanguageChange,
     isMobile,

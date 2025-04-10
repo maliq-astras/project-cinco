@@ -106,7 +106,7 @@
       "sound": "Efectos de Sonido",
       "soundDesc": "Activar o desactivar sonidos del juego",
       "highContrast": "Modo de Alto Contraste",
-      "highContrastDesc": "Aumenta el contraste de color",
+      "highContrastDesc": "Beta",
       "autoSave": "La configuración se guardará automáticamente.",
       "languageLocked": "No se puede cambiar el idioma después de hacer una suposición"
     }

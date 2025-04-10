@@ -1,5 +1,5 @@
 export const mainContainerStyles = {
-  container: `flex flex-col min-h-screen w-full items-center bg-white dark:bg-black text-gray-800 dark:text-gray-100`,
+  container: `flex flex-col h-screen w-full items-center bg-white dark:bg-black text-gray-800 dark:text-gray-100 overflow-hidden`,
   
   loadingWrapper: `flex-1 flex items-center justify-center w-full`,
   

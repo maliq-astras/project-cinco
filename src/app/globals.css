@@ -5,6 +5,61 @@
 /* Prevent overscroll white background but maintain theme system */
 html, body {
   overscroll-behavior: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+/* High contrast mode styles */
+.high-contrast {
+  --contrast-text: 0, 0, 0; /* Black text in light mode */
+  --contrast-bg: 255, 255, 255; /* White background in light mode */
+  --contrast-border: 0, 0, 0; /* Black border in light mode */
+  --contrast-focus: 0, 102, 204; /* Blue focus ring in light mode */
+}
+
+.dark.high-contrast {
+  --contrast-text: 255, 255, 255; /* White text in dark mode */
+  --contrast-bg: 0, 0, 0; /* Black background in dark mode */
+  --contrast-border: 255, 255, 255; /* White border in dark mode */
+  --contrast-focus: 255, 255, 0; /* Yellow focus ring in dark mode */
+}
+
+.high-contrast .bg-white {
+  background-color: rgb(var(--contrast-bg)) !important;
+}
+
+.high-contrast .text-gray-800,
+.high-contrast .text-gray-900 {
+  color: rgb(var(--contrast-text)) !important;
+}
+
+.high-contrast .border-gray-100,
+.high-contrast .border-gray-200 {
+  border-color: rgb(var(--contrast-border)) !important;
+}
+
+.high-contrast .theme-focus-ring:focus {
+  --tw-ring-color: rgb(var(--contrast-focus)) !important;
+  box-shadow: 0 0 0 3px rgb(var(--contrast-focus) / 0.5) !important;
+}
+
+/* Additional contrast styles for buttons and interactive elements */
+.high-contrast button,
+.high-contrast a,
+.high-contrast input,
+.high-contrast select {
+  outline: 2px solid transparent;
+  transition: outline-color 0.2s;
+}
+
+.high-contrast button:focus,
+.high-contrast a:focus,
+.high-contrast input:focus,
+.high-contrast select:focus {
+  outline: 2px solid rgb(var(--contrast-focus));
 }
 
 @keyframes cardFlip {

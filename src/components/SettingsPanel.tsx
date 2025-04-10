@@ -106,16 +106,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* High Contrast Mode - Hidden for future implementation */}
-        {false && (
-          <div className={settingsPanelStyles.settingRow}>
-            <div className={settingsPanelStyles.settingTextContainer}>
-              <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.highContrast')}</p>
-              <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
-            </div>
-            <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
+        {/* High Contrast Mode */}
+        <div className={settingsPanelStyles.settingRow}>
+          <div className={settingsPanelStyles.settingTextContainer}>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.highContrast')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
           </div>
-        )}
+          <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
+        </div>
 
         {/* Language Dropdown */}
         <div>

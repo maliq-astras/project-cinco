@@ -106,7 +106,7 @@
       "sound": "Sound Effects",
       "soundDesc": "Enable or disable game sounds",
       "highContrast": "High Contrast Mode",
-      "highContrastDesc": "Increase color contrast",
+      "highContrastDesc": "Beta",
       "autoSave": "Settings will be saved automatically.",
       "languageLocked": "Language cannot be changed after making a guess"
     }

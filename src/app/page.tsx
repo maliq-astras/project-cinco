@@ -9,7 +9,7 @@ import '../i18n/config'; // Import i18n configuration
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-black">
+    <main className="h-screen bg-gray-50 dark:bg-black overflow-hidden">
       <QueryClientProvider>
         <LanguageProvider>
           <ThemeProvider>

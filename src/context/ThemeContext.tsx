@@ -14,6 +14,8 @@ interface ThemeContextType {
   getColorFilter: (colorClass?: string) => string;
   darkMode: boolean;
   toggleDarkMode: () => void;
+  highContrastMode: boolean;
+  toggleHighContrastMode: () => void;
   getAdjustedColorClass: (colorClass: string) => string;
 }
 
@@ -23,6 +25,8 @@ const ThemeContext = createContext<ThemeContextType>({
   getColorFilter: () => '',
   darkMode: false,
   toggleDarkMode: () => {},
+  highContrastMode: false,
+  toggleHighContrastMode: () => {},
   getAdjustedColorClass: (colorClass) => colorClass,
 });
 
@@ -141,6 +145,16 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return false;
   });
   
+  // High contrast mode state
+  const [highContrastMode, setHighContrastMode] = useState(() => {
+    // Check if high contrast mode preference is saved in localStorage
+    if (typeof window !== 'undefined') {
+      const savedHighContrastMode = localStorage.getItem('highContrastMode');
+      return savedHighContrastMode ? JSON.parse(savedHighContrastMode) : false;
+    }
+    return false;
+  });
+  
   // Toggle dark mode function
   const toggleDarkMode = () => {
     setDarkMode((prev: boolean) => {
@@ -153,21 +167,67 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
   };
   
+  // Toggle high contrast mode function
+  const toggleHighContrastMode = () => {
+    setHighContrastMode((prev: boolean) => {
+      const newValue = !prev;
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('highContrastMode', JSON.stringify(newValue));
+      }
+      return newValue;
+    });
+  };
+  
   // Determine colors based on the challenge category
   const category = challenge?.category || CategoryType.COUNTRIES;
   const baseColors = categoryColorMap[category] || defaultTheme;
   
-  // Create theme-adjusted colors for better consistency across light/dark modes
+  // Create theme-adjusted colors for better consistency across light/dark modes and high contrast
   const colors = {
-    primary: darkMode ? baseColors.primary.replace('600', '500').replace('700', '600') : baseColors.primary,
-    secondary: darkMode ? baseColors.secondary.replace('600', '500').replace('700', '600') : baseColors.secondary,
-    accent: darkMode ? baseColors.accent.replace('600', '500').replace('700', '600') : baseColors.accent,
-    light: baseColors.light,
-    dark: baseColors.dark
+    primary: 
+      highContrastMode ? 
+        (darkMode ? 'blue-300' : 'blue-900') : // Use high contrast colors
+        (darkMode ? baseColors.primary.replace('600', '500').replace('700', '600') : baseColors.primary),
+    secondary: 
+      highContrastMode ? 
+        (darkMode ? 'yellow-300' : 'purple-900') : // Use high contrast colors
+        (darkMode ? baseColors.secondary.replace('600', '500').replace('700', '600') : baseColors.secondary),
+    accent: 
+      highContrastMode ? 
+        (darkMode ? 'green-300' : 'red-900') : // Use high contrast colors
+        (darkMode ? baseColors.accent.replace('600', '500').replace('700', '600') : baseColors.accent),
+    light: highContrastMode ? 'white' : baseColors.light,
+    dark: highContrastMode ? 'black' : baseColors.dark
   };
   
   // Helper function to adjust any color class for current theme mode
   const getAdjustedColorClass = (colorClass: string): string => {
+    if (highContrastMode) {
+      // Apply high contrast transformations to color classes
+      if (darkMode) {
+        return colorClass.replace(/blue-\d+/, 'blue-300')
+                       .replace(/emerald-\d+/, 'green-300')
+                       .replace(/violet-\d+/, 'purple-300')
+                       .replace(/orange-\d+/, 'yellow-300')
+                       .replace(/fuchsia-\d+/, 'pink-300')
+                       .replace(/red-\d+/, 'red-300')
+                       .replace(/amber-\d+/, 'yellow-300')
+                       .replace(/teal-\d+/, 'cyan-300')
+                       .replace(/indigo-\d+/, 'blue-300');
+      } else {
+        return colorClass.replace(/blue-\d+/, 'blue-900')
+                       .replace(/emerald-\d+/, 'green-900')
+                       .replace(/violet-\d+/, 'purple-900')
+                       .replace(/orange-\d+/, 'yellow-900')
+                       .replace(/fuchsia-\d+/, 'pink-900')
+                       .replace(/red-\d+/, 'red-900')
+                       .replace(/amber-\d+/, 'amber-900')
+                       .replace(/teal-\d+/, 'cyan-900')
+                       .replace(/indigo-\d+/, 'blue-900');
+      }
+    }
+    
     if (!darkMode) return colorClass;
     return colorClass.replace('600', '500').replace('700', '600').replace('800', '700');
   };
@@ -225,12 +285,23 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [darkMode]);
   
+  // Apply high contrast class to html element when highContrastMode changes
+  useEffect(() => {
+    if (highContrastMode) {
+      document.documentElement.classList.add('high-contrast');
+    } else {
+      document.documentElement.classList.remove('high-contrast');
+    }
+  }, [highContrastMode]);
+  
   const value = {
     colors,
     category,
     getColorFilter,
     darkMode,
     toggleDarkMode,
+    highContrastMode,
+    toggleHighContrastMode,
     getAdjustedColorClass
   };
   
