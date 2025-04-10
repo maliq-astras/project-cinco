@@ -20,6 +20,32 @@ export const finalFiveStyles = {
   // Card grid
   cardGrid: "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto max-w-[500px]",
   
+  // Card styles
+  card: {
+    container: "relative aspect-square w-full perspective-1000",
+    wrapper: "w-full h-full relative preserve-3d",
+    front: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md", 
+    back: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md font-display border-2",
+    
+    // Interactive effects
+    interactive: {
+      hover: (frontBg: string) => ({
+        boxShadow: `0 8px 16px rgba(0,0,0,0.2), 0 0 8px ${frontBg}80`,
+        transform: "rotateY(180deg) scale(1.03)",
+        cursor: 'pointer',
+        borderColor: `${frontBg}`
+      }),
+      active: {
+        transform: "rotateY(180deg) scale(0.95)",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+      },
+      default: {
+        transform: "rotateY(180deg) scale(1)",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
+      }
+    }
+  },
+  
   // Timer container
   timerContainer: "relative aspect-square w-full flex items-center justify-center",
   timerWrapper: "w-full h-full rounded-xl flex items-center justify-center shadow-md",

@@ -22,7 +22,6 @@ export function useMainContainer() {
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const finalFiveTransitionReason = useGameStore(state => state.finalFiveTransitionReason);
   const startFinalFive = useGameStore(state => state.startFinalFive);
-  const prefetchFinalFiveOptions = useGameStore(state => state.prefetchFinalFiveOptions);
 
   // Theme access
   const { colors } = useTheme();
@@ -31,9 +30,6 @@ export function useMainContainer() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
   const { language } = useLanguage();
-  
-  // Track if Final Five options have been prefetched
-  const [hasPrefetchedFinalFive, setHasPrefetchedFinalFive] = useState(false);
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -55,46 +51,6 @@ export function useMainContainer() {
       fetchChallenge(language);
     }
   }, [challenge, language, fetchChallenge]);
-  
-  // Prefetch Final Five options once the game has fully loaded
-  useEffect(() => {
-    const prefetchOptions = async () => {
-      // Only prefetch if:
-      // 1. Loading is complete
-      // 2. We have a challenge
-      // 3. We haven't already prefetched
-      // 4. The game isn't over
-      // 5. We're not already in Final Five mode
-      if (
-        loadingComplete && 
-        gameState.challenge && 
-        !hasPrefetchedFinalFive && 
-        !gameState.isGameOver && 
-        !isFinalFiveActive && 
-        !showFinalFiveTransition
-      ) {
-        console.log('Background prefetching Final Five options...');
-        
-        // Mark as prefetched to avoid multiple attempts
-        setHasPrefetchedFinalFive(true);
-        
-        try {
-          // Add a small delay to ensure the main UI is rendered first
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          // Prefetch with a longer timeout
-          await prefetchFinalFiveOptions();
-          console.log('Final Five options prefetched successfully');
-        } catch (error) {
-          console.log('Background prefetch failed, will retry during gameplay');
-          // Reset the flag to allow retry
-          setHasPrefetchedFinalFive(false);
-        }
-      }
-    };
-    
-    prefetchOptions();
-  }, [loadingComplete, gameState.challenge, gameState.isGameOver, isFinalFiveActive, showFinalFiveTransition, hasPrefetchedFinalFive, prefetchFinalFiveOptions]);
 
   // Handle the timer
   useEffect(() => {
@@ -193,7 +149,6 @@ export function useMainContainer() {
     colors,
     showGameMessage,
     isChallengeLoading,
-    hasPrefetchedFinalFive,
     
     // Refs
     gameControlsRef,

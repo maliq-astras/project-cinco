@@ -20,6 +20,7 @@ interface UseFinalFiveIntroReturn {
   colors: { primary: string };
   hardMode: boolean;
   isLoading: boolean;
+  showStartButton: boolean;
 }
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {
@@ -32,6 +33,16 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
   const [showCountdown, setShowCountdown] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showStartButton, setShowStartButton] = useState(false);
+  
+  // Delay showing the button to give prefetch time to complete
+  useEffect(() => {
+    const buttonDelay = setTimeout(() => {
+      setShowStartButton(true);
+    }, 6000); // 3 second delay
+    
+    return () => clearTimeout(buttonDelay);
+  }, []);
   
   // Check if options are already loaded
   useEffect(() => {
@@ -129,6 +140,7 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     message,
     colors,
     hardMode,
-    isLoading
+    isLoading,
+    showStartButton
   };
 }; 

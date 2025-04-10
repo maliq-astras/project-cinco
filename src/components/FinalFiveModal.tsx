@@ -27,6 +27,10 @@ export default function FinalFiveModal() {
     finalFiveTimeRemaining,
     gameOutcome,
     animationComplete,
+    loading,
+    selectedOption,
+    timerReachedZero,
+    correctAnswer,
     
     // Styles and helpers
     themeColor,
@@ -132,13 +136,82 @@ export default function FinalFiveModal() {
         </h2>
         
         {/* Message */}
-        <p className={finalFiveStyles.message}>
-          {getMessage()}
+        <p className={`${finalFiveStyles.message} text-center`}>
+          {(() => {
+            const message = getMessage();
+            
+            // Add loading animation for "checking answer" message
+            if (typeof message === 'string' && 
+                (message === t('game.finalFive.checkingAnswer') || 
+                (timerReachedZero && loading && !correctAnswer))) {
+              return (
+                <span className="flex items-center justify-center">
+                  {timerReachedZero ? t('game.finalFive.loadingAnswer') : t('game.finalFive.checkingAnswer')}
+                  <span className="ml-1 inline-flex">
+                    <span className="animate-pulse-dot inline-block">.</span>
+                    <span className="animate-pulse-dot inline-block" style={{ animationDelay: '0.2s' }}>.</span>
+                    <span className="animate-pulse-dot inline-block" style={{ animationDelay: '0.4s' }}>.</span>
+                  </span>
+                </span>
+              );
+            }
+            
+            // Style "correct answer was" message
+            if (typeof message === 'string' && 
+                (message.includes(t('game.finalFive.theCorrectAnswerWas')) || 
+                 message.includes(t('game.finalFive.timesUp')))) {
+              
+              // If the message doesn't contain the actual answer yet (database still loading)
+              if (message.includes(t('game.finalFive.timesUp')) && 
+                  !message.includes(t('game.finalFive.theCorrectAnswerWas'))) {
+                return (
+                  <div className="flex items-center justify-center">
+                    <span>{t('game.finalFive.loadingAnswer')}</span>
+                    <span className="ml-1 inline-flex">
+                      <span className="animate-pulse-dot inline-block">.</span>
+                      <span className="animate-pulse-dot inline-block" style={{ animationDelay: '0.2s' }}>.</span>
+                      <span className="animate-pulse-dot inline-block" style={{ animationDelay: '0.4s' }}>.</span>
+                    </span>
+                  </div>
+                );
+              }
+              
+              // Handle "time's up" message with special formatting
+              if (message.includes(t('game.finalFive.timesUp'))) {
+                const parts = message.split(t('game.finalFive.theCorrectAnswerWas'));
+                if (parts.length === 2) {
+                  return (
+                    <>
+                      {t('game.finalFive.theCorrectAnswerWas')}{' '}
+                      <span style={{ color: themeColor, fontWeight: 'bold' }}>
+                        {parts[1].trim()}
+                      </span>
+                    </>
+                  );
+                }
+              }
+              
+              // Regular correct answer message
+              const parts = message.split(t('game.finalFive.theCorrectAnswerWas') + ' ');
+              if (parts.length === 2) {
+                return (
+                  <>
+                    {t('game.finalFive.theCorrectAnswerWas')}{' '}
+                    <span style={{ color: themeColor, fontWeight: 'bold' }}>
+                      {parts[1]}
+                    </span>
+                  </>
+                );
+              }
+            }
+            
+            return message;
+          })()}
         </p>
         
         {/* Grid of cards - 3-2 layout with timer in the bottom center */}
         <div className={finalFiveStyles.cardGrid}>
-          {options.map((option, index) => {
+          {options.map((option: string, index: number) => {
             const { frontBg, backBg, textColor } = getCardStyles(option);
             
             return (
@@ -155,17 +228,19 @@ export default function FinalFiveModal() {
                 isCorrect={isCorrectOption(option)}
                 isIncorrectGuess={isIncorrectGuess(option)}
                 onCardClick={handleOptionClick}
+                allCardsFlipped={allCardsFlipped}
+                selectedOption={selectedOption}
               />
             );
           })}
           
           {/* Timer - as part of the grid */}
-          {allCardsFlipped && (
+          {allCardsFlipped && !selectedOption && (
             <motion.div 
               className={finalFiveStyles.timerContainer}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ 
-                opacity: isGameOver && animationComplete ? 0 : 1,
+                opacity: (isGameOver && animationComplete) || selectedOption ? 0 : 1,
                 scale: 1 
               }}
               exit={{ opacity: 0, scale: 0.8 }}

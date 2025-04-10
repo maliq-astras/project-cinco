@@ -8,6 +8,7 @@ export * from './factCardStack';
 export * from './factCardStackContainer';
 export * from './finalFiveModal';
 export * from './finalFiveIntro';
+export * from './finalFiveCard';
 export * from './gameTutorial';
 export * from './header';
 export * from './loadingAnimation';

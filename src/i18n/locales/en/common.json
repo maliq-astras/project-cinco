@@ -35,7 +35,7 @@
       "rotateDescription": "This game works best in portrait mode on smaller screens. Please rotate your device to continue playing."
     },
     "finalFive": {
-      "title": "Final Five Challenge",
+      "title": "FINAL 5",
       "intro": "Time for the Final Five!",
       "instructions": "Select the correct fact for each category",
       "timeUp": "Time's up! But there's still a chance in the FINAL 5 round! Choose the correct answer from 5 options in a {{timeLimit}}-second showdown. Ready to become a champion?",
@@ -46,6 +46,9 @@
       "selectAnswerHard": "Select the correct answer (Hard Mode: 5 seconds)",
       "correctAnswer": "Correct! You found the answer!",
       "incorrectAnswer": "Incorrect. The correct answer is highlighted.",
+      "theCorrectAnswerWas": "The correct answer was",
+      "timesUp": "Time's up!",
+      "loadingAnswer": "Loading the correct answer",
       "startButton": "Start FINAL 5"
     },
     "endGame": {

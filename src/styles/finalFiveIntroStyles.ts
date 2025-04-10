@@ -1,9 +1,9 @@
 export const finalFiveIntroStyles = {
   container: "flex flex-col items-center justify-start gap-16 p-8",
   message: "text-xl sm:text-2xl text-left font-display leading-relaxed max-w-2xl",
-  buttonContainer: "flex flex-col items-center relative",
+  buttonContainer: "flex flex-col items-center relative min-h-[60px]",
   button: "px-8 py-4 rounded-full font-display text-white font-bold shadow-lg transition-transform hover:scale-105 text-lg",
-  countdownContainer: "absolute top-full mt-6",
+  countdownContainer: "absolute bottom-[-90px] left-1/2 transform -translate-x-1/2 pt-6 flex justify-center w-full",
   countdownAnimation: {
     initial: { opacity: 0, scale: 0.8 },
     animate: { opacity: 1, scale: 1 },

@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Righteous } from 'next/font/google';
+import { finalFiveStyles } from '../styles/finalFiveStyles';
+import { useFinalFiveCard } from '../hooks/components/finalFiveCard';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -18,6 +20,8 @@ interface FinalFiveCardProps {
   isCorrect: boolean;
   isIncorrectGuess: boolean;
   onCardClick: (option: string) => void;
+  allCardsFlipped: boolean;
+  selectedOption: string | null;
 }
 
 /**
@@ -34,18 +38,33 @@ export default function FinalFiveCard({
   textColor,
   isCorrect,
   isIncorrectGuess,
-  onCardClick
+  onCardClick,
+  allCardsFlipped,
+  selectedOption
 }: FinalFiveCardProps) {
+  const {
+    shouldFadeOut,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseEnter,
+    handleMouseLeave,
+    getBackCardStyle
+  } = useFinalFiveCard({
+    isGameOver,
+    allCardsFlipped,
+    selectedOption,
+    option,
+    frontBg,
+    isCorrect
+  });
+
   return (
     <motion.div 
       key={`option-${index}`} 
-      className="relative aspect-square w-full perspective-1000"
+      className={finalFiveStyles.card.container}
       animate={{ 
-        opacity: isGameOver && animationComplete && !isCorrect && !isIncorrectGuess
-          ? 0 
-          : isGameOver && animationComplete && isIncorrectGuess
-          ? 0.75
-          : 1
+        opacity: shouldFadeOut ? 0 : 1,
+        scale: shouldFadeOut ? 0.8 : 1
       }}
       transition={{ duration: 0.5 }}
       style={{ 
@@ -53,11 +72,11 @@ export default function FinalFiveCard({
         minHeight: "100px",
         maxWidth: "160px", 
         margin: "0 auto",
-        pointerEvents: !isFlipped || isGameOver ? "none" : "auto"
+        pointerEvents: (!isFlipped || isGameOver || !allCardsFlipped || (selectedOption !== null && selectedOption !== option)) ? "none" : "auto"
       }}
     >
       <motion.div
-        className="w-full h-full relative preserve-3d"
+        className={finalFiveStyles.card.wrapper}
         initial={{ rotateY: 0 }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{
@@ -73,7 +92,7 @@ export default function FinalFiveCard({
       >
         {/* Front of card - Number 5 */}
         <div 
-          className={`absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md ${righteous.className}`}
+          className={`${finalFiveStyles.card.front} ${righteous.className}`}
           style={{ 
             backgroundColor: frontBg,
             color: "white",
@@ -89,21 +108,13 @@ export default function FinalFiveCard({
         
         {/* Back of card - Option text */}
         <div 
-          className="absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md font-display border-2"
-          style={{ 
-            backgroundColor: backBg,
-            color: textColor,
-            borderColor: frontBg,
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            WebkitTransform: "rotateY(180deg)",
-            boxShadow: isGameOver && isCorrect 
-              ? `0 0 15px ${frontBg}80`
-              : "0 4px 8px rgba(0,0,0,0.1)",
-            padding: "0.5rem"
-          }}
-          onClick={() => !isGameOver && onCardClick(option)}
+          className={finalFiveStyles.card.back}
+          style={getBackCardStyle(backBg, textColor)}
+          onClick={() => (!isGameOver && allCardsFlipped && !selectedOption) && onCardClick(option)}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           <span className="text-lg md:text-xl text-center">
             {option}

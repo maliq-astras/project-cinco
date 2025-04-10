@@ -86,6 +86,9 @@ interface GameStore {
   // Settings controls
   setSettingsPanelOpen: (isOpen: boolean) => void;
   setTutorialOpen: (isOpen: boolean) => void;
+  
+  // Helper function to filter out previous guesses from Final Five options
+  filterFinalFiveOptions: () => void;
 }
 
 export const useGameStore = create<GameStore>()(
@@ -194,6 +197,8 @@ export const useGameStore = create<GameStore>()(
         });
 
         // Prefetch final five options as soon as transition starts
+        // This is a good time to prefetch because we know no more guesses will be made
+        console.log('Time ran out - prefetching Final Five options');
         get().prefetchFinalFiveOptions();
       } else {
         set({ timeRemaining: timeRemaining - 1 });
@@ -462,6 +467,8 @@ export const useGameStore = create<GameStore>()(
               });
 
               // Prefetch final five options as soon as transition starts
+              // This is a good time because we know no more guesses will be made
+              console.log('Reached 5 guesses - prefetching Final Five options');
               get().prefetchFinalFiveOptions();
             }, 1500); // 1.5 seconds delay to show the sparks animation
             
@@ -521,6 +528,8 @@ export const useGameStore = create<GameStore>()(
             });
 
             // Prefetch final five options as soon as transition starts
+            // This is a good time because we know no more guesses will be made
+            console.log('Reached 5 guesses - prefetching Final Five options');
             get().prefetchFinalFiveOptions();
           }, 1500); // 1.5 seconds delay to show the sparks animation
           
@@ -647,28 +656,66 @@ export const useGameStore = create<GameStore>()(
     });
     
     try {
-      // Check if we already have options or if a fetch is already in progress
-      if (gameState.challenge && !gameState.finalFiveOptions) {
-        // Don't start a new fetch if one is already in progress
-        if (!isFetchingFinalFiveOptions) {
-          // Try to fetch options using the prefetch function
-          await get().prefetchFinalFiveOptions();
-        } else {
-          // Wait up to 5 seconds for the in-progress fetch to complete
-          for (let i = 0; i < 10; i++) {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Get latest state
-            const latestState = get();
-            if (latestState.gameState.finalFiveOptions || !latestState.isFetchingFinalFiveOptions) {
-              break;
-            }
+      // Always ensure we're using the most current guesses
+      // First clear any prefetched options
+      set(state => ({
+        gameState: {
+          ...state.gameState,
+          finalFiveOptions: null
+        },
+        isFetchingFinalFiveOptions: false
+      }));
+      
+      // Try to fetch options using the prefetch function with current guesses
+      if (gameState.challenge) {
+        // Get the current language
+        const language = localStorage.getItem('language') || 'en';
+        
+        // Get all non-skipped guesses
+        const previousGuesses = gameState.guesses
+          .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
+          .map(g => g.guess);
+          
+        console.log('Sending guesses to Final Five API:', previousGuesses);
+        
+        // Use a controller with a long timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        
+        try {
+          // Make a direct request to ensure all current guesses are excluded
+          const response = await fetch('/api/final-five', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              challengeId: gameState.challenge.challengeId,
+              previousGuesses,
+              language
+            }),
+            signal: controller.signal
+          });
+          
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
           }
           
-          // If after waiting there are still no options, something is wrong
-          if (!get().gameState.finalFiveOptions) {
-            throw new Error('Timeout waiting for Final Five options to load');
-          }
+          clearTimeout(timeoutId);
+          const data = await response.json();
+          
+          // Update the options in state
+          set(state => ({
+            gameState: {
+              ...state.gameState,
+              finalFiveOptions: data.options
+            },
+            isFetchingFinalFiveOptions: false
+          }));
+          
+          console.log('Final Five options updated with fresh data');
+        } catch (error) {
+          clearTimeout(timeoutId);
+          console.error('Error fetching Final Five:', error);
+          throw error;
         }
       }
       
@@ -814,6 +861,52 @@ export const useGameStore = create<GameStore>()(
   // Add a reset error method
   resetFinalFiveError: () => {
     set({ finalFiveError: null });
+  },
+  
+  // Helper function to filter out previous guesses from Final Five options
+  filterFinalFiveOptions: () => {
+    const { gameState } = get();
+    
+    // If no options or no challenge, nothing to do
+    if (!gameState.finalFiveOptions || !gameState.challenge) return;
+    
+    // Get previous guesses (excluding skipped ones)
+    const previousGuesses = gameState.guesses
+      .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
+      .map(g => g.guess.toLowerCase().trim());
+    
+    // Only proceed if we have guesses to filter out
+    if (previousGuesses.length === 0) return;
+    
+    console.log('Filtering out previous guesses:', previousGuesses);
+    
+    // Normalize options and guesses for comparison (lowercase, trim whitespace)
+    // We'll need to keep the original options for the final result
+    const normalizedOptionMap = new Map();
+    gameState.finalFiveOptions.forEach(option => {
+      normalizedOptionMap.set(option.toLowerCase().trim(), option);
+    });
+    
+    // Remove any options that match previous guesses
+    previousGuesses.forEach(guess => {
+      normalizedOptionMap.delete(guess);
+    });
+    
+    // Convert back to array
+    const filteredOptions = Array.from(normalizedOptionMap.values());
+    
+    // If we have at least 5 options after filtering, update the options
+    if (filteredOptions.length >= 5) {
+      console.log(`Filtered Final Five options: ${filteredOptions.length} options remain`);
+      set(state => ({
+        gameState: {
+          ...state.gameState,
+          finalFiveOptions: filteredOptions
+        }
+      }));
+    } else {
+      console.log(`Too few options after filtering (${filteredOptions.length}), keeping original set`);
+    }
   }
 }),
     {

@@ -46,6 +46,9 @@
       "selectAnswerHard": "Selecciona la respuesta correcta (Modo Difícil: 5 segundos)",
       "correctAnswer": "¡Correcto! ¡Encontraste la respuesta!",
       "incorrectAnswer": "Incorrecto. La respuesta correcta está resaltada.",
+      "theCorrectAnswerWas": "La respuesta correcta era",
+      "timesUp": "¡Se acabó el tiempo!",
+      "loadingAnswer": "Cargando la respuesta correcta",
       "startButton": "Iniciar FINAL 5"
     },
     "endGame": {
