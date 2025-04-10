@@ -81,7 +81,7 @@
       "timeRemaining": "Time Remaining"
     },
     "language": {
-      "select": "Select Language",
+      "select": "Language",
       "en": "English",
       "es": "Spanish",
       "other": "Coming Soon!"
@@ -104,7 +104,8 @@
       "randomizerDesc": "Get random categories each day",
       "highContrast": "High Contrast Mode",
       "highContrastDesc": "Increase color contrast",
-      "autoSave": "Settings will be saved automatically."
+      "autoSave": "Settings will be saved automatically.",
+      "languageLocked": "Language cannot be changed after making a guess"
     }
   },
   "categories": {

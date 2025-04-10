@@ -36,7 +36,7 @@ export const settingsPanelStyles = {
   settingTextContainer: "space-y-1",
   settingTitle: "font-medium text-gray-800 dark:text-gray-200",
   settingDescription: "text-sm text-gray-500 dark:text-gray-400",
-  settingErrorText: "text-xs text-red-500 mt-1",
+  settingErrorText: "text-xs text-red-500 mt-1 pt-3",
   
   // Toggle switch
   toggleSwitch: (isOn: boolean, primaryColor: string, disabled: boolean): CSSProperties => ({
@@ -51,13 +51,11 @@ export const settingsPanelStyles = {
     `w-4 h-4 rounded-full bg-white transform transition-transform ${isOn ? 'translate-x-6' : 'translate-x-0'}`,
   
   // Language selector
-  languageContainer: "flex flex-col",
-  languageLabel: "font-medium text-gray-800 dark:text-gray-200 mb-1",
   languageSelect: (darkMode: boolean, primaryColor: string): CSSProperties => ({
     borderColor: `var(--color-${primaryColor})`,
     color: darkMode ? 'white' : `var(--color-${primaryColor})`
   }),
-  languageSelectClass: "px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white",
+  languageSelectClass: "px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white min-w-[130px]",
   
   // Footer
   footer: "mt-8 border-t border-gray-200 dark:border-gray-700 pt-4",

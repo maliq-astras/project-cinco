@@ -1,15 +1,19 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useGameStore } from '../store/gameStore';
+import i18n from '../i18n/config';
 
 // Define supported languages and coming soon languages
 export const SUPPORTED_LANGUAGES = ['en', 'es'];
 export const COMING_SOON_LANGUAGES = ['fr', 'de', 'pt', 'it', 'ru', 'zh', 'ja', 'ko'];
 
 // Type definitions
+export type Language = 'en' | 'es';
+
 interface LanguageContextType {
-  language: string;
-  setLanguage: (lang: string) => void;
-  changeLanguage: (lang: string) => void;
+  language: Language;
+  changeLanguage: (newLanguage: Language) => void;
+  isLanguageLocked: boolean;
 }
 
 // Create context with default values
@@ -28,31 +32,31 @@ interface LanguageProviderProps {
  * - Provides a method to change the language
  * - Persists language choice in localStorage
  */
-export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Initialize with 'en' as default, we'll update from localStorage after mount
-  const [language, setLanguage] = useState('en');
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('language');
+      return (savedLanguage as Language) || 'en';
+    }
+    return 'en';
+  });
   const { i18n } = useTranslation();
+  const { hasMadeGuess } = useGameStore();
+  const fetchChallenge = useGameStore(state => state.fetchChallenge);
 
   useEffect(() => {
-    // Check localStorage after component mounts (client-side only)
-    const savedLanguage = localStorage.getItem('i18nextLng');
-    if (savedLanguage) {
-      setLanguage(savedLanguage);
-      i18n.changeLanguage(savedLanguage);
-    }
-  }, []);
-
-  // Update localStorage and i18n when language changes
-  useEffect(() => {
-    localStorage.setItem('i18nextLng', language);
     i18n.changeLanguage(language);
-  }, [language, i18n]);
+    localStorage.setItem('language', language);
+    
+    // When language changes, refetch the challenge in the new language
+    fetchChallenge(language);
+  }, [language, i18n, fetchChallenge]);
 
-  // Function to change language
-  const changeLanguage = (lang: string) => {
-    if (SUPPORTED_LANGUAGES.includes(lang)) {
-      setLanguage(lang);
+  const changeLanguage = (newLanguage: Language) => {
+    if (hasMadeGuess) {
+      return; // Don't allow language changes after a guess has been made
     }
+    setLanguage(newLanguage);
   };
 
   // Check if language is supported
@@ -61,14 +65,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   // Context value
-  const contextValue = {
+  const value = {
     language,
-    setLanguage,
     changeLanguage,
+    isLanguageLocked: hasMadeGuess
   };
 
   return (
-    <LanguageContext.Provider value={contextValue}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );
@@ -77,7 +81,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 // Custom hook to use language context
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;

@@ -61,26 +61,60 @@ export const useEndGameMessage = ({
   
   // Helper function to find the correct answer from the final five options
   const findCorrectAnswer = useCallback(async () => {
-    if (!gameState.challenge || !gameState.finalFiveOptions || gameState.finalFiveOptions.length === 0) {
+    if (!gameState.challenge) {
       return;
     }
     
     setIsSearchingCorrectAnswer(true);
     
-    for (const option of gameState.finalFiveOptions) {
-      try {
-        const result = await verifyGuess(gameState.challenge.challengeId, option);
-        if (result.isCorrect) {
-          setActualCorrectAnswer(option);
-          break;
+    try {
+      // Create a controller with a longer timeout (25 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+      
+      // Try up to 3 times with increasing delays
+      let response: Response | undefined;
+      
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          if (attempt > 0) {
+            // Wait with exponential backoff
+            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+            console.log(`Retry ${attempt + 1}/3 for correct answer...`);
+          }
+          
+          response = await fetch('/api/final-five-answer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              challengeId: gameState.challenge.challengeId,
+              language: localStorage.getItem('language') || 'en'
+            }),
+            signal: controller.signal
+          });
+          
+          if (response.ok) break;
+        } catch (e) {
+          if (attempt === 2) throw e; // Rethrow on final attempt
         }
-      } catch (error) {
-        console.error(`Error verifying option ${option}:`, error);
       }
+      
+      // Clear timeout
+      clearTimeout(timeoutId);
+      
+      // If no response after all attempts, throw error
+      if (!response || !response.ok) {
+        throw new Error(`Failed to fetch correct answer: ${response?.status || 'No response'}`);
+      }
+      
+      const data = await response.json();
+      setActualCorrectAnswer(data.answer);
+    } catch (error) {
+      console.error('Error fetching correct answer:', error);
+    } finally {
+      setIsSearchingCorrectAnswer(false);
     }
-    
-    setIsSearchingCorrectAnswer(false);
-  }, [gameState.challenge, gameState.finalFiveOptions]);
+  }, [gameState.challenge]);
   
   useEffect(() => {
     if (outcome === 'loss' && (!correctAnswer || correctAnswer.trim() === '')) {

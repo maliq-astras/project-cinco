@@ -206,10 +206,12 @@ export default function MainContainer() {
           
           {/* Viewing card from the stack */}
           {viewingFact !== null && gameState.challenge && (
-            <FactCard
-              fact={gameState.challenge.facts[viewingFact]}
-              visibleStackCount={gameState.revealedFacts.length}
-            />
+            <>
+              <FactCard
+                fact={gameState.challenge.facts[viewingFact]}
+                visibleStackCount={gameState.revealedFacts.length}
+              />
+            </>
           )}
         </>
       )}

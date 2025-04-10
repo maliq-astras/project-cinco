@@ -1,54 +1,42 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge, ChallengeTranslation } from '@/types';
+import { Challenge } from '@/types';
 import { unstable_cache } from 'next/cache';
-import { Collection, Db } from 'mongodb';
+import { Collection } from 'mongodb';
 
-// Cache the answers for a challenge for 5 minutes
+// Cache the answers for a challenge for 24 hours
 const getChallengeAnswers = unstable_cache(
-  async (challengeId: string) => {
+  async (challengeId: string, language: 'en' | 'es') => {
     const { db } = await connectToDatabase();
     
-    // Get the main challenge answer
     const challengesCollection = db.collection('challenges') as Collection<Challenge>;
     const challenge = await challengesCollection.findOne(
       { challengeId },
       { projection: { _id: 0, answer: 1 } }
-    );
+    ) as { answer: string | { en: string; es: string } } | null;
 
     if (!challenge) return null;
 
-    // Get only the answers from translations
-    const translationsCollection = db.collection('challenge_translations') as Collection<ChallengeTranslation>;
-    const translations = await translationsCollection.find(
-      { challengeId },
-      { projection: { _id: 0, answer: 1 } }
-    ).toArray();
-    
-    // Create a set of all possible answers
-    const answers = new Set<string>();
-    answers.add(challenge.answer.toLowerCase());
-    
-    // Add translated answers
-    translations.forEach((trans: ChallengeTranslation) => {
-      answers.add(trans.answer.toLowerCase());
-    });
+    // Get answer in requested language
+    const answer = typeof challenge.answer === 'string'
+      ? challenge.answer
+      : challenge.answer[language] || challenge.answer.en;
 
-    return Array.from(answers);
+    return answer.toLowerCase();
   },
   ['challenge-answers'],
-  { revalidate: 300 } // Cache for 5 minutes
+  { revalidate: 86400 } // Cache for 24 hours
 );
 
 // Initialize database indexes
 export async function initializeIndexes() {
   const { db } = await connectToDatabase();
   
-  // Create indexes if they don't exist (is needed but causes errors in the console)
-  await Promise.all([
-    db.collection('challenges').createIndex({ challengeId: 1 }, { unique: true, name: 'challengeId_1' }),
-    db.collection('challenge_translations').createIndex({ challengeId: 1 }, { unique: true, name: 'challengeId_1' })
-  ]);
+  // Create indexes if they don't exist
+  await db.collection('challenges').createIndex(
+    { challengeId: 1 }, 
+    { unique: true, name: 'challengeId_1' }
+  );
 }
 
 // Initialize indexes on startup
@@ -64,33 +52,19 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    // Special case for skipped guesses - return immediately
-    if (guess === "___SKIPPED___") {
-      return NextResponse.json({
-        isCorrect: false,
-        message: 'Skipped.'
-      });
-    }
-
-    // Get all possible answers for this challenge from cache
-    const answers = await getChallengeAnswers(challengeId);
     
-    if (!answers) {
+    const answer = await getChallengeAnswers(challengeId, language as 'en' | 'es');
+    if (!answer) {
       return NextResponse.json(
         { error: 'Challenge not found' }, 
         { status: 404 }
       );
     }
 
-    // Normalize and check the guess
-    const normalizedGuess = guess.toLowerCase().trim();
-    const isCorrect = answers.includes(normalizedGuess);
-    
-    return NextResponse.json({
-      isCorrect,
-      message: isCorrect ? 'Correct!' : 'Incorrect, try again.'
-    });
+    const normalizedGuess = guess.trim().toLowerCase();
+    const isCorrect = normalizedGuess === answer;
+
+    return NextResponse.json({ isCorrect });
   } catch (error) {
     console.error('Error verifying guess:', error);
     return NextResponse.json(

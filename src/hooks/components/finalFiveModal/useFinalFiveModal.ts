@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { verifyGuess } from '../../../helpers/gameLogic';
+import { useFinalFiveOptions, useVerifyGuess } from '../../../hooks/api';
 import { UserGuess } from '../../../types';
 
 /**
@@ -18,7 +18,8 @@ export function useFinalFiveModal() {
     decrementFinalFiveTimer,
     selectFinalFiveOption,
     closeFinalFive,
-    hardMode
+    hardMode,
+    isFetchingFinalFiveOptions
   } = useGameStore();
   
   const { colors, darkMode } = useTheme();
@@ -33,6 +34,36 @@ export function useFinalFiveModal() {
   const [startTimer, setStartTimer] = useState(false);
   const [timerReachedZero, setTimerReachedZero] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
+  
+  // Setup React Query mutation for verifying guesses
+  const verifyGuessMutation = useVerifyGuess();
+  
+  // Get current language from localStorage
+  const language = typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en';
+  
+  // Use React Query to fetch Final Five options if needed
+  const { data: fetchedOptions, isLoading: optionsLoading } = useFinalFiveOptions({
+    challengeId: challenge?.challengeId || '',
+    previousGuesses: guesses
+      .filter((g: UserGuess) => !g.isCorrect && g.guess !== "___SKIPPED___")
+      .map((g: UserGuess) => g.guess),
+    language,
+    // Only enable if we need options and no existing fetch is in progress
+    enabled: isFinalFiveActive && !finalFiveOptions && !!challenge && !isFetchingFinalFiveOptions
+  });
+  
+  // If we fetch options via React Query, update the store
+  useEffect(() => {
+    if (fetchedOptions && !finalFiveOptions && challenge && !isFetchingFinalFiveOptions) {
+      // Update the store with the fetched options
+      useGameStore.setState(state => ({
+        gameState: {
+          ...state.gameState,
+          finalFiveOptions: fetchedOptions
+        }
+      }));
+    }
+  }, [fetchedOptions, finalFiveOptions, challenge, isFetchingFinalFiveOptions]);
   
   // Get up to 5 options only
   const options = finalFiveOptions?.slice(0, 5) || [];
@@ -66,47 +97,67 @@ export function useFinalFiveModal() {
     };
     
     // Start the flip sequence
-    if (isFinalFiveActive && !allCardsFlipped) {
+    if (isFinalFiveActive && !allCardsFlipped && options.length === 5) {
       flipCardSequentially(0);
     }
-  }, [isFinalFiveActive, allCardsFlipped]);
+  }, [isFinalFiveActive, allCardsFlipped, options.length]);
   
-  // Check all options against the API when game is over
+  // Fetch the correct answer when the game is over
   useEffect(() => {
-    const verifyAllOptions = async () => {
+    let isMounted = true;
+    
+    const fetchCorrectAnswer = async () => {
       if (isGameOver && finalFiveOptions && finalFiveOptions.length > 0 && !correctAnswer && challenge) {
+        if (loading) return; // Don't start if already loading
+        
         setLoading(true);
         
-        // Check each option that hasn't been guessed yet
-        for (const option of finalFiveOptions) {
-          try {
-            const result = await verifyGuess(challenge.challengeId, option);
-            
-            if (result.isCorrect) {
-              setCorrectAnswer(option);
-              break; // Stop once we find the correct answer
-            }
-          } catch (error) {
-            console.error(`Error verifying option ${option}:`, error);
+        // First check if we already have a correct guess
+        const foundCorrect = guesses.find(g => g.isCorrect);
+        if (foundCorrect) {
+          if (isMounted) {
+            setCorrectAnswer(foundCorrect.guess);
+            setLoading(false);
           }
+          return;
         }
         
-        setLoading(false);
+        // Use the dedicated endpoint to fetch the correct answer
+        try {
+          const response = await fetch('/api/final-five-answer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              challengeId: challenge.challengeId,
+              language
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error fetching answer: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (isMounted && data.answer) {
+            setCorrectAnswer(data.answer);
+          }
+        } catch (error) {
+          console.error('Error fetching correct answer:', error);
+        } finally {
+          if (isMounted) {
+            setLoading(false);
+          }
+        }
       }
     };
     
-    verifyAllOptions();
-  }, [isGameOver, finalFiveOptions, correctAnswer, challenge, guesses]);
-  
-  // Try to find the correct answer from existing guesses
-  useEffect(() => {
-    if (isGameOver && !correctAnswer) {
-      const found = guesses.find((g: UserGuess) => g.isCorrect);
-      if (found) {
-        setCorrectAnswer(found.guess);
-      }
-    }
-  }, [isGameOver, guesses, correctAnswer]);
+    fetchCorrectAnswer();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [isGameOver, finalFiveOptions, correctAnswer, challenge, guesses, language, loading]);
   
   // Start animation sequence after finding correct answer
   useEffect(() => {
@@ -186,19 +237,13 @@ export function useFinalFiveModal() {
     );
   }, [guesses]);
   
-  // Helper to determine if an option should be visible after game over
-  const shouldShowOption = useCallback((option: string): boolean => {
-    if (!isGameOver || !animationComplete) return true;
-    return isCorrectOption(option) || isIncorrectGuess(option);
-  }, [isGameOver, animationComplete, isCorrectOption, isIncorrectGuess]);
-  
   // Helper to get the message to display
   const getMessage = useCallback(() => {
     if (!allCardsFlipped) {
       return t('game.finalFive.revealingCards');
     }
     
-    if (loading) {
+    if (loading || isFetchingFinalFiveOptions || optionsLoading) {
       return t('game.finalFive.checkingAnswer');
     }
     
@@ -212,29 +257,9 @@ export function useFinalFiveModal() {
     return hasWon 
       ? t('game.finalFive.correctAnswer')
       : t('game.finalFive.incorrectAnswer');
-  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome, t]);
+  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome, t, isFetchingFinalFiveOptions, optionsLoading]);
   
-  // Helper to get card styles
-  const getCardStyles = useCallback((option: string) => {
-    // Front of card (with number 5)
-    const frontBg = `var(--color-${colors.primary})`;
-    
-    // Back of card background based on game state - using rgba with the color's RGB values
-    let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
-    if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
-    
-    // Text color based on game state and dark mode
-    let textColor = darkMode ? "white" : "black";
-    if (isGameOver && isCorrectOption(option)) textColor = "white";
-    
-    return {
-      frontBg,
-      backBg,
-      textColor
-    };
-  }, [colors.primary, darkMode, isGameOver, isCorrectOption]);
-  
-  // Handle clicking an option
+  // Handle clicking an option - avoid double calls
   const handleOptionClick = useCallback(async (option: string) => {
     if (isGameOver || loading || !challenge) return;
     
@@ -244,13 +269,17 @@ export function useFinalFiveModal() {
       // This function also updates global game state
       await selectFinalFiveOption(option);
       
-      // Locally set the correct answer if this was correct
-      const wasCorrect = await verifyGuess(challenge.challengeId, option);
-      if (wasCorrect.isCorrect) {
+      // The selectFinalFiveOption already verifies the guess, so we don't need to do it again
+      // Just check if this option is now marked as correct in the guesses
+      const isCorrect = useGameStore.getState().gameState.guesses.some(
+        g => g.isCorrect && g.guess.toLowerCase() === option.toLowerCase()
+      );
+      
+      if (isCorrect) {
         setCorrectAnswer(option);
       }
     } catch (error) {
-      console.error("Error selecting option:", error);
+      console.error('Error selecting option:', error);
     } finally {
       setLoading(false);
     }
@@ -259,9 +288,6 @@ export function useFinalFiveModal() {
   return {
     // State
     options,
-    correctAnswer,
-    loading,
-    animationComplete,
     flippedCards,
     allCardsFlipped,
     showContinueButton,
@@ -269,16 +295,32 @@ export function useFinalFiveModal() {
     isGameOver,
     finalFiveTimeRemaining,
     gameOutcome,
+    animationComplete,
+    loading: loading || isFetchingFinalFiveOptions || optionsLoading,
     
-    // Styles
+    // Styles and helpers
     themeColor,
-    
-    // Helpers
     getMessage,
-    getCardStyles,
+    getCardStyles: useCallback((option: string) => {
+      // Front of card (with number 5)
+      const frontBg = `var(--color-${colors.primary})`;
+      
+      // Back of card background based on game state - using rgba with the color's RGB values
+      let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
+      if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
+      
+      // Text color based on game state and dark mode
+      let textColor = darkMode ? "white" : "black";
+      if (isGameOver && isCorrectOption(option)) textColor = "white";
+      
+      return {
+        frontBg,
+        backBg,
+        textColor
+      };
+    }, [colors.primary, darkMode, isGameOver, isCorrectOption]),
     isCorrectOption,
     isIncorrectGuess,
-    shouldShowOption,
     
     // Actions
     handleOptionClick,

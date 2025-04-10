@@ -1,91 +1,186 @@
 // src/app/api/final-five/route.ts
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge, ChallengeTranslation } from '@/types';
+import { Challenge } from '@/types';
+
+type FinalFiveRequest = {
+  challengeId: string;
+  previousGuesses?: string[];
+  language?: 'en' | 'es';
+};
+
+// Cache for challenge data to reduce database load
+const challengeCache = new Map<string, any>();
+
+/**
+ * Fetches a challenge by ID with caching
+ */
+async function fetchChallengeById(challengeId: string, language: string = 'en') {
+  if (!challengeId) {
+    return { error: 'Missing challenge ID', status: 400 };
+  }
+  
+  // Try to get cached challenge
+  const cacheKey = `${challengeId}-${language}`;
+  let challenge = challengeCache.get(cacheKey);
+  
+  if (!challenge) {
+    try {
+      const { db } = await connectToDatabase();
+      
+      // Find the challenge with a timeout
+      const dbPromise = (db.collection('challenges') as any).findOne({ challengeId });
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database query timed out')), 15000)
+      );
+      
+      challenge = await Promise.race([dbPromise, timeoutPromise]);
+      
+      if (challenge) {
+        // Cache the result for 5 minutes
+        challengeCache.set(cacheKey, challenge);
+        setTimeout(() => challengeCache.delete(cacheKey), 5 * 60 * 1000);
+      }
+    } catch (error) {
+      console.error('Database error:', error);
+      return { error: 'Connection error - please try again', status: 503 };
+    }
+  }
+  
+  if (!challenge) {
+    return { error: 'Challenge not found', status: 404 };
+  }
+  
+  return { challenge };
+}
+
+/**
+ * Get the localized answer and alternatives from a challenge
+ */
+function getLocalizedChallengeContent(challenge: any, language: string = 'en') {
+  // Get the answer in the requested language
+  const answer = typeof challenge.answer === 'string' 
+    ? challenge.answer 
+    : challenge.answer[language] || challenge.answer.en;
+  
+  // Get the alternatives in the requested language
+  const alternatives = Array.isArray(challenge.alternatives)
+    ? challenge.alternatives
+    : challenge.alternatives[language] || challenge.alternatives.en;
+    
+  // Get all possible answers in all languages
+  const allAnswers = typeof challenge.answer === 'string'
+    ? [challenge.answer.toLowerCase()]
+    : (Object.values(challenge.answer) as string[]).map(a => a.toLowerCase());
+    
+  return { answer, alternatives, allAnswers };
+}
+
+/**
+ * Process and filter alternatives based on previous guesses
+ */
+function processAlternatives(
+  alternatives: string[], 
+  allAnswers: string[], 
+  normalizedPreviousGuesses: string[],
+  answer: string,
+  previousGuesses: string[],
+  challengeId: string,
+  language: string
+) {
+  // Filter out alternatives that:
+  // 1. Have already been guessed
+  // 2. Are answers in any language
+  let availableAlternatives = alternatives.filter((alt: string) => {
+    const normalizedAlt = alt.trim().toLowerCase();
+    return !normalizedPreviousGuesses.includes(normalizedAlt) &&
+            !allAnswers.includes(normalizedAlt);
+  });
+  
+  // Ensure we only return 4 alternatives (plus the correct answer)
+  availableAlternatives = availableAlternatives.slice(0, 4);
+  
+  // If we don't have enough alternatives, this is a data issue
+  if (availableAlternatives.length < 4) {
+    console.error(`Not enough alternatives for challenge ${challengeId} in ${language}`);
+    
+    // We still have to handle this case, but log it as a data error
+    // Fill with some of the prior used options (but marked so they're identifiable)
+    const remainingNeeded = 4 - availableAlternatives.length;
+    for (let i = 0; i < remainingNeeded; i++) {
+      // This is just for data integrity - the game should have proper alternatives
+      if (i < previousGuesses.length) {
+        availableAlternatives.push(previousGuesses[i] + " (used)");
+      } else {
+        // Last resort - should never happen with proper data
+        availableAlternatives.push(answer + ` (similar ${i+1})`);
+      }
+    }
+  }
+  
+  return availableAlternatives;
+}
+
+/**
+ * Create and shuffle the final five options
+ */
+function createFinalFiveOptions(answer: string, availableAlternatives: string[]) {
+  // Create the Final 5 options with the correct answer and 4 alternatives
+  const finalFiveOptions = [
+    answer,
+    ...availableAlternatives
+  ];
+  
+  // Shuffle the options
+  return finalFiveOptions.sort(() => Math.random() - 0.5);
+}
 
 export async function POST(request: Request) {
   try {
-    const { challengeId, previousGuesses = [], language = 'en' } = await request.json();
+    const { challengeId, previousGuesses = [], language = 'en' } = await request.json() as FinalFiveRequest;
     
-    if (!challengeId) {
+    // Fetch the challenge
+    const result = await fetchChallengeById(challengeId, language);
+    if ('error' in result) {
       return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
+        { error: result.error }, 
+        { status: result.status }
       );
     }
     
-    const { db } = await connectToDatabase();
+    const { challenge } = result;
     
-    // Find the challenge
-    const challenge = await db.collection<Challenge>('challenges').findOne(
-      { challengeId }
-    );
-    
-    if (!challenge) {
-      return NextResponse.json(
-        { error: 'Challenge not found' }, 
-        { status: 404 }
-      );
-    }
-
-    // Get all translations for this challenge
-    const translations = await db.collection<ChallengeTranslation>('challenge_translations')
-      .find({ challengeId })
-      .toArray();
-
-    // Get the answer in the requested language
-    let answer = challenge.answer;
-    let alternatives = challenge.alternatives;
-
-    // If language is not English, try to get the translation
-    if (language !== 'en') {
-      const translation = translations.find(t => t.language === language);
-      if (translation) {
-        answer = translation.answer;
-        alternatives = translation.alternatives;
-      }
-    }
+    // Get localized content
+    const { answer, alternatives, allAnswers } = getLocalizedChallengeContent(challenge, language);
     
     // Normalize previous guesses
-    const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
+    const normalizedPreviousGuesses = previousGuesses.map(guess => 
       guess.trim().toLowerCase()
     );
-
-    // Get all possible answers in all languages
-    const allAnswers = [challenge.answer.toLowerCase()];
-    translations.forEach(translation => {
-      allAnswers.push(translation.answer.toLowerCase());
-    });
     
-    // Filter out alternatives that:
-    // 1. Have already been guessed
-    // 2. Are answers in any language
-    let availableAlternatives = alternatives.filter(alt => {
-      const normalizedAlt = alt.trim().toLowerCase();
-      return !normalizedPreviousGuesses.includes(normalizedAlt) &&
-             !allAnswers.includes(normalizedAlt);
-    });
-    
-    // Ensure we only return 4 alternatives (plus the correct answer)
-    availableAlternatives = availableAlternatives.slice(0, 4);
-    
-    // Create the Final 5 options with the correct answer and 4 alternatives
-    const finalFiveOptions = [
+    // Process alternatives
+    const availableAlternatives = processAlternatives(
+      alternatives,
+      allAnswers,
+      normalizedPreviousGuesses,
       answer,
-      ...availableAlternatives
-    ];
+      previousGuesses,
+      challengeId,
+      language
+    );
     
-    // Shuffle the options
-    const shuffledOptions = finalFiveOptions.sort(() => Math.random() - 0.5);
+    // Create and shuffle options
+    const shuffledOptions = createFinalFiveOptions(answer, availableAlternatives);
     
     return NextResponse.json({
       options: shuffledOptions
     });
   } catch (error) {
     console.error('Error fetching Final Five options:', error);
+    // Return a proper error response
     return NextResponse.json(
-      { error: 'Internal server error' }, 
-      { status: 500 }
+      { error: 'Service unavailable - please try again' }, 
+      { status: 503 }
     );
   }
 }
@@ -95,7 +190,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const challengeId = searchParams.get('id');
     const previousGuessesParam = searchParams.get('previousGuesses');
-    const language = searchParams.get('lang') || 'en';
+    const language = (searchParams.get('lang') || 'en') as 'en' | 'es';
     
     if (!challengeId) {
       return NextResponse.json(
@@ -104,39 +199,20 @@ export async function GET(request: Request) {
       );
     }
     
-    const { db } = await connectToDatabase();
-    
-    // Get the challenge with the answer and alternatives
-    const challenge = await db.collection<Challenge>('challenges').findOne(
-      { challengeId },
-      { projection: { answer: 1, alternatives: 1 } }
-    );
-    
-    if (!challenge) {
+    // Fetch the challenge
+    const result = await fetchChallengeById(challengeId, language);
+    if ('error' in result) {
       return NextResponse.json(
-        { error: 'Challenge not found' }, 
-        { status: 404 }
+        { error: result.error }, 
+        { status: result.status }
       );
     }
-
-    // Get all translations for this challenge
-    const translations = await db.collection<ChallengeTranslation>('challenge_translations')
-      .find({ challengeId })
-      .toArray();
-
-    // Get the answer in the requested language
-    let answer = challenge.answer;
-    let alternatives = challenge.alternatives;
-
-    // If language is not English, try to get the translation
-    if (language !== 'en') {
-      const translation = translations.find(t => t.language === language);
-      if (translation) {
-        answer = translation.answer;
-        alternatives = translation.alternatives;
-      }
-    }
-
+    
+    const { challenge } = result;
+    
+    // Get localized content
+    const { answer, alternatives, allAnswers } = getLocalizedChallengeContent(challenge, language);
+    
     // Parse previous guesses if provided
     let previousGuesses: string[] = [];
     if (previousGuessesParam) {
@@ -146,38 +222,25 @@ export async function GET(request: Request) {
         console.error('Error parsing previousGuesses:', e);
       }
     }
-
-    // Get all possible answers in all languages
-    const allAnswers = [challenge.answer.toLowerCase()];
-    translations.forEach(translation => {
-      allAnswers.push(translation.answer.toLowerCase());
-    });
-
+    
     // Normalize previous guesses
-    const normalizedPreviousGuesses = previousGuesses.map((guess: string) => 
+    const normalizedPreviousGuesses = previousGuesses.map(guess => 
       guess.trim().toLowerCase()
     );
     
-    // Filter out alternatives that:
-    // 1. Have already been guessed
-    // 2. Are answers in any language
-    let availableAlternatives = alternatives.filter(alt => {
-      const normalizedAlt = alt.trim().toLowerCase();
-      return !normalizedPreviousGuesses.includes(normalizedAlt) &&
-             !allAnswers.includes(normalizedAlt);
-    });
-    
-    // Ensure we only return 4 alternatives (plus the correct answer)
-    availableAlternatives = availableAlternatives.slice(0, 4);
-    
-    // Create the final five options (the correct answer + 4 alternatives)
-    const options = [
+    // Process alternatives
+    const availableAlternatives = processAlternatives(
+      alternatives,
+      allAnswers,
+      normalizedPreviousGuesses,
       answer,
-      ...availableAlternatives
-    ];
+      previousGuesses,
+      challengeId,
+      language
+    );
     
-    // Shuffle the options
-    const shuffledOptions = options.sort(() => Math.random() - 0.5);
+    // Create and shuffle options
+    const shuffledOptions = createFinalFiveOptions(answer, availableAlternatives);
     
     return NextResponse.json({
       options: shuffledOptions

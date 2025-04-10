@@ -9,6 +9,7 @@ import FactCardBack from './FactCardBack';
 import { factCardStyles } from '../styles/factCardStyles';
 import { useFactCard } from '../hooks';
 import { getFactTypeName } from '../helpers/i18nHelpers';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FactCardProps {
   fact: Fact<any>;
@@ -24,7 +25,29 @@ export default function FactCard({
   visibleStackCount = 0,
 }: FactCardProps) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+  const currentLanguage = language as 'en' | 'es';
   
+  // Exit immediately if no fact exists at all
+  if (!fact) {
+    return null;
+  }
+  
+  // Function to determine the content to show based on current language
+  const getContentForLanguage = () => {
+    // If content is an object with language keys, use those
+    if (fact.content && typeof fact.content === 'object') {
+      return fact.content[currentLanguage] || fact.content.en || '';
+    }
+    
+    // If content is a string, just return it
+    if (typeof fact.content === 'string') {
+      return fact.content;
+    }
+    
+    return '';
+  };
+
   // Use comprehensive hook for all card logic and state
   const {
     // Refs
@@ -128,7 +151,7 @@ export default function FactCard({
                 {/* Bottom half - Fact Content */}
                 <div className={factCardStyles.bottomHalf}>
                   <p className={factCardStyles.factContent}>
-                    {fact.content}
+                    {getContentForLanguage()}
                   </p>
                 </div>
               </div>

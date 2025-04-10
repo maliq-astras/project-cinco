@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../../../context/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage } from '../../../context/LanguageContext';
+import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage, Language } from '../../../context/LanguageContext';
 
 // Format languages for display in the dropdown
 export const languages = [
   ...SUPPORTED_LANGUAGES.map(code => ({ code, name: code === 'en' ? 'English' : code === 'es' ? 'Español' : code })),
-  ...COMING_SOON_LANGUAGES.map(code => ({ code, name: `${code.toUpperCase()} (${code === 'fr' ? 'Français' : code === 'de' ? 'Deutsch' : code === 'it' ? 'Italiano' : code === 'pt' ? 'Português' : code === 'ru' ? 'Русский' : code === 'zh' ? '中文' : code === 'ja' ? '日本語' : code === 'ko' ? '한국어' : code}) - Coming Soon` }))
+  // Single entry for all upcoming languages
+  { code: 'more', name: 'More coming soon!' }
 ];
 
 interface UseSettingsPanelProps {
@@ -18,17 +19,18 @@ interface UseSettingsPanelProps {
 export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => {
   const { colors, darkMode, toggleDarkMode } = useTheme();
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage, isLanguageLocked } = useLanguage();
   
   // Use separate selectors for each state value to avoid the infinite loop
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
   const setHardModeEnabled = useGameStore(state => state.setHardModeEnabled);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  const hasMadeGuess = useGameStore(state => state.hasMadeGuess);
   
   // These would be hooked up to actual state management in a real implementation
   const [isRandomizer, setIsRandomizer] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(language);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [isMobile, setIsMobile] = useState(false);
   
   // Sync selectedLanguage with language from context
@@ -82,12 +84,14 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   };
   
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (isLanguageLocked) return; // Don't change language if it's locked
+    
     const newLang = e.target.value;
-    setSelectedLanguage(newLang);
     
     // Only change language if it's one of the supported languages
     if (SUPPORTED_LANGUAGES.includes(newLang)) {
-      changeLanguage(newLang);
+      setSelectedLanguage(newLang as Language);
+      changeLanguage(newLang as Language);
     }
   };
 
@@ -106,6 +110,7 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     handleLanguageChange,
     isMobile,
     handleOverlayClick,
-    languages
+    languages,
+    isLanguageLocked
   };
 }; 

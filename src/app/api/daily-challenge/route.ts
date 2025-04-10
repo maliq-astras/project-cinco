@@ -1,50 +1,23 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge, ChallengeTranslation, Fact, CategoryType } from '@/types';
+import { Challenge, Fact, CategoryType } from '@/types';
 import { unstable_cache } from 'next/cache';
+import { Collection } from 'mongodb';
 
 // Cache the daily challenge fetch for 5 minutes
-const getChallengeWithTranslations = unstable_cache(
+const getDailyChallenge = unstable_cache(
   async () => {
     const { db } = await connectToDatabase();
     const today = new Date().toISOString().split('T')[0];
 
-    // Use a single aggregation pipeline to get the challenge and ALL translations
-    const result = await db.collection<Challenge>('challenges').aggregate([
-      { 
-        $match: { date: today }
-      },
-      {
-        $lookup: {
-          from: 'challenge_translations',
-          let: { challengeId: '$challengeId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: ['$challengeId', '$$challengeId'] }
-              }
-            }
-          ],
-          as: 'translations'
-        }
-      }
-    ]).toArray();
+    // Simple find query since translations are now embedded
+    const challengesCollection = db.collection('challenges') as Collection<Challenge>;
+    const challenge = await challengesCollection.findOne(
+      { date: today },
+      { projection: { _id: 0 } }
+    );
 
-    if (!result.length) {
-      return null;
-    }
-
-    const challenge = result[0];
-    const translations = challenge.translations || [];
-    delete challenge.translations;
-
-    return {
-      challenge,
-      translations: translations.reduce((acc: Record<string, ChallengeTranslation>, trans: ChallengeTranslation) => {
-        acc[trans.language] = trans;
-        return acc;
-      }, {})
-    };
+    return challenge;
   },
   ['daily-challenge'],
   { revalidate: 300 } // Cache for 5 minutes
@@ -52,47 +25,31 @@ const getChallengeWithTranslations = unstable_cache(
 
 export async function GET(request: Request) {
   try {
-    // Get the language from the request header or query parameter
     const { searchParams } = new URL(request.url);
-    const language = searchParams.get('lang') || 'en';
+    const language = (searchParams.get('lang') || 'en') as 'en' | 'es';
     
-    const data = await getChallengeWithTranslations();
+    const challenge = await getDailyChallenge();
     
-    if (!data) {
+    if (!challenge) {
       return NextResponse.json(
         { error: 'No challenge found for today' }, 
         { status: 404 }
       );
     }
 
-    const { challenge, translations } = data;
+    // Return the challenge without answer and alternatives
+    const { answer, alternatives, ...challengeWithoutAnswers } = challenge;
 
-    // If language is English, return the challenge as is (excluding answer and alternatives)
-    if (language === 'en') {
-      const { answer, alternatives, ...challengeWithoutAnswer } = challenge;
-      return NextResponse.json(challengeWithoutAnswer);
-    }
-
-    // For other languages, get the translation and merge with challenge
-    const translation = translations[language];
-    if (translation) {
-      // Create a new facts array with translated content
-      const translatedFacts = challenge.facts.map((fact: Fact<CategoryType>) => ({
+    // Return the challenge with facts content in the requested language
+    return NextResponse.json({
+      ...challengeWithoutAnswers,
+      facts: challenge.facts.map(fact => ({
         ...fact,
-        content: translation.facts[fact.factType] || fact.content
-      }));
-
-      // Return the challenge with translated facts (excluding answer and alternatives)
-      const { answer, alternatives, ...challengeWithoutAnswer } = challenge;
-      return NextResponse.json({
-        ...challengeWithoutAnswer,
-        facts: translatedFacts
-      });
-    }
-
-    // If no translation found, return English version
-    const { answer, alternatives, ...challengeWithoutAnswer } = challenge;
-    return NextResponse.json(challengeWithoutAnswer);
+        content: typeof fact.content === 'string' 
+          ? fact.content // If content is already a string, keep it as is
+          : (fact.content[language] || fact.content.en) // If content has language keys, get the right one
+      }))
+    });
   } catch (error) {
     console.error('Error fetching daily challenge:', error);
     return NextResponse.json(

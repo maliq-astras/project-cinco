@@ -23,12 +23,13 @@ interface GameStore {
   canRevealNewClue: boolean;
   canMakeGuess: boolean;
   lastRevealedFactIndex: number | null;
-  isPendingFinalFiveTransition: boolean; // New state to track pending transition
-  isProcessingGuess: boolean; // Track when a guess is being processed
+  isPendingFinalFiveTransition: boolean;
+  isProcessingGuess: boolean;
+  hasMadeGuess: boolean;
   
   // Hard mode settings
   hardMode: boolean;
-  isHardModeEnabled: boolean; // Can be toggled before game starts
+  isHardModeEnabled: boolean;
   setHardModeEnabled: (enabled: boolean) => void;
   
   // Final Five specific state
@@ -36,6 +37,8 @@ interface GameStore {
   isFinalFiveActive: boolean;
   showFinalFiveTransition: boolean;
   finalFiveTransitionReason: 'time' | 'guesses' | null;
+  finalFiveError: string | null;
+  isFetchingFinalFiveOptions: boolean;
   
   // UI and animation states
   hoveredFact: number | null;
@@ -78,8 +81,9 @@ interface GameStore {
   selectFinalFiveOption: (option: string) => Promise<void>;
   closeFinalFive: () => void;
   startFinalFive: () => void;
+  resetFinalFiveError: () => void;
   
-  // Add methods to control the settings panel and tutorial
+  // Settings controls
   setSettingsPanelOpen: (isOpen: boolean) => void;
   setTutorialOpen: (isOpen: boolean) => void;
 }
@@ -97,6 +101,7 @@ export const useGameStore = create<GameStore>()(
   lastRevealedFactIndex: null,
   isPendingFinalFiveTransition: false,
   isProcessingGuess: false,
+  hasMadeGuess: false,
   
   // Hard mode settings
   hardMode: false, // Current game's hard mode state (can't be changed after start)
@@ -121,6 +126,8 @@ export const useGameStore = create<GameStore>()(
   isFinalFiveActive: false,
   showFinalFiveTransition: false,
   finalFiveTransitionReason: null,
+  finalFiveError: null,
+  isFetchingFinalFiveOptions: false,
   
   // UI and animation states
   hoveredFact: null,
@@ -416,7 +423,7 @@ export const useGameStore = create<GameStore>()(
     if (!canMakeGuess) return;
     
     // Set processing state to true when submitting
-    set({ isProcessingGuess: true });
+    set({ isProcessingGuess: true, hasMadeGuess: true });
     
     try {
       // Special case for skipped guesses - handle immediately without API call
@@ -468,7 +475,7 @@ export const useGameStore = create<GameStore>()(
       }
       
       // Get the current language from localStorage
-      const language = localStorage.getItem('i18nextLng') || 'en';
+      const language = localStorage.getItem('language') || 'en';
       const data = await verifyGuessAPI(gameState.challenge.challengeId, guess, language);
       
       const newGuess: UserGuess = {
@@ -537,68 +544,132 @@ export const useGameStore = create<GameStore>()(
   
   // Helper function to prefetch final five options
   prefetchFinalFiveOptions: async () => {
-    const { gameState } = get();
+    const { gameState, isFetchingFinalFiveOptions } = get();
     
-    // Only fetch if we haven't already fetched options
-    if (gameState.challenge && !gameState.finalFiveOptions) {
+    // Don't fetch if we already have options or a fetch is in progress
+    if (!gameState.challenge || gameState.finalFiveOptions || isFetchingFinalFiveOptions) {
+      return;
+    }
+    
+    // Set flag to indicate fetch is in progress
+    set({ isFetchingFinalFiveOptions: true });
+    
+    // Try with an extended timeout
+    try {
+      // Get previous guesses (excluding skipped ones) to filter options
+      const previousGuesses = gameState.guesses
+        .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
+        .map(g => g.guess);
+      
+      // Get the current language from localStorage
+      const language = localStorage.getItem('language') || 'en';
+      
+      // Use a custom controller with a longer timeout (30 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      
+      let response: Response | undefined;
       try {
-        // Get previous guesses (excluding skipped ones) to filter options
-        const previousGuesses = gameState.guesses
-          .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___")
-          .map(g => g.guess);
+        // Try up to 3 times with increasing delays
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            if (attempt > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+              console.log(`Retry ${attempt + 1}/3 for Final Five options...`);
+            }
+            
+            response = await fetch('/api/final-five', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                challengeId: gameState.challenge.challengeId,
+                previousGuesses,
+                language
+              }),
+              signal: controller.signal
+            });
+            
+            if (response.ok) break;
+          } catch (e) {
+            if (attempt === 2) throw e; // Rethrow on final attempt
+          }
+        }
         
-        // Get the current language from localStorage
-        const language = localStorage.getItem('i18nextLng') || 'en';
+        // If we don't have a response after all retries, throw an error
+        if (!response) {
+          throw new Error('Failed to fetch options after multiple attempts');
+        }
         
-        const options = await fetchFinalFiveOptionsAPI(
-          gameState.challenge.challengeId,
-          previousGuesses,
-          language
-        );
+        const data = await response.json();
         
-        // Store the options in the state
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch options');
+        }
+        
+        clearTimeout(timeoutId);
+        
+        // Store the options in the state and reset the flag
         set(state => ({
           gameState: {
             ...state.gameState,
-            finalFiveOptions: options
-          }
+            finalFiveOptions: data.options
+          },
+          isFetchingFinalFiveOptions: false
         }));
-      } catch (error) {
-        console.error('Error prefetching Final Five options:', error);
+        
+        return data.options;
+      } catch (fetchError) {
+        // Clear timeout if it's still active
+        clearTimeout(timeoutId);
+        throw fetchError;
       }
+    } catch (error) {
+      console.error('Error prefetching Final Five options:', error);
+      
+      // Reset the flag
+      set({ isFetchingFinalFiveOptions: false });
+      
+      // Rethrow for the caller to handle
+      throw error;
     }
   },
   
   triggerFinalFive: async () => {
-    const { gameState, hardMode } = get();
+    const { gameState, hardMode, isFetchingFinalFiveOptions } = get();
     
+    // Reset any previous error
     set({ 
       showFinalFiveTransition: true,
       isFinalFiveActive: false,
-      isPendingFinalFiveTransition: false, // Reset pending state when showing the transition
-      finalFiveTimeRemaining: hardMode ? 5 : 55 // Set correct timer when Final Five is triggered
+      isPendingFinalFiveTransition: false,
+      finalFiveTimeRemaining: hardMode ? 5 : 55,
+      finalFiveError: null // Reset error state
     });
     
     try {
-      // Check if we already have options (they should be prefetched)
+      // Check if we already have options or if a fetch is already in progress
       if (gameState.challenge && !gameState.finalFiveOptions) {
-        // Get previous guesses (excluding skipped ones) to filter options
-        const previousGuesses = gameState.guesses
-          .filter(g => !g.isCorrect && g.guess !== "___SKIPPED___") 
-          .map(g => g.guess);
-        
-        const options = await fetchFinalFiveOptionsAPI(
-          gameState.challenge.challengeId,
-          previousGuesses
-        );
-        
-        // Store the options in the state
-        set(state => ({
-          gameState: {
-            ...state.gameState,
-            finalFiveOptions: options
+        // Don't start a new fetch if one is already in progress
+        if (!isFetchingFinalFiveOptions) {
+          // Try to fetch options using the prefetch function
+          await get().prefetchFinalFiveOptions();
+        } else {
+          // Wait up to 5 seconds for the in-progress fetch to complete
+          for (let i = 0; i < 10; i++) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Get latest state
+            const latestState = get();
+            if (latestState.gameState.finalFiveOptions || !latestState.isFetchingFinalFiveOptions) {
+              break;
+            }
           }
-        }));
+          
+          // If after waiting there are still no options, something is wrong
+          if (!get().gameState.finalFiveOptions) {
+            throw new Error('Timeout waiting for Final Five options to load');
+          }
+        }
       }
       
       // After the transition, load the options (with minimal delay)
@@ -607,16 +678,16 @@ export const useGameStore = create<GameStore>()(
           showFinalFiveTransition: false,
           isFinalFiveActive: true 
         });
-      }, 50); // Changed from 4000ms to 500ms
+      }, 50);
     } catch (error) {
       console.error('Error fetching Final Five options:', error);
-      // Still continue with the transition even if there's an error
-      setTimeout(() => {
-        set({ 
-          showFinalFiveTransition: false,
-          isFinalFiveActive: true 
-        });
-      }, 50); // Changed from 4000ms to 500ms
+      
+      // Set error state with user-friendly message
+      set({ 
+        showFinalFiveTransition: false,
+        finalFiveError: 'Could not load Final Five challenge. Please try again.',
+        isFetchingFinalFiveOptions: false // Ensure the flag is reset on error
+      });
     }
   },
   
@@ -627,7 +698,7 @@ export const useGameStore = create<GameStore>()(
     
     try {
       // Get the current language from localStorage
-      const language = localStorage.getItem('i18nextLng') || 'en';
+      const language = localStorage.getItem('language') || 'en';
       const data = await verifyGuessAPI(gameState.challenge.challengeId, option, language);
       
       const newGuess: UserGuess = {
@@ -637,7 +708,7 @@ export const useGameStore = create<GameStore>()(
         isFinalFiveGuess: true
       };
       
-      // If this guess was incorrect, try to find the correct answer
+      // If this guess was incorrect, get the correct answer directly from the API
       let correctAnswer = '';
       if (!data.isCorrect && gameState.finalFiveOptions) {
         // First check if we already have a correct guess in our history
@@ -645,35 +716,41 @@ export const useGameStore = create<GameStore>()(
         if (existingCorrectGuess) {
           correctAnswer = existingCorrectGuess.guess;
         } else {
-          // We need to check all other options to find the correct one
-          for (const potentialAnswer of gameState.finalFiveOptions) {
-            if (potentialAnswer === option) continue; // Skip the one we just verified
+          // Use our new API endpoint to get the correct answer directly
+          try {
+            const response = await fetch('/api/final-five-answer', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                challengeId: gameState.challenge.challengeId,
+                language
+              })
+            });
             
-            try {
-              const result = await verifyGuessAPI(gameState.challenge.challengeId, potentialAnswer, language);
-              if (result.isCorrect) {
-                correctAnswer = potentialAnswer;
-                // Add this as a "hidden" guess so it's in our guesses array
-                const correctGuess: UserGuess = {
-                  guess: potentialAnswer,
-                  isCorrect: true,
-                  timestamp: new Date(),
-                  isFinalFiveGuess: true,
-                  isHidden: true // Mark as hidden so it doesn't show in history
-                };
-                
-                set(state => ({
-                  gameState: {
-                    ...state.gameState,
-                    guesses: [...state.gameState.guesses, correctGuess]
-                  }
-                }));
-                
-                break;
-              }
-            } catch (error) {
-              console.error(`Error verifying option ${potentialAnswer}:`, error);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch correct answer: ${response.status}`);
             }
+            
+            const answerData = await response.json();
+            correctAnswer = answerData.answer;
+            
+            // Add this as a "hidden" guess so it's in our guesses array
+            const correctGuess: UserGuess = {
+              guess: correctAnswer,
+              isCorrect: true,
+              timestamp: new Date(),
+              isFinalFiveGuess: true,
+              isHidden: true // Mark as hidden so it doesn't show in history
+            };
+            
+            set(state => ({
+              gameState: {
+                ...state.gameState,
+                guesses: [...state.gameState.guesses, correctGuess]
+              }
+            }));
+          } catch (error) {
+            console.error('Error fetching correct answer:', error);
           }
         }
       }
@@ -732,6 +809,11 @@ export const useGameStore = create<GameStore>()(
       isTutorialOpen: isOpen,
       shouldPauseTimer: isOpen
     });
+  },
+  
+  // Add a reset error method
+  resetFinalFiveError: () => {
+    set({ finalFiveError: null });
   }
 }),
     {

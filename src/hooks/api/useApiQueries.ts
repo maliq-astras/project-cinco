@@ -1,29 +1,10 @@
-import { Challenge, UserGuess } from '../types';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Challenge } from '@/types';
 
-// Constants
-export const MAX_WRONG_GUESSES = 5;
-
-export interface GameState {
-  loading: boolean;
-  error: string | null;
-  challenge: Challenge | null;
-  revealedFacts: number[];
-  guesses: UserGuess[];
-  isGameOver: boolean;
-  finalFiveOptions: string[] | null;
-}
-
-export const initialGameState: GameState = {
-  loading: true,
-  error: null,
-  challenge: null,
-  revealedFacts: [],
-  guesses: [],
-  isGameOver: false,
-  finalFiveOptions: null
-};
-
-export async function fetchChallenge(language: string = 'en'): Promise<Challenge> {
+/**
+ * Fetches a challenge from the API
+ */
+async function fetchChallengeFromApi(language: string = 'en'): Promise<Challenge> {
   const response = await fetch(`/api/daily-challenge?lang=${language}`);
   if (!response.ok) {
     throw new Error('Failed to fetch challenge');
@@ -32,7 +13,15 @@ export async function fetchChallenge(language: string = 'en'): Promise<Challenge
   return data;
 }
 
-export async function verifyGuess(challengeId: string, guess: string, language: string = 'en'): Promise<{ isCorrect: boolean }> {
+/**
+ * Verifies a guess with the API
+ */
+async function verifyGuessWithApi(params: { 
+  challengeId: string; 
+  guess: string;
+  language: string;
+}): Promise<{ isCorrect: boolean }> {
+  const { challengeId, guess, language } = params;
   const response = await fetch('/api/verify-guess', {
     method: 'POST',
     headers: {
@@ -52,7 +41,16 @@ export async function verifyGuess(challengeId: string, guess: string, language: 
   return await response.json();
 }
 
-export async function fetchFinalFiveOptions(challengeId: string, previousGuesses?: string[], language: string = 'en', retries = 3): Promise<string[]> {
+/**
+ * Fetches final five options from the API
+ */
+async function fetchFinalFiveOptionsFromApi(params: {
+  challengeId: string;
+  previousGuesses?: string[];
+  language?: string;
+  retries?: number;
+}): Promise<string[]> {
+  const { challengeId, previousGuesses = [], language = 'en', retries = 3 } = params;
   let lastError;
   
   // Try up to retries + 1 times in case of connection issues
@@ -116,19 +114,53 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
   throw lastError || new Error('Failed to fetch final five options');
 }
 
-export function checkIsGameOver(guesses: UserGuess[]): boolean {
-  // Check if any guess is correct
-  return guesses.some(guess => guess.isCorrect);
+/**
+ * Custom hook to fetch a challenge
+ */
+export function useChallenge(language: string = 'en') {
+  return useQuery({
+    queryKey: ['challenge', language],
+    queryFn: () => fetchChallengeFromApi(language),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 }
 
-export function shouldShowFinalFive(guesses: UserGuess[]): boolean {
-  // Check if we've reached the maximum number of wrong guesses (excluding Final Five guesses)
-  const wrongGuesses = guesses.filter(g => !g.isCorrect && !g.isFinalFiveGuess);
-  return wrongGuesses.length >= MAX_WRONG_GUESSES;
+/**
+ * Custom hook to verify a guess
+ */
+export function useVerifyGuess() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: verifyGuessWithApi,
+    // On success, invalidate any relevant queries
+    onSuccess: () => {
+      // We don't need to invalidate anything here since
+      // the game state is mostly managed by Zustand
+    }
+  });
 }
 
-export function isDuplicateGuess(guesses: UserGuess[], newGuess: string): boolean {
-  return guesses.some(
-    prevGuess => prevGuess.guess.toLowerCase() === newGuess.toLowerCase()
-  );
+/**
+ * Custom hook to fetch final five options
+ */
+export function useFinalFiveOptions(params: {
+  challengeId: string;
+  previousGuesses: string[];
+  language: string;
+  enabled?: boolean;
+}) {
+  const { challengeId, previousGuesses, language, enabled = true } = params;
+  
+  return useQuery({
+    queryKey: ['finalFiveOptions', challengeId, previousGuesses, language],
+    queryFn: () => fetchFinalFiveOptionsFromApi({
+      challengeId,
+      previousGuesses,
+      language
+    }),
+    enabled: enabled && !!challengeId, // Only run if enabled and we have a challengeId
+    staleTime: Infinity, // The options should never change for a given challenge and set of guesses
+    gcTime: 1000 * 60 * 60, // Cache for 1 hour (formerly called cacheTime)
+  });
 } 

@@ -8,6 +8,7 @@ import Timer from './Timer';
 import FinalFiveCard from './FinalFiveCard';
 import { finalFiveStyles } from '../styles/finalFiveStyles';
 import { useTranslation } from 'react-i18next';
+import { useGameStore } from '../store/gameStore';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -40,6 +41,59 @@ export default function FinalFiveModal() {
   } = useFinalFiveModal();
 
   const { t } = useTranslation();
+  
+  // Get error state from the game store
+  const finalFiveError = useGameStore(state => state.finalFiveError);
+  const resetFinalFiveError = useGameStore(state => state.resetFinalFiveError);
+  const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
+  
+  // If there's an error, show error state instead of normal content
+  if (finalFiveError) {
+    return (
+      <div className={finalFiveStyles.modalContainer}>
+        <motion.div 
+          className={finalFiveStyles.modalContent}
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ 
+            type: "tween", 
+            duration: 0.3,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+        >
+          <div className={finalFiveStyles.mobileHandle}></div>
+          
+          <h2 
+            className={`${finalFiveStyles.header} ${righteous.className}`}
+            style={{ color: themeColor }}
+          >
+            {t('game.finalFive.title')}
+          </h2>
+          
+          <div className="flex flex-col items-center justify-center p-6 text-center">
+            <div className="text-red-500 mb-4 text-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p>{finalFiveError}</p>
+            </div>
+            
+            <button
+              className={finalFiveStyles.continueButton}
+              style={{ backgroundColor: themeColor }}
+              onClick={() => {
+                resetFinalFiveError();
+                triggerFinalFive();
+              }}
+            >
+              {t('ui.buttons.tryAgain')}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
   
   // Don't render if not active or no options
   if (!options.length || !isFinalFiveActive) {

@@ -11,4 +11,15 @@ export * from './card';
 // export * from './ui';
 
 // Export shared hooks (currently empty, for future use)
-// export * from './shared'; 
+// export * from './shared';
+
+// Import and re-export all hooks to make them easier to access
+export * from './api';
+export * from './components/finalFiveModal/useFinalFiveModal';
+export * from './components/mainContainer/useMainContainer';
+export * from './components/header/useHeader';
+export * from './components/factBubble/useFactBubble';
+export * from './components/loadingAnimation/useLoadingAnimation';
+export * from './components/settingsPanel/useSettingsPanel';
+export * from './components/gameControls';
+export * from './components/endGameMessage/useEndGameMessage'; 

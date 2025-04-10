@@ -81,7 +81,7 @@
       "timeRemaining": "Tiempo Restante"
     },
     "language": {
-      "select": "Seleccionar Idioma",
+      "select": "Idioma",
       "en": "Inglés",
       "es": "Español",
       "other": "¡Próximamente!"
@@ -99,12 +99,13 @@
       "darkModeDesc": "Alterna entre tema claro y oscuro",
       "hardMode": "Modo Difícil",
       "hardModeDesc": "¡Menos tiempo para adivinar!",
-      "cannotChangeDifficulty": "No se puede cambiar la dificultad después de iniciar el juego",
-      "randomizer": "Aleatorizador",
+      "cannotChangeDifficulty": "No se puede cambiar la dificultad después de comenzar el juego",
+      "randomizer": "Aleatorio",
       "randomizerDesc": "Obtén categorías aleatorias cada día",
       "highContrast": "Modo de Alto Contraste",
-      "highContrastDesc": "Aumenta el contraste de colores",
-      "autoSave": "La configuración se guardará automáticamente."
+      "highContrastDesc": "Aumenta el contraste de color",
+      "autoSave": "La configuración se guardará automáticamente.",
+      "languageLocked": "No se puede cambiar el idioma después de hacer una suposición"
     }
   },
   "categories": {
