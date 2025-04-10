@@ -22,8 +22,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     isHardModeEnabled,
     toggleHardMode,
     hasSeenClue,
-    isRandomizer,
-    toggleRandomizer,
+    isSoundEnabled,
+    toggleSound,
     isHighContrast,
     toggleHighContrast,
     selectedLanguage,
@@ -95,23 +95,27 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           />
         </div>
 
-        {/* Randomizer Toggle */}
-        <div className={settingsPanelStyles.settingRow}>
-          <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.randomizer')}</p>
-            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.randomizerDesc')}</p>
+        {/* Sound Toggle - Hidden for future implementation */}
+        {false && (
+          <div className={settingsPanelStyles.settingRow}>
+            <div className={settingsPanelStyles.settingTextContainer}>
+              <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.sound')}</p>
+              <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.soundDesc')}</p>
+            </div>
+            <ToggleSwitch isOn={isSoundEnabled} onToggle={toggleSound} />
           </div>
-          <ToggleSwitch isOn={isRandomizer} onToggle={toggleRandomizer} />
-        </div>
+        )}
 
-        {/* High Contrast Mode */}
-        <div className={settingsPanelStyles.settingRow}>
-          <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.highContrast')}</p>
-            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
+        {/* High Contrast Mode - Hidden for future implementation */}
+        {false && (
+          <div className={settingsPanelStyles.settingRow}>
+            <div className={settingsPanelStyles.settingTextContainer}>
+              <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.highContrast')}</p>
+              <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
+            </div>
+            <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
           </div>
-          <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
-        </div>
+        )}
 
         {/* Language Dropdown */}
         <div>

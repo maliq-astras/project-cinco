@@ -11,7 +11,7 @@
     "instructions": {
       "doubleTap": "Double-tap",
       "doubleClick": "Double-click",
-      "revealToBegin": "{{action}} to reveal a fact and begin...",
+      "dragToBegin": "Drag a bubble to reveal a fact and begin...",
       "revealNew": "Reveal a new fact to make another guess...",
       "enterGuess": "Enter your guess..."
     },
@@ -103,8 +103,8 @@
       "hardMode": "Hard Mode",
       "hardModeDesc": "Less time to guess!",
       "cannotChangeDifficulty": "Cannot change difficulty after game has started",
-      "randomizer": "Randomizer",
-      "randomizerDesc": "Get random categories each day",
+      "sound": "Sound Effects",
+      "soundDesc": "Enable or disable game sounds",
       "highContrast": "High Contrast Mode",
       "highContrastDesc": "Increase color contrast",
       "autoSave": "Settings will be saved automatically.",
@@ -131,7 +131,8 @@
     "athletes": "Athletes",
     "historical figures": "Historical Figures",
     "famous brands": "Famous Brands",
-    "tv shows": "TV Shows"
+    "tv shows": "TV Shows",
+    "please wait": "Please wait..."
   },
   "factTypes": {
     "language(s)": "Language(s)",

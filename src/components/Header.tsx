@@ -14,9 +14,9 @@ const Header: React.FC = () => {
 
   return (
     <div className={headerStyles.container}>
-      <header id="header-area" className={headerStyles.header}>
+      <header className={headerStyles.header}>
         <div className={headerStyles.content}>
-          <div className={headerStyles.logoContainer}>
+          <div id="header-area" className={headerStyles.logoContainer}>
             <Logo height="100%"/>
           </div>
           

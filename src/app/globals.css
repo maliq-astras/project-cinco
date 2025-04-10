@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent overscroll white background but maintain theme system */
+html, body {
+  overscroll-behavior: none;
+}
+
 @keyframes cardFlip {
   0% {
     transform: rotateY(90deg);

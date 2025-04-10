@@ -220,8 +220,8 @@ export default function FinalFiveModal() {
                 option={option}
                 index={index}
                 isFlipped={flippedCards[index]}
-                isGameOver={isGameOver}
-                animationComplete={animationComplete}
+                isGameOver={isGameOver || timerReachedZero}
+                animationComplete={animationComplete || timerReachedZero}
                 frontBg={frontBg}
                 backBg={backBg}
                 textColor={textColor}
@@ -240,7 +240,7 @@ export default function FinalFiveModal() {
               className={finalFiveStyles.timerContainer}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ 
-                opacity: (isGameOver && animationComplete) || selectedOption ? 0 : 1,
+                opacity: (isGameOver && animationComplete) || selectedOption || timerReachedZero ? 0 : 1,
                 scale: 1 
               }}
               exit={{ opacity: 0, scale: 0.8 }}

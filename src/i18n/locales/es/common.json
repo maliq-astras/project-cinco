@@ -11,7 +11,7 @@
     "instructions": {
       "doubleTap": "Toca dos veces",
       "doubleClick": "Haz doble clic",
-      "revealToBegin": "{{action}} para revelar un dato y comenzar...",
+      "dragToBegin": "Arrastra una burbuja para revelar un dato y comenzar...",
       "revealNew": "Revela un nuevo dato para hacer otra suposición...",
       "enterGuess": "Ingresa tu respuesta..."
     },
@@ -35,7 +35,7 @@
       "rotateDescription": "Este juego funciona mejor en modo vertical en pantallas pequeñas. Por favor, gira tu dispositivo para continuar jugando."
     },
     "finalFive": {
-      "title": "Desafío Final de Cinco",
+      "title": "FINAL 5",
       "intro": "¡Es hora del Final de Cinco!",
       "instructions": "Selecciona el dato correcto para cada categoría",
       "timeUp": "¡Se acabó el tiempo! Pero todavía hay una oportunidad en la ronda FINAL 5. Elige la respuesta correcta entre 5 opciones en un duelo de {{timeLimit}} segundos. ¿Listo para convertirte en campeón?",
@@ -103,8 +103,8 @@
       "hardMode": "Modo Difícil",
       "hardModeDesc": "¡Menos tiempo para adivinar!",
       "cannotChangeDifficulty": "No se puede cambiar la dificultad después de comenzar el juego",
-      "randomizer": "Aleatorio",
-      "randomizerDesc": "Obtén categorías aleatorias cada día",
+      "sound": "Efectos de Sonido",
+      "soundDesc": "Activar o desactivar sonidos del juego",
       "highContrast": "Modo de Alto Contraste",
       "highContrastDesc": "Aumenta el contraste de color",
       "autoSave": "La configuración se guardará automáticamente.",
@@ -131,7 +131,8 @@
     "athletes": "Atletas",
     "historical figures": "Figuras Históricas",
     "famous brands": "Marcas Famosas",
-    "tv shows": "Series de TV"
+    "tv shows": "Series de TV",
+    "please wait": "Espera por favor..."
   },
   "factTypes": {
     "language(s)": "Idioma(s)",

@@ -10,10 +10,18 @@ const getChallengeAnswers = unstable_cache(
     const { db } = await connectToDatabase();
     
     const challengesCollection = db.collection('challenges') as Collection<Challenge>;
-    const challenge = await challengesCollection.findOne(
+    
+    // Add timeout to prevent hanging queries
+    const dbPromise = challengesCollection.findOne(
       { challengeId },
       { projection: { _id: 0, answer: 1 } }
-    ) as { answer: string | { en: string; es: string } } | null;
+    ) as Promise<{ answer: string | { en: string; es: string } } | null>;
+    
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database query timed out')), 10000)
+    );
+    
+    const challenge = await Promise.race([dbPromise, timeoutPromise]) as { answer: string | { en: string; es: string } } | null;
 
     if (!challenge) return null;
 
@@ -37,6 +45,8 @@ export async function initializeIndexes() {
     { challengeId: 1 }, 
     { unique: true, name: 'challengeId_1' }
   );
+  
+  console.log('Verify-guess indexes initialized');
 }
 
 // Initialize indexes on startup

@@ -32,7 +32,7 @@ export const settingsPanelStyles = {
   
   // Settings sections
   settingsContainer: "space-y-6",
-  settingRow: "flex items-center justify-between",
+  settingRow: "flex items-start justify-between",
   settingTextContainer: "space-y-1",
   settingTitle: "font-medium text-gray-800 dark:text-gray-200",
   settingDescription: "text-sm text-gray-500 dark:text-gray-400",
@@ -44,11 +44,15 @@ export const settingsPanelStyles = {
       ? `var(--color-${primaryColor})` 
       : 'rgb(209, 213, 219)', // gray-300
     opacity: disabled ? 0.5 : 1,
-    cursor: disabled ? 'not-allowed' : 'pointer'
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   }),
-  toggleSwitchClass: "w-12 h-6 rounded-full p-1 transition-colors",
+  toggleSwitchClass: "w-12 h-6 rounded-full transition-colors",
   toggleDot: (isOn: boolean): string => 
-    `w-4 h-4 rounded-full bg-white transform transition-transform ${isOn ? 'translate-x-6' : 'translate-x-0'}`,
+    `absolute w-4 h-4 rounded-full bg-white transform transition-transform ${isOn ? 'left-[calc(100%-20px)]' : 'left-[4px]'}`,
   
   // Language selector
   languageSelect: (darkMode: boolean, primaryColor: string): CSSProperties => ({

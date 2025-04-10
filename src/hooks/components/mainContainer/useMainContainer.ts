@@ -22,6 +22,8 @@ export function useMainContainer() {
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const finalFiveTransitionReason = useGameStore(state => state.finalFiveTransitionReason);
   const startFinalFive = useGameStore(state => state.startFinalFive);
+  const shouldFocusInput = useGameStore(state => state.shouldFocusInput);
+  const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
 
   // Theme access
   const { colors } = useTheme();
@@ -33,6 +35,18 @@ export function useMainContainer() {
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
+
+  // Focus the input after card closes
+  useEffect(() => {
+    if (shouldFocusInput && gameControlsRef.current) {
+      // Add a small delay to ensure animations are complete
+      setTimeout(() => {
+        gameControlsRef.current?.focusInput();
+        // Reset the flag after focusing
+        setShouldFocusInput(false);
+      }, 100);
+    }
+  }, [shouldFocusInput, setShouldFocusInput]);
 
   // Initialize the timer based on hard mode setting on page load (before game starts)
   useEffect(() => {

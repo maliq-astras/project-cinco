@@ -92,7 +92,7 @@ export default function MainContainer() {
       {!loadingComplete ? (
         <div className={mainContainerStyles.loadingWrapper}>
           <LoadingAnimation 
-            finalCategory={gameState.challenge?.category || "Travel"} 
+            finalCategory={gameState.challenge?.category || "Please wait..."} 
             onComplete={handleLoadingComplete}
             isChallengeFetched={!!gameState.challenge}
           />

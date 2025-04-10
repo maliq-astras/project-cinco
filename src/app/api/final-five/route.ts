@@ -9,6 +9,22 @@ type FinalFiveRequest = {
   language?: 'en' | 'es';
 };
 
+// Initialize database indexes
+export async function initializeIndexes() {
+  const { db } = await connectToDatabase();
+  
+  // Create indexes if they don't exist
+  await db.collection('challenges').createIndex(
+    { challengeId: 1 }, 
+    { unique: true, name: 'challengeId_1' }
+  );
+  
+  console.log('Final-five indexes initialized');
+}
+
+// Initialize indexes on startup
+initializeIndexes().catch(console.error);
+
 // Cache for challenge data to reduce database load
 const challengeCache = new Map<string, any>();
 
@@ -29,7 +45,17 @@ async function fetchChallengeById(challengeId: string, language: string = 'en') 
       const { db } = await connectToDatabase();
       
       // Find the challenge with a timeout
-      const dbPromise = (db.collection('challenges') as any).findOne({ challengeId });
+      const dbPromise = db.collection('challenges').findOne(
+        { challengeId },
+        { 
+          projection: { 
+            _id: 0, 
+            answer: 1, 
+            alternatives: 1, 
+            category: 1 
+          } 
+        }
+      );
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Database query timed out')), 15000)
       );

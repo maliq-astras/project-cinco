@@ -42,7 +42,7 @@ export function useFactCardStackContainer() {
     } else {
       // Add a delay before showing the cards again
       // Use a longer delay if a fact was revealed to allow for pop animation
-      const delay = wasFactRevealed ? 1800 : 300;
+      const delay = wasFactRevealed ? 2500 : 300;
       const timer = setTimeout(() => {
         setIsHidden(false);
       }, delay);

@@ -28,7 +28,7 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   const hasMadeGuess = useGameStore(state => state.hasMadeGuess);
   
   // These would be hooked up to actual state management in a real implementation
-  const [isRandomizer, setIsRandomizer] = useState(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [isMobile, setIsMobile] = useState(false);
@@ -75,8 +75,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     setHardModeEnabled(!isHardModeEnabled);
   };
   
-  const toggleRandomizer = () => {
-    setIsRandomizer(!isRandomizer);
+  const toggleSound = () => {
+    setIsSoundEnabled(!isSoundEnabled);
   };
   
   const toggleHighContrast = () => {
@@ -102,8 +102,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     isHardModeEnabled,
     toggleHardMode,
     hasSeenClue,
-    isRandomizer,
-    toggleRandomizer,
+    isSoundEnabled,
+    toggleSound,
     isHighContrast,
     toggleHighContrast,
     selectedLanguage,

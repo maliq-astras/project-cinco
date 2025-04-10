@@ -84,8 +84,9 @@ const getColorRGB = (colorClass: string): string => {
     'indigo-600': '79, 70, 229',
     'indigo-300': '165, 180, 252'
   };
-  
-  return colorMap[colorClass] || '37, 99, 235'; // Default to blue-600
+
+  // return a gray that works for both light and dark mode
+  return colorMap[colorClass] || '128, 128, 128';
 };
 
 // Helper function to get CSS filter for a specific color

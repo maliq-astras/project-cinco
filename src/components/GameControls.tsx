@@ -58,7 +58,6 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                     <input
                       id="game-input"
                       ref={inputRef}
-                      placeholder={getInputPlaceholder()}
                       className={gameControlsStyles.input(isInputDisabled())}
                       style={{
                         "--theme-color": `var(--color-${colors.primary})`

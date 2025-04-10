@@ -4,6 +4,22 @@ import { Challenge, Fact, CategoryType } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
 
+// Initialize database indexes
+export async function initializeIndexes() {
+  const { db } = await connectToDatabase();
+  
+  // Create indexes if they don't exist
+  await db.collection('challenges').createIndex(
+    { date: 1 }, 
+    { unique: true, name: 'date_1' }
+  );
+  
+  console.log('Daily challenge indexes initialized');
+}
+
+// Initialize indexes on startup
+initializeIndexes().catch(console.error);
+
 // Cache the daily challenge fetch for 5 minutes
 const getDailyChallenge = unstable_cache(
   async () => {
@@ -12,11 +28,19 @@ const getDailyChallenge = unstable_cache(
 
     // Simple find query since translations are now embedded
     const challengesCollection = db.collection('challenges') as Collection<Challenge>;
-    const challenge = await challengesCollection.findOne(
+    
+    // Add timeout handling for database query
+    const dbPromise = challengesCollection.findOne(
       { date: today },
       { projection: { _id: 0 } }
     );
-
+    
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database query timed out')), 10000)
+    );
+    
+    const challenge = await Promise.race([dbPromise, timeoutPromise]) as Challenge | null;
+    
     return challenge;
   },
   ['daily-challenge'],

@@ -121,13 +121,31 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         const navigationHeight = 120;
         const viewportHeight = window.innerHeight;
         
-        // Update spotlight styles
-        setSpotlightStyles({
-          top: `${rect.top - padding}px`,
-          left: `${rect.left - padding}px`,
-          width: `${rect.width + padding * 2}px`,
-          height: `${rect.height + padding * 2}px`
-        });
+        // Special handling for the logo area
+        if (currentTarget === 'header-area') {
+          // For the logo, keep the original width but constrain the height
+          const logoWidth = rect.width; // Keep full width
+          const logoHeight = Math.min(150, rect.height * 0.6); // Only constrain height
+          
+          // Center the spotlight on the logo
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          
+          setSpotlightStyles({
+            top: `${centerY - logoHeight / 2}px`,
+            left: `${rect.left}px`, // Keep original left position
+            width: `${logoWidth}px`,
+            height: `${logoHeight}px`
+          });
+        } else {
+          // Standard handling for other elements
+          setSpotlightStyles({
+            top: `${rect.top - padding}px`,
+            left: `${rect.left - padding}px`,
+            width: `${rect.width + padding * 2}px`,
+            height: `${rect.height + padding * 2}px`
+          });
+        }
 
         // Calculate text box position
         const textBoxWidth = isMobile ? Math.min(window.innerWidth - 32, 400) : 300;
