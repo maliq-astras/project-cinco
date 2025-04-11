@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
-import { CategoryType, ThemeColors, categoryColorMap } from '../types';
+import { CategoryType, ThemeColors, categoryColorMap, COLOR_MAPPING, CATEGORY_COLOR_MAPPING } from '../types';
 import { useGameStore } from '../store/gameStore';
 
 // Default theme (Countries - blue)
@@ -32,6 +32,26 @@ const ThemeContext = createContext<ThemeContextType>({
 
 // Helper function to convert tailwind color class to RGB values
 const getColorRGB = (colorClass: string): string => {
+  // If we're in high contrast mode, check if this color has a high contrast variable
+  if (typeof window !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const matches = colorClass.match(/([a-z]+)-(\d+)/);
+    
+    if (matches && matches[1] && matches[2]) {
+      const colorFamily = matches[1];
+      const colorWeight = matches[2];
+      
+      // Check for high contrast CSS variable
+      const varName = `--hc-${colorFamily}-${colorWeight}`;
+      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      
+      if (computed) {
+        return computed; // Return the RGB value from the CSS variable
+      }
+    }
+  }
+  
+  // Fall back to the color map if no CSS variable exists
   // This is a simplified mapping of tailwind colors to RGB values
   const colorMap: Record<string, string> = {
     // Blues (Countries)
@@ -159,10 +179,24 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const toggleDarkMode = () => {
     setDarkMode((prev: boolean) => {
       const newValue = !prev;
+      
+      // Immediately apply dark mode class for better reactivity
+      if (typeof document !== 'undefined') {
+        if (newValue) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        
+        // Immediately update CSS variables
+        updateCssVariables(highContrastMode, newValue, challenge?.category || CategoryType.COUNTRIES);
+      }
+      
       // Save to localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('darkMode', JSON.stringify(newValue));
       }
+      
       return newValue;
     });
   };
@@ -171,12 +205,78 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const toggleHighContrastMode = () => {
     setHighContrastMode((prev: boolean) => {
       const newValue = !prev;
+      
+      // Immediately apply the high contrast class for better reactivity
+      if (typeof document !== 'undefined') {
+        if (newValue) {
+          document.documentElement.classList.add('high-contrast');
+        } else {
+          document.documentElement.classList.remove('high-contrast');
+        }
+        
+        // Immediately update CSS variables to avoid the gray flash
+        updateCssVariables(newValue, darkMode, challenge?.category || CategoryType.COUNTRIES);
+      }
+      
       // Save to localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('highContrastMode', JSON.stringify(newValue));
       }
+      
       return newValue;
     });
+  };
+  
+  // Helper function to immediately update CSS variables
+  const updateCssVariables = (isHighContrast: boolean, isDarkMode: boolean, categoryType: CategoryType) => {
+    if (typeof document === 'undefined') return;
+    
+    const root = document.documentElement;
+    const baseColors = categoryColorMap[categoryType] || defaultTheme;
+    
+    // Determine colors based on mode
+    const updatedColors = {
+      primary: 
+        isHighContrast ? 
+          (isDarkMode ? getHighContrastColor(categoryType, true) : getHighContrastColor(categoryType, false)) : 
+          (isDarkMode ? baseColors.primary.replace('600', '500').replace('700', '600') : baseColors.primary),
+      secondary: 
+        isHighContrast ? 
+          (isDarkMode ? getHighContrastSecondaryColor(categoryType, true) : getHighContrastSecondaryColor(categoryType, false)) : 
+          (isDarkMode ? baseColors.secondary.replace('600', '500').replace('700', '600') : baseColors.secondary),
+      accent: 
+        isHighContrast ? 
+          (isDarkMode ? getHighContrastAccentColor(categoryType, true) : getHighContrastAccentColor(categoryType, false)) : 
+          (isDarkMode ? baseColors.accent.replace('600', '500').replace('700', '600') : baseColors.accent),
+      light: isHighContrast ? 'white' : baseColors.light,
+      dark: isHighContrast ? 'black' : baseColors.dark
+    };
+    
+    // Set primary color variables
+    root.style.setProperty('--primary-color', updatedColors.primary);
+    root.style.setProperty('--secondary-color', updatedColors.secondary);
+    root.style.setProperty('--accent-color', updatedColors.accent);
+    
+    // Set RGB variants for rgba() usage
+    const primaryRGB = getColorRGB(updatedColors.primary);
+    const secondaryRGB = getColorRGB(updatedColors.secondary);
+    const accentRGB = getColorRGB(updatedColors.accent);
+    
+    root.style.setProperty('--primary-rgb', primaryRGB);
+    root.style.setProperty('--secondary-rgb', secondaryRGB);
+    root.style.setProperty('--accent-rgb', accentRGB);
+
+    // For individual color/selector classes
+    root.style.setProperty(`--color-${updatedColors.primary}-rgb`, primaryRGB);
+    root.style.setProperty(`--color-${updatedColors.secondary}-rgb`, secondaryRGB);
+    root.style.setProperty(`--color-${updatedColors.accent}-rgb`, accentRGB);
+    
+    // Apply the colors
+    root.style.setProperty('--color-' + updatedColors.primary, `rgb(${primaryRGB})`);
+    root.style.setProperty('--color-' + updatedColors.secondary, `rgb(${secondaryRGB})`);
+    root.style.setProperty('--color-' + updatedColors.accent, `rgb(${accentRGB})`);
+    root.style.setProperty('--color-' + updatedColors.light, `rgb(${getColorRGB(updatedColors.light)})`);
+    root.style.setProperty('--color-' + updatedColors.dark, `rgb(${getColorRGB(updatedColors.dark)})`);
   };
   
   // Determine colors based on the challenge category
@@ -187,15 +287,15 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const colors = {
     primary: 
       highContrastMode ? 
-        (darkMode ? 'blue-300' : 'blue-900') : // Use high contrast colors
+        (darkMode ? getHighContrastColor(category, true) : getHighContrastColor(category, false)) : 
         (darkMode ? baseColors.primary.replace('600', '500').replace('700', '600') : baseColors.primary),
     secondary: 
       highContrastMode ? 
-        (darkMode ? 'yellow-300' : 'purple-900') : // Use high contrast colors
+        (darkMode ? getHighContrastSecondaryColor(category, true) : getHighContrastSecondaryColor(category, false)) : 
         (darkMode ? baseColors.secondary.replace('600', '500').replace('700', '600') : baseColors.secondary),
     accent: 
       highContrastMode ? 
-        (darkMode ? 'green-300' : 'red-900') : // Use high contrast colors
+        (darkMode ? getHighContrastAccentColor(category, true) : getHighContrastAccentColor(category, false)) : 
         (darkMode ? baseColors.accent.replace('600', '500').replace('700', '600') : baseColors.accent),
     light: highContrastMode ? 'white' : baseColors.light,
     dark: highContrastMode ? 'black' : baseColors.dark
@@ -204,33 +304,62 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Helper function to adjust any color class for current theme mode
   const getAdjustedColorClass = (colorClass: string): string => {
     if (highContrastMode) {
-      // Apply high contrast transformations to color classes
-      if (darkMode) {
-        return colorClass.replace(/blue-\d+/, 'blue-300')
-                       .replace(/emerald-\d+/, 'green-300')
-                       .replace(/violet-\d+/, 'purple-300')
-                       .replace(/orange-\d+/, 'yellow-300')
-                       .replace(/fuchsia-\d+/, 'pink-300')
-                       .replace(/red-\d+/, 'red-300')
-                       .replace(/amber-\d+/, 'yellow-300')
-                       .replace(/teal-\d+/, 'cyan-300')
-                       .replace(/indigo-\d+/, 'blue-300');
-      } else {
-        return colorClass.replace(/blue-\d+/, 'blue-900')
-                       .replace(/emerald-\d+/, 'green-900')
-                       .replace(/violet-\d+/, 'purple-900')
-                       .replace(/orange-\d+/, 'yellow-900')
-                       .replace(/fuchsia-\d+/, 'pink-900')
-                       .replace(/red-\d+/, 'red-900')
-                       .replace(/amber-\d+/, 'amber-900')
-                       .replace(/teal-\d+/, 'cyan-900')
-                       .replace(/indigo-\d+/, 'blue-900');
+      // Extract color family and apply high contrast
+      const matches = colorClass.match(/([a-z]+)-(\d+)/);
+      if (matches && matches[1] && matches[2]) {
+        const colorFamily = matches[1];
+        const shade = matches[2];
+        
+        // Map Tailwind color name to high contrast name using our unified mapping
+        const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
+        
+        if (darkMode) {
+          // For dark mode, use lighter shades (300 range)
+          const highContrastShade = 
+            parseInt(shade) >= 600 ? '300' :  // For 600+, use 300
+            parseInt(shade) >= 500 ? '300' :  // For 500+, use 300
+            parseInt(shade) >= 400 ? '400' :  // For 400+, use 400
+            '300';                            // Default to 300
+            
+          return `${highContrastFamily}-${highContrastShade}`;
+        } else {
+          // For light mode, use darker shades (900 range)
+          const highContrastShade = 
+            parseInt(shade) >= 700 ? '950' :  // For 700+, use 950
+            parseInt(shade) >= 600 ? '900' :  // For 600+, use 900
+            parseInt(shade) >= 500 ? '800' :  // For 500+, use 800
+            '900';                            // Default to 900
+            
+          return `${highContrastFamily}-${highContrastShade}`;
+        }
       }
     }
     
     if (!darkMode) return colorClass;
     return colorClass.replace('600', '500').replace('700', '600').replace('800', '700');
   };
+  
+  // Functions to get high contrast colors based on category
+  function getHighContrastColor(category: CategoryType, isDarkMode: boolean): string {
+    const colorMapping = CATEGORY_COLOR_MAPPING[category] || CATEGORY_COLOR_MAPPING[CategoryType.COUNTRIES];
+    const highContrastFamily = colorMapping.highContrast;
+    const shade = isDarkMode ? '300' : '900';
+    return `${highContrastFamily}-${shade}`;
+  }
+
+  function getHighContrastSecondaryColor(category: CategoryType, isDarkMode: boolean): string {
+    const colorMapping = CATEGORY_COLOR_MAPPING[category] || CATEGORY_COLOR_MAPPING[CategoryType.COUNTRIES];
+    const highContrastFamily = colorMapping.highContrast;
+    const shade = isDarkMode ? '200' : '800';
+    return `${highContrastFamily}-${shade}`;
+  }
+
+  function getHighContrastAccentColor(category: CategoryType, isDarkMode: boolean): string {
+    const colorMapping = CATEGORY_COLOR_MAPPING[category] || CATEGORY_COLOR_MAPPING[CategoryType.COUNTRIES];
+    const highContrastFamily = colorMapping.highContrast;
+    const shade = isDarkMode ? '400' : '950';
+    return `${highContrastFamily}-${shade}`;
+  }
   
   // Create a getColorFilter function that uses the current theme's primary color by default
   const getColorFilter = (colorClass?: string): string => {

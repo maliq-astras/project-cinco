@@ -8,6 +8,7 @@ import Logo from './Logo';
 import { useLoadingAnimation } from '../hooks/components/loadingAnimation';
 import { loadingAnimationStyles } from '../styles/loadingAnimationStyles';
 import { getCategoryName } from '../helpers/i18nHelpers';
+import { useTheme } from '../context/ThemeContext';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -38,6 +39,8 @@ export default function LoadingAnimation({
     isChallengeFetched
   });
 
+  const { highContrastMode } = useTheme();
+
   // Get the theme-adjusted color information
   const colorInfo = getThemeAdjustedPrimaryColor();
 
@@ -64,6 +67,7 @@ export default function LoadingAnimation({
             <motion.div
               {...loadingAnimationStyles.lineAnimation}
               style={loadingAnimationStyles.animatedLine(colorInfo.rgb)}
+              className={`${highContrastMode ? 'high-contrast-line' : ''}`}
             />
           )}
         </div>
@@ -88,6 +92,7 @@ export default function LoadingAnimation({
                     darkMode,
                     translatedCategory
                   )}
+                  data-category={currentCategory}
                 >
                   {translatedCategory}
                 </motion.h1>

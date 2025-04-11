@@ -1,4 +1,5 @@
 import { CategoryType } from '../types';
+import { COLOR_MAPPING } from '../types';
 
 // Sample categories to cycle through
 export const SAMPLE_CATEGORIES = [
@@ -7,7 +8,7 @@ export const SAMPLE_CATEGORIES = [
   'ANIMALS',
   'BOOKS',
   'ATHLETES',
-  'MUSIC',
+  'MUSICAL ARTISTS',
   'HISTORICAL FIGURES',
   'TV SHOWS',
   'FAMOUS BRANDS'
@@ -20,7 +21,6 @@ export const categoryNameToType: Record<string, CategoryType> = {
   'ANIMALS': CategoryType.ANIMALS,
   'BOOKS': CategoryType.BOOKS,
   'ATHLETES': CategoryType.ATHLETES,
-  'MUSIC': CategoryType.MUSICAL_ARTISTS,
   'MUSICAL ARTISTS': CategoryType.MUSICAL_ARTISTS,
   'HISTORICAL FIGURES': CategoryType.HISTORICAL_FIGURES,
   'TV SHOWS': CategoryType.TV_SHOWS,
@@ -39,6 +39,37 @@ export const shuffleArray = (array: string[]): string[] => {
 
 // Helper function to convert tailwind color class to RGB values
 export const getColorRGB = (colorClass: string): string => {
+  // Check if high contrast mode is active
+  if (typeof window !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const matches = colorClass.match(/([a-z]+)-(\d+)/);
+    
+    if (matches && matches[1] && matches[2]) {
+      const colorFamily = matches[1];
+      const colorShade = matches[2];
+      
+      // Map using the unified color mapping system
+      const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
+      
+      // Determine high contrast shade based on dark mode
+      const hcShade = isDarkMode ? 
+        (parseInt(colorShade) >= 600 ? '300' : 
+         parseInt(colorShade) >= 500 ? '300' :
+         parseInt(colorShade) >= 400 ? '400' : '300') : 
+        (parseInt(colorShade) >= 700 ? '950' : 
+         parseInt(colorShade) >= 600 ? '900' :
+         parseInt(colorShade) >= 500 ? '800' : '900');
+      
+      // Try to get color from CSS variable
+      const varName = `--hc-${highContrastFamily}-${hcShade}`;
+      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      
+      if (computed) {
+        return computed;
+      }
+    }
+  }
+  
   // This is a simplified mapping of tailwind colors to RGB values
   const colorMap: Record<string, string> = {
     // Blues (Countries)

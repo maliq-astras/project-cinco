@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react';
+import { COLOR_MAPPING } from '../types';
 
 export const loadingAnimationStyles = {
   container: "fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center",
@@ -27,16 +28,51 @@ export const loadingAnimationStyles = {
     colorClass: string,
     darkMode: boolean,
     categoryText: string
-  ): CSSProperties => ({
-    color: `rgb(${rgbColor})`,
-    fontSize: calculateFontSize(categoryText),
-    lineHeight: 1,
-    padding: "0 12px",
-    whiteSpace: "nowrap",
-    textShadow: isShowingFinalCategory 
-      ? `0 0 15px ${getShadowColor(colorClass)}`
-      : (darkMode ? `0 0 8px rgba(${rgbColor}, 0.5)` : 'none')
-  }),
+  ): CSSProperties => {
+    // Check if high contrast mode is active
+    const isHighContrast = typeof document !== 'undefined' && 
+      document.documentElement.classList.contains('high-contrast');
+    
+    // Get color for high contrast mode
+    let textColor = `rgb(${rgbColor})`;
+    if (isHighContrast && typeof window !== 'undefined') {
+      const matches = colorClass.match(/([a-z]+)-(\d+)/);
+      if (matches && matches[1] && matches[2]) {
+        const colorFamily = matches[1];
+        const colorShade = matches[2];
+        
+        // Map using the unified color mapping system
+        const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
+        
+        // Get appropriate shade based on dark mode
+        const hcShade = darkMode ? '300' : '900';
+        
+        // Get the color from CSS variable
+        const varName = `--hc-${highContrastFamily}-${hcShade}`;
+        const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        
+        if (computed) {
+          textColor = `rgb(${computed})`;
+        }
+      }
+    }
+    
+    // Get a different shadow color for high contrast mode
+    const shadowColor = isHighContrast
+      ? getShadowColor(colorClass) // Uses our updated function that handles high contrast
+      : (darkMode ? `0 0 8px rgba(${rgbColor}, 0.5)` : 'none');
+    
+    return {
+      color: textColor,
+      fontSize: calculateFontSize(categoryText),
+      lineHeight: 1,
+      padding: "0 12px",
+      whiteSpace: "nowrap",
+      textShadow: isShowingFinalCategory 
+        ? `0 0 15px ${getShadowColor(colorClass)}`
+        : (typeof shadowColor === 'string' ? shadowColor : 'none')
+    };
+  },
   
   // Loading indicator
   loadingIndicatorContainer: "mt-8 flex flex-col items-center",
@@ -131,8 +167,34 @@ export const calculateFontSize = (text: string) => {
   }
 };
 
-// Helper function to get shadow color for a category
+// Helper function to get shadow color for a category with high contrast support
 export const getShadowColor = (color: string): string => {
+  // Check if high contrast mode is active
+  if (typeof document !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const matches = color.match(/([a-z]+)-(\d+)/);
+    
+    if (matches && matches[1] && matches[2]) {
+      const colorFamily = matches[1];
+      const colorShade = matches[2];
+      
+      // Map using the unified color mapping system
+      const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
+      
+      // Determine which shade to use based on dark mode
+      const hcShade = isDarkMode ? '300' : '900';
+      
+      // Get the RGB value from CSS variable
+      const varName = `--hc-${highContrastFamily}-${hcShade}`;
+      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      
+      if (computed) {
+        return `rgba(${computed}, 0.3)`;
+      }
+    }
+  }
+  
+  // Regular color map as fallback
   const colorMap: Record<string, string> = {
     // Blues (Countries)
     'blue-600': 'rgba(37, 99, 235, 0.3)',

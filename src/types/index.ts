@@ -20,6 +20,33 @@ export interface ThemeColors {
   dark: string;
 }
 
+// Define unified color mapping object for consistent handling of colors
+export const COLOR_MAPPING = {
+  // Map each Tailwind color to its high contrast equivalent
+  blue: 'blue',
+  emerald: 'green',
+  violet: 'purple',
+  orange: 'orange',
+  fuchsia: 'pink',
+  red: 'red',
+  amber: 'yellow',
+  teal: 'cyan',
+  indigo: 'indigo',
+};
+
+// Map categories to both their Tailwind color and high contrast color
+export const CATEGORY_COLOR_MAPPING: Record<CategoryType, { tailwind: string, highContrast: string }> = {
+  [CategoryType.COUNTRIES]: { tailwind: 'blue', highContrast: 'blue' },
+  [CategoryType.ANIMALS]: { tailwind: 'emerald', highContrast: 'green' },
+  [CategoryType.MOVIES]: { tailwind: 'violet', highContrast: 'purple' },
+  [CategoryType.BOOKS]: { tailwind: 'orange', highContrast: 'orange' },
+  [CategoryType.MUSICAL_ARTISTS]: { tailwind: 'fuchsia', highContrast: 'pink' },
+  [CategoryType.ATHLETES]: { tailwind: 'red', highContrast: 'red' },
+  [CategoryType.HISTORICAL_FIGURES]: { tailwind: 'amber', highContrast: 'yellow' },
+  [CategoryType.FAMOUS_BRANDS]: { tailwind: 'teal', highContrast: 'cyan' },
+  [CategoryType.TV_SHOWS]: { tailwind: 'indigo', highContrast: 'indigo' }
+};
+
 // Map categories to their colors
 export const categoryColorMap: Record<CategoryType, ThemeColors> = {
   [CategoryType.COUNTRIES]: {
