@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsPanel, languages } from '../hooks/components/settingsPanel';
 import { settingsPanelStyles } from '../styles/settingsPanelStyles';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES } from '../context/LanguageContext';
+import { SUPPORTED_LANGUAGES } from '../contexts/LanguageContext';
 
 const inter = Inter({ subsets: ['latin'] });
 

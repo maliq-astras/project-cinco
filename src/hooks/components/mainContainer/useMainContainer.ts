@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { GameControlsHandle } from '../../components/gameControls';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
 import { useChallenge } from '../../api';
 
 export function useMainContainer() {

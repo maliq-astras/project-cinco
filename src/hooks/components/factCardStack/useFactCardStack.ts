@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useCardStack } from '../../card';
 import { calculateCardPosition, getCardAnimationVariants } from '../../../helpers/uiHelpers';
 

@@ -144,7 +144,8 @@ const getFilterForColor = (colorClass: string): string => {
     'indigo-500': 'invert(36%) sepia(11%) saturate(6145%) hue-rotate(224deg) brightness(88%) contrast(91%)',
   };
   
-  return filterMap[colorClass] || filterMap['blue-600']; // Default to blue filter
+
+  return filterMap[colorClass] || filterMap['gray-500']; // default to gray
 };
 
 // Hook to use the theme context

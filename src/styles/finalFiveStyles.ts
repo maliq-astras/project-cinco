@@ -6,7 +6,7 @@ export const finalFiveStyles = {
   modalContainer: "fixed inset-0 z-40 flex md:items-center justify-center bg-black/75 backdrop-blur-sm",
   
   // Modal content panel
-  modalContent: "w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto",
+  modalContent: "w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
   
   // Mobile handle
   mobileHandle: "w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-4 md:hidden",
@@ -24,8 +24,8 @@ export const finalFiveStyles = {
   card: {
     container: "relative aspect-square w-full perspective-1000",
     wrapper: "w-full h-full relative preserve-3d",
-    front: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md", 
-    back: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md font-display border-2",
+    front: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300", 
+    back: "absolute inset-0 w-full h-full rounded-xl flex items-center justify-center backface-hidden shadow-md font-display border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
     
     // Interactive effects
     interactive: {
@@ -48,7 +48,7 @@ export const finalFiveStyles = {
   
   // Timer container
   timerContainer: "relative aspect-square w-full flex items-center justify-center",
-  timerWrapper: "w-full h-full rounded-xl flex items-center justify-center shadow-md",
+  timerWrapper: "w-full h-full rounded-xl flex items-center justify-center shadow-md dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
   
   // Button container
   buttonContainer: "h-14 relative",

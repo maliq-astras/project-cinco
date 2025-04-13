@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { Righteous } from 'next/font/google';
 
@@ -20,7 +20,9 @@ interface UseFinalFiveIntroReturn {
   colors: { primary: string };
   hardMode: boolean;
   isLoading: boolean;
+  isSlowConnection: boolean;
   showStartButton: boolean;
+  retryCount: number;
 }
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {
@@ -29,17 +31,20 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   const hardMode = useGameStore(state => state.hardMode);
   const finalFiveOptions = useGameStore(state => state.gameState.finalFiveOptions);
-  const [autoStartTimer, setAutoStartTimer] = useState<number | null>(null);
-  const [showCountdown, setShowCountdown] = useState(false);
+  const autoStartTimer = null;
+  const showCountdown = false;
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSlowConnection, setIsSlowConnection] = useState(false);
   const [showStartButton, setShowStartButton] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
   
   // Delay showing the button to give prefetch time to complete
   useEffect(() => {
     const buttonDelay = setTimeout(() => {
       setShowStartButton(true);
-    }, 6000); // 3 second delay
+    }, 6000); // 6 second delay
     
     return () => clearTimeout(buttonDelay);
   }, []);
@@ -49,8 +54,26 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     // Options are already loaded (prefetched)
     if (finalFiveOptions && finalFiveOptions.length > 0) {
       setIsLoading(false);
+      setIsSlowConnection(false);
     }
   }, [finalFiveOptions]);
+  
+  // Show slow connection message after 3 seconds of loading
+  useEffect(() => {
+    let slowConnectionTimer: NodeJS.Timeout;
+    
+    if (isLoading) {
+      slowConnectionTimer = setTimeout(() => {
+        setIsSlowConnection(true);
+      }, 3000);
+    } else {
+      setIsSlowConnection(false);
+    }
+    
+    return () => {
+      if (slowConnectionTimer) clearTimeout(slowConnectionTimer);
+    };
+  }, [isLoading]);
   
   // Handles fetching options and transitioning to Final Five
   const handleStart = async () => {
@@ -68,12 +91,36 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
       // Start the transition first (immediately)
       onStart();
       
-      // Then fetch options in the background
-      triggerFinalFive().catch(error => {
-        console.error("Error fetching Final Five options:", error);
-      }).finally(() => {
-        // Hide loading spinner when done, regardless of success/failure
-        setIsLoading(false);
+      // Attempt to fetch with retries
+      const attemptFetch = async (currentRetry = 0): Promise<void> => {
+        try {
+          await triggerFinalFive();
+          setIsLoading(false);
+          setIsSlowConnection(false);
+          setRetryCount(0); // Reset retry count on success
+        } catch (error) {
+          console.error(`Error fetching Final Five options (attempt ${currentRetry + 1}):`, error);
+          
+          // If we haven't reached max retries, try again
+          if (currentRetry < maxRetries) {
+            setRetryCount(currentRetry + 1);
+            // Exponential backoff: wait longer between each retry
+            const backoffDelay = Math.min(1000 * Math.pow(2, currentRetry), 5000);
+            await new Promise(resolve => setTimeout(resolve, backoffDelay));
+            return attemptFetch(currentRetry + 1);
+          } else {
+            // Max retries reached, show error state
+            setIsLoading(false);
+            // Error will be shown by the FinalFiveModal component
+          }
+        }
+      };
+      
+      // Start the fetch process with retry logic
+      attemptFetch().finally(() => {
+        if (isLoading) {
+          setIsLoading(false);
+        }
       });
     } catch (error) {
       console.error("Error transitioning to Final Five:", error);
@@ -82,50 +129,8 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     }
   };
   
-  // Start auto-start timer after 15 seconds of inactivity
-  useEffect(() => {
-    const INACTIVITY_DELAY = 15000; // 15 seconds before showing countdown
-    
-    const timer = setTimeout(() => {
-      // Don't show countdown if already transitioning
-      if (!isTransitioning) {
-        setShowCountdown(true);
-        setAutoStartTimer(5);
-      }
-    }, INACTIVITY_DELAY);
-    
-    return () => clearTimeout(timer);
-  }, [isTransitioning]);
-  
-  // Handle the 5-second countdown
-  useEffect(() => {
-    if (showCountdown && autoStartTimer !== null) {
-      if (autoStartTimer <= 0) {
-        // Hide countdown immediately to avoid animation conflicts
-        setShowCountdown(false);
-        
-        // Brief delay before starting Final Five
-        setTimeout(() => {
-          // Start transition immediately instead of with a delay
-          handleStart();
-        }, 500);
-        return;
-      }
-      
-      const countdownTimer = setTimeout(() => {
-        setAutoStartTimer(prevTime => prevTime !== null ? prevTime - 1 : null);
-      }, 1000);
-      
-      return () => clearTimeout(countdownTimer);
-    }
-  }, [showCountdown, autoStartTimer]);
-  
-  // When user manually clicks button, hide the countdown if showing
-  useEffect(() => {
-    if (isTransitioning && showCountdown) {
-      setShowCountdown(false);
-    }
-  }, [isTransitioning, showCountdown]);
+  // We've removed the auto-start timer functionality
+  // The Final Five will now only start when the user clicks the button
   
   const timeLimit = hardMode ? "5" : "55";
   const message = reason === 'time'
@@ -141,6 +146,8 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     colors,
     hardMode,
     isLoading,
-    showStartButton
+    isSlowConnection,
+    showStartButton,
+    retryCount
   };
 }; 

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { factCardBackStyles, getCardBackgroundStyle } from '../../../styles/factCardBackStyles';
 
 interface UseFactCardBackProps {

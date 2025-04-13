@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useGuessProgress } from './useGuessProgress';
 import { useSparkAnimation } from '../../animation/useSparkAnimation';
 import { getGradientBackground, getBottomShadowStyle } from '../../../helpers/guessProgressBarHelpers';

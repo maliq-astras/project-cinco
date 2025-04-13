@@ -1,4 +1,4 @@
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 import { timerStyles } from '../../../styles/timerStyles';
 

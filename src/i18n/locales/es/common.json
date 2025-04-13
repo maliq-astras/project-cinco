@@ -25,11 +25,12 @@
     },
     "status": {
       "guessing": "Adivinando...",
+      "longRequest": "Procesando... Esto está tardando un poco más de lo habitual",
       "correct": "¡Correcto!",
       "incorrect": "¡Respuesta incorrecta! Intenta de nuevo.",
-      "duplicate": "Ya has intentado esa respuesta. ¡Prueba con otra!",
+      "duplicate": "Ya has intentado con esa respuesta. ¡Prueba algo diferente!",
       "skipped": "¡Omitido! Revela otra pista.",
-      "gameOver": "Fin del Juego",
+      "gameOver": "Juego Terminado",
       "victory": "¡Has ganado!",
       "rotateDevice": "Gira tu Dispositivo",
       "rotateDescription": "Este juego funciona mejor en modo vertical en pantallas pequeñas. Por favor, gira tu dispositivo para continuar jugando."
@@ -49,7 +50,12 @@
       "theCorrectAnswerWas": "La respuesta correcta era",
       "timesUp": "¡Se acabó el tiempo!",
       "loadingAnswer": "Cargando la respuesta correcta",
-      "startButton": "Iniciar FINAL 5"
+      "startButton": "Iniciar FINAL 5",
+      "loading": "Cargando...",
+      "slowConnection": "Esto está tardando más de lo habitual. Por favor, espera...",
+      "verifyingGuess": "Verificando tu respuesta...",
+      "determiningAnswer": "Determinando la respuesta...",
+      "retrying": "Reintentando..."
     },
     "endGame": {
       "standardWin": "¡Adivinaste {{answer}} en {{tries}} {{count}}!",

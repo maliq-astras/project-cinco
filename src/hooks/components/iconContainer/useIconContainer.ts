@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { getFactIcon, useIconFilter } from '../../../helpers/iconHelpers';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useIconSize } from './useIconSize';
 import { useIconStyles } from './useIconStyles';
 

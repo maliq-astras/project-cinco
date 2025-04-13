@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { ThemeColors, COLOR_MAPPING } from '../../../types';
 import { 
   SAMPLE_CATEGORIES, 
@@ -8,6 +8,16 @@ import {
   getColorRGB 
 } from '../../../utils/loadingAnimationUtils';
 import { categoryColorMap } from '../../../types';
+
+// Constants
+export const LOADING_PLACEHOLDER = "PLEASE WAIT...";
+const PLACEHOLDER_COLORS: ThemeColors = {
+  primary: 'gray-500',
+  secondary: 'gray-400',
+  accent: 'gray-600',
+  light: 'gray-100',
+  dark: 'gray-900'
+};
 
 interface UseLoadingAnimationProps {
   finalCategory: string;
@@ -47,8 +57,11 @@ export const useLoadingAnimation = ({
   useEffect(() => {
     if (categories.length > 0 && currentIndex < categories.length) {
       const categoryName = categories[currentIndex];
-      const categoryType = categoryNameToType[categoryName] || categoryNameToType.COUNTRIES;
-      setCurrentColor(categoryColorMap[categoryType]);
+      setCurrentColor(
+        categoryName === LOADING_PLACEHOLDER 
+          ? PLACEHOLDER_COLORS 
+          : categoryColorMap[categoryNameToType[categoryName] || categoryNameToType.COUNTRIES]
+      );
     }
   }, [categories, currentIndex]);
 
@@ -205,7 +218,7 @@ export const useLoadingAnimation = ({
   const currentCategory = categories.length > 0 ? categories[currentIndex] : "";
   
   // Determine if we're showing the final category
-  const isShowingFinalCategory = currentIndex === categories.length - 1;
+  const isShowingFinalCategory = currentIndex === categories.length - 1 && currentCategory !== "Please wait...";
 
   return {
     mounted,

@@ -10,7 +10,7 @@ export const factCardStyles = {
   // Flip card classes
   flipCard: "flip-card",
   cardBack: "flip-card-back absolute inset-0 z-[101]",
-  cardFront: "flip-card-front absolute inset-0 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-none p-4 sm:p-6 flex flex-col dark:card-border-none z-[101]",
+  cardFront: "flip-card-front absolute inset-0 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-none p-4 sm:p-6 flex flex-col dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300 z-[101]",
   
   // Button styles
   closeButton: "absolute top-4 right-4 z-[102]",

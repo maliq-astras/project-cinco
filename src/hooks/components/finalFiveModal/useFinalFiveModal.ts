@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useFinalFiveOptions, useVerifyGuess } from '../../../hooks/api';
 import { UserGuess } from '../../../types';
@@ -31,6 +31,8 @@ export function useFinalFiveModal() {
   // Local state
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isSlowConnection, setIsSlowConnection] = useState(false);
+  const [verifyRetryCount, setVerifyRetryCount] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [flippedCards, setFlippedCards] = useState<boolean[]>([false, false, false, false, false]);
   const [allCardsFlipped, setAllCardsFlipped] = useState(false);
@@ -38,6 +40,7 @@ export function useFinalFiveModal() {
   const [timerReachedZero, setTimerReachedZero] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const maxRetries = 3;
   
   // Setup React Query mutation for verifying guesses
   const verifyGuessMutation = useVerifyGuess();
@@ -145,8 +148,8 @@ export function useFinalFiveModal() {
           
           if (isMounted && data.answer) {
             setCorrectAnswer(data.answer);
-          }
-        } catch (error) {
+            }
+          } catch (error) {
           console.error('Error fetching correct answer:', error);
         } finally {
           if (isMounted) {
@@ -268,14 +271,14 @@ export function useFinalFiveModal() {
               setCorrectAnswer("Unknown");
               
               // Set game over state
-              useGameStore.setState(state => ({
+            useGameStore.setState(state => ({
                 ...state,
-                gameState: {
-                  ...state.gameState,
-                  isGameOver: true
-                },
-                gameOutcome: 'loss'
-              }));
+              gameState: {
+                ...state.gameState,
+                isGameOver: true
+              },
+              gameOutcome: 'loss'
+            }));
               
               // Complete the sequence
               setAnimationComplete(true);
@@ -311,6 +314,85 @@ export function useFinalFiveModal() {
     }
   }, [animationComplete, isGameOver]);
   
+  // Show slow connection message if loading takes too long
+  useEffect(() => {
+    let slowConnectionTimer: NodeJS.Timeout;
+    
+    if (loading) {
+      slowConnectionTimer = setTimeout(() => {
+        setIsSlowConnection(true);
+      }, 5000); // Increased from 3000 to 5000ms - show slow connection message after 5 seconds
+    } else {
+      setIsSlowConnection(false);
+    }
+    
+    return () => {
+      if (slowConnectionTimer) clearTimeout(slowConnectionTimer);
+    };
+  }, [loading]);
+  
+  // Add minimum display time for loading states
+  const [showingLoadingMessage, setShowingLoadingMessage] = useState(false);
+  
+  useEffect(() => {
+    let loadingTimer: NodeJS.Timeout;
+    
+    if (loading) {
+      setShowingLoadingMessage(true);
+      // Keep showing loading for at least 800ms to avoid jarring transitions
+      loadingTimer = setTimeout(() => {
+        if (!loading) {
+          setShowingLoadingMessage(false);
+        }
+      }, 800);
+    } else {
+      // When loading finishes, keep showing for a short delay
+      loadingTimer = setTimeout(() => {
+        setShowingLoadingMessage(false);
+      }, 800);
+    }
+    
+    return () => {
+      if (loadingTimer) clearTimeout(loadingTimer);
+    };
+  }, [loading]);
+  
+  // Add loading message progression states
+  const [loadingStage, setLoadingStage] = useState<'verifying' | 'determining' | 'slow' | null>(null);
+  
+  // Manage loading message progression
+  useEffect(() => {
+    let determiningTimer: NodeJS.Timeout;
+    let slowConnectionTimer: NodeJS.Timeout;
+    
+    if (loading) {
+      // Start with "verifying guess"
+      setLoadingStage('verifying');
+      
+      // After 2.5s, show "determining answer"
+      determiningTimer = setTimeout(() => {
+        if (loading) {
+          setLoadingStage('determining');
+        }
+      }, 2500);
+      
+      // After 6s total, show slow connection message
+      slowConnectionTimer = setTimeout(() => {
+        if (loading) {
+          setLoadingStage('slow');
+        }
+      }, 6000);
+    } else {
+      // Clear all stages when loading finishes
+      setLoadingStage(null);
+    }
+    
+    return () => {
+      clearTimeout(determiningTimer);
+      clearTimeout(slowConnectionTimer);
+    };
+  }, [loading]);
+  
   // Helper to check if an option is correct
   const isCorrectOption = useCallback((option: string): boolean => {
     if (!isGameOver) return false;
@@ -331,7 +413,34 @@ export function useFinalFiveModal() {
     }
     
     if (loading || isFetchingFinalFiveOptions || optionsLoading) {
-      return t('game.finalFive.checkingAnswer');
+      if (selectedOption && !isGameOver) {
+        // When verifying a selected option
+        if (verifyRetryCount > 0) {
+          return `${t('game.finalFive.retrying')} (${verifyRetryCount}/${maxRetries})`;
+        }
+        
+        // Show progressive loading messages
+        switch (loadingStage) {
+          case 'verifying':
+            return t('game.finalFive.verifyingGuess');
+          case 'determining':
+            return t('game.finalFive.determiningAnswer');
+          case 'slow':
+            return t('game.finalFive.slowConnection');
+          default:
+            return t('game.finalFive.verifyingGuess');
+        }
+      } else {
+        // Default loading message for other scenarios
+        switch (loadingStage) {
+          case 'determining':
+            return t('game.finalFive.determiningAnswer');
+          case 'slow':
+            return t('game.finalFive.slowConnection');
+          default:
+            return t('game.finalFive.checkingAnswer');
+        }
+      }
     }
     
     if (!isGameOver) {
@@ -357,58 +466,107 @@ export function useFinalFiveModal() {
     } else {
       return t('game.finalFive.incorrectAnswer');
     }
-  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome, t, isFetchingFinalFiveOptions, optionsLoading, correctAnswer, selectedOption, timerReachedZero]);
+  }, [allCardsFlipped, loading, isGameOver, hardMode, gameOutcome, t, isFetchingFinalFiveOptions, optionsLoading, correctAnswer, selectedOption, timerReachedZero, verifyRetryCount, maxRetries, loadingStage]);
   
   // Handle clicking an option - avoid double calls
   const handleOptionClick = useCallback(async (option: string) => {
     if (isGameOver || loading || !challenge || selectedOption) return;
     
+    // Reset loading stage when starting new verification
+    setLoadingStage(null);
     // Immediately set the selected option to trigger UI updates
     setSelectedOption(option);
     setLoading(true);
+    setVerifyRetryCount(0);
     
-    try {
-      // This function also updates global game state
-      await selectFinalFiveOption(option);
-      
-      // The selectFinalFiveOption already verifies the guess, so we don't need to do it again
-      // Just check if this option is now marked as correct in the guesses
-      const isCorrect = useGameStore.getState().gameState.guesses.some(
-        g => g.isCorrect && g.guess.toLowerCase() === option.toLowerCase()
-      );
-      
-      if (isCorrect) {
-        setCorrectAnswer(option);
-      } else {
-        // If incorrect, we need to fetch the correct answer
-        // This could be moved to an effect that runs when isGameOver changes
-        // but for now we'll keep it here for simplicity
-        try {
-          const response = await fetch('/api/final-five-answer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              challengeId: challenge.challengeId,
-              language
-            })
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.answer) {
-              setCorrectAnswer(data.answer);
+    // The attemptVerification function handles the verification process with retries
+    const attemptVerification = async (currentRetry = 0): Promise<void> => {
+      try {
+        // This function also updates global game state
+        await selectFinalFiveOption(option);
+        
+        // The selectFinalFiveOption already verifies the guess, so we don't need to do it again
+        // Just check if this option is now marked as correct in the guesses
+        const isCorrect = useGameStore.getState().gameState.guesses.some(
+          g => g.isCorrect && g.guess.toLowerCase() === option.toLowerCase()
+        );
+        
+        if (isCorrect) {
+          setCorrectAnswer(option);
+        } else {
+          // If incorrect, we need to fetch the correct answer
+          const fetchCorrectAnswer = async (retryAttempt = 0): Promise<void> => {
+            try {
+              const response = await fetch('/api/final-five-answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  challengeId: challenge.challengeId,
+                  language
+                }),
+                // Add a timeout to prevent hanging requests
+                signal: AbortSignal.timeout(15000)
+              });
+              
+              if (response.ok) {
+                const data = await response.json();
+                if (data.answer) {
+                  setCorrectAnswer(data.answer);
+                }
+              } else {
+                throw new Error(`Server responded with ${response.status}`);
+              }
+            } catch (fetchError) {
+              console.error(`Error fetching correct answer (attempt ${retryAttempt + 1}):`, fetchError);
+              
+              // If we haven't reached max retries, try again
+              if (retryAttempt < maxRetries - 1) {
+                // Exponential backoff
+                const backoffDelay = Math.min(1000 * Math.pow(2, retryAttempt), 5000);
+                await new Promise(resolve => setTimeout(resolve, backoffDelay));
+                return fetchCorrectAnswer(retryAttempt + 1);
+              }
+              
+              // If all retries fail, still allow the game to continue 
+              // with a generic "Answer not available" message
+              setCorrectAnswer("Answer not available");
             }
-          }
-        } catch (error) {
-          console.error('Error fetching correct answer:', error);
+          };
+          
+          // Start fetching the correct answer with retry logic
+          await fetchCorrectAnswer();
         }
+        
+        // Reset retry count on success
+        setVerifyRetryCount(0);
+        
+      } catch (error) {
+        console.error(`Error selecting option (attempt ${currentRetry + 1}):`, error);
+        
+        // If we haven't reached max retries, try again
+        if (currentRetry < maxRetries - 1) {
+          setVerifyRetryCount(currentRetry + 1);
+          // Exponential backoff: wait longer between each retry
+          const backoffDelay = Math.min(1000 * Math.pow(2, currentRetry), 5000);
+          await new Promise(resolve => setTimeout(resolve, backoffDelay));
+          return attemptVerification(currentRetry + 1);
+        } else {
+          // If all retries fail, show an error in the game store
+          useGameStore.setState({ finalFiveError: "Failed to verify your answer. Please try again." });
+        }
+      } finally {
+        // Only clear loading state if this is the final attempt or it was successful
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error selecting option:', error);
-    } finally {
+    };
+    
+    // Start the verification process with retries
+    attemptVerification().catch(() => {
+      // Ensure loading is always cleared in case of unexpected errors
       setLoading(false);
-    }
-  }, [isGameOver, loading, challenge, selectFinalFiveOption, language, selectedOption]);
+    });
+    
+  }, [isGameOver, loading, challenge, selectFinalFiveOption, language, selectedOption, maxRetries]);
   
   return {
     // State
@@ -421,31 +579,33 @@ export function useFinalFiveModal() {
     finalFiveTimeRemaining,
     gameOutcome,
     animationComplete,
-    loading: loading || isFetchingFinalFiveOptions || optionsLoading,
+    loading: loading || showingLoadingMessage || isFetchingFinalFiveOptions || optionsLoading,
     selectedOption,
     timerReachedZero,
     correctAnswer,
+    isSlowConnection,
+    verifyRetryCount,
     
     // Styles and helpers
     themeColor,
     getMessage,
     getCardStyles: useCallback((option: string) => {
-      // Front of card (with number 5)
-      const frontBg = `var(--color-${colors.primary})`;
-      
-      // Back of card background based on game state - using rgba with the color's RGB values
-      let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
-      if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
-      
-      // Text color based on game state and dark mode
-      let textColor = darkMode ? "white" : "black";
-      if (isGameOver && isCorrectOption(option)) textColor = "white";
-      
-      return {
-        frontBg,
-        backBg,
-        textColor
-      };
+    // Front of card (with number 5)
+    const frontBg = `var(--color-${colors.primary})`;
+    
+    // Back of card background based on game state - using rgba with the color's RGB values
+    let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
+    if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
+    
+    // Text color based on game state and dark mode
+    let textColor = darkMode ? "white" : "black";
+    if (isGameOver && isCorrectOption(option)) textColor = "white";
+    
+    return {
+      frontBg,
+      backBg,
+      textColor
+    };
     }, [colors.primary, darkMode, isGameOver, isCorrectOption]),
     isCorrectOption,
     isIncorrectGuess,

@@ -9,7 +9,7 @@ import FactCardBack from './FactCardBack';
 import { factCardStyles } from '../styles/factCardStyles';
 import { useFactCard } from '../hooks';
 import { getFactTypeName } from '../helpers/i18nHelpers';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FactCardProps {
   fact: Fact<any>;

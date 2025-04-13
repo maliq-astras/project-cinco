@@ -8,7 +8,7 @@ import Logo from './Logo';
 import { useLoadingAnimation } from '../hooks/components/loadingAnimation';
 import { loadingAnimationStyles } from '../styles/loadingAnimationStyles';
 import { getCategoryName } from '../helpers/i18nHelpers';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -47,6 +47,9 @@ export default function LoadingAnimation({
   // Get translated category name
   const translatedCategory = currentCategory ? getCategoryName(currentCategory, t) : '';
 
+  // Check if we're showing the "Please wait..." placeholder
+  const isPlaceholder = currentCategory === "PLEASE WAIT...";
+
   return (
     <div className={loadingAnimationStyles.container}>
       <div className={loadingAnimationStyles.innerContainer}>
@@ -63,7 +66,7 @@ export default function LoadingAnimation({
         {/* Center line */}
         <div className={loadingAnimationStyles.centerLine}>
           {/* Line in the middle - appears when showing final category */}
-          {mounted && isShowingFinalCategory && (
+          {mounted && isShowingFinalCategory && !isPlaceholder && (
             <motion.div
               {...loadingAnimationStyles.lineAnimation}
               style={loadingAnimationStyles.animatedLine(colorInfo.rgb)}
@@ -84,7 +87,7 @@ export default function LoadingAnimation({
                   animate={loadingAnimationStyles.categoryAnimation.animate(isShowingFinalCategory)}
                   exit={loadingAnimationStyles.categoryAnimation.exit}
                   transition={loadingAnimationStyles.categoryAnimation.transition(isShowingFinalCategory)}
-                  className={`m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''}`}
+                  className={`m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''} ${isPlaceholder ? 'text-gray-500 dark:text-gray-400' : ''}`}
                   style={loadingAnimationStyles.getCategoryStyle(
                     isShowingFinalCategory,
                     colorInfo.rgb,

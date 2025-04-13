@@ -23,33 +23,94 @@ export const initialGameState: GameState = {
   finalFiveOptions: null
 };
 
-export async function fetchChallenge(language: string = 'en'): Promise<Challenge> {
-  const response = await fetch(`/api/daily-challenge?lang=${language}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch challenge');
+export async function fetchChallenge(language: string = 'en', retries = 3): Promise<Challenge> {
+  let lastError;
+  
+  // Try up to retries + 1 times in case of connection issues
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      // If this isn't the first attempt, wait before retrying
+      if (attempt > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        console.log(`Retrying challenge fetch (attempt ${attempt} of ${retries})...`);
+      }
+      
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      
+      const response = await fetch(`/api/daily-challenge?lang=${language}`, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch challenge: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      lastError = error;
+      // Only log on final attempt to avoid console spam
+      if (attempt === retries) {
+        console.error('Error fetching challenge:', error);
+      }
+    }
   }
-  const data = await response.json();
-  return data;
+  
+  // If we get here, all attempts failed - instead of throwing, return a user-friendly error
+  throw lastError || new Error('Failed to fetch challenge');
 }
 
-export async function verifyGuess(challengeId: string, guess: string, language: string = 'en'): Promise<{ isCorrect: boolean }> {
-  const response = await fetch('/api/verify-guess', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      challengeId,
-      guess,
-      language
-    }),
-  });
+export async function verifyGuess(challengeId: string, guess: string, language: string = 'en', retries = 2): Promise<{ isCorrect: boolean }> {
+  let lastError;
   
-  if (!response.ok) {
-    throw new Error('Failed to verify guess');
+  // Try up to retries + 1 times in case of connection issues
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      // If this isn't the first attempt, wait before retrying
+      if (attempt > 0) {
+        await new Promise(resolve => setTimeout(resolve, 800 * attempt));
+        console.log(`Retrying guess verification (attempt ${attempt} of ${retries})...`);
+      }
+      
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      
+      const response = await fetch('/api/verify-guess', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          challengeId,
+          guess,
+          language
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to verify guess: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+      // Only log on final attempt to avoid console spam
+      if (attempt === retries) {
+        console.error('Error verifying guess:', error);
+      }
+    }
   }
   
-  return await response.json();
+  // If we get here, all attempts failed
+  throw lastError || new Error('Failed to verify guess');
 }
 
 export async function fetchFinalFiveOptions(challengeId: string, previousGuesses?: string[], language: string = 'en', retries = 3): Promise<string[]> {

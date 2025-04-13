@@ -1,5 +1,12 @@
 import { CSSProperties } from 'react';
 import { COLOR_MAPPING } from '../types';
+import { LOADING_PLACEHOLDER } from '../hooks/components/loadingAnimation/useLoadingAnimation';
+
+// Constants for placeholder text colors
+const PLACEHOLDER_TEXT_COLORS = {
+  dark: 'rgb(156, 163, 175)', // gray-400
+  light: 'rgb(107, 114, 128)' // gray-500
+};
 
 export const loadingAnimationStyles = {
   container: "fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center",
@@ -29,6 +36,17 @@ export const loadingAnimationStyles = {
     darkMode: boolean,
     categoryText: string
   ): CSSProperties => {
+    // Check if we're showing the placeholder
+    if (categoryText.toUpperCase() === LOADING_PLACEHOLDER) {
+      return {
+        color: darkMode ? PLACEHOLDER_TEXT_COLORS.dark : PLACEHOLDER_TEXT_COLORS.light,
+        fontSize: calculateFontSize(categoryText),
+        lineHeight: 1,
+        padding: "0 12px",
+        whiteSpace: "nowrap"
+      };
+    }
+
     // Check if high contrast mode is active
     const isHighContrast = typeof document !== 'undefined' && 
       document.documentElement.classList.contains('high-contrast');

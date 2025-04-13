@@ -1,7 +1,7 @@
 /**
  * Icon mapping utility for fact types across different categories
  */
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Define a type for icon mappings
 type IconMapping = { [key: string]: string };

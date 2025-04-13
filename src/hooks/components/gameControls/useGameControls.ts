@@ -1,7 +1,7 @@
 import { FormEvent, useRef, useImperativeHandle, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { showToastMessage } from '../../../helpers/uiHelpers';
 import { isDuplicateGuess } from '../../../helpers/gameLogic';
 

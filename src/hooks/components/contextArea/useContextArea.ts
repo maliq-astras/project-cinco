@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { contextAreaStyles, getContextTextClassNames } from '../../../styles/contextAreaStyles';
 
 /**
@@ -47,6 +47,7 @@ export function useGameInstructions() {
   const { colors } = useTheme();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [isLongRequest, setIsLongRequest] = useState(false);
 
   // Detect touch device on mount
   useEffect(() => {
@@ -62,17 +63,27 @@ export function useGameInstructions() {
 
   // Delayed loading indicator for better user experience
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let longRequestTimeoutId: NodeJS.Timeout;
+    
     if (isProcessingGuess) {
       // Only show loading indicator if request takes longer than 500ms
-      const timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setShowLoading(true);
       }, 500);
       
+      // Show long request message if it takes longer than 5 seconds
+      longRequestTimeoutId = setTimeout(() => {
+        setIsLongRequest(true);
+      }, 5000);
+      
       return () => {
         clearTimeout(timeoutId);
+        clearTimeout(longRequestTimeoutId);
       };
     } else {
       setShowLoading(false);
+      setIsLongRequest(false);
     }
   }, [isProcessingGuess]);
 
@@ -83,6 +94,9 @@ export function useGameInstructions() {
     }
     
     if (showLoading) {
+      if (isLongRequest) {
+        return t('game.status.longRequest', 'Still working on it... This is taking longer than expected');
+      }
       return t('game.status.guessing', 'Guessing...');
     }
     
@@ -111,7 +125,7 @@ export function useGameInstructions() {
     },
     transition: {
       repeat: Infinity,
-      duration: 1,
+      duration: isLongRequest ? 1.5 : 1, // Slow down animation slightly for long requests
       ease: "linear"
     }
   } : {};
@@ -125,6 +139,7 @@ export function useGameInstructions() {
     animationProps: animation,
     loadingAnimation,
     isProcessingGuess: showLoading, // Use the delayed state instead of immediate state
+    isLongRequest, // Make this available in case we want different styling
     styles: contextAreaStyles
   };
 } 

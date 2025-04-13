@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useCardAnimations } from '../../animation';
 import { getFactIcon, useIconFilter } from '../../../helpers/iconHelpers';
 import { useDragState } from '../../useDragState';

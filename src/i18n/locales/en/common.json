@@ -25,6 +25,7 @@
     },
     "status": {
       "guessing": "Guessing...",
+      "longRequest": "Still processing... This is taking a bit longer than usual",
       "correct": "Correct!",
       "incorrect": "Wrong answer! Try again.",
       "duplicate": "You've already tried that guess. Try something else!",
@@ -49,7 +50,12 @@
       "theCorrectAnswerWas": "The correct answer was",
       "timesUp": "Time's up!",
       "loadingAnswer": "Loading the correct answer",
-      "startButton": "Start FINAL 5"
+      "startButton": "Start FINAL 5",
+      "loading": "Loading...",
+      "slowConnection": "This is taking a bit longer than usual. Please wait...",
+      "verifyingGuess": "Verifying your guess...",
+      "retrying": "Retrying...",
+      "determiningAnswer": "Determining the answer..."
     },
     "endGame": {
       "standardWin": "You guessed {{answer}} in {{tries}} {{count}}!",

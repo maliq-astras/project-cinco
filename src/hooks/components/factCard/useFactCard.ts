@@ -1,7 +1,7 @@
 import { useRef, useMemo } from 'react';
 import { Fact } from '../../../types';
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useCardFlip, useResponsiveCard } from '../../card';
 import { useCardAnimations } from '../../animation';
 import { factCardInlineStyles, normalizeCategory } from '../../../helpers/factCardHelpers';

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage, Language } from '../../../context/LanguageContext';
+import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage, Language } from '../../../contexts/LanguageContext';
 
 // Format languages for display in the dropdown
 export const languages = [

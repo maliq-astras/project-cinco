@@ -1,5 +1,5 @@
 import { useGameStore } from '../../../store/gameStore';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 export const useHeader = () => {
   const { colors } = useTheme();
