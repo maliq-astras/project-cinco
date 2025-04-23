@@ -114,5 +114,22 @@ export const gameTutorialStyles = {
         ease: [0.4, 0, 0.2, 1]
       }
     }
-  }
+  },
+
+  // Text box styles
+  textBoxBorder: (primaryColor: string): CSSProperties => ({
+    borderColor: `var(--color-${primaryColor})`
+  }),
+  
+  // Progress dot styles
+  progressDotColor: (primaryColor: string, isActive: boolean): CSSProperties => ({
+    backgroundColor: isActive 
+      ? `var(--color-${primaryColor})`
+      : `var(--color-${primaryColor}30)`
+  }),
+  
+  // Progress text styles
+  progressTextShadow: {
+    textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+  },
 } as const; 

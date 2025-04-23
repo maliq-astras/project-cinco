@@ -13,11 +13,11 @@ const WILDCARD_ICON = 'wildcard';
 const countryIcons: IconMapping = {
   'Language(s)': 'languages',
   'Flag': 'flag',
-  'Cities': 'cityscape',
+  'Notable City': 'cityscape',
+  'Political History': 'history',
   'Economy': 'economy',
-  'Demographics': 'demographics',
-  'Origin': 'history',
-  'Geography & Climate': 'geography',
+  'Culture & Tradition': 'culture',
+  'Geography & Border': 'geography',
   'Wildcard': 'wildcard'
 };
 
@@ -25,11 +25,11 @@ const countryIcons: IconMapping = {
 const animalIcons: IconMapping = {
   'Habitat': 'habitat',
   'Ecology': 'ecological-role',
-  'Rare Features': 'characteristic',
-  'Size/Weight': 'sizeweight',
+  'Physical Characteristic': 'characteristic',
   'Evolutionary History': 'evolution',
   'Social Behavior': 'socialanimal',
   'Reproduction': 'reproduction',
+  'Interspecies Relationships': 'relationship',
   'Wildcard': 'wildcard'
 };
 

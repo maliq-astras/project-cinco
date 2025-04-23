@@ -112,13 +112,8 @@ export default function FactBubble({
                 width={icon.size}
                 height={icon.size}
                 style={{
-                  filter: getIconFilter(icon.category),
-                  opacity: isClickable ? 0.7 : 0.4,
-                  transition: 'opacity 0.3s ease',
-                  pointerEvents: 'none',
-                  userSelect: 'none',
-                  WebkitUserSelect: 'none',
-                  WebkitTouchCallout: 'none'
+                  ...factBubbleStyles.icon(isClickable),
+                  filter: getIconFilter(icon.category)
                 }}
                 draggable="false"
               />
@@ -134,12 +129,7 @@ export default function FactBubble({
                 <motion.div
                   key={`particle-${index}`}
                   className={`${factBubbleStyles.particle} bg-${colors.primary}`}
-                  style={{
-                    position: 'fixed',
-                    left: popPosition.x,
-                    top: popPosition.y,
-                    transform: 'translate(-50%, -50%)'
-                  }}
+                  style={factBubbleStyles.particleContainer(popPosition.x, popPosition.y)}
                   initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                   animate={{ 
                     x: particle.x, 

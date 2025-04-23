@@ -63,14 +63,11 @@ export function useGameInstructions() {
 
   // Delayed loading indicator for better user experience
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
     let longRequestTimeoutId: NodeJS.Timeout;
     
     if (isProcessingGuess) {
-      // Only show loading indicator if request takes longer than 500ms
-      timeoutId = setTimeout(() => {
-        setShowLoading(true);
-      }, 500);
+      // Show loading state immediately
+      setShowLoading(true);
       
       // Show long request message if it takes longer than 5 seconds
       longRequestTimeoutId = setTimeout(() => {
@@ -78,7 +75,6 @@ export function useGameInstructions() {
       }, 5000);
       
       return () => {
-        clearTimeout(timeoutId);
         clearTimeout(longRequestTimeoutId);
       };
     } else {

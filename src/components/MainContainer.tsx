@@ -135,13 +135,13 @@ export default function MainContainer() {
                       </div>
                       
                       {/* Middle section */}
-                      <div className={mainContainerStyles.middleSection} style={{ gap: "1rem" }}>
+                      <div className={mainContainerStyles.middleSection} style={mainContainerStyles.sectionGap}>
                         {/* Context line */}
                         <motion.div 
                           className={mainContainerStyles.contextLine}
                           {...mainContainerStyles.staggeredFade(0)}
                         >
-                          <div style={{ backgroundColor: `var(--color-${colors.primary}30)` }} className="absolute inset-x-0 h-1"></div>
+                          <div style={mainContainerStyles.contextLineBackground(colors.primary)} className="absolute inset-x-0 h-1"></div>
                           <div className={mainContainerStyles.contextWrapper}>
                             <div className={mainContainerStyles.contextContainer}>
                               <BubbleContextArea />

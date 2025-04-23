@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 export const endGameMessageStyles = {
   container: "w-full flex justify-center items-center relative",
   messageWrapper: "relative px-4",
@@ -40,5 +42,28 @@ export const endGameMessageStyles = {
       duration: 2,
       ease: "easeOut"
     }
+  }),
+  
+  // Text styles
+  answerText: (primaryColor: string): CSSProperties => ({
+    fontWeight: 'bold',
+    color: `var(--color-${primaryColor})`
+  }),
+  
+  // Confetti styles
+  confettiPieceStyle: (size: number, color: string): CSSProperties => ({
+    width: size,
+    height: size,
+    backgroundColor: color,
+    borderRadius: '50%',
+    position: 'absolute',
+    transform: 'translate(-50%, -50%)',
+    left: '50%',
+    top: '50%'
+  }),
+  
+  // Time display styles
+  timeDisplayText: (primaryColor: string): CSSProperties => ({
+    color: `var(--color-${primaryColor})`
   })
 } as const; 

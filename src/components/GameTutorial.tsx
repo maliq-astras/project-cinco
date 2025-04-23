@@ -109,9 +109,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
       {/* Tutorial text box */}
       <motion.div 
         className={`${inter.className} ${gameTutorialStyles.textBox}`}
-        style={{
-          borderColor: `var(--color-${colors.primary})`
-        }}
+        style={gameTutorialStyles.textBoxBorder(colors.primary)}
         {...gameTutorialStyles.textBoxAnimation}
         animate={gameTutorialStyles.textBoxAnimation.animate(textBoxStyles)}
         layout
@@ -151,17 +149,13 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
               key={index}
               layout
               className={gameTutorialStyles.progressDot}
-              style={{
-                backgroundColor: index === currentStep 
-                  ? `var(--color-${colors.primary})`
-                  : `var(--color-${colors.primary}30)`
-              }}
+              style={gameTutorialStyles.progressDotColor(colors.primary, index === currentStep)}
             />
           ))}
         </motion.div>
         <motion.p 
           className={gameTutorialStyles.progressText}
-          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+          style={gameTutorialStyles.progressTextShadow}
           layout
           transition={{ duration: 0.4 }}
         >

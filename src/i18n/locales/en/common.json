@@ -30,6 +30,7 @@
       "incorrect": "Wrong answer! Try again.",
       "duplicate": "You've already tried that guess. Try something else!",
       "skipped": "Skipped! Reveal another clue.",
+      "skipConfirm": "Are you sure you want to skip? Click again to confirm.",
       "gameOver": "Game Over",
       "victory": "You won!",
       "rotateDevice": "Rotate Your Device",
@@ -84,7 +85,10 @@
       "settings": "Settings",
       "close": "Close",
       "info": "Information",
-      "profile": "Profile"
+      "profile": "Profile",
+      "enter": "ENTER",
+      "confirm_skip": "Click again to skip",
+      "confirm_skip_mobile": "Tap again to skip"
     },
     "timer": {
       "timeRemaining": "Time Remaining"
@@ -143,20 +147,20 @@
   "factTypes": {
     "language(s)": "Language(s)",
     "flag": "Flag",
-    "cities": "Cities",
+    "notable city": "Notable City",
+    "political history": "Political History",
     "economy": "Economy",
-    "demographics": "Demographics",
-    "origin": "Origin",
-    "geography & climate": "Geography & Climate",
+    "culture & tradition": "Culture & Tradition",
+    "geography & border": "Geography & Border",
     "wildcard": "Wildcard",
     
     "habitat": "Habitat",
-    "ecology": "Ecology",
-    "rare features": "Rare Features",
-    "size/weight": "Size/Weight",
+    "diet": "Diet",
+    "physical characteristic": "Physical Characteristic",
     "evolutionary history": "Evolutionary History",
     "social behavior": "Social Behavior",
     "reproduction": "Reproduction",
+    "interspecies relationships": "Interspecies Relationships",
     
     "director": "Director",
     "premiere": "Premiere",

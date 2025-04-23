@@ -54,5 +54,18 @@ export const finalFiveStyles = {
   buttonContainer: "h-14 relative",
   
   // Continue button
-  continueButton: "px-8 py-3 rounded-full font-display font-bold text-white transition-all"
-}; 
+  continueButton: "px-8 py-3 rounded-full font-display font-bold text-white transition-all",
+  
+  // Loading spinner
+  loadingSpinner: (color: string) => ({
+    color: color,
+    animation: "spin 1s linear infinite"
+  }),
+  loadingSpinnerClass: "h-5 w-5 mr-2",
+  
+  // Message formatting
+  correctAnswerText: (color: string) => ({
+    color: color,
+    fontWeight: 'bold'
+  })
+} as const; 

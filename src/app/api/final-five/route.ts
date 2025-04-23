@@ -18,8 +18,6 @@ export async function initializeIndexes() {
     { challengeId: 1 }, 
     { unique: true, name: 'challengeId_1' }
   );
-  
-  console.log('Final-five indexes initialized');
 }
 
 // Initialize indexes on startup
@@ -113,9 +111,7 @@ function processAlternatives(
   previousGuesses: string[],
   challengeId: string,
   language: string
-) {
-  console.log('Processing alternatives - before filtering:', alternatives.length);
-  
+) {  
   // Filter out alternatives that:
   // 1. Have already been guessed
   // 2. Are answers in any language
@@ -131,14 +127,8 @@ function processAlternatives(
     // Only keep if not guessed and not an answer
     const shouldKeep = !isAlreadyGuessed && !isAnswer;
     
-    if (!shouldKeep) {
-      console.log(`Filtering out alternative: "${alt}" - Already guessed: ${isAlreadyGuessed}, Is answer: ${isAnswer}`);
-    }
-    
     return shouldKeep;
   });
-  
-  console.log('Processing alternatives - after filtering:', availableAlternatives.length);
   
   // Ensure we only return 4 alternatives (plus the correct answer)
   availableAlternatives = availableAlternatives.slice(0, 4);
@@ -200,9 +190,7 @@ export async function POST(request: Request) {
     const normalizedPreviousGuesses = previousGuesses.map(guess => 
       guess.trim().toLowerCase()
     );
-    
-    console.log('Final Five API - Previous guesses:', normalizedPreviousGuesses);
-    
+      
     // Process alternatives
     const availableAlternatives = processAlternatives(
       alternatives,
@@ -221,8 +209,6 @@ export async function POST(request: Request) {
     const finalOptions = shuffledOptions.filter(option => 
       !normalizedPreviousGuesses.includes(option.trim().toLowerCase())
     );
-    
-    console.log('Final Five API - Returning options:', finalOptions);
     
     return NextResponse.json({
       options: finalOptions
@@ -280,8 +266,6 @@ export async function GET(request: Request) {
       guess.trim().toLowerCase()
     );
     
-    console.log('Final Five API - Previous guesses:', normalizedPreviousGuesses);
-    
     // Process alternatives
     const availableAlternatives = processAlternatives(
       alternatives,
@@ -300,8 +284,6 @@ export async function GET(request: Request) {
     const finalOptions = shuffledOptions.filter(option => 
       !normalizedPreviousGuesses.includes(option.trim().toLowerCase())
     );
-    
-    console.log('Final Five API - Returning options:', finalOptions);
     
     return NextResponse.json({
       options: finalOptions

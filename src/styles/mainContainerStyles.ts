@@ -61,5 +61,15 @@ export const mainContainerStyles = {
     initial: { opacity: 1 },
     exit: { opacity: 0 },
     transition: { duration: 0.6, delay }
-  })
-}; 
+  }),
+  
+  // Context line styles
+  contextLineBackground: (primaryColor: string) => ({
+    backgroundColor: `var(--color-${primaryColor}30)`
+  }),
+  
+  // Section spacing
+  sectionGap: {
+    gap: "1rem"
+  }
+} as const; 

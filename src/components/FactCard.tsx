@@ -117,10 +117,10 @@ export default function FactCard({
           {/* Card container with 3D transform */}
           <motion.div
             className={factCardStyles.flipCard}
-            initial={{ rotateY: 0 }}
-            animate={{ rotateY: isFlipped && isDrawn && !isClosing ? 180 : 0 }}
+            initial={factCardStyles.flipAnimation.initial}
+            animate={factCardStyles.flipAnimation.animate(isFlipped, isDrawn, isClosing)}
             transition={flipTransition}
-            style={cardStyles.preserve3d}
+            style={factCardStyles.preserve3d}
           >
             {/* Card Back (blue with white icon) - visible first */}
             <div className={factCardStyles.cardBack} style={cardStyles.hidden}>

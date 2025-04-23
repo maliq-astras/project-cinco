@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTimer } from '../hooks/components/timer';
+import { timerStyles } from '../styles/timerStyles';
 
 interface TimerProps {
   seconds: number;
@@ -56,7 +57,7 @@ const Timer: React.FC<TimerProps> = ({
   return (
     <div 
       id="game-timer"
-      className={`flex items-center justify-center h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px] ${isVictoryAnimationActive ? 'opacity-0' : ''}`}
+      className={timerStyles.outerContainer(isVictoryAnimationActive)}
     >
       <motion.div 
         className={timerClasses}

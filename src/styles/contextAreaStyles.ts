@@ -1,6 +1,8 @@
 /**
  * Styles for the ContextArea components
  */
+import { CSSProperties } from 'react';
+
 export const contextAreaStyles = {
   // Base text styling
   text: "font-medium text-center font-display",
@@ -12,8 +14,18 @@ export const contextAreaStyles = {
   // Animation constants
   animation: {
     duration: 0.8
-  }
-};
+  },
+
+  // Loading animation styles
+  loadingSpinner: (textColor: string): CSSProperties => ({
+    border: `2px solid var(--color-${textColor})`,
+    borderTopColor: 'transparent',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    marginTop: '-2px'
+  })
+} as const;
 
 /**
  * Utility function to get the base classnames for context text

@@ -1,0 +1,44 @@
+{
+    "answer": {
+      "en": "Sloth",
+      "es": "Perezoso"
+    },
+    "facts": {
+      "Habitat": {
+        "en": "I spend my life 15-30 meters above the ground in the continuous canopy of tropical and cloud forests, rarely descending to the forest floor except once weekly for a very specific purpose.",
+        "es": "Paso mi vida entre 15-30 metros sobre el suelo en el dosel continuo de bosques tropicales y nubosos, raramente descendiendo al suelo del bosque excepto una vez por semana para un propósito muy específico."
+      },
+      "Ecology": {
+        "en": "My highly specialized digestive system takes up to a month to process a single meal, and I can lose up to a third of my body weight during a single bowel movement.",
+        "es": "Mi sistema digestivo altamente especializado tarda hasta un mes en procesar una sola comida, y puedo perder hasta un tercio de mi peso corporal durante una sola evacuación intestinal."
+      },
+      "Physical Characteristics": {
+        "en": "Unlike most mammals, my body temperature fluctuates with my environment, ranging from 74-92°F (24-33°C), which helps conserve energy in my tropical home.",
+        "es": "A diferencia de la mayoría de los mamíferos, mi temperatura corporal fluctúa con mi entorno, oscilando entre 24-33°C, lo que ayuda a conservar energía en mi hogar tropical."
+      },
+      "Evolutionary History": {
+        "en": "My ancestors once included ground-dwelling giants the size of modern elephants that roamed North America until humans arrived on the continent around 11,000 years ago.",
+        "es": "Mis ancestros incluían gigantes terrestres del tamaño de elefantes modernos que vagaban por América del Norte hasta que los humanos llegaron al continente hace unos 11,000 años."
+      },
+      "Social Behavior": {
+        "en": "I live an almost entirely solitary existence with loosely defined home ranges rather than defended territories. Adult members of my species rarely interact outside of chance encounters, and we have very few vocalizations compared to other mammals.",
+        "es": "Vivo una existencia casi completamente solitaria con áreas de distribución vagamente definidas en lugar de territorios defendidos. Los miembros adultos de mi especie raramente interactúan fuera de encuentros casuales, y tenemos muy pocas vocalizaciones en comparación con otros mamíferos."
+      },
+      "Reproduction": {
+        "en": "Female members of my species emit a high-pitched scream that can be heard up to 700 meters away when ready to mate, causing nearby males to race toward the sound—the fastest male usually wins.",
+        "es": "Las hembras de mi especie emiten un grito agudo que puede ser escuchado hasta 700 metros de distancia cuando están listas para aparearse, causando que los machos cercanos corran hacia el sonido—el macho más rápido generalmente gana."
+      },
+      "Interspecies Relationships": {
+        "en": "My fur hosts an entire ecosystem including specialized moths found nowhere else, and the green algae growing in my coat provides up to 20% of my daily nutritional intake when I groom myself.",
+        "es": "Mi pelaje alberga un ecosistema entero que incluye polillas especializadas que no se encuentran en ningún otro lugar, y las algas verdes que crecen en mi pelaje proporcionan hasta el 20% de mi ingesta nutricional diaria cuando me acicalo."
+      },
+      "Wildcard": {
+        "en": "Despite having 30% less muscle mass than similar-sized mammals, I can rotate my head nearly 270° and am an excellent swimmer, able to hold my breath underwater for up to 40 minutes.",
+        "es": "A pesar de tener un 30% menos de masa muscular que mamíferos de tamaño similar, puedo girar mi cabeza casi 270° y soy un excelente nadador, capaz de contener la respiración bajo el agua hasta por 40 minutos."
+      }
+    },
+    "alternatives": {
+      "en": ["Koala", "Anteater", "Armadillo", "Capybara", "Tapir", "Howler Monkey", "Tamandua", "Porcupine", "Opossum"],
+      "es": ["Koala", "Oso Hormiguero", "Armadillo", "Capibara", "Tapir", "Mono Aullador", "Tamandúa", "Puercoespín", "Zarigüeya"]
+    }
+  }

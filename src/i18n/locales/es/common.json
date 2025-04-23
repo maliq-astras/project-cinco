@@ -30,6 +30,7 @@
       "incorrect": "¡Respuesta incorrecta! Intenta de nuevo.",
       "duplicate": "Ya has intentado con esa respuesta. ¡Prueba algo diferente!",
       "skipped": "¡Omitido! Revela otra pista.",
+      "skipConfirm": "¿Estás seguro de que quieres omitir? Haz clic de nuevo para confirmar.",
       "gameOver": "Juego Terminado",
       "victory": "¡Has ganado!",
       "rotateDevice": "Gira tu Dispositivo",
@@ -84,7 +85,10 @@
       "settings": "Configuración",
       "close": "Cerrar",
       "info": "Información",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "enter": "ENTRAR",
+      "confirm_skip": "Haz clic de nuevo para omitir",
+      "confirm_skip_mobile": "Toca de nuevo para omitir"
     },
     "timer": {
       "timeRemaining": "Tiempo Restante"
@@ -143,20 +147,20 @@
   "factTypes": {
     "language(s)": "Idioma(s)",
     "flag": "Bandera",
-    "cities": "Ciudades",
+    "notable city": "Ciudad Notable",
+    "political history": "Historia Política",
     "economy": "Economía",
-    "demographics": "Demografía",
-    "origin": "Origen",
-    "geography & climate": "Geografía y Clima",
+    "culture & tradition": "Cultura y Tradición",
+    "geography & border": "Geografía y Frontera",
     "wildcard": "Comodín",
     
     "habitat": "Hábitat",
-    "ecology": "Ecología",
-    "rare features": "Características Únicas",
-    "size/weight": "Tamaño/Peso",
+    "diet": "Dieta",
+    "physical characteristic": "Característica Física",
     "evolutionary history": "Historia Evolutiva",
     "social behavior": "Comportamiento Social",
     "reproduction": "Reproducción",
+    "interspecies relationships": "Relaciones Interespecíficas",
     
     "director": "Director",
     "premiere": "Estreno",

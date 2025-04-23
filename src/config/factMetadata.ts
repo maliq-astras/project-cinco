@@ -4,42 +4,42 @@ import { CategoryType } from '@/types';
 export const factMetadata = {
   [CategoryType.COUNTRIES]: {
     "Language(s)": {
-      description: "Information about languages spoken in this country",
+      description: "The country's official languages. May include secondary languages, dialects, and regional variations.",
       icon: "language",
       helpText: "Not just the language name, but interesting facts about usage or status"
     },
     "Flag": {
-      description: "Details about the country's flag design",
+      description: "The country's flag design, colors, symbolism, or history.",
       icon: "flag",
       helpText: "Colors, symbols, and patterns on the national flag"
     },
-    "Cities": {
-      description: "Information about significant cities",
+    "Notable City": {
+      description: "A major city in the mystery country.",
       icon: "location-city",
-      helpText: "Facts about major cities without naming them directly"
+      helpText: "Facts about a significant city without naming it directly"
+    },
+    "Political History": {
+      description: "Political system, governance, and major historical political events.",
+      icon: "history-edu",
+      helpText: "Details about government structure and political developments"
     },
     "Economy": {
-      description: "Economic information about major industries",
+      description: "Economic data or details about major industries & exports.",
       icon: "business",
       helpText: "Details about economic drivers and exports"
     },
-    "Demographics": {
-      description: "Population statistics and demographics",
-      icon: "groups",
-      helpText: "Size, distribution, and makeup of the population"
+    "Culture & Tradition": {
+      description: "Cultural practices, customs, festivals, cuisine, or other distinctive traditions.",
+      icon: "celebration",
+      helpText: "Distinctive cultural elements that define the country"
     },
-    "Origin": {
-      description: "Historical information about the country's formation",
-      icon: "history-edu",
-      helpText: "When and how the country was established or gained independence"
-    },
-    "Geography & Climate": {
-      description: "Natural features and border information",
+    "Geography & Border": {
+      description: "The country's physical location, neighboring countries, and major landforms.",
       icon: "terrain",
       helpText: "Mountains, rivers, coastlines, and neighboring countries"
     },
     "Wildcard": {
-      description: "Unique or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
@@ -47,55 +47,55 @@ export const factMetadata = {
 
   [CategoryType.ANIMALS]: {
     "Habitat": {
-      description: "Where this animal lives",
+      description: "An animal's natural environment and geographical distribution.",
       icon: "forest",
       helpText: "Natural environment and geographical distribution"
     },
-    "Ecology": {
-      description: "What this animal eats and its role in the ecosystem",
+    "Diet": {
+      description: "What this animal eats and its feeding habits",
       icon: "restaurant",
-      helpText: "Feeding habits and position in the food chain"
+      helpText: "Feeding habits and dietary preferences"
     },
-    "Rare Features": {
-      description: "Distinctive physical features",
+    "Physical Characteristic": {
+      description: "Distinctive physical features, size, weight, and appearance.",
       icon: "visibility",
-      helpText: "Unique physical attributes or adaptations"
-    },
-    "Size/Weight": {
-      description: "Physical dimensions",
-      icon: "straighten",
-      helpText: "How large or small the animal is relative to others"
+      helpText: "Unique physical attributes, dimensions, and adaptations"
     },
     "Evolutionary History": {
-      description: "Evolutionary background and related species",
+      description: "Animal's evolutionary background and related species.",
       icon: "account-tree",
       helpText: "How this animal evolved and what it's related to"
     },
     "Social Behavior": {
-      description: "How these animals interact with each other",
+      description: "How these animals interact with each other in their natural habitat.",
       icon: "people",
       helpText: "Social structures, communication, or solitary behavior"
     },
     "Reproduction": {
-      description: "Breeding and offspring information",
+      description: "Mating rituals, gestation periods, or parental care in the animal's natural habitat.",
       icon: "child-care",
       helpText: "How the animal reproduces and raises young"
     },
+    "Interspecies Relationships": {
+      description: "Symbiotic relationships, interactions with humans, or connections with other species.",
+      icon: "connect-without-contact",
+      helpText: "How this animal interacts with other species in its environment"
+    },
     "Wildcard": {
-      description: "Surprising or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   },
 
   [CategoryType.MOVIES]: {
-    "Director": {
-      description: "Who directed this film",
+    "Behind the Scenes": {
+      description: "Production stories, challenges, innovations, or creative decisions.",
       icon: "movie",
-      helpText: "Information about the filmmaker without naming them directly"
+      helpText: "Interesting facts about how the film was made"
     },
     "Premiere": {
-      description: "When this movie was released",
+      description: "Time period or major events that coincide with the film's release.",
       icon: "date-range",
       helpText: "The decade or period when the film came out"
     },
@@ -110,22 +110,22 @@ export const factMetadata = {
       helpText: "What kind of movie this is"
     },
     "Critical Reception": {
-      description: "How critics responded to the film",
+      description: "The film's ratings, critical reviews, or awards.",
       icon: "star",
       helpText: "Ratings, reviews, or awards the film received"
     },
     "Box Office": {
-      description: "Commercial success information",
+      description: "Financial performance, ticket sales, and revenue figures.",
       icon: "attach-money",
       helpText: "How well the movie performed financially"
     },
-    "Production": {
-      description: "Company that made the film",
-      icon: "business",
-      helpText: "Information about who produced the movie"
+    "Famous Line": {
+      description: "Memorable quotes or dialogue from the movie.",
+      icon: "chat",
+      helpText: "Iconic lines that viewers remember from the film"
     },
     "Wildcard": {
-      description: "Interesting behind-the-scenes fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "Something surprising or unusual about the movie"
     }
@@ -137,10 +137,10 @@ export const factMetadata = {
       icon: "book",
       helpText: "Information about the author without naming them directly"
     },
-    "Publication": {
-      description: "When this book was published",
-      icon: "date-range",
-      helpText: "The year or period when the book was released"
+    "Illustration/Cover Design": {
+      description: "Notable cover art, illustrations, or distinctive visual elements.",
+      icon: "palette",
+      helpText: "Visual elements associated with famous editions of the book"
     },
     "Character(s)": {
       description: "A memorable character from the book",
@@ -148,27 +148,27 @@ export const factMetadata = {
       helpText: "Description of a character without naming them"
     },
     "Genre": {
-      description: "The type or style of book",
+      description: "The book's genre, subgenre, or category.",
       icon: "category",
       helpText: "What kind of book this is"
     },
-    "Critical Reception": {
-      description: "How critics responded to the book",
-      icon: "star",
-      helpText: "Ratings, reviews, or awards the book received"
+    "Publication Date": {
+      description: "When the book was first published or released.",
+      icon: "date-range",
+      helpText: "The year or period when the book first appeared"
     },
     "Plot": {
-      description: "The plot of the book",
-      icon: "attach-money",
+      description: "The plot, theme or setting of the book.",
+      icon: "auto-stories",
       helpText: "The story of the book"
     },
-    "Narrative Style": {
-      description: "The style of writing in the book",
-      icon: "business",
-      helpText: "The way the story is told"
+    "Famous Lines": {
+      description: "Memorable passages, opening lines, or quotes from the book.",
+      icon: "format-quote",
+      helpText: "Recognizable words or phrases from the text"
     },
     "Wildcard": {
-      description: "Interesting behind-the-scenes fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "Something surprising or unusual about the book"
     }
@@ -176,24 +176,24 @@ export const factMetadata = {
 
   [CategoryType.MUSICAL_ARTISTS]: {
     "Genre": {
-      description: "The type or style of music",
+      description: "The type or style of music this artist creates.",
       icon: "music",
       helpText: "What kind of music this artist makes"
     },
     "Background": {
-      description: "A popular or critically acclaimed album",
-      icon: "album",
-      helpText: "Information about a notable album without naming it"
+      description: "The artist's background, influences, or life before fame.",
+      icon: "history-edu",
+      helpText: "Information about their origins and early life"
     },
-    "Songs & Albums": {
-      description: "A popular or critically acclaimed album",
-      icon: "album",
-      helpText: "Information about a notable album without naming it"
+    "Iconic Song": {
+      description: "A popular or critically acclaimed song by this artist.",
+      icon: "music-note",
+      helpText: "Information about a notable song without naming it directly"
     },
-    "Era": {
-      description: "When this album was released",
+    "Debut": {
+      description: "When the artist first appeared on the music scene.",
       icon: "date-range",
-      helpText: "The year or period when the album came out"
+      helpText: "The year or period when they first became known"
     },
     "Achievements": {
       description: "Awards and nominations received by the artist",
@@ -206,12 +206,12 @@ export const factMetadata = {
       helpText: "Information about collaborators without naming them"
     },
     "Chart Performance": {
-      description: "The artist's performance on the charts",
-      icon: "star",
-      helpText: "How well the artist's music performed on the charts"
+      description: "The artist's sales or charts & streaming metrics.",
+      icon: "trending-up",
+      helpText: "How well the artist's music performed on the charts or streams"
     },
     "Wildcard": {
-      description: "Surprising or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
@@ -219,42 +219,42 @@ export const factMetadata = {
 
   [CategoryType.ATHLETES]: {
     "Personal Life": {
-      description: "Information about their personal life",
+      description: "The athlete's personal life, relationships, or background.",
       icon: "person",
       helpText: "Information about their personal life"
     },
     "Affiliations": {
-      description: "Major accomplishments or records",
+      description: "Major accomplishments or records.",
       icon: "trophy",
       helpText: "Important achievements or records they hold"
     },
     "Era": {
-      description: "When they were active",
+      description: "The time period the athlete was most active or popular.",
       icon: "date-range",
       helpText: "The year or period when they were active"
     },
     "Nationality": {  
-      description: "The country they are associated with",
+      description: "The country they were born in or are most associated with.",
       icon: "flag",
       helpText: "The country they were born in or are most associated with" 
     },
     "Physique": {
-      description: "Physical characteristics",
+      description: "Physical characteristics, height, weight, etc.",
       icon: "straighten",
       helpText: "Height, weight, or other physical attributes"
     },
     "Stats": {
-      description: "Statistics about their performance",
+      description: "Notable career statistics or records broken",
       icon: "star",
       helpText: "Statistics about their performance"
     },
     "Achievements": {
-      description: "Key moments or achievements in their career",
+      description: "Championships, awards or medals won.",
       icon: "star",
       helpText: "Notable accomplishments or milestones"
     },  
     "Wildcard": {
-      description: "Surprising or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
@@ -262,42 +262,42 @@ export const factMetadata = {
 
   [CategoryType.HISTORICAL_FIGURES]: {  
     "Occupation": {
-      description: "Their occupation",
+      description: "Their occupation, role, or field of expertise.",
       icon: "business",
       helpText: "Their occupation"
     },
-    "Important Dates": {
-      description: "Important dates in their life",
-      icon: "date-range",
-      helpText: "Important dates in their life"
+    "Background": {
+      description: "Their early life, family, and formative experiences.",
+      icon: "history-edu",
+      helpText: "Information about their origins and early years"
     },
     "Nationality": {
-      description: "The country they are associated with",
+      description: "The country they were born in or are most associated with.",
       icon: "flag",
       helpText: "The country they were born in or are most associated with" 
     },
     "Legacy": {
-      description: "Their legacy or impact",
+      description: "Their legacy or impact on history.",
       icon: "star",
       helpText: "Their legacy or impact"
     },
     "Physical Appearance": {
-      description: "Physical appearance",
+      description: "Physical appearance, height, weight, or other physical details.",
       icon: "straighten",
       helpText: "Physical appearance"
     },
-    "Background": {
-      description: "Their background",
-      icon: "person",
-      helpText: "Their background"
+    "Famous Quotes": {
+      description: "Memorable sayings or written passages attributed to them.",
+      icon: "format-quote",
+      helpText: "Words they're known for saying or writing"
     },
-    "Personal Life": {
-      description: "Information about their personal life",
-      icon: "person",
-      helpText: "Information about their personal life"
+    "Life's Conclusion": {
+      description: "Circumstances surrounding the end of their life.",
+      icon: "last-page",
+      helpText: "How their life story ended"
     },
     "Wildcard": {
-      description: "Surprising or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
@@ -305,42 +305,42 @@ export const factMetadata = {
 
   [CategoryType.FAMOUS_BRANDS]: {
     "Industry": {
-      description: "The industry the brand is in",
+      description: "The industry the brand is in.",
       icon: "business",
       helpText: "The industry the brand is in"
     },
     "Origin": { 
-      description: "The country the brand was founded in",
-      icon: "flag",
-      helpText: "The country the brand was founded in"
+      description: "The country, date, and story of the brand's founding.",
+      icon: "history-edu",
+      helpText: "How and where the brand was established"
     },
     "Logo": {
-      description: "The logo of the brand",
-      icon: "logo",
-      helpText: "The logo of the brand"
+      description: "The logo of the brand, its design, colors, or symbolism.",
+      icon: "design-services",
+      helpText: "The visual identity of the brand"
     },  
     "Signature Product": {
-      description: "The signature product of the brand",
-      icon: "product-hunt",
-      helpText: "The signature product of the brand"
+      description: "The signature product of the brand, its design, colors, or symbolism.",
+      icon: "shopping-bag",
+      helpText: "The most recognizable product associated with the brand"
     },
-    "Financials": {
-      description: "The financial information of the brand",
-      icon: "attach-money",
-      helpText: "The financial information of the brand"
+    "Target Audience": {
+      description: "The demographic or customer base the brand primarily serves.",
+      icon: "groups",
+      helpText: "Who the brand's products are designed for"
     },
-    "Brand Culture": {
-      description: "The culture of the brand",
-      icon: "people",
-      helpText: "The culture of the brand"
+    "Tagline/Catchphrase": {
+      description: "Famous slogans or marketing phrases associated with the brand.",
+      icon: "chat",
+      helpText: "Memorable phrases used in their advertising"
     },  
-    "Location": { 
-      description: "The location of the brand",
+    "HQ Location": { 
+      description: "The location of the brand's current headquarters.",
       icon: "location-city",
-      helpText: "The location of the brand"
+      helpText: "Where the brand is based today"
     },
     "Wildcard": {
-      description: "Surprising or unusual fact",
+      description: "Unique fun fact of an unknown variety",
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
@@ -348,44 +348,44 @@ export const factMetadata = {
 
   [CategoryType.TV_SHOWS]: {
     "Genre": {
-      description: "The genre of the show",
+      description: "The genre of the show, its subgenre, or category.",
       icon: "category",
       helpText: "The genre of the show"
     },
     "Debut": {
-      description: "The debut of the show",
+      description: "The debut of the show, its first episode, or the time period it was first aired.",
       icon: "date-range",
       helpText: "The debut of the show"
     },
-    "Production": {
-      description: "The production company of the show",
-      icon: "business",
-      helpText: "The production company of the show"
-    },
     "Character(s)": { 
-      description: "A memorable character from the show",
+      description: "A memorable character from the show, its role, or background.",
       icon: "person",
       helpText: "Description of a character without naming them"
     },
-    "Reception": {
-      description: "The reception of the show",
+    "Season Structure": { 
+      description: "Number of seasons, episodes per season, or format evolution.",
+      icon: "view-timeline",
+      helpText: "How the series was structured and evolved"
+    },
+    "Iconic Episode": {
+      description: "The most critically acclaimed or popular episode of the series.",
       icon: "star",
-      helpText: "The reception of the show"
+      helpText: "A standout episode from the show's run"
     },
     "Network/Platform": {
-      description: "The network or platform that airs the show",
+      description: "The network or platform that airs the show, its streaming service, or other distribution channels.",
       icon: "tv",
       helpText: "The network or platform that airs the show"
     },
     "Visual Style": {
-      description: "The visual style of the show",
+      description: "The visual style of the show, its cinematography, or visual effects.",
       icon: "palette",
-      helpText: "The visual style of the show"
+      helpText: "The distinctive look or visual approach of the show"
     },
     "Wildcard": {
-      description: "Surprising or unusual fact",    
+      description: "Unique fun fact of an unknown variety",    
       icon: "stars",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   }
-};  
+};

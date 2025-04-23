@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 /**
  * Styles for the FactCardStack component
  */
@@ -26,8 +28,22 @@ export const factCardStackStyles = {
   // Darkmode specific classes
   darkMode: {
     clickable: "" // No glow effect in dark mode
-  }
-};
+  },
+  
+  // Card positioning
+  getCardPosition: (
+    cardSize: { width: number; height: number },
+    index: number,
+    totalCards: number
+  ): CSSProperties => ({
+    transformOrigin: 'bottom center',
+    left: `calc(50% - ${cardSize.width / 2}px)`,
+    bottom: '0px',
+    width: `${cardSize.width}px`,
+    height: `${cardSize.height}px`,
+    zIndex: totalCards - index
+  }),
+} as const;
 
 /**
  * Get dynamic card class names based on card state

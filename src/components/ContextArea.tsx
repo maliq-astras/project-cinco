@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useBubbleContext, useGameInstructions } from '../hooks';
+import { contextAreaStyles } from '../styles/contextAreaStyles';
 
 /**
  * Component for showing bubble category when hovering 
@@ -38,14 +39,7 @@ export const GameInstructionsArea: React.FC = () => {
       {isProcessingGuess && (
         <motion.span 
           className="inline-block mr-2 w-4 h-4"
-          style={{ 
-            border: `2px solid var(--color-${textColor})`,
-            borderTopColor: 'transparent',
-            borderRadius: '50%',
-            display: 'inline-block',
-            verticalAlign: 'middle',
-            marginTop: '-2px'
-          }}
+          style={contextAreaStyles.loadingSpinner(textColor)}
           {...loadingAnimation}
         />
       )}

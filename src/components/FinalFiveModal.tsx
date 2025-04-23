@@ -153,8 +153,8 @@ export default function FinalFiveModal() {
                 <span className="flex flex-col items-center justify-center">
                   <span className="flex items-center justify-center mb-2">
                     <svg 
-                      className="animate-spin h-5 w-5 mr-2"
-                      style={{ color: themeColor }}
+                      className={finalFiveStyles.loadingSpinnerClass}
+                      style={finalFiveStyles.loadingSpinner(themeColor)}
                       xmlns="http://www.w3.org/2000/svg" 
                       fill="none" 
                       viewBox="0 0 24 24"
@@ -199,8 +199,8 @@ export default function FinalFiveModal() {
                 return (
                   <span className="flex items-center justify-center">
                     <svg 
-                      className="animate-spin h-5 w-5 mr-2"
-                      style={{ color: themeColor }}
+                      className={finalFiveStyles.loadingSpinnerClass}
+                      style={finalFiveStyles.loadingSpinner(themeColor)}
                       xmlns="http://www.w3.org/2000/svg" 
                       fill="none" 
                       viewBox="0 0 24 24"
@@ -231,7 +231,7 @@ export default function FinalFiveModal() {
                   return (
                     <>
                       {t('game.finalFive.theCorrectAnswerWas')}{' '}
-                      <span style={{ color: themeColor, fontWeight: 'bold' }}>
+                      <span style={finalFiveStyles.correctAnswerText(themeColor)}>
                         {parts[1].trim()}
                       </span>
                     </>
@@ -245,7 +245,7 @@ export default function FinalFiveModal() {
                 return (
                   <>
                     {t('game.finalFive.theCorrectAnswerWas')}{' '}
-                    <span style={{ color: themeColor, fontWeight: 'bold' }}>
+                    <span style={finalFiveStyles.correctAnswerText(themeColor)}>
                       {parts[1]}
                     </span>
                   </>

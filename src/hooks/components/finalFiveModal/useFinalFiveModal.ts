@@ -182,16 +182,10 @@ export function useFinalFiveModal() {
   }, [isGameOver, correctAnswer]);
   
   // Use timer to track game state
-  useEffect(() => {
-    console.log("Timer effect triggered. startTimer:", startTimer, "isGameOver:", isGameOver, "allCardsFlipped:", allCardsFlipped, "timeRemaining:", finalFiveTimeRemaining);
-    
+  useEffect(() => {    
     if (startTimer && !isGameOver && allCardsFlipped) {
-      console.log("Starting Final Five timer interval");
-      const interval = setInterval(() => {
-        console.log("Timer tick, current time:", finalFiveTimeRemaining);
-        
+      const interval = setInterval(() => {        
         if (finalFiveTimeRemaining <= 1) {
-          console.log("FINAL FIVE: Time reached zero, ending game");
           clearInterval(interval);
           setTimerReachedZero(true);
           
@@ -207,9 +201,7 @@ export function useFinalFiveModal() {
           
           // Fetch the correct answer - MUST complete before continuing
           const fetchCorrectAnswer = async () => {
-            try {
-              console.log("Fetching correct answer after time expired");
-              
+            try {              
               // Try up to 3 times (with increasing delays) to fetch the answer
               for (let attempt = 0; attempt < 3; attempt++) {
                 try {
@@ -231,7 +223,6 @@ export function useFinalFiveModal() {
                   if (response.ok) {
                     const data = await response.json();
                     if (data.answer) {
-                      console.log("Got correct answer:", data.answer);
                       setCorrectAnswer(data.answer);
                       
                       // NOW we can set the game to over and show continue button

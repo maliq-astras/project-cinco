@@ -101,7 +101,8 @@ export const loadingAnimationStyles = {
     borderRadius: "9999px",
     borderColor: `rgb(${rgbColor})`,
     borderTopColor: 'transparent',
-    marginBottom: "0.75rem"
+    marginBottom: "0.75rem",
+    animation: "spin 1s linear infinite"
   }),
   loadingText: "text-gray-600 dark:text-gray-300",
   

@@ -112,7 +112,6 @@ export default function LoadingAnimation({
               className={loadingAnimationStyles.loadingIndicatorContainer}
             >
               <div 
-                className="animate-spin" 
                 style={loadingAnimationStyles.loadingSpinner(colorInfo.rgb)}
               ></div>
               <p className={loadingAnimationStyles.loadingText}>{t('loading.message', 'Please wait, loading challenge...')}</p>

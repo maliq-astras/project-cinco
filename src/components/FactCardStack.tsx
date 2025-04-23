@@ -73,14 +73,11 @@ export default function FactCardStack() {
                 animate="animate"
                 exit="exit"
                 transition={cardVariantInfo.transitionSettings}
-                style={{
-                  transformOrigin: 'bottom center',
-                  left: `calc(50% - ${cardSize.width / 2}px)`, // Center the card
-                  bottom: '0px',
-                  width: `${cardSize.width}px`,
-                  height: `${cardSize.height}px`,
-                  zIndex: visibleStackFacts.length - i
-                }}
+                style={factCardStackStyles.getCardPosition(
+                  cardSize,
+                  i,
+                  visibleStackFacts.length
+                )}
               >
                 <FactCardBack fact={facts[factIndex]} size="small" inStack={true} />
               </motion.div>

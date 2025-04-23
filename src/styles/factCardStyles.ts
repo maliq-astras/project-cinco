@@ -25,5 +25,18 @@ export const factCardStyles = {
   factContent: "text-gray-800 dark:text-gray-200 text-sm sm:text-base text-left leading-tight sm:leading-snug px-1",
   
   // Helper function for dynamic classes
-  getFactTypeClasses: (primaryColor: string) => `text-base sm:text-lg font-semibold text-center mt-4 fact-type`
-}; 
+  getFactTypeClasses: (primaryColor: string) => `text-base sm:text-lg font-semibold text-center mt-4 fact-type`,
+  
+  // Animation properties
+  flipAnimation: {
+    initial: { rotateY: 0 },
+    animate: (isFlipped: boolean, isDrawn: boolean, isClosing: boolean) => ({ 
+      rotateY: isFlipped && isDrawn && !isClosing ? 180 : 0 
+    })
+  },
+  
+  // Style properties
+  preserve3d: {
+    transformStyle: 'preserve-3d'
+  },
+} as const; 

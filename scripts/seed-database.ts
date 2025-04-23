@@ -35,8 +35,8 @@ async function seedDatabase() {
     
     // Generate just a few challenges for testing
     const challenges = [
-      ...countriesGenerator.generate(1, today),
-      ...animalsGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000))
+      ...animalsGenerator.generate(1, today),
+      ...countriesGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000))
     ];
     
     // Delete existing challenges

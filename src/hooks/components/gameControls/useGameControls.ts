@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useImperativeHandle, Ref } from 'react';
+import { FormEvent, useRef, useImperativeHandle, Ref, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -11,6 +11,9 @@ export interface GameControlsHandle {
 
 export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const { t } = useTranslation();
+  const [inputValue, setInputValue] = useState('');
+  const [isSkipConfirmActive, setIsSkipConfirmActive] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
@@ -34,35 +37,53 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     }
   }));
 
+  // Reset skip confirmation after a delay
+  useEffect(() => {
+    if (isSkipConfirmActive) {
+      const timer = setTimeout(() => {
+        setIsSkipConfirmActive(false);
+      }, 2000); // Reset after 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isSkipConfirmActive]);
+
+  // Detect touch device on mount
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const inputEl = e.currentTarget.elements[0] as HTMLInputElement;
-    const guess = inputEl.value.trim();
+    const guess = inputValue.trim();
     
     if (!guess) return;
-    if (!hasSeenClue) return; // Can't guess without seeing a clue
-    if (!canMakeGuess) return; // Can't guess without revealing a new fact first
-    if (isProcessingGuess) return; // Don't allow submitting while processing
+    if (!hasSeenClue) return;
+    if (!canMakeGuess) return;
+    if (isProcessingGuess) return;
     
-    // Check if this guess has been made before
     if (isDuplicateGuess(guesses, guess)) {
-      // Show duplicate error message
       showToastMessage('duplicate-error');
       return;
     }
     
+    // Set processing state immediately
+    useGameStore.setState({ isProcessingGuess: true, hasMadeGuess: true });
+    setInputValue('');
     submitGuess(guess);
-    inputEl.value = '';
   };
 
-  // Handle skip button click - submit a skipped guess
+  // Handle skip button click - now with confirmation
   const handleSkip = () => {
     if (!hasSeenClue || !canMakeGuess || isProcessingGuess) return;
     
-    // Submit a special "skipped" guess
+    if (!isSkipConfirmActive) {
+      setIsSkipConfirmActive(true);
+      return;
+    }
+
+    // Second click - actually skip
+    setIsSkipConfirmActive(false);
     submitGuess("___SKIPPED___");
-    
-    // Show custom toast
     showToastMessage('skip-message');
   };
 
@@ -94,6 +115,10 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     handleSkip,
     getInputPlaceholder,
     isInputDisabled,
-    isSkipDisabled
+    isSkipDisabled,
+    inputValue,
+    setInputValue,
+    isSkipConfirmActive,
+    isTouchDevice
   };
 }; 

@@ -427,63 +427,67 @@ export const useGameStore = create<GameStore>()(
     if (!hasSeenClue) return;
     if (!canMakeGuess) return;
     
-    // Set processing state to true when submitting
-    set({ isProcessingGuess: true, hasMadeGuess: true });
+    // Special case for skipped guesses - handle immediately without API call or minimum loading time
+    if (guess === "___SKIPPED___") {
+      const newGuess: UserGuess = {
+        guess,
+        isCorrect: false,
+        timestamp: new Date()
+      };
+      
+      set(state => {
+        const newGuesses = [...state.gameState.guesses, newGuess];
+        const newState = {
+          gameState: {
+            ...state.gameState,
+            guesses: newGuesses,
+            isGameOver: false
+          },
+          canRevealNewClue: true,
+          canMakeGuess: false,
+          isProcessingGuess: false // Reset processing state immediately for skips
+        };
+
+        if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
+          // Immediately set pending state to prevent further interactions
+          set({
+            ...newState,
+            isPendingFinalFiveTransition: true
+          });
+          
+          // Then show the transition after delay
+          setTimeout(() => {
+            set({
+              showFinalFiveTransition: true,
+              finalFiveTransitionReason: 'guesses'
+            });
+
+            // Prefetch final five options as soon as transition starts
+            console.log('Reached 5 guesses - prefetching Final Five options');
+            get().prefetchFinalFiveOptions();
+          }, 1500);
+          
+          return newState;
+        }
+
+        return newState;
+      });
+      
+      return; // Exit early for skipped guesses
+    }
+    
+    // Create a promise that resolves after 1.5 seconds
+    const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 1500));
     
     try {
-      // Special case for skipped guesses - handle immediately without API call
-      if (guess === "___SKIPPED___") {
-        const newGuess: UserGuess = {
-          guess,
-          isCorrect: false,
-          timestamp: new Date()
-        };
-        
-        set(state => {
-          const newGuesses = [...state.gameState.guesses, newGuess];
-          const newState = {
-            gameState: {
-              ...state.gameState,
-              guesses: newGuesses,
-              isGameOver: false
-            },
-            canRevealNewClue: true,
-            canMakeGuess: false,
-            isProcessingGuess: false // Reset processing state immediately
-          };
-
-          if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
-            // Immediately set pending state to prevent further interactions
-            set({
-              ...newState,
-              isPendingFinalFiveTransition: true
-            });
-            
-            // Then show the transition after delay
-            setTimeout(() => {
-              set({
-                showFinalFiveTransition: true,
-                finalFiveTransitionReason: 'guesses'
-              });
-
-              // Prefetch final five options as soon as transition starts
-              // This is a good time because we know no more guesses will be made
-              console.log('Reached 5 guesses - prefetching Final Five options');
-              get().prefetchFinalFiveOptions();
-            }, 1500); // 1.5 seconds delay to show the sparks animation
-            
-            return newState;
-          }
-
-          return newState;
-        });
-        
-        return; // Exit early for skipped guesses
-      }
-      
       // Get the current language from localStorage
       const language = localStorage.getItem('language') || 'en';
-      const data = await verifyGuessAPI(gameState.challenge.challengeId, guess, language);
+      
+      // Start both the API call and the minimum loading time
+      const [data] = await Promise.all([
+        verifyGuessAPI(gameState.challenge.challengeId, guess, language),
+        minimumLoadingTime
+      ]);
       
       const newGuess: UserGuess = {
         guess,
@@ -501,7 +505,7 @@ export const useGameStore = create<GameStore>()(
           },
           canRevealNewClue: true,
           canMakeGuess: false,
-          isProcessingGuess: false // Reset processing state
+          isProcessingGuess: false // Reset processing state after minimum time
         };
 
         if (data.isCorrect) {
@@ -528,10 +532,9 @@ export const useGameStore = create<GameStore>()(
             });
 
             // Prefetch final five options as soon as transition starts
-            // This is a good time because we know no more guesses will be made
             console.log('Reached 5 guesses - prefetching Final Five options');
             get().prefetchFinalFiveOptions();
-          }, 1500); // 1.5 seconds delay to show the sparks animation
+          }, 1500);
           
           return newState;
         }
@@ -546,7 +549,8 @@ export const useGameStore = create<GameStore>()(
       }
     } catch (error) {
       console.error('Error verifying guess:', error);
-      // Reset processing state even if there's an error
+      // Wait for the minimum loading time before resetting processing state
+      await minimumLoadingTime;
       set({ isProcessingGuess: false });
     }
   },
@@ -711,7 +715,6 @@ export const useGameStore = create<GameStore>()(
             isFetchingFinalFiveOptions: false
           }));
           
-          console.log('Final Five options updated with fresh data');
         } catch (error) {
           clearTimeout(timeoutId);
           console.error('Error fetching Final Five:', error);
@@ -728,10 +731,10 @@ export const useGameStore = create<GameStore>()(
       }, 50);
     } catch (error) {
       console.error('Error fetching Final Five options:', error);
-      
       // Set error state with user-friendly message
       set({ 
         showFinalFiveTransition: false,
+        isFinalFiveActive: true, // Ensure modal stays up on error
         finalFiveError: 'Could not load Final Five challenge. Please try again.',
         isFetchingFinalFiveOptions: false // Ensure the flag is reset on error
       });
@@ -743,10 +746,21 @@ export const useGameStore = create<GameStore>()(
     
     if (!gameState.challenge) return;
     
+    // Set processing state to true when submitting
+    set({ isProcessingGuess: true });
+    
+    // Create a promise that resolves after 1.5 seconds
+    const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 1500));
+    
     try {
       // Get the current language from localStorage
       const language = localStorage.getItem('language') || 'en';
-      const data = await verifyGuessAPI(gameState.challenge.challengeId, option, language);
+      
+      // Start both the API call and the minimum loading time
+      const [data] = await Promise.all([
+        verifyGuessAPI(gameState.challenge.challengeId, option, language),
+        minimumLoadingTime
+      ]);
       
       const newGuess: UserGuess = {
         guess: option,
@@ -787,44 +801,64 @@ export const useGameStore = create<GameStore>()(
               isCorrect: true,
               timestamp: new Date(),
               isFinalFiveGuess: true,
-              isHidden: true // Mark as hidden so it doesn't show in history
+              isHidden: true
             };
             
+            // Add both guesses to the state
             set(state => ({
               gameState: {
                 ...state.gameState,
-                guesses: [...state.gameState.guesses, correctGuess]
-              }
+                guesses: [...state.gameState.guesses, newGuess, correctGuess],
+                isGameOver: true
+              },
+              isProcessingGuess: false // Reset processing state after minimum time
             }));
+            
+            return;
           } catch (error) {
             console.error('Error fetching correct answer:', error);
+            // If we can't get the correct answer, just add the incorrect guess
+            set(state => ({
+              gameState: {
+                ...state.gameState,
+                guesses: [...state.gameState.guesses, newGuess],
+                isGameOver: true
+              },
+              isProcessingGuess: false // Reset processing state after minimum time
+            }));
+            
+            return;
           }
         }
       }
       
-      // Set the game state to game over and update gameOutcome
+      // If we have a correct guess, just add it to the state
       set(state => ({
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
-          isGameOver: true
+          isGameOver: data.isCorrect
         },
-        gameOutcome: data.isCorrect ? 'final-five-win' : 'loss',
-        victoryAnimationStep: data.isCorrect ? 'summary' : null, // Only set summary step if it's a win
-        isVictoryAnimationActive: data.isCorrect
+        isProcessingGuess: false // Reset processing state after minimum time
       }));
       
-      // After a short delay, always set victoryAnimationStep to 'summary'
-      // This ensures the message flows properly for both win and loss
-      if (!data.isCorrect) {
+      // If the guess was correct, show the victory animation
+      if (data.isCorrect) {
+        set({
+          isVictoryAnimationActive: true,
+          victoryAnimationStep: 'bubbles',
+          gameOutcome: 'final-five-win'
+        });
+        
         setTimeout(() => {
-          set({
-            victoryAnimationStep: 'summary'
-          });
-        }, 1500); // Delay to allow animations to complete
+          set({ victoryAnimationStep: 'summary' });
+        }, 1500);
       }
     } catch (error) {
-      console.error('Error verifying final guess:', error);
+      console.error('Error verifying Final Five guess:', error);
+      // Wait for the minimum loading time before resetting processing state
+      await minimumLoadingTime;
+      set({ isProcessingGuess: false });
     }
   },
   

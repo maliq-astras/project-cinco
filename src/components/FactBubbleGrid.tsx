@@ -19,7 +19,7 @@ const FactBubbleGrid: React.FC = () => {
   } = useFactBubbleGrid();
 
   return (
-    <div className={factBubbleGridStyles.container} style={{ marginTop: "0.5rem" }}>
+    <div className={factBubbleGridStyles.container} style={factBubbleGridStyles.containerSpacing}>
       <div 
         id="bubble-grid"
         className={factBubbleGridStyles.grid}
@@ -31,7 +31,7 @@ const FactBubbleGrid: React.FC = () => {
             return (
               <div 
                 key={item.key} 
-                style={{ width: `${bubbleSize}px` }}
+                style={factBubbleGridStyles.bubbleSize(bubbleSize)}
                 className={factBubbleGridStyles.emptySlot}
               />
             );
@@ -51,7 +51,7 @@ const FactBubbleGrid: React.FC = () => {
                   factType={item.fact?.factType || ''}
                   isRevealed={false}
                   data-fact-index={item.factIndex ?? 0}
-                  style={{ width: `${bubbleSize}px` }}
+                  style={factBubbleGridStyles.bubbleSize(bubbleSize)}
                   className="aspect-square"
                   category={item.category}
                 />

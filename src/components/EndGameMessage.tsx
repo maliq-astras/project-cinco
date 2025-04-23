@@ -35,12 +35,12 @@ export default function EndGameMessage({
   const getMessage = () => {
     const { type, displayAnswer, numberOfTries: tries } = messageData;
     const answerSpan = (
-      <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }}>
+      <span style={endGameMessageStyles.answerText(colors.primary)}>
         {displayAnswer}
       </span>
     );
     const finalFiveSpan = (
-      <span style={{ fontWeight: 'bold', color: `var(--color-${colors.primary})` }} className={righteous.className}>
+      <span style={endGameMessageStyles.answerText(colors.primary)} className={righteous.className}>
         FINAL 5
       </span>
     );
@@ -116,16 +116,7 @@ export default function EndGameMessage({
             key={piece.id}
             className={endGameMessageStyles.confettiPiece}
             {...endGameMessageStyles.confettiAnimation(piece.angle)}
-            style={{
-              width: piece.size,
-              height: piece.size,
-              backgroundColor: piece.color,
-              borderRadius: '50%',
-              position: 'absolute',
-              transform: 'translate(-50%, -50%)',
-              left: '50%',
-              top: '50%'
-            }}
+            style={endGameMessageStyles.confettiPieceStyle(piece.size, piece.color)}
           />
         ))}
         
@@ -139,7 +130,7 @@ export default function EndGameMessage({
           {/* Time display - only for standard wins */}
           {shouldShowTime && (
             <div className={endGameMessageStyles.timeDisplay}>
-              <span style={{ color: `var(--color-${colors.primary})` }}>
+              <span style={endGameMessageStyles.timeDisplayText(colors.primary)}>
                 {timeFormatted}
               </span>
               <svg 

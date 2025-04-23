@@ -1,0 +1,44 @@
+{
+    "answer": {
+      "en": "Cheetah",
+      "es": "Guepardo"
+    },
+    "facts": {
+      "Habitat": {
+        "en": "My population has declined by 92% in the last century, with small isolated groups now scattered across just 9% of my historical range that once spanned three continents including areas with minimal rainfall.",
+        "es": "Mi población ha disminuido un 92% en el último siglo, con pequeños grupos aislados ahora dispersos en apenas el 9% de mi rango histórico que alguna vez abarcó tres continentes, incluyendo áreas con mínimas precipitaciones."
+      },
+      "Ecology": {
+        "en": "Unlike most carnivores who focus on ambush, I've evolved to hunt in full daylight when my specialized vision can detect prey movement up to 5km away, and I typically only need to drink water once every 3-4 days.",
+        "es": "A diferencia de la mayoría de los carnívoros que se centran en la emboscada, he evolucionado para cazar a plena luz del día cuando mi visión especializada puede detectar el movimiento de las presas hasta a 5 km de distancia, y normalmente solo necesito beber agua una vez cada 3-4 días."
+      },
+      "Physical Characteristics": {
+        "en": "My semi-retractable claws function more like cleats than weapons, providing crucial traction while my flexible spine can stretch to nearly double its relaxed length during full extension, increasing my stride to over 7 meters.",
+        "es": "Mis garras semi-retráctiles funcionan más como tacos que como armas, proporcionando tracción crucial mientras mi columna flexible puede estirarse hasta casi el doble de su longitud relajada durante la extensión completa, aumentando mi zancada a más de 7 metros."
+      },
+      "Evolutionary History": {
+        "en": "Unlike all other members of my taxonomic family, I cannot hybridize with any of them due to having 38 chromosomes instead of 36, and fossil evidence shows my lineage diverged approximately 8.5 million years ago as specialist hunters.",
+        "es": "A diferencia de todos los demás miembros de mi familia taxonómica, no puedo hibridarme con ninguno de ellos debido a tener 38 cromosomas en lugar de 36, y la evidencia fósil muestra que mi linaje divergió hace aproximadamente 8.5 millones de años como cazadores especialistas."
+      },
+      "Social Behavior": {
+        "en": "Males in my species often form lifelong coalitions with their brothers, sharing everything from hunting to mating opportunities, while females actively avoid each other except for brief cub playdates that help youngsters develop crucial social skills.",
+        "es": "Los machos de mi especie a menudo forman coaliciones de por vida con sus hermanos, compartiendo todo, desde la caza hasta las oportunidades de apareamiento, mientras que las hembras se evitan activamente entre sí, excepto por breves citas de juego para cachorros que ayudan a los pequeños a desarrollar habilidades sociales cruciales."
+      },
+      "Reproduction": {
+        "en": "Females of my species have one of the most unusual reproductive systems—I am an induced ovulator with no specific breeding season, can be pregnant with cubs from different fathers simultaneously, and have a remarkably short gestation of just 90-95 days.",
+        "es": "Las hembras de mi especie tienen uno de los sistemas reproductivos más inusuales: soy una ovuladora inducida sin temporada específica de reproducción, puedo estar embarazada de cachorros de diferentes padres simultáneamente y tengo una gestación notablemente corta de solo 90-95 días."
+      },
+      "Interspecies Relationships": {
+        "en": "Akbar the Great, who ruled the Mughal Empire from 1556 to 1605, owned as many as 1,000 of my kind at a time and over 9,000 in total during his 49-year reign, using us for hunting antelopes despite our inability to be truly domesticated unlike many other species humans have partnered with.",
+        "es": "Akbar el Grande, quien gobernó el Imperio Mogol de 1556 a 1605, poseía hasta 1,000 de mi especie a la vez y más de 9,000 en total durante sus 49 años de reinado, usándonos para cazar antílopes a pesar de nuestra incapacidad de ser verdaderamente domesticados a diferencia de muchas otras especies con las que los humanos se han asociado."
+      },
+      "Wildcard": {
+        "en": "My central nervous system has evolved a unique 'fixed action pattern' that automatically stabilizes my head during high-speed chases—even if you could artificially rotate my body, my eyes would remain perfectly level with the horizon.",
+        "es": "Mi sistema nervioso central ha desarrollado un 'patrón de acción fijo' único que estabiliza automáticamente mi cabeza durante persecuciones a alta velocidad; incluso si pudieras rotar artificialmente mi cuerpo, mis ojos permanecerían perfectamente nivelados con el horizonte."
+      }
+    },
+    "alternatives": {
+      "en": ["Leopard", "Jaguar", "Cougar", "Ocelot", "Lynx", "Caracal", "Serval", "Puma", "Lion"],
+      "es": ["Leopardo", "Jaguar", "Puma", "Ocelote", "Lince", "Caracal", "Serval", "Puma", "León"]
+    }
+  }

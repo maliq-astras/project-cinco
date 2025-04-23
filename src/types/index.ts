@@ -115,16 +115,15 @@ export const categoryColorMap: Record<CategoryType, ThemeColors> = {
 };
 
 // Define fact types for each category
-export type CountryFactType = "Language(s)" | "Flag" | "Cities" | "Economy" | "Demographics" | "Origin" | "Geography & Climate" | "Wildcard";
-export type AnimalFactType = "Habitat" | "Ecology" | "Rare Features" | "Size/Weight" | "Evolutionary History" | "Social Behavior" | "Reproduction" | "Wildcard";
-export type MovieFactType = "Director" | "Premiere" | "Character(s)" | "Genre" | "Critical Reception" | "Box Office" | "Production" | "Wildcard";
-export type BookFactType = "Author" | "Publication" | "Character(s)" | "Genre" | "Critical Reception" | "Plot" | "Narrative Style" | "Wildcard";
-export type MusicalArtistFactType = "Genre" | "Background" | "Era" | "Songs & Albums" | "Achievements" | "Collaborations" | "Chart Performance" | "Wildcard";
-export type AthleteFactType = "Personal Life" | "Affiliations" | "Era" | "Nationality" | "Physique" | "Stats"| "Achievements" | "Wildcard";
-export type HistoricalFigureFactType = "Occupation" | "Important Dates" | "Nationality" | "Legacy" | "Physical Appearance" | "Background" | "Personal Life" | "Wildcard";
-export type FamousBrandFactType = "Industry" | "Origin" | "Logo" | "Location" | "Signature Product" | "Financials" | "Brand Culture" | "Wildcard";
-export type TvShowFactType = "Genre" | "Debut" | "Production" | "Character(s)" | "Reception" | "Network/Platform" | "Visual Style" |"Wildcard";
-// Define other fact types similarly...
+export type CountryFactType = "Language(s)" | "Flag" | "Notable City" | "Political History" | "Economy" | "Culture & Tradition" | "Geography & Border" | "Wildcard";
+export type AnimalFactType = "Habitat" | "Diet" | "Physical Characteristic" | "Evolutionary History" | "Social Behavior" | "Reproduction" | "Interspecies Relationships" | "Wildcard";
+export type MovieFactType = "Behind the Scenes" | "Premiere" | "Character(s)" | "Genre" | "Critical Reception" | "Box Office" | "Famous Line" | "Wildcard";
+export type BookFactType = "Author" | "Illustration/Cover Design" | "Character(s)" | "Genre" | "Publication Date" | "Plot" | "Famous Lines" | "Wildcard";
+export type MusicalArtistFactType = "Genre" | "Background" | "Iconic Song" | "Debut" | "Achievements" | "Collaborations" | "Chart Performance" | "Wildcard";
+export type AthleteFactType = "Personal Life" | "Affiliations" | "Era" | "Nationality" | "Physique" | "Stats" | "Achievements" | "Wildcard";
+export type HistoricalFigureFactType = "Occupation" | "Background" | "Nationality" | "Legacy" | "Physical Appearance" | "Famous Quotes" | "Life's Conclusion" | "Wildcard";
+export type FamousBrandFactType = "Industry" | "Origin" | "Logo" | "Signature Product" | "Target Audience" | "Tagline/Catchphrase" | "HQ Location" | "Brand Culture" | "Wildcard";
+export type TvShowFactType = "Genre" | "Debut" | "Character(s)" | "Season Structure" | "Iconic Episode" | "Network/Platform" | "Visual Style" | "Wildcard";
 
 // Map categories to their fact types
 export type CategoryFactTypeMap = {
@@ -137,7 +136,6 @@ export type CategoryFactTypeMap = {
   [CategoryType.HISTORICAL_FIGURES]: HistoricalFigureFactType;
   [CategoryType.FAMOUS_BRANDS]: FamousBrandFactType;
   [CategoryType.TV_SHOWS]: TvShowFactType;
-  // Map other categories similarly...
 }
 
 // Create a generic Fact interface

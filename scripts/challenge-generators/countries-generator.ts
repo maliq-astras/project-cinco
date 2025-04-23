@@ -6,11 +6,11 @@ import { BaseChallengeGenerator } from './generator';
 const countryFactTypes = [
   "Language(s)",
   "Flag",
-  "Cities",
+  "Notable City",
+  "Political History",
   "Economy",
-  "Demographics",
-  "Origin",
-  "Geography & Climate",
+  "Culture & Tradition",
+  "Geography & Border",
   "Wildcard"
 ];
 
@@ -30,29 +30,29 @@ const countryData = [
         en: "I am one of only a few countries whose flag features the Southern Cross constellation on a blue field.",
         es: "Soy uno de los pocos países cuya bandera presenta la constelación de la Cruz del Sur sobre un campo azul."
       },
-      "Cities": {
+      "Notable City": {
         en: "I have a city nicknamed the 'City of Sails' due to having more boats per capita than anywhere else in the world.",
         es: "Tengo una ciudad apodada la 'Ciudad de las Velas' por tener más barcos per cápita que cualquier otro lugar del mundo."
+      },
+      "Political History": {
+        en: "I was the first country in the world to give women the right to vote in 1893, over 25 years before the United States.",
+        es: "Fui el primer país del mundo en dar a las mujeres el derecho al voto en 1893, más de 25 años antes que Estados Unidos."
       },
       "Economy": {
         en: "I count tourism as a major economic driver, but my largest export earnings come from dairy products, which account for around 20% of my total exports.",
         es: "El turismo es un importante motor económico, pero mis mayores ingresos por exportaciones provienen de productos lácteos, que representan alrededor del 20% de mis exportaciones totales."
       },
-      "Demographics": {
-        en: "I have a population of approximately 5 million people, with nearly one-third of them living in my largest urban area.",
-        es: "Tengo una población de aproximadamente 5 millones de personas, con casi un tercio viviendo en mi área urbana más grande."
+      "Culture & Tradition": {
+        en: "I have a rich indigenous culture with the Māori people, known for their haka dance, intricate tattoos, and traditional meeting houses called marae.",
+        es: "Tengo una rica cultura indígena con el pueblo Māori, conocido por su danza haka, tatuajes intrincados y casas de reunión tradicionales llamadas marae."
       },
-      "Origin": {
-        en: "I was the last major habitable landmass to be settled by humans, with my indigenous population arriving around 700 years ago.",
-        es: "Fui la última masa de tierra habitable importante en ser poblada por humanos, con mi población indígena llegando hace unos 700 años."
-      },
-      "Geography & Climate": {
+      "Geography & Border": {
         en: "I consist of two main islands and over 700 smaller islands, completely surrounded by ocean with no land borders to any other nation.",
         es: "Consisto en dos islas principales y más de 700 islas más pequeñas, completamente rodeadas por océano sin fronteras terrestres con ninguna otra nación."
       },
       "Wildcard": {
-        en: "I was the first country in the world to give women the right to vote in 1893, over 25 years before the United States.",
-        es: "Fui el primer país del mundo en dar a las mujeres el derecho al voto en 1893, más de 25 años antes que Estados Unidos."
+        en: "I was the last major habitable landmass to be settled by humans, with my indigenous population arriving around 700 years ago.",
+        es: "Fui la última masa de tierra habitable importante en ser poblada por humanos, con mi población indígena llegando hace unos 700 años."
       }
     },
     alternatives: {
@@ -74,23 +74,23 @@ const countryData = [
         en: "My flag features a single crimson disk centered on a white rectangular field, representing the sun goddess from whom my imperial family is said to descend.",
         es: "Mi bandera presenta un único disco carmesí centrado en un campo rectangular blanco, que representa a la diosa del sol de quien se dice que desciende mi familia imperial."
       },
-      "Cities": {
+      "Notable City": {
         en: "I have a city that was once called Edo and now hosts the world's largest fish market and busiest pedestrian crossing.",
         es: "Tengo una ciudad que una vez se llamó Edo y ahora alberga el mercado de pescado más grande del mundo y el cruce peatonal más transitado."
+      },
+      "Political History": {
+        en: "My recorded history dates back to the 5th century CE, though archaeological evidence suggests human habitation for over 30,000 years.",
+        es: "Mi historia registrada se remonta al siglo V d.C., aunque la evidencia arqueológica sugiere la habitación humana por más de 30,000 años."
       },
       "Economy": {
         en: "My economy is dominated by manufacturing, particularly automobiles, electronics, and robotics, with global brands like Toyota and Sony originating here.",
         es: "Mi economía está dominada por la manufactura, particularmente automóviles, electrónica y robótica, con marcas globales como Toyota y Sony originándose aquí."
       },
-      "Demographics": {
-        en: "I have approximately 125 million people despite my relatively small land area, making me one of the most densely populated developed nations.",
-        es: "Tengo aproximadamente 125 millones de personas a pesar de mi área territorial relativamente pequeña, lo que me convierte en una de las naciones desarrolladas más densamente pobladas."
+      "Culture & Tradition": {
+        en: "I have a rich indigenous culture with the Māori people, known for their haka dance, intricate tattoos, and traditional meeting houses called marae.",
+        es: "Tengo una rica cultura indígena con el pueblo Māori, conocido por su danza haka, tatuajes intrincados y casas de reunión tradicionales llamadas marae."
       },
-      "Origin": {
-        en: "My recorded history dates back to the 5th century CE, though archaeological evidence suggests human habitation for over 30,000 years.",
-        es: "Mi historia registrada se remonta al siglo V d.C., aunque la evidencia arqueológica sugiere la habitación humana por más de 30,000 años."
-      },
-      "Geography & Climate": {
+      "Geography & Border": {
         en: "I consist of 6,852 islands, with the four largest comprising about 97% of my land area, and I have no land borders with other nations.",
         es: "Consisto en 6,852 islas, con las cuatro más grandes comprendiendo cerca del 97% de mi área terrestre, y no tengo fronteras terrestres con otras naciones."
       },

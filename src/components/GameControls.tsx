@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef} from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import GuessProgressBar from './GuessProgressBar';
@@ -15,9 +15,12 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     colors,
     handleSubmit,
     handleSkip,
-    getInputPlaceholder,
     isInputDisabled,
-    isSkipDisabled
+    isSkipDisabled,
+    inputValue,
+    setInputValue,
+    isSkipConfirmActive,
+    isTouchDevice
   } = useGameControls(ref);
 
   return (
@@ -54,17 +57,29 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
 
               <div className={gameControlsStyles.inputContainer}>
                 <div className="relative">
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} className="relative">
                     <input
                       id="game-input"
                       ref={inputRef}
                       className={gameControlsStyles.input(isInputDisabled())}
-                      style={{
-                        "--theme-color": `var(--color-${colors.primary})`
-                      } as React.CSSProperties}
+                      style={gameControlsStyles.inputWithTheme(colors.primary)}
                       disabled={isInputDisabled()}
                       autoComplete="off"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
                     />
+                    <button
+                      type="submit"
+                      className={gameControlsStyles.submitButton}
+                      style={{
+                        color: `var(--color-${colors.primary})`,
+                        backgroundColor: `var(--color-${colors.primary}10)`,
+                        opacity: isInputDisabled() || !inputValue.trim() ? 0.5 : 1
+                      }}
+                      disabled={isInputDisabled() || !inputValue.trim()}
+                    >
+                      ENTER
+                    </button>
                   </form>
                 </div>
                 
@@ -94,22 +109,39 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                 />
                 
                 {/* Skip button */}
-                <motion.button 
-                  className={gameControlsStyles.controlButton}
-                  {...(isSkipDisabled() ? gameControlsStyles.disabledButtonAnimation : gameControlsStyles.buttonAnimation)}
-                  style={{ 
-                    color: `var(--color-${colors.primary})`,
-                    opacity: isSkipDisabled() ? 0.5 : 1,
-                    cursor: isSkipDisabled() ? 'not-allowed' : 'pointer'
-                  }}
-                  onClick={handleSkip}
-                  disabled={isSkipDisabled()}
-                  aria-label={t('ui.buttons.skip')}
-                >
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                  </svg>
-                </motion.button>
+                <div className="relative">
+                  <motion.button 
+                    className={gameControlsStyles.controlButton}
+                    {...(isSkipDisabled() ? gameControlsStyles.disabledButtonAnimation : gameControlsStyles.buttonAnimation)}
+                    style={gameControlsStyles.getButtonStyle(colors.primary, isSkipDisabled(), isSkipConfirmActive)}
+                    onClick={handleSkip}
+                    disabled={isSkipDisabled()}
+                    aria-label={isSkipConfirmActive ? t('ui.buttons.confirm_skip') : t('ui.buttons.skip')}
+                  >
+                    {isSkipConfirmActive ? (
+                      <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7M16 5l7 7-7 7" />
+                      </svg>
+                    ) : (
+                      <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </motion.button>
+                </div>
+                {isSkipConfirmActive && (
+                  <motion.div
+                    {...gameControlsStyles.tooltipAnimation}
+                    className={gameControlsStyles.skipTooltip}
+                    style={gameControlsStyles.getTooltipStyle(colors.primary)}
+                  >
+                    {isTouchDevice ? t('ui.buttons.confirm_skip_mobile') : t('ui.buttons.confirm_skip')}
+                    <div 
+                      className={gameControlsStyles.skipTooltipCaret}
+                      style={gameControlsStyles.getTooltipStyle(colors.primary)}
+                    />
+                  </motion.div>
+                )}
               </div>
             </div>
           </div>
