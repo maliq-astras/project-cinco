@@ -11,6 +11,12 @@ export const finalFiveStyles = {
   // Mobile handle
   mobileHandle: "w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-4 md:hidden",
   
+  // Warning icon
+  warningIcon: {
+    container: "text-red-500 mb-4 text-xl",
+    icon: "h-12 w-12 mx-auto mb-2 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
+  },
+  
   // Header
   header: "text-4xl font-bold text-center mb-6",
   
@@ -58,10 +64,9 @@ export const finalFiveStyles = {
   
   // Loading spinner
   loadingSpinner: (color: string) => ({
-    color: color,
-    animation: "spin 1s linear infinite"
+    color: color
   }),
-  loadingSpinnerClass: "h-5 w-5 mr-2",
+  loadingSpinnerClass: "h-5 w-5 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent",
   
   // Message formatting
   correctAnswerText: (color: string) => ({

@@ -192,4 +192,11 @@ export function isDuplicateGuess(guesses: UserGuess[], newGuess: string): boolea
   return guesses.some(
     prevGuess => prevGuess.guess.toLowerCase() === newGuess.toLowerCase()
   );
+}
+
+export function capitalizeAnswer(answer: string): string {
+  return answer
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 } 

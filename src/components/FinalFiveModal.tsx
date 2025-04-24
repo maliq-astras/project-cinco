@@ -9,6 +9,7 @@ import FinalFiveCard from './FinalFiveCard';
 import { finalFiveStyles } from '../styles/finalFiveStyles';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
+import { capitalizeAnswer } from '../helpers/gameLogic';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -76,10 +77,10 @@ export default function FinalFiveModal() {
           </h2>
           
           <div className="flex flex-col items-center justify-center p-6 text-center">
-            <div className="text-red-500 mb-4 text-xl">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+            <div className={finalFiveStyles.warningIcon.container}>
+              <div className={finalFiveStyles.warningIcon.icon}>
+                <span className="text-2xl">!</span>
+              </div>
               <p>{finalFiveError}</p>
             </div>
             
@@ -152,27 +153,10 @@ export default function FinalFiveModal() {
               return (
                 <span className="flex flex-col items-center justify-center">
                   <span className="flex items-center justify-center mb-2">
-                    <svg 
+                    <div 
                       className={finalFiveStyles.loadingSpinnerClass}
                       style={finalFiveStyles.loadingSpinner(themeColor)}
-                      xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" 
-                      viewBox="0 0 24 24"
-                    >
-                      <circle 
-                        className="opacity-25" 
-                        cx="12" 
-                        cy="12" 
-                        r="10" 
-                        stroke="currentColor" 
-                        strokeWidth="4"
-                      ></circle>
-                      <path 
-                        className="opacity-75" 
-                        fill="currentColor" 
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    />
                     <span>
                       {timerReachedZero ? t('game.finalFive.loadingAnswer') : message}
                     </span>
@@ -198,27 +182,10 @@ export default function FinalFiveModal() {
                   !message.includes(t('game.finalFive.theCorrectAnswerWas'))) {
                 return (
                   <span className="flex items-center justify-center">
-                    <svg 
+                    <div 
                       className={finalFiveStyles.loadingSpinnerClass}
                       style={finalFiveStyles.loadingSpinner(themeColor)}
-                      xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" 
-                      viewBox="0 0 24 24"
-                    >
-                      <circle 
-                        className="opacity-25" 
-                        cx="12" 
-                        cy="12" 
-                        r="10" 
-                        stroke="currentColor" 
-                        strokeWidth="4"
-                      ></circle>
-                      <path 
-                        className="opacity-75" 
-                        fill="currentColor" 
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    />
                     <span>{t('game.finalFive.loadingAnswer')}</span>
                   </span>
                 );
@@ -246,7 +213,7 @@ export default function FinalFiveModal() {
                   <>
                     {t('game.finalFive.theCorrectAnswerWas')}{' '}
                     <span style={finalFiveStyles.correctAnswerText(themeColor)}>
-                      {parts[1]}
+                      {capitalizeAnswer(parts[1])}
                     </span>
                   </>
                 );

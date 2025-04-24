@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +32,11 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [isMobile, setIsMobile] = useState(false);
   
+  // Language dropdown state
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const languageSelectRef = useRef<HTMLDivElement>(null);
+  
   // Sync selectedLanguage with language from context
   useEffect(() => {
     setSelectedLanguage(language);
@@ -63,6 +68,46 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isLanguageDropdownOpen &&
+        languageSelectRef.current && 
+        !languageSelectRef.current.contains(event.target as Node)
+      ) {
+        // Check if the click is on a dropdown option, don't close if it is
+        const target = event.target as HTMLElement;
+        if (target.closest('.language-dropdown-option')) {
+          return;
+        }
+        
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLanguageDropdownOpen]);
+
+  // Function to toggle the language dropdown
+  const toggleLanguageDropdown = () => {
+    if (!isLanguageLocked) {
+      if (!isLanguageDropdownOpen && languageSelectRef.current) {
+        const rect = languageSelectRef.current.getBoundingClientRect();
+        // Calculate position - we want it right below the selector
+        setDropdownPosition({
+          top: rect.bottom,
+          left: rect.left,
+          width: rect.width
+        });
+      }
+      setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+    }
+  };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && !isMobile) {
@@ -89,6 +134,17 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
       changeLanguage(newLang as Language);
     }
   };
+  
+  // Function for the custom select to update language
+  const selectLanguage = (lang: string) => {
+    if (isLanguageLocked) return;
+    
+    if (SUPPORTED_LANGUAGES.includes(lang)) {
+      setSelectedLanguage(lang as Language);
+      changeLanguage(lang as Language);
+      setIsLanguageDropdownOpen(false);
+    }
+  };
 
   return {
     colors,
@@ -105,7 +161,12 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     handleLanguageChange,
     isMobile,
     handleOverlayClick,
-    languages,
-    isLanguageLocked
+    isLanguageLocked,
+    // Language dropdown
+    isLanguageDropdownOpen,
+    dropdownPosition,
+    languageSelectRef,
+    toggleLanguageDropdown,
+    selectLanguage
   };
 }; 

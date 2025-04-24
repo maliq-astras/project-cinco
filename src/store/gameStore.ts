@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Challenge, UserGuess } from '../types';
+import { Challenge, UserGuess, GameOutcome } from '../types/index';
 import { 
   initialGameState, 
   GameState,
@@ -10,9 +10,6 @@ import {
   shouldShowFinalFive
 } from '../helpers/gameLogic';
 import { getFactBubblePosition } from '../helpers/uiHelpers';
-
-// Define the GameOutcome type locally if it can't be imported
-type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
 
 interface GameStore {
   // Core game state
@@ -804,14 +801,15 @@ export const useGameStore = create<GameStore>()(
               isHidden: true
             };
             
-            // Add both guesses to the state
+            // Add both guesses to the state and set game over
             set(state => ({
               gameState: {
                 ...state.gameState,
                 guesses: [...state.gameState.guesses, newGuess, correctGuess],
                 isGameOver: true
               },
-              isProcessingGuess: false // Reset processing state after minimum time
+              isProcessingGuess: false,
+              gameOutcome: 'loss-final-five-wrong' // Set the correct outcome for Final Five wrong guess
             }));
             
             return;
@@ -824,7 +822,8 @@ export const useGameStore = create<GameStore>()(
                 guesses: [...state.gameState.guesses, newGuess],
                 isGameOver: true
               },
-              isProcessingGuess: false // Reset processing state after minimum time
+              isProcessingGuess: false,
+              gameOutcome: 'loss-final-five-wrong' // Set the correct outcome for Final Five wrong guess
             }));
             
             return;
@@ -839,7 +838,7 @@ export const useGameStore = create<GameStore>()(
           guesses: [...state.gameState.guesses, newGuess],
           isGameOver: data.isCorrect
         },
-        isProcessingGuess: false // Reset processing state after minimum time
+        isProcessingGuess: false
       }));
       
       // If the guess was correct, show the victory animation

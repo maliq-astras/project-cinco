@@ -2,9 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { verifyGuess } from '../../../helpers/gameLogic';
-
-export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
+import { GameOutcome } from '../../../types/index';
 
 interface UseEndGameMessageProps {
   outcome: GameOutcome;
@@ -117,7 +115,8 @@ export const useEndGameMessage = ({
   }, [gameState.challenge]);
   
   useEffect(() => {
-    if (outcome === 'loss' && (!correctAnswer || correctAnswer.trim() === '')) {
+    if ((outcome === 'loss-final-five-wrong' || outcome === 'loss-final-five-time' || outcome === 'loss-time') && 
+        (!correctAnswer || correctAnswer.trim() === '')) {
       // Try to find correct answer from guesses
       const correctGuess = gameState.guesses.find(g => g.isCorrect);
       if (correctGuess) {
@@ -172,27 +171,17 @@ export const useEndGameMessage = ({
           type: 'final-five-win',
           displayAnswer
         };
-      case 'loss':
-        // Check if any guesses were made in Final Five
-        const hasFinalFiveGuesses = gameState.guesses.some(g => g.isFinalFiveGuess);
-        
-        // Check specifically for wrong guesses in Final Five
-        if (hasFinalFiveGuesses) {
-          return {
-            type: 'loss-final-five-wrong',
-            displayAnswer
-          };
-        } 
-        
-        // Final five time ran out (check specifically for final five)
-        if (gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0 && finalFiveTimeRemaining === 0) {
-          return {
-            type: 'loss-final-five-time',
-            displayAnswer
-          };
-        }
-        
-        // Regular time ran out (not in final five)
+      case 'loss-final-five-wrong':
+        return {
+          type: 'loss-final-five-wrong',
+          displayAnswer
+        };
+      case 'loss-final-five-time':
+        return {
+          type: 'loss-final-five-time',
+          displayAnswer
+        };
+      case 'loss-time':
         return {
           type: 'loss-time',
           displayAnswer

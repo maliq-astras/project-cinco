@@ -30,7 +30,13 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     handleLanguageChange,
     isMobile,
     handleOverlayClick,
-    isLanguageLocked
+    isLanguageLocked,
+    // Language dropdown props
+    isLanguageDropdownOpen,
+    dropdownPosition,
+    languageSelectRef,
+    toggleLanguageDropdown,
+    selectLanguage
   } = useSettingsPanel({ isOpen, onClose });
 
   if (!isOpen) return null;
@@ -116,34 +122,29 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Language Dropdown */}
-        <div>
-          <div className={settingsPanelStyles.settingRow}>
-            <div className={settingsPanelStyles.settingTextContainer}>
-              <p className={settingsPanelStyles.settingTitle}>{t('ui.language.select')}</p>
-            </div>
-            <select 
-              id="language"
-              value={selectedLanguage}
-              onChange={handleLanguageChange}
+        <div className={settingsPanelStyles.settingRow}>
+          <div className={settingsPanelStyles.settingTextContainer}>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.language.select')}</p>
+          </div>
+          <div className={settingsPanelStyles.languageSelectContainer}>
+            <div 
+              ref={languageSelectRef}
               className={settingsPanelStyles.languageSelectClass}
               style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
-              disabled={isLanguageLocked}
+              onClick={toggleLanguageDropdown}
             >
-              {languages.map((lang) => (
-                <option 
-                  key={lang.code} 
-                  value={lang.code}
-                  disabled={!SUPPORTED_LANGUAGES.includes(lang.code) || isLanguageLocked}
-                >
-                  {SUPPORTED_LANGUAGES.includes(lang.code) ? t(`ui.language.${lang.code}`) : lang.name}
-                </option>
-              ))}
-            </select>
+              <span>{SUPPORTED_LANGUAGES.includes(selectedLanguage) ? t(`ui.language.${selectedLanguage}`) : selectedLanguage}</span>
+              <div className={settingsPanelStyles.languageSelectArrow}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
-          {isLanguageLocked && (
-            <p className={settingsPanelStyles.settingErrorText}>{t('ui.settings.languageLocked')}</p>
-          )}
         </div>
+        {isLanguageLocked && (
+          <p className={settingsPanelStyles.settingErrorText}>{t('ui.settings.languageLocked')}</p>
+        )}
       </div>
 
       <div className={settingsPanelStyles.footer}>
@@ -151,6 +152,44 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           {t('ui.settings.autoSave')}
         </p>
       </div>
+      
+      {/* Dropdown portal */}
+      {isLanguageDropdownOpen && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+            width: `${dropdownPosition.width}px`,
+            zIndex: 9999
+          }}
+          className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-32 overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {languages.map((lang) => (
+            <div
+              key={lang.code}
+              className={
+                !SUPPORTED_LANGUAGES.includes(lang.code) || isLanguageLocked
+                  ? `${settingsPanelStyles.languageOptionDisabled} language-dropdown-option`
+                  : `${settingsPanelStyles.languageOptionClass} language-dropdown-option`
+              }
+              style={
+                SUPPORTED_LANGUAGES.includes(lang.code) && !isLanguageLocked
+                  ? settingsPanelStyles.languageOption(selectedLanguage === lang.code, colors.primary)
+                  : undefined
+              }
+              onClick={() => {
+                if (SUPPORTED_LANGUAGES.includes(lang.code) && !isLanguageLocked) {
+                  selectLanguage(lang.code);
+                }
+              }}
+            >
+              {SUPPORTED_LANGUAGES.includes(lang.code) ? t(`ui.language.${lang.code}`) : lang.name}
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 

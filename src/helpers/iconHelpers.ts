@@ -24,7 +24,7 @@ const countryIcons: IconMapping = {
 // Animal fact types icon mapping
 const animalIcons: IconMapping = {
   'Habitat': 'habitat',
-  'Ecology': 'ecological-role',
+  'Diet': 'ecological-role',
   'Physical Characteristic': 'characteristic',
   'Evolutionary History': 'evolution',
   'Social Behavior': 'socialanimal',

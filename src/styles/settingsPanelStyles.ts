@@ -6,18 +6,20 @@ export const settingsPanelStyles = {
   mobilePanel: (primaryColor: string): CSSProperties => ({
     borderTop: `4px solid var(--color-${primaryColor})`,
     borderLeft: `1px solid var(--color-${primaryColor})`,
-    borderRight: `1px solid var(--color-${primaryColor})`
+    borderRight: `1px solid var(--color-${primaryColor})`,
+    maxHeight: '95vh'
   }),
-  mobilePanelClass: "absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg",
+  mobilePanelClass: "absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg min-h-[510px]",
   mobileDragIndicator: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]",
   
   desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50",
   desktopPanel: (primaryColor: string): CSSProperties => ({
-    border: `2px solid var(--color-${primaryColor})`
+    border: `2px solid var(--color-${primaryColor})`,
+    maxHeight: '90vh'
   }),
-  desktopPanelClass: "bg-white dark:bg-black rounded-xl shadow-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto",
+  desktopPanelClass: "bg-white dark:bg-black rounded-xl shadow-lg p-6 max-w-md w-full mx-4",
   
-  contentContainer: "p-6 max-h-[80vh] overflow-y-auto",
+  contentContainer: "p-6",
   
   // Header
   header: "flex justify-between items-center mb-6",
@@ -32,11 +34,11 @@ export const settingsPanelStyles = {
   
   // Settings sections
   settingsContainer: "space-y-6",
-  settingRow: "flex items-start justify-between",
-  settingTextContainer: "space-y-1",
+  settingRow: "flex items-center justify-between gap-4",
+  settingTextContainer: "flex-1 space-y-1",
   settingTitle: "font-medium text-gray-800 dark:text-gray-200",
   settingDescription: "text-sm text-gray-500 dark:text-gray-400",
-  settingErrorText: "text-xs text-red-500 mt-1 pt-3",
+  settingErrorText: "text-xs text-red-500 mt-1",
   
   // Toggle switch
   toggleSwitch: (isOn: boolean, primaryColor: string, disabled: boolean): CSSProperties => ({
@@ -57,9 +59,17 @@ export const settingsPanelStyles = {
   // Language selector
   languageSelect: (darkMode: boolean, primaryColor: string): CSSProperties => ({
     borderColor: `var(--color-${primaryColor})`,
-    color: darkMode ? 'white' : `var(--color-${primaryColor})`
+    color: darkMode ? 'white' : `var(--color-${primaryColor})`,
   }),
-  languageSelectClass: "px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white min-w-[130px]",
+  languageSelectClass: "w-[140px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800/50 dark:text-white cursor-pointer flex items-center justify-between",
+  languageSelectContainer: "relative",
+  languageSelectArrow: "ml-2 text-gray-500 dark:text-gray-400 flex-shrink-0",
+  languageOptionClass: "px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm",
+  languageOptionDisabled: "px-3 py-2 text-gray-400 dark:text-gray-500 cursor-not-allowed text-sm",
+  languageOption: (isSelected: boolean, primaryColor: string): CSSProperties => ({
+    backgroundColor: isSelected ? `var(--color-${primaryColor}10)` : 'transparent',
+    borderLeft: isSelected ? `2px solid var(--color-${primaryColor})` : '2px solid transparent',
+  }),
   
   // Footer
   footer: "mt-8 border-t border-gray-200 dark:border-gray-700 pt-4",

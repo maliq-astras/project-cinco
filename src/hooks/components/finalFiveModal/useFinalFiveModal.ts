@@ -2,11 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { useFinalFiveOptions, useVerifyGuess } from '../../../hooks/api';
+import { useFinalFiveOptions } from '../../../hooks/api';
 import { UserGuess } from '../../../types';
-
-// Use the GameOutcome type from the store
-type GameOutcome = 'standard-win' | 'final-five-win' | 'loss';
 
 /**
  * Hook for managing Final Five modal logic
@@ -42,8 +39,6 @@ export function useFinalFiveModal() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const maxRetries = 3;
   
-  // Setup React Query mutation for verifying guesses
-  const verifyGuessMutation = useVerifyGuess();
   
   // Get current language from localStorage
   const language = typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en';
@@ -226,13 +221,14 @@ export function useFinalFiveModal() {
                       setCorrectAnswer(data.answer);
                       
                       // NOW we can set the game to over and show continue button
+                      // This is in the timer timeout flow, so we use loss-final-five-time
                       useGameStore.setState(state => ({
                         ...state,
                         gameState: {
                           ...state.gameState,
                           isGameOver: true
                         },
-                        gameOutcome: 'loss'
+                        gameOutcome: 'loss-final-five-time'
                       }));
                       
                       // Complete the animation sequence and show the continue button
@@ -257,24 +253,13 @@ export function useFinalFiveModal() {
             } catch (error) {
               console.error('Error fetching correct answer on time out:', error);
               
-              // FALLBACK: If we absolutely cannot get the answer after all retries,
-              // we have to set a fallback value and let the user continue
-              setCorrectAnswer("Unknown");
+              // Keep retrying until we get the answer - no fallback
+              setLoading(true);
+              setIsSlowConnection(true);
+              setVerifyRetryCount(prev => prev + 1);
               
-              // Set game over state
-            useGameStore.setState(state => ({
-                ...state,
-              gameState: {
-                ...state.gameState,
-                isGameOver: true
-              },
-              gameOutcome: 'loss'
-            }));
-              
-              // Complete the sequence
-              setAnimationComplete(true);
-              setShowContinueButton(true);
-              setLoading(false);
+              // Don't set game over state until we have the actual answer
+              // The loading state will be handled by the UI to show appropriate messages
             }
           };
           

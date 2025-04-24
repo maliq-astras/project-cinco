@@ -4,6 +4,7 @@ import { Righteous } from 'next/font/google';
 import { useEndGameMessage, GameOutcome } from '../hooks/components/endGameMessage';
 import { endGameMessageStyles } from '../styles/endGameMessageStyles';
 import { useTranslation } from 'react-i18next';
+import { capitalizeAnswer } from '../helpers/gameLogic';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -36,7 +37,7 @@ export default function EndGameMessage({
     const { type, displayAnswer, numberOfTries: tries } = messageData;
     const answerSpan = (
       <span style={endGameMessageStyles.answerText(colors.primary)}>
-        {displayAnswer}
+        {capitalizeAnswer(displayAnswer)}
       </span>
     );
     const finalFiveSpan = (
