@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter, Bangers, Quicksand, Iceberg, Righteous } from 'next/font/google'
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,9 +55,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth overflow-hidden" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var darkMode = localStorage.getItem('darkMode');
+                var highContrastMode = localStorage.getItem('highContrastMode');
+                
+                if (darkMode === 'true') {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.backgroundColor = '#000';
+                  document.documentElement.style.color = '#fff';
+                }
+                
+                if (highContrastMode === 'true') {
+                  document.documentElement.classList.add('high-contrast');
+                }
+              } catch (e) {
+                // Handle potential localStorage errors
+              }
+            })();
+          `
+        }} />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${bangers.variable} ${quicksand.variable} ${iceberg.variable} ${righteous.variable} font-sans h-screen overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${bangers.variable} ${quicksand.variable} ${iceberg.variable} ${righteous.variable} font-sans`}
       >
         {children}
       </body>

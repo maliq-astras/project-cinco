@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Challenge, UserGuess, GameOutcome } from '../types/index';
+import { UserGuess, GameOutcome } from '../types/index';
 import { 
   initialGameState, 
   GameState,
@@ -243,6 +243,12 @@ export const useGameStore = create<GameStore>()(
   fetchChallenge: async (language: string = 'en') => {
     try {
       const challenge = await fetchChallengeAPI(language);
+      
+      // Save the category to localStorage for use across different routes
+      if (challenge && challenge.category && typeof window !== 'undefined') {
+        localStorage.setItem('lastActiveCategory', JSON.stringify(challenge.category));
+      }
+      
       set(state => ({
         gameState: {
           ...state.gameState,

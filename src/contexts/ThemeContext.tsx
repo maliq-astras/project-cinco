@@ -152,29 +152,49 @@ const getFilterForColor = (colorClass: string): string => {
 export const useTheme = () => useContext(ThemeContext);
 
 // Provider component
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Get the current challenge category from the game store
-  const challenge = useGameStore(state => state.gameState.challenge);
+export const ThemeProvider: React.FC<{ 
+  children: ReactNode, 
+  initialCategory?: CategoryType 
+}> = ({ 
+  children,
+  initialCategory
+}) => {
+  // Get the current challenge category from the game store or use initialCategory if provided
+  const challengeFromStore = useGameStore(state => state.gameState.challenge);
+  const challenge = initialCategory ? { category: initialCategory } : challengeFromStore;
   
-  // Dark mode state
-  const [darkMode, setDarkMode] = useState(() => {
-    // Check if dark mode preference is saved in localStorage
+  // Server-side safe dark mode state
+  const [darkMode, setDarkMode] = useState(false);
+  const [highContrastMode, setHighContrastMode] = useState(false);
+  
+  // Only load preferences from localStorage on the client side
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedDarkMode = localStorage.getItem('darkMode');
-      return savedDarkMode ? JSON.parse(savedDarkMode) : false;
-    }
-    return false;
-  });
-  
-  // High contrast mode state
-  const [highContrastMode, setHighContrastMode] = useState(() => {
-    // Check if high contrast mode preference is saved in localStorage
-    if (typeof window !== 'undefined') {
+      if (savedDarkMode) {
+        setDarkMode(JSON.parse(savedDarkMode));
+      }
+      
       const savedHighContrastMode = localStorage.getItem('highContrastMode');
-      return savedHighContrastMode ? JSON.parse(savedHighContrastMode) : false;
+      if (savedHighContrastMode) {
+        setHighContrastMode(JSON.parse(savedHighContrastMode));
+      }
     }
-    return false;
-  });
+  }, []);
+  
+  // SSR safe - immediately set the fixed category when one is provided
+  // This prevents flashing on initial render in special cases like the support page
+  useEffect(() => {
+    if (initialCategory && typeof window !== 'undefined') {
+      const baseColors = categoryColorMap[initialCategory];
+      const root = document.documentElement;
+      const primaryRGB = getColorRGB(baseColors.primary);
+      
+      root.style.setProperty('--primary-color', baseColors.primary);
+      root.style.setProperty('--color-' + baseColors.primary, `rgb(${primaryRGB})`);
+      root.style.setProperty('--color-' + baseColors.primary + '-rgb', primaryRGB);
+    }
+  }, [initialCategory]);
   
   // Toggle dark mode function
   const toggleDarkMode = () => {
@@ -372,6 +392,19 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
       
+      // Set dark/high contrast classes
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      
+      if (highContrastMode) {
+        document.documentElement.classList.add('high-contrast');
+      } else {
+        document.documentElement.classList.remove('high-contrast');
+      }
+      
       // Set primary color variables
       root.style.setProperty('--primary-color', colors.primary);
       root.style.setProperty('--secondary-color', colors.secondary);
@@ -404,25 +437,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         root.style.setProperty('--dark-mode-card-bg', '17, 17, 17'); // Very dark gray
       }
     }
-  }, [colors, darkMode]);
-  
-  // Apply the dark mode class to html element when darkMode changes
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-  
-  // Apply high contrast class to html element when highContrastMode changes
-  useEffect(() => {
-    if (highContrastMode) {
-      document.documentElement.classList.add('high-contrast');
-    } else {
-      document.documentElement.classList.remove('high-contrast');
-    }
-  }, [highContrastMode]);
+  }, [colors, darkMode, highContrastMode]);
   
   const value = {
     colors,

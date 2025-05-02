@@ -16,4 +16,5 @@ export * from './logo';
 export * from './navigation';
 export * from './settingsPanel';
 export * from './timer';
-export * from './mainContainer'; 
+export * from './mainContainer';
+export * from './support'; 

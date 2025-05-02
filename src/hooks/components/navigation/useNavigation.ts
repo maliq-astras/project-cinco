@@ -43,6 +43,13 @@ export const useNavigation = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Function to navigate to support page with section hash
+  const navigateToSupport = (section: string) => {
+    // Open in a new tab while preserving the app context
+    window.open(`/support#${section}`, '_blank');
+    setIsDropdownOpen(false);
+  };
+
   // Define all menu items, we'll filter based on game state later
   const allMenuItems: MenuItem[] = [
     { 
@@ -56,20 +63,20 @@ export const useNavigation = () => {
     },
     { 
       label: 'ui.navigation.about', 
-      onClick: () => console.log('FAQ clicked'),
-      showArrow: true,  // This would navigate to another page
+      onClick: () => navigateToSupport('faq'),
+      showArrow: true,  // This navigates to another page
       ariaLabel: 'ui.navigation.about'
     },
     { 
       label: 'ui.navigation.reportBug', 
-      onClick: () => console.log('Report Bug clicked'),
-      showArrow: true,  // This would navigate to another page
+      onClick: () => navigateToSupport('bug'),
+      showArrow: true,  // This navigates to another page
       ariaLabel: 'ui.navigation.reportBug'
     },
     { 
       label: 'ui.navigation.feedback', 
-      onClick: () => console.log('Feedback clicked'),
-      showArrow: true,  // This would navigate to another page
+      onClick: () => navigateToSupport('feedback'),
+      showArrow: true,  // This navigates to another page
       ariaLabel: 'ui.navigation.feedback'
     },
   ];

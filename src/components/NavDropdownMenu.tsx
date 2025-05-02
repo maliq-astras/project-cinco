@@ -1,7 +1,6 @@
 import React from 'react';
 import { Inter } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
-import { navigationStyles } from '../styles/navigationStyles';
 import { navDropdownMenuStyles } from '../styles/navDropdownMenuStyles';
 
 const inter = Inter({ subsets: ['latin'] });
