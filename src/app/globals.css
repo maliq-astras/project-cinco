@@ -315,15 +315,6 @@ html, body {
   }
 }
 
-@keyframes progressPulse {
-  0%, 100% {
-    stroke-opacity: 0.8;
-  }
-  50% {
-    stroke-opacity: 1;
-  }
-}
-
 .progress-animation {
   animation: progressPulse 2s ease-in-out infinite;
 }
@@ -875,4 +866,44 @@ body {
 .faq-answer-container {
   width: 100% !important;
   box-sizing: border-box !important;
+}
+
+/* Themed scrollbar styles - ALWAYS VISIBLE VERSION */
+.themed-scrollbar {
+  --scrollbar-thumb-color: var(--primary-rgb);
+  /* Reserve space for scrollbar to prevent layout shift */
+  scrollbar-gutter: stable !important;
+  /* Always show scrollbar regardless of content */
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  /* Add padding for space between content and scrollbar */
+  padding-right: 12px !important;
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(var(--scrollbar-thumb-color), 0.7) transparent !important;
+}
+
+/* Webkit scrollbar styling */
+.themed-scrollbar::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  /* Force display */
+  display: block !important;
+}
+
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--scrollbar-thumb-color), 0.7) !important;
+  border-radius: 8px !important;
+  border: 2px solid transparent !important;
+  min-height: 40px !important;
+}
+
+/* Dark mode styles for scrollbar track */
+.dark .themed-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
 }

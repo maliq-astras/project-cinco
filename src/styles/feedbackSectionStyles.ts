@@ -145,13 +145,34 @@ export const feedbackSectionStyles = {
     initial: { opacity: 0, x: 40 },
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -40 },
-    transition: { duration: 0.35 },
+    transition: { duration: 0.35 }
   },
 
   successAnimation: {
     initial: { opacity: 0, scale: 0.95 },
     animate: { opacity: 1, scale: 1 },
     exit: { opacity: 0, scale: 0.95 },
-    transition: { duration: 0.4 },
+    transition: { duration: 0.4 }
   },
+
+  successContainer: "flex flex-col items-center justify-center min-h-[200px]",
+  thankYouText: "text-xl font-bold mb-2",
+  thankYouTextStyle: (primaryColor: string): CSSProperties => ({
+    color: `var(--color-${primaryColor})`
+  }),
+  feedbackMessage: "text-gray-700 dark:text-gray-300 text-lg",
+
+  buttonDisabledStyle: (primaryColor: string): CSSProperties => ({
+    backgroundColor: `var(--color-${primaryColor})`,
+    opacity: 0.5,
+    cursor: 'not-allowed'
+  }),
+
+  buttonPrimaryStyle: (primaryColor: string): CSSProperties => ({
+    backgroundColor: `var(--color-${primaryColor})`
+  }),
+
+  formFieldBorderStyle: (primaryColor: string): CSSProperties => ({
+    borderColor: `var(--color-${primaryColor})`
+  }),
 }; 

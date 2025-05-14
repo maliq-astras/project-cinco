@@ -78,7 +78,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ initialSection }) => {
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24" 
-            stroke="currentColor" 
+            stroke="currentColor"
             className={supportPageStyles.navIcon}
             style={supportPageStyles.navIconStyle(colors.primary)}
           >
@@ -89,20 +89,17 @@ const SupportPage: React.FC<SupportPageProps> = ({ initialSection }) => {
     );
   };
 
-  // Render section indicator dots
-  const renderSectionDots = () => {
-    const sectionIds = Object.keys(sections);
-    
+  // Render navigation dots
+  const renderNavDots = () => {
     return (
       <div className={supportPageStyles.navDotsContainer}>
-        {sectionIds.map(id => (
+        {Object.keys(sections).map((key) => (
           <button
-            key={id}
-            onClick={() => navigateToSection(id)}
+            key={key}
+            onClick={() => navigateToSection(key)}
             className={supportPageStyles.navDot}
-            style={supportPageStyles.navDotStyle(colors.primary, id === activeSection)}
-            aria-label={t(`Go to ${sections[id].label}`)}
-            aria-current={id === activeSection ? 'true' : 'false'}
+            style={supportPageStyles.navDotStyle(colors.primary, activeSection === key)}
+            aria-label={t(`Navigate to ${sections[key].label}`)}
           />
         ))}
       </div>
@@ -113,10 +110,29 @@ const SupportPage: React.FC<SupportPageProps> = ({ initialSection }) => {
     <div className={supportPageStyles.container}>
       <SupportHeader />
       
+      <div className={supportPageStyles.contentContainer}>
+        <div className={supportPageStyles.mainContent}>
+          <AnimatePresence mode="wait">
+            {activeSection && isThemeReady && (
+              <motion.div
+                key={activeSection}
+                initial={animationDirection === 'forward' ? supportPageStyles.sectionAnimation.initial : supportPageStyles.reverseAnimation.initial}
+                animate={animationDirection === 'forward' ? supportPageStyles.sectionAnimation.animate : supportPageStyles.reverseAnimation.animate}
+                exit={animationDirection === 'forward' ? supportPageStyles.sectionAnimation.exit : supportPageStyles.reverseAnimation.exit}
+                transition={animationDirection === 'forward' ? supportPageStyles.sectionAnimation.transition : supportPageStyles.reverseAnimation.transition}
+                className={supportPageStyles.section}
+              >
+                {renderSection()}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
       <AnimatePresence>
         {!isThemeReady && (
           <motion.div
-            className="fixed inset-0 flex items-center justify-center z-40 bg-white dark:bg-gray-950"
+            className={supportPageStyles.loadingContainer}
             initial={supportPageStyles.loadingAnimation.initial}
             exit={supportPageStyles.loadingAnimation.exit}
             transition={supportPageStyles.loadingAnimation.transition}
@@ -129,52 +145,8 @@ const SupportPage: React.FC<SupportPageProps> = ({ initialSection }) => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isThemeReady && (
-          <motion.div
-            className="w-full flex-1 flex flex-col"
-            initial={supportPageStyles.pageAnimation.initial}
-            animate={supportPageStyles.pageAnimation.animate}
-            transition={supportPageStyles.pageAnimation.transition}
-          >
-            <div className={supportPageStyles.contentContainer}>
-              {/* Main content with section animations */}
-              <div className={supportPageStyles.mainContent}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeSection}
-                    initial={
-                      animationDirection === 'forward' 
-                        ? supportPageStyles.sectionAnimation.initial 
-                        : supportPageStyles.reverseAnimation.initial
-                    }
-                    animate={
-                      animationDirection === 'forward'
-                        ? supportPageStyles.sectionAnimation.animate
-                        : supportPageStyles.reverseAnimation.animate
-                    }
-                    exit={
-                      animationDirection === 'forward'
-                        ? supportPageStyles.sectionAnimation.exit
-                        : supportPageStyles.reverseAnimation.exit
-                    }
-                    transition={supportPageStyles.sectionAnimation.transition}
-                    className={supportPageStyles.section}
-                  >
-                    {renderSection()}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-            
-            {/* Navigation links */}
-            {renderNavLinks()}
-            
-            {/* Section indicator dots */}
-            {renderSectionDots()}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isThemeReady && renderNavLinks()}
+      {isThemeReady && renderNavDots()}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 export const steps = [
@@ -16,15 +16,39 @@ export const steps = [
   }
 ];
 
+export const ratingOptions = [
+  '1 - Poor',
+  '2 - Below Average',
+  '3 - Average',
+  '4 - Good',
+  '5 - Excellent'
+];
+
 export const useFeedback = () => {
   const { colors } = useTheme();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     feedback: '',
-    rating: '3',
+    rating: '3 - Average',
     email: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isRatingDropdownOpen, setIsRatingDropdownOpen] = useState(false);
+  const ratingDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Handle clicks outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ratingDropdownRef.current && !ratingDropdownRef.current.contains(event.target as Node)) {
+        setIsRatingDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ratingDropdownRef]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -32,6 +56,14 @@ export const useFeedback = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const selectRating = (rating: string) => {
+    setFormData(prev => ({
+      ...prev,
+      rating
+    }));
+    setIsRatingDropdownOpen(false);
   };
 
   const handleNext = () => {
@@ -57,6 +89,10 @@ export const useFeedback = () => {
     submitted,
     progress,
     steps,
+    isRatingDropdownOpen,
+    ratingDropdownRef,
+    setIsRatingDropdownOpen,
+    selectRating,
     handleChange,
     handleNext,
     handleSubmit

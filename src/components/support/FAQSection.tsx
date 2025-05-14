@@ -5,33 +5,34 @@ import { Righteous } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFAQ } from '../../hooks/components/support';
 import { faqSectionStyles } from '../../styles/faqSectionStyles';
+import { supportPageStyles } from '../../styles/supportPageStyles';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
 const FAQSection: React.FC = () => {
   const { colors, expandedIndex, faqItems, toggleItem } = useFAQ();
+  const theme = useTheme();
 
   return (
-    <div className="flex flex-col w-full items-center h-full support-section">
-      {/* FAQ Header */}
-      <div className="w-full text-center">
+    <div className={`${supportPageStyles.card} ${supportPageStyles.cardDimensions}`} style={supportPageStyles.cardStyle(colors.primary)}>
+      <div className={supportPageStyles.cardHeader}>
         <h2 
-          className={`${faqSectionStyles.header} ${righteous.className}`}
-          style={faqSectionStyles.headerStyle(colors.primary)}
+          className={`${supportPageStyles.sectionTitle} ${righteous.className}`}
+          style={supportPageStyles.sectionTitleStyle(colors.primary)}
         >
           F.A.Q.
         </h2>
       </div>
       
-      {/* Accordion container with fixed width - no overflow except in scrollContainer */}
-      <div className="flex justify-center w-full flex-grow overflow-hidden">
-        <div className="w-full max-w-[560px] overflow-hidden">
-          <div className={faqSectionStyles.contentWrapper}>
-            <div className={`${faqSectionStyles.scrollContainer} scrollable-accordion`}>
+      <div className={supportPageStyles.cardContent}>
+        <div className={supportPageStyles.sectionContentWrapper}>
+          <div className={supportPageStyles.sectionContentContainer}>
+            <div className={`themed-scrollbar ${faqSectionStyles.scrollContainer}`}>
               <div className={faqSectionStyles.faqList}>
                 {faqItems.map((item, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={faqSectionStyles.faqItem}
                   >
                     <div className={faqSectionStyles.buttonWrapper}>
@@ -85,6 +86,9 @@ const FAQSection: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Empty footer to maintain consistent layout */}
+      <div className={supportPageStyles.cardFooter}></div>
     </div>
   );
 };

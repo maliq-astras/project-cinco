@@ -35,6 +35,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // Adding height-based screen breakpoints for responsive design
+        'short': {'raw': '(max-height: 705px)'},
+        'shorter': {'raw': '(max-height: 600px)'},
+      },
       fontFamily: {
         game: ['var(--font-game)', 'sans-serif'],
         display: ['var(--font-display)', 'sans-serif'],

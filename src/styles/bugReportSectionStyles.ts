@@ -1,120 +1,90 @@
 import { CSSProperties } from 'react';
 
+/**
+ * Styles for the Bug Report Section component
+ */
 export const bugReportSectionStyles = {
-  // Container with responsive width constraints and proper vertical spacing
-  container: "flex flex-col items-center justify-between w-full sm:max-w-[500px] md:max-w-[560px] mx-auto px-4 min-h-[calc(100vh-280px)]",
+  // Container styles
+  container: "flex flex-col items-center justify-center w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md",
   
-  // Header styles matching FAQ header
-  header: "text-4xl font-bold text-center mt-16 mb-8 md:mb-12",
+  // Step container for each form step - updated for better centering
+  stepContainer: "flex flex-col items-center w-full max-w-sm pt-0",
+  
+  // Header styles
+  header: "text-2xl font-bold text-center mb-8 text-gray-800 dark:text-white",
   headerStyle: (primaryColor: string): CSSProperties => ({
-    color: `var(--color-${primaryColor})`
+    color: `var(--color-${primaryColor})`,
   }),
   
-  // Form container - fixed width for consistent appearance, centered vertically
-  formContainer: "w-full flex-1 flex flex-col items-center justify-center my-8",
-  
-  // Label styles
-  label: "block text-lg font-semibold mb-6 text-center text-black dark:text-white w-full",
-  
-  // Step content container
-  stepContainer: "flex flex-col items-center w-full",
+  // Form container styles
+  formContainer: "w-full mt-6 space-y-4",
   
   // Input field styles
-  input: "w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 mb-6",
-  inputStyle: (primaryColor: string): CSSProperties => ({
-    borderColor: `var(--color-${primaryColor})`,
-    outlineColor: `var(--color-${primaryColor})`
+  inputField: "w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2",
+  inputFieldStyle: (primaryColor: string): CSSProperties => ({
+    outlineColor: `var(--color-${primaryColor})`,
   }),
   
-  // Textarea styles
-  textarea: "w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 mb-6 min-h-[120px]",
-  textareaStyle: (primaryColor: string): CSSProperties => ({
-    borderColor: `var(--color-${primaryColor})`,
-    outlineColor: `var(--color-${primaryColor})`
-  }),
-  
-  // Dropdown wrapper
-  dropdownWrapper: "w-full mb-6",
-  
-  // Dropdown container
+  // Dropdown styles
+  dropdownWrapper: "relative w-full mb-4",
   dropdownRelativeContainer: "relative w-full",
+  dropdownTrigger: "w-full py-2 px-3 md:px-4 md:py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-between items-center cursor-pointer text-black dark:text-white max-[375px]:px-2 max-[375px]:py-1.5",
+  dropdownIconContainer: "flex items-center ml-2",
+  dropdownIcon: "w-4 h-4 text-gray-600 dark:text-gray-400",
+  dropdownContainer: "absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden",
+  dropdownOption: "py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-black dark:text-white transition-colors duration-150",
   
-  // Dropdown trigger button
-  dropdownTrigger: "w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 cursor-pointer flex items-center justify-between",
-  dropdownTriggerStyle: (primaryColor: string): CSSProperties => ({
-    borderColor: `var(--color-${primaryColor})`
+  // Dropdown option selection styling
+  dropdownOptionSelected: (primaryColor: string): CSSProperties => ({
+    backgroundColor: `var(--color-${primaryColor}10)`,
+    borderLeft: `2px solid var(--color-${primaryColor})`
   }),
   
-  // Dropdown icon container
-  dropdownIconContainer: "ml-2 text-gray-500 dark:text-gray-400",
+  dropdownOptionUnselected: {
+    borderLeft: '2px solid transparent'
+  },
   
-  // Dropdown icon
-  dropdownIcon: "w-4 h-4",
+  // File upload styles
+  fileUploadContainer: "w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 mb-4 p-4",
+  fileUploadDraggingStyle: (primaryColor: string): CSSProperties => ({
+    borderColor: `var(--color-${primaryColor})`,
+    backgroundColor: `var(--color-${primaryColor}10)`
+  }),
+  fileUploadDefaultStyle: {
+    borderColor: 'var(--color-gray-300)',
+    backgroundColor: 'transparent'
+  },
+  fileUploadIcon: "w-10 h-10 text-gray-400 mb-2",
+  fileUploadText: "text-sm text-gray-500 dark:text-gray-400 text-center",
+  fileUploadInfoText: "text-xs text-gray-500 dark:text-gray-400 text-center mt-1",
+  uploadedFileContainer: "flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2 mt-2",
+  uploadedFileName: "text-sm text-gray-700 dark:text-gray-300 truncate",
+  removeFileButton: "text-red-500 hover:text-red-600 focus:outline-none",
+  removeFileIcon: "w-4 h-4",
   
-  // Dropdown options container
-  dropdownContainer: "absolute z-50 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto",
-  dropdownContainerStyle: (primaryColor: string): CSSProperties => ({
-    borderColor: `var(--color-${primaryColor})`
+  // Loading states
+  loadingButton: "inline-flex items-center",
+  loadingSpinner: "animate-spin mr-2 h-4 w-4",
+  spinnerPath: "opacity-25",
+  spinnerPathHighlight: (primaryColor: string): CSSProperties => ({
+    opacity: '75',
+    stroke: `var(--color-${primaryColor})`
   }),
   
-  // Dropdown option
-  dropdownOption: "px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-900 dark:text-white",
-  dropdownOptionStyle: (isSelected: boolean, primaryColor: string): CSSProperties => ({
-    backgroundColor: isSelected ? `var(--color-${primaryColor}10)` : undefined,
-    borderLeft: isSelected ? `2px solid var(--color-${primaryColor})` : '2px solid transparent'
+  // Sub screen styles
+  submittedContainer: "flex flex-col items-center justify-center pb-8 w-full",
+  submittedIcon: "w-12 h-12 mb-4 text-green-500",
+  submittedTitle: "text-xl font-bold mb-2",
+  submittedTitleStyle: (primaryColor: string): CSSProperties => ({
+    color: `var(--color-${primaryColor})`
   }),
+  submittedMessage: "text-gray-700 dark:text-gray-300 text-center max-w-xs",
   
-  // File upload styles - fixed width for consistent appearance
-  fileUploadContainer: "w-full h-48 border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-4 transition-colors mb-6",
-  fileUploadContainerStyle: (isDragging: boolean, primaryColor: string): CSSProperties => ({
-    borderColor: isDragging ? `var(--color-${primaryColor})` : 'var(--color-gray-300)',
-    backgroundColor: isDragging ? `var(--color-${primaryColor}10)` : undefined
-  }),
-  
-  // File upload text styles
-  fileUploadText: "text-center text-gray-500 dark:text-gray-400 mt-2",
-  fileUploadIcon: "w-10 h-10 text-gray-400 dark:text-gray-500 mb-2",
-  fileUploadOptional: "text-xs text-gray-400",
-  
-  // File preview container
-  filePreviewContainer: "w-full p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6 flex items-center",
-  filePreviewIcon: "w-6 h-6 text-gray-500 dark:text-gray-400 mr-2",
-  filePreviewText: "truncate flex-1 text-sm text-gray-800 dark:text-gray-200",
-  filePreviewRemoveButton: "ml-2 text-red-500 hover:text-red-700",
-  
-  // Button styles
-  button: "mt-4 px-6 py-3 rounded-lg text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 text-base md:text-lg hover:brightness-105",
-  buttonStyle: (primaryColor: string): CSSProperties => ({
-    background: `var(--color-${primaryColor})`,
-    transform: "scale(1)",
-  }),
-  
-  // Success container
-  successContainer: "flex flex-col items-center justify-center py-8 w-full",
-  
-  // Success icon
-  successIconContainer: "w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4",
-  successIcon: "w-8 h-8 text-green-600",
-  
-  // Success title
-  successTitle: "text-xl font-bold mb-2 text-center",
-  
-  // Success message
-  successMessage: "text-center text-lg text-green-600 dark:text-green-400 mb-4",
-  
-  // Progress bar - moved to the bottom with margin
-  progressContainer: "w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mb-14 mt-auto overflow-hidden",
-  progressBar: "h-full rounded-full",
-  progressBarStyle: (progress: number, primaryColor: string): CSSProperties => ({
-    width: `${progress}%`,
-    backgroundColor: `var(--color-${primaryColor})`
-  }),
-  
-  // Step animations
+  // Step animation
   stepAnimation: {
-    initial: { opacity: 0, x: 40 },
+    initial: { opacity: 0, x: 30 },
     animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -40 },
-    transition: { duration: 0.35 }
-  }
-} as const; 
+    exit: { opacity: 0, x: -30 },
+    transition: { duration: 0.2 }
+  },
+}; 
