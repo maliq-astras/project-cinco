@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { Fact } from '../../../types';
+import { getBubbleSize, getGapSize, getGridConfig, getContainerHeight } from '../../../helpers';
 
 interface BubbleGridItem {
   key: string;
@@ -22,42 +23,10 @@ export function useFactBubbleGrid() {
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
-  // Grid layout configuration
-  const gridConfig = {
-    cols: 4,
-    rows: 2,
-    totalSlots: 8
-  };
+  // Grid layout configuration using the helper function
+  const gridConfig = getGridConfig(windowWidth);
 
-  // Calculate container height based on screen size
-  const getContainerHeight = () => {
-    if (windowWidth < 380) return 140; // Small mobile
-    if (windowWidth < 480) return 150; // Medium mobile
-    if (windowWidth < 640) return 160; // Large mobile
-    // For larger screens, dynamically calculate based on bubble and gap
-    return gridConfig.rows * getBubbleSize() + getGapSize() * (gridConfig.rows - 1);
-  };
-  
-  // Calculate bubble size based on screen width
-  const getBubbleSize = () => {
-    if (windowWidth < 380) return 65; // Small mobile
-    if (windowWidth < 480) return 70; // Medium mobile
-    if (windowWidth < 640) return 75; // Large mobile
-    if (windowWidth < 768) return 80; // Small tablets
-    if (windowWidth < 1024) return 90; // Larger tablets
-    if (windowWidth < 1280) return 100; // Small desktops
-    return 110; // Large desktops
-  };
-  
-  // Calculate gap size based on screen width
-  const getGapSize = () => {
-    if (windowWidth < 380) return 16;
-    if (windowWidth < 640) return 20;
-    if (windowWidth < 1024) return 24;
-    return 32;
-  };
-  
-  // Calculate the grid items to display
+  // Calculate grid items to display
   const gridItems = useMemo<BubbleGridItem[]>(() => {
     return Array.from({ length: gridConfig.totalSlots }).map((_, slotIndex) => {
       // Find the fact that should be in this position
@@ -111,23 +80,26 @@ export function useFactBubbleGrid() {
   });
   
   // Calculate container width
+  const bubbleSizeValue = getBubbleSize(windowWidth);
+  const gapSizeValue = getGapSize(windowWidth);
+  
   const containerWidth = Math.min(
     windowWidth - 32, // Account for page padding
-    (getBubbleSize() * gridConfig.cols) + (getGapSize() * (gridConfig.cols - 1)) // Bubbles + gaps
+    (bubbleSizeValue * gridConfig.cols) + (gapSizeValue * (gridConfig.cols - 1)) // Bubbles + gaps
   );
   
   // Grid style props
   const gridStyle = {
     gridTemplateColumns: `repeat(${gridConfig.cols}, 1fr)`,
     width: `${containerWidth}px`,
-    gap: `${getGapSize()}px`,
-    height: `${getContainerHeight()}px`
+    gap: `${gapSizeValue}px`,
+    height: `${getContainerHeight(windowWidth, gridConfig)}px`
   };
   
   return {
     gridItems,
     gridStyle,
-    bubbleSize: getBubbleSize(),
+    bubbleSize: bubbleSizeValue,
     animationProps,
     isVictoryAnimationActive
   };

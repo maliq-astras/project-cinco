@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMainContainer } from '../hooks/components/mainContainer';
+import { useMainContainer } from '../hooks/components/mainContainer/useMainContainer';
 import { mainContainerStyles } from '../styles/mainContainerStyles';
 import { 
   FactCard, 
@@ -18,6 +18,8 @@ import {
   Navigation, 
   FinalFiveIntro 
 } from './';
+import { useGameStore } from '../store/gameStore';
+import LandscapeWarning from './LandscapeWarning';
 
 export default function MainContainer() {
   const {
@@ -25,6 +27,8 @@ export default function MainContainer() {
     viewingFact,
     loadingComplete,
     isSmallLandscape,
+    isTabletLandscape,
+    isCompactHeader,
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
@@ -36,59 +40,32 @@ export default function MainContainer() {
     startFinalFive
   } = useMainContainer();
   
-  // If in small landscape mode, show a warning overlay
+  // Get scale factor from the store
+  const scaleFactor = useGameStore(state => state.scaleFactor);
+  
+  // If in small landscape mode (phone), show a warning overlay
   if (isSmallLandscape) {
-    return (
-      <div className={mainContainerStyles.warningOverlay}>
-        <div className={mainContainerStyles.warningIcon}>
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.162 4H7.838C6.823 4 6 4.823 6 5.838V18.162C6 19.177 6.823 20 7.838 20H16.162C17.177 20 18 19.177 18 18.162V5.838C18 4.823 17.177 4 16.162 4Z" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-            <path d="M10 17L14 17" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <h2 style={{ color: `var(--color-${colors.primary})` }}>Rotate Your Device</h2>
-        <p className={mainContainerStyles.warningText}>
-          This game works best in portrait mode on smaller screens.
-          Please rotate your device to continue playing.
-        </p>
-        <div className={mainContainerStyles.spinIcon}>
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C13.6569 18 15.1569 17.3284 16.2426 16.2426" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-            <path d="M17 14L16.2427 16.2426L14 15.4853" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-            <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C10.3431 6 8.84315 6.67157 7.75736 7.75736" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-            <path d="M7 10L7.75736 7.75736L10 8.51472" 
-                  stroke={`var(--color-${colors.primary})`} 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"/>
-          </svg>
-        </div>
-      </div>
-    );
+    return <LandscapeWarning context="game" />;
   }
 
+  // Create scaling style for tablet landscape mode
+  const scaleStyle: CSSProperties = isTabletLandscape ? {
+    transform: `scale(${scaleFactor})`,
+    transformOrigin: 'center top',
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    alignItems: 'center',
+    overflow: 'visible',
+    // Add specific padding adjustments for Surface Pro 7
+    paddingBottom: isCompactHeader ? 
+      (window.innerWidth >= 1350 && window.innerWidth <= 1380 && window.innerHeight >= 900 && window.innerHeight <= 930 ? '100px' : '150px') : 
+      (window.innerWidth >= 1350 && window.innerWidth <= 1380 && window.innerHeight >= 900 && window.innerHeight <= 930 ? '80px' : '120px')
+  } : {};
+
   return (
-    <div className={mainContainerStyles.container}>
+    <div className={isTabletLandscape ? mainContainerStyles.tabletLandscapeContainer : mainContainerStyles.container}>
       {!loadingComplete ? (
         <div className={mainContainerStyles.loadingWrapper}>
           <LoadingAnimation 
@@ -102,7 +79,7 @@ export default function MainContainer() {
           <Navigation />
           <Header />
 
-          <main className={mainContainerStyles.main}>
+          <main className={isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} style={scaleStyle}>
             {gameState.challenge && (
               <>
                 {/* Final Five Transition Container - Absolute overlay */}
@@ -126,7 +103,7 @@ export default function MainContainer() {
                   {!showFinalFiveTransition && (
                     <motion.div
                       key="game-content"
-                      className={mainContainerStyles.gameContent}
+                      className={`${mainContainerStyles.gameContent} ${isTabletLandscape ? 'py-0 gap-0' : ''}`}
                       {...mainContainerStyles.fadeOut}
                     >
                       {/* Top section */}
@@ -135,7 +112,7 @@ export default function MainContainer() {
                       </div>
                       
                       {/* Middle section */}
-                      <div className={mainContainerStyles.middleSection} style={mainContainerStyles.sectionGap}>
+                      <div className={`${mainContainerStyles.middleSection} ${isTabletLandscape ? 'py-0' : ''}`} style={mainContainerStyles.sectionGap}>
                         {/* Context line */}
                         <motion.div 
                           className={mainContainerStyles.contextLine}
@@ -169,7 +146,7 @@ export default function MainContainer() {
                       </div>
                       
                       {/* Bottom section */}
-                      <div className={mainContainerStyles.bottomSection}>
+                      <div className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}>
                         {/* Game instructions */}
                         {!isFinalFiveActive && (
                           <motion.div 
@@ -187,7 +164,7 @@ export default function MainContainer() {
                         {/* Game Controls */}
                         {!showGameMessage && !isFinalFiveActive && (
                           <motion.div
-                            className={mainContainerStyles.controlsWrapper}
+                            className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}
                             {...mainContainerStyles.staggeredFade(0.9)}
                           >
                             <GameControls ref={gameControlsRef} />

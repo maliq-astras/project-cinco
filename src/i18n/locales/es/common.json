@@ -119,6 +119,10 @@
       "highContrastDesc": "Beta",
       "autoSave": "La configuración se guardará automáticamente.",
       "languageLocked": "No se puede cambiar el idioma después de hacer una suposición"
+    },
+    "landscapeWarning": {
+      "title": "Gira tu dispositivo",
+      "gameMessage": "Este juego funciona mejor en modo vertical. Por favor, gira tu dispositivo para continuar jugando."
     }
   },
   "categories": {

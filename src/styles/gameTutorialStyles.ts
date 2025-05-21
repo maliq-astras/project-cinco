@@ -51,6 +51,9 @@ export const gameTutorialStyles = {
     const pointElement = document.elementFromPoint(centerX, centerY);
     const isLogo = logoElement && pointElement && logoElement.contains(pointElement);
     
+    // Determine if we're in dark mode
+    const isDarkMode = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    
     return {
       top: y - 2 + 'px',
       left: x - 2 + 'px',
@@ -58,15 +61,17 @@ export const gameTutorialStyles = {
       height: height + 4 + 'px',
       borderRadius: isLogo ? '50%' : '10px',
       pointerEvents: 'none' as const,
-      border: '2px solid white',
-      boxShadow: '0 0 15px 3px rgba(255, 255, 255, 0.7)',
+      border: isDarkMode ? '2px solid rgba(255, 255, 255, 0.6)' : '2px solid white',
+      boxShadow: isDarkMode 
+        ? '0 0 15px 3px rgba(255, 255, 255, 0.4)' 
+        : '0 0 15px 3px rgba(255, 255, 255, 0.7)',
       backgroundColor: 'transparent',
     };
   },
   spotlightWrapper: "absolute transition-all duration-300 ease-in-out z-20",
-  textBox: "fixed bg-white rounded-lg shadow-xl p-6 sm:p-4 border-2 z-30",
-  textBoxTitle: "text-xl sm:text-lg font-semibold mb-3 sm:mb-2",
-  textBoxDescription: "text-gray-600 text-base sm:text-sm leading-relaxed",
+  textBox: "fixed bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 sm:p-4 border-2 z-30",
+  textBoxTitle: "text-xl sm:text-lg font-semibold mb-3 sm:mb-2 text-gray-900 dark:text-white",
+  textBoxDescription: "text-gray-600 dark:text-gray-300 text-base sm:text-sm leading-relaxed",
   progressContainer: "fixed left-0 right-0 flex flex-col items-center pointer-events-none z-30",
   progressDots: "flex space-x-2 mb-3",
   progressDot: "w-1.5 h-1.5 rounded-full transition-colors",
@@ -117,9 +122,17 @@ export const gameTutorialStyles = {
   },
 
   // Text box styles
-  textBoxBorder: (primaryColor: string): CSSProperties => ({
-    borderColor: `var(--color-${primaryColor})`
-  }),
+  textBoxBorder: (primaryColor: string): CSSProperties => {
+    // Check for dark mode
+    const isDarkMode = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    
+    return {
+      borderColor: `var(--color-${primaryColor})`,
+      boxShadow: isDarkMode 
+        ? '0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5)' 
+        : '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'
+    };
+  },
   
   // Progress dot styles
   progressDotColor: (primaryColor: string, isActive: boolean): CSSProperties => ({

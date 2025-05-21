@@ -1,30 +1,45 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
+import { GameState } from '../../../helpers/gameLogic';
 
 interface MenuItem {
   label: string;
   onClick: () => void;
   showArrow: boolean;
-  ariaLabel?: string;
+  ariaLabel: string;
+}
+
+interface GameStoreState {
+  gameState: GameState;
+  isFinalFiveActive: boolean;
+  showFinalFiveTransition: boolean;
+  hardMode: boolean;
+  isHardModeEnabled: boolean;
+  isSettingsPanelOpen: boolean;
+  isTutorialOpen: boolean;
+  setSettingsPanelOpen: (isOpen: boolean) => void;
+  setTutorialOpen: (isOpen: boolean) => void;
 }
 
 export const useNavigation = () => {
   const { colors, darkMode } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isBugReportModalOpen, setIsBugReportModalOpen] = useState(false);
   
   // Use state from gameStore instead of local state
-  const isGameOver = useGameStore(state => state.gameState.isGameOver);
-  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
-  const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
-  const hardMode = useGameStore(state => state.hardMode);
-  const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
-  const isSettingsOpen = useGameStore(state => state.isSettingsPanelOpen);
-  const isTutorialOpen = useGameStore(state => state.isTutorialOpen);
+  const isGameOver = useGameStore((state: GameStoreState) => state.gameState.isGameOver);
+  const isFinalFiveActive = useGameStore((state: GameStoreState) => state.isFinalFiveActive);
+  const showFinalFiveTransition = useGameStore((state: GameStoreState) => state.showFinalFiveTransition);
+  const hardMode = useGameStore((state: GameStoreState) => state.hardMode);
+  const isHardModeEnabled = useGameStore((state: GameStoreState) => state.isHardModeEnabled);
+  const isSettingsOpen = useGameStore((state: GameStoreState) => state.isSettingsPanelOpen);
+  const isTutorialOpen = useGameStore((state: GameStoreState) => state.isTutorialOpen);
   
   // Use methods from gameStore
-  const setSettingsPanelOpen = useGameStore(state => state.setSettingsPanelOpen);
-  const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
+  const setSettingsPanelOpen = useGameStore((state: GameStoreState) => state.setSettingsPanelOpen);
+  const setTutorialOpen = useGameStore((state: GameStoreState) => state.setTutorialOpen);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -43,13 +58,6 @@ export const useNavigation = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Function to navigate to support page with section hash
-  const navigateToSupport = (section: string) => {
-    // Open in a new tab while preserving the app context
-    window.open(`/support#${section}`, '_blank');
-    setIsDropdownOpen(false);
-  };
-
   // Define all menu items, we'll filter based on game state later
   const allMenuItems: MenuItem[] = [
     { 
@@ -62,21 +70,21 @@ export const useNavigation = () => {
       ariaLabel: 'ui.navigation.howToPlay'
     },
     { 
-      label: 'ui.navigation.about', 
-      onClick: () => navigateToSupport('faq'),
-      showArrow: true,  // This navigates to another page
-      ariaLabel: 'ui.navigation.about'
-    },
-    { 
       label: 'ui.navigation.reportBug', 
-      onClick: () => navigateToSupport('bug'),
-      showArrow: true,  // This navigates to another page
+      onClick: () => {
+        setIsBugReportModalOpen(true);
+        setIsDropdownOpen(false);
+      },
+      showArrow: false,
       ariaLabel: 'ui.navigation.reportBug'
     },
     { 
       label: 'ui.navigation.feedback', 
-      onClick: () => navigateToSupport('feedback'),
-      showArrow: true,  // This navigates to another page
+      onClick: () => {
+        setIsFeedbackModalOpen(true);
+        setIsDropdownOpen(false);
+      },
+      showArrow: false,
       ariaLabel: 'ui.navigation.feedback'
     },
   ];
@@ -112,6 +120,8 @@ export const useNavigation = () => {
     isDropdownOpen,
     isTutorialOpen,
     isSettingsOpen,
+    isFeedbackModalOpen,
+    isBugReportModalOpen,
     dropdownRef,
     hardMode,
     isHardModeEnabled,
@@ -119,6 +129,8 @@ export const useNavigation = () => {
     toggleDropdown,
     openSettings,
     closeSettings,
-    closeTutorial
+    closeTutorial,
+    setIsFeedbackModalOpen,
+    setIsBugReportModalOpen
   };
 }; 

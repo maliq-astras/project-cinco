@@ -1,13 +1,19 @@
 export const mainContainerStyles = {
   container: `flex flex-col h-screen w-full items-center bg-white dark:bg-black text-gray-800 dark:text-gray-100 overflow-hidden`,
   
+  // Add a specific class for tablet landscape container
+  tabletLandscapeContainer: `flex flex-col h-screen w-full items-center bg-white dark:bg-black text-gray-800 dark:text-gray-100 overflow-hidden flex-shrink-0`,
+  
   loadingWrapper: `flex-1 flex items-center justify-center w-full`,
   
   main: `w-full flex-1 flex flex-col items-center justify-between`,
   
-  gameContent: `w-full flex-1 flex flex-col items-center pt-1 pb-2 sm:py-2 gap-1`,
+  // Add a specific class for tablet landscape main content
+  tabletLandscapeMain: `w-full flex-1 flex flex-col items-center justify-start pt-1`,
   
-  topSection: `w-full flex justify-center`,
+  gameContent: `w-full flex-1 flex flex-col items-center pt-0 pb-2 sm:py-0 gap-1`,
+  
+  topSection: `w-full flex justify-center pt-0 pb-1`,
   
   middleSection: `flex-1 flex flex-col justify-center w-full`,
   
@@ -19,9 +25,9 @@ export const mainContainerStyles = {
   
   contextContainer: `px-4 py-1 rounded-lg relative z-10`,
   
-  factBubblesWrapper: `w-full flex justify-center mb-2 mt-3`,
+  factBubblesWrapper: `w-full flex justify-center mb-2 mt-2`,
   
-  factBubblesContainer: `w-full max-w-lg mb-0 py-0 sm:pt-1`,
+  factBubblesContainer: `w-full max-w-lg mb-0 py-0`,
   
   bottomSection: `w-full mt-auto`,
   

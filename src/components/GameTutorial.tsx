@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { useGameTutorial } from '../hooks/components/gameTutorial';
@@ -85,6 +85,32 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     handleClick,
     continueText
   } = useGameTutorial({ isOpen, onClose });
+  
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // Detect dark mode
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkDarkMode = () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        setIsDarkMode(isDark);
+      };
+      
+      checkDarkMode();
+      
+      // Set up a mutation observer to track changes to the dark mode class
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class') {
+            checkDarkMode();
+          }
+        });
+      });
+      
+      observer.observe(document.documentElement, { attributes: true });
+      return () => observer.disconnect();
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -100,7 +126,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
         <div style={gameTutorialStyles.overlayMask(spotlightStyles)} />
       </div>
 
-      {/* White border around the spotlight */}
+      {/* White border around the spotlight (adjusted for dark mode) */}
       <div
         className={gameTutorialStyles.spotlightWrapper}
         style={gameTutorialStyles.spotlight(spotlightStyles)}

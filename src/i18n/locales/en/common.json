@@ -119,6 +119,10 @@
       "highContrastDesc": "Beta",
       "autoSave": "Settings will be saved automatically.",
       "languageLocked": "Language cannot be changed after making a guess"
+    },
+    "landscapeWarning": {
+      "title": "Rotate Your Device",
+      "gameMessage": "This game is best experienced in portrait mode. Please rotate your device to continue playing."
     }
   },
   "categories": {

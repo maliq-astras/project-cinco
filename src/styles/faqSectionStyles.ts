@@ -14,7 +14,7 @@ export const faqSectionStyles = {
   contentWrapper: "flex flex-col items-center justify-center w-full sm:max-w-[500px] md:max-w-[560px] lg:max-w-[560px] mt-6",
   
   // Updated scrollable container with themed scrollbar that's always visible
-  scrollContainer: "h-full overflow-y-auto pr-3",
+  scrollContainer: "h-full overflow-y-auto pr-3 max-w-[705px]:landscape:max-h-[350px]",
   
   // FAQ list styles - consistent width with breakpoints - fixed for mobile
   faqList: "flex flex-col",

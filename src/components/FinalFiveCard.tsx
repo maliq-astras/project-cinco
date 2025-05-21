@@ -58,6 +58,9 @@ export default function FinalFiveCard({
     isCorrect
   });
 
+  // Get dimensions for the card based on device
+  const cardDimensions = finalFiveStyles.card.getDimensions();
+
   return (
     <motion.div 
       key={`option-${index}`} 
@@ -69,8 +72,8 @@ export default function FinalFiveCard({
       transition={{ duration: 0.5 }}
       style={{ 
         perspective: "1000px",
-        minHeight: "100px",
-        maxWidth: "160px", 
+        minHeight: cardDimensions.minHeight,
+        maxWidth: cardDimensions.maxWidth,
         margin: "0 auto",
         pointerEvents: (!isFlipped || isGameOver || !allCardsFlipped || (selectedOption !== null && selectedOption !== option)) ? "none" : "auto"
       }}

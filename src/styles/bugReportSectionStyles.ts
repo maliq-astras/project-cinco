@@ -57,10 +57,13 @@ export const bugReportSectionStyles = {
   fileUploadIcon: "w-10 h-10 text-gray-400 mb-2",
   fileUploadText: "text-sm text-gray-500 dark:text-gray-400 text-center",
   fileUploadInfoText: "text-xs text-gray-500 dark:text-gray-400 text-center mt-1",
-  uploadedFileContainer: "flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2 mt-2",
-  uploadedFileName: "text-sm text-gray-700 dark:text-gray-300 truncate",
-  removeFileButton: "text-red-500 hover:text-red-600 focus:outline-none",
-  removeFileIcon: "w-4 h-4",
+  fileUploadOptional: "text-xs text-gray-400 dark:text-gray-500 text-center mt-1 italic",
+  
+  // File preview styles
+  filePreviewContainer: "w-full flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4",
+  filePreviewIcon: "w-6 h-6 text-gray-500 dark:text-gray-400 mr-2",
+  filePreviewText: "text-sm text-gray-700 dark:text-gray-300 truncate flex-1",
+  filePreviewRemoveButton: "ml-2 text-gray-500 hover:text-red-500 focus:outline-none",
   
   // Loading states
   loadingButton: "inline-flex items-center",
@@ -70,6 +73,13 @@ export const bugReportSectionStyles = {
     opacity: '75',
     stroke: `var(--color-${primaryColor})`
   }),
+  
+  // Success styles
+  successContainer: "flex flex-col items-center justify-center w-full max-w-sm text-center",
+  successIconContainer: "flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4",
+  successIcon: "w-8 h-8 text-green-600",
+  successTitle: "text-xl font-bold mb-2 text-gray-800 dark:text-white",
+  successMessage: "text-gray-600 dark:text-gray-300",
   
   // Sub screen styles
   submittedContainer: "flex flex-col items-center justify-center pb-8 w-full",

@@ -10,6 +10,7 @@ import { finalFiveStyles } from '../styles/finalFiveStyles';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { capitalizeAnswer } from '../helpers/gameLogic';
+import { createPortal } from 'react-dom';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -54,7 +55,7 @@ export default function FinalFiveModal() {
   
   // If there's an error, show error state instead of normal content
   if (finalFiveError) {
-    return (
+    const errorModal = (
       <div className={finalFiveStyles.modalContainer}>
         <motion.div 
           className={finalFiveStyles.modalContent}
@@ -68,14 +69,12 @@ export default function FinalFiveModal() {
           }}
         >
           <div className={finalFiveStyles.mobileHandle}></div>
-          
           <h2 
             className={`${finalFiveStyles.header} ${righteous.className}`}
             style={{ color: themeColor }}
           >
             {t('game.finalFive.title')}
           </h2>
-          
           <div className="flex flex-col items-center justify-center p-6 text-center">
             <div className={finalFiveStyles.warningIcon.container}>
               <div className={finalFiveStyles.warningIcon.icon}>
@@ -83,7 +82,6 @@ export default function FinalFiveModal() {
               </div>
               <p>{finalFiveError}</p>
             </div>
-            
             <button
               className={finalFiveStyles.continueButton}
               style={{ backgroundColor: themeColor }}
@@ -98,6 +96,8 @@ export default function FinalFiveModal() {
         </motion.div>
       </div>
     );
+    if (typeof window === 'undefined') return null;
+    return createPortal(errorModal, document.body);
   }
   
   // Don't render if not active or no options
@@ -105,7 +105,7 @@ export default function FinalFiveModal() {
     return null;
   }
   
-  return (
+  const modal = (
     <div className={finalFiveStyles.modalContainer}>
       <motion.div 
         className={finalFiveStyles.modalContent}
@@ -225,7 +225,7 @@ export default function FinalFiveModal() {
         </div>
         
         {/* Grid of cards - 3-2 layout with timer in the bottom center */}
-        <div className={finalFiveStyles.cardGrid}>
+        <div className={finalFiveStyles.getCardGrid()}>
           {options.map((option: string, index: number) => {
             const { frontBg, backBg, textColor } = getCardStyles(option);
             
@@ -261,8 +261,8 @@ export default function FinalFiveModal() {
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5 }}
               style={{ 
-                minHeight: "100px",
-                maxWidth: "160px",
+                minHeight: finalFiveStyles.card.getDimensions().minHeight,
+                maxWidth: finalFiveStyles.card.getDimensions().maxWidth,
                 margin: "0 auto"
               }}
             >
@@ -307,4 +307,6 @@ export default function FinalFiveModal() {
       </motion.div>
     </div>
   );
+  if (typeof window === 'undefined') return null;
+  return createPortal(modal, document.body);
 } 

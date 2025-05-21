@@ -4,6 +4,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { GameControlsHandle } from '../../components/gameControls';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useChallenge } from '../../api';
+import { deviceDetection, getDeviceScaleFactor } from '../../../helpers';
 
 export function useMainContainer() {
   // Access game state
@@ -24,6 +25,7 @@ export function useMainContainer() {
   const startFinalFive = useGameStore(state => state.startFinalFive);
   const shouldFocusInput = useGameStore(state => state.shouldFocusInput);
   const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
+  const setScaleFactor = useGameStore(state => state.setScaleFactor);
 
   // Theme access
   const { colors } = useTheme();
@@ -31,6 +33,8 @@ export function useMainContainer() {
   // Component state
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
+  const [isTabletLandscape, setIsTabletLandscape] = useState(false);
+  const [isCompactHeader, setIsCompactHeader] = useState(false);
   const { language } = useLanguage();
   
   // Ref for game controls
@@ -91,11 +95,23 @@ export function useMainContainer() {
       
       setWindowWidth(width);
       
-      // Check if we're in landscape on a small screen
-      const isSmall = height < 768;
+      // Check if we're in landscape on a small screen (phone)
+      const isSmall = height < 450;
+      const isMedium = height >= 450 && height < 900;
       const isLandscape = width > height;
       
+      // Phone in landscape - show warning
       setIsSmallLandscape(isSmall && isLandscape);
+      
+      // Tablet in landscape - scale content
+      const isTablet = isMedium && isLandscape;
+      setIsTabletLandscape(isTablet);
+      
+      // Set compact header for any landscape mode with height below 650px
+      setIsCompactHeader(isLandscape && height < 650);
+      
+      // Set scale factor using our device helper
+      setScaleFactor(getDeviceScaleFactor(width, height, isTablet));
     };
     
     // Initial setup
@@ -110,7 +126,7 @@ export function useMainContainer() {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
     };
-  }, [setWindowWidth]);
+  }, [setWindowWidth, setScaleFactor]);
 
   // Handle loading complete
   const handleLoadingComplete = () => {
@@ -118,7 +134,10 @@ export function useMainContainer() {
   };
 
   // Prepare game message data
-  const showGameMessage = (victoryAnimationStep === 'summary' && gameOutcome) || gameOutcome === 'loss';
+  const showGameMessage = (victoryAnimationStep === 'summary' && gameOutcome !== null) || 
+                          gameOutcome === 'loss-time' || 
+                          gameOutcome === 'loss-final-five-wrong' || 
+                          gameOutcome === 'loss-final-five-time';
   
   const getGameMessageProps = () => {
     // Find correct answer if it exists
@@ -156,6 +175,8 @@ export function useMainContainer() {
     viewingFact,
     loadingComplete,
     isSmallLandscape,
+    isTabletLandscape,
+    isCompactHeader,
     isTimerActive,
     isFinalFiveActive,
     showFinalFiveTransition,

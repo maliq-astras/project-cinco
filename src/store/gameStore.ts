@@ -49,6 +49,7 @@ interface GameStore {
   isSettingsPanelOpen: boolean;
   isTutorialOpen: boolean;
   shouldPauseTimer: boolean;
+  scaleFactor: number;
   
   // Victory animation states
   isVictoryAnimationActive: boolean;
@@ -65,6 +66,7 @@ interface GameStore {
   resetTimer: () => void;
   setHoveredFact: (factIndex: number | null) => void;
   setShouldFocusInput: (shouldFocus: boolean) => void;
+  setScaleFactor: (factor: number) => void;
   
   // Game logic actions
   fetchChallenge: (language: string) => Promise<void>;
@@ -141,6 +143,7 @@ export const useGameStore = create<GameStore>()(
   isSettingsPanelOpen: false,
   isTutorialOpen: false,
   shouldPauseTimer: false,
+  scaleFactor: 1, // Default scale factor (1 = 100%)
   
   // Victory animation states
   isVictoryAnimationActive: false,
@@ -149,6 +152,7 @@ export const useGameStore = create<GameStore>()(
   
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
+  setScaleFactor: (factor: number) => set({ scaleFactor: factor }),
   decrementTimer: () => {
     const { 
       timeRemaining, 

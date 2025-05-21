@@ -56,9 +56,12 @@ export function useFactBubble({
   const [isPopping, setIsPopping] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [popPosition, setPopPosition] = useState({ x: 0, y: 0 });
+  const [isShowingTooltip, setIsShowingTooltip] = useState(false);
+  const [tooltipTimeout, setTooltipTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // Constants
   const CARD_ANIMATION_DELAY = 900;
+  const TOOLTIP_DURATION = 2000; // Tooltip will show for 2 seconds
 
   // Detect if we're on a touch device
   useEffect(() => {
@@ -110,6 +113,45 @@ export function useFactBubble({
     }
   };
 
+  // Handle tap/click for touch devices
+  const handleTap = () => {
+    if (!isTouchDevice || !isClickable) return;
+    
+    // Clear any existing timeout
+    if (tooltipTimeout) {
+      clearTimeout(tooltipTimeout);
+      setTooltipTimeout(null);
+    }
+    
+    // If already showing, hide the tooltip
+    if (isShowingTooltip) {
+      setIsShowingTooltip(false);
+      setHoveredFact(null);
+      return;
+    }
+    
+    // Show tooltip by setting the hovered fact in the global state
+    setIsShowingTooltip(true);
+    setHoveredFact(factIndex);
+    
+    // Set a timeout to hide the tooltip after a few seconds
+    const timeout = setTimeout(() => {
+      setIsShowingTooltip(false);
+      setHoveredFact(null);
+    }, TOOLTIP_DURATION);
+    
+    setTooltipTimeout(timeout);
+  };
+  
+  // Clean up timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout);
+      }
+    };
+  }, [tooltipTimeout]);
+
   // Calculate responsive icon size
   const icon = useMemo(() => {
     const sizeMultiplier = windowWidth < 480 ? 0.5 : windowWidth < 768 ? 0.55 : 0.6;
@@ -148,8 +190,9 @@ export function useFactBubble({
   // Mouse interaction handlers
   const mouseHandlers = useMemo(() => ({
     onMouseEnter: () => !isTouchDevice && isClickable && setHoveredFact(factIndex),
-    onMouseLeave: () => !isTouchDevice && setHoveredFact(null)
-  }), [isTouchDevice, isClickable, factIndex, setHoveredFact]);
+    onMouseLeave: () => !isTouchDevice && setHoveredFact(null),
+    onClick: handleTap
+  }), [isTouchDevice, isClickable, factIndex, setHoveredFact, handleTap]);
 
   return {
     isPopping,

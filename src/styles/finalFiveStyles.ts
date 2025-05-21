@@ -1,9 +1,11 @@
 /**
  * Styles for the Final Five Modal component
  */
+import { deviceDetection } from '../helpers/deviceHelpers';
+
 export const finalFiveStyles = {
   // Main modal container
-  modalContainer: "fixed inset-0 z-40 flex md:items-center justify-center bg-black/75 backdrop-blur-sm",
+  modalContainer: "fixed inset-0 z-50 flex md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
   
   // Modal content panel
   modalContent: "w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
@@ -24,7 +26,20 @@ export const finalFiveStyles = {
   message: "text-left mb-6 text-gray-700 dark:text-gray-300 font-display",
   
   // Card grid
-  cardGrid: "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto max-w-[500px]",
+  getCardGrid: () => {
+    // Surface Duo specific layouts
+    if (typeof window !== 'undefined' && deviceDetection.isSurfaceDuo()) {
+      // Check if we're in landscape mode (wider than tall)
+      if (window.innerWidth > window.innerHeight) {
+        return "grid grid-cols-3 grid-rows-2 gap-3 mb-6 mx-auto max-w-[650px]";
+      }
+      // Portrait mode layout
+      return "grid grid-cols-2 gap-4 mb-6 mx-auto max-w-[420px]";
+    }
+    
+    // Default layout
+    return "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto max-w-[500px]";
+  },
   
   // Card styles
   card: {
@@ -49,6 +64,29 @@ export const finalFiveStyles = {
         transform: "rotateY(180deg) scale(1)",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
       }
+    },
+    
+    // Get card dimensions adjusted for Surface Duo
+    getDimensions: () => {
+      if (typeof window !== 'undefined' && deviceDetection.isSurfaceDuo()) {
+        // Special dimensions for Surface Duo in landscape mode
+        if (window.innerWidth > window.innerHeight) {
+          return {
+            minHeight: "120px",
+            maxWidth: "150px"
+          };
+        }
+        // Surface Duo portrait dimensions
+        return {
+          minHeight: "90px",
+          maxWidth: "140px"
+        };
+      }
+      
+      return {
+        minHeight: "100px",
+        maxWidth: "160px"
+      };
     }
   },
   

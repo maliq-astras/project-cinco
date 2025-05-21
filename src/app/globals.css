@@ -818,55 +818,7 @@ body {
 }
 
 /* Support page specific styles */
-.support-page-container {
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-}
-
-.support-page-content {
-  height: 100%;
-  overflow: hidden;
-}
-
-.support-section {
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.scrollable-accordion {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Force consistent width for accordion items */
-.faq-list-container {
-  width: 100% !important;
-  max-width: 560px !important;
-  box-sizing: border-box !important;
-}
-
-.faq-item {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.faq-button-wrapper {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.faq-question-button {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.faq-answer-container {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
+/* Removed: .support-page-container, .support-page-content, .support-section, .scrollable-accordion, .faq-list-container, .faq-item, .faq-button-wrapper, .faq-question-button, .faq-answer-container */
 
 /* Themed scrollbar styles - ALWAYS VISIBLE VERSION */
 .themed-scrollbar {
