@@ -19,6 +19,7 @@ export function useMainContainer() {
   const gameOutcome = useGameStore(state => state.gameOutcome);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
+  const hardMode = useGameStore(state => state.hardMode);
   const resetTimer = useGameStore(state => state.resetTimer);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const finalFiveTransitionReason = useGameStore(state => state.finalFiveTransitionReason);
@@ -158,8 +159,9 @@ export function useMainContainer() {
     // Calculate number of tries
     const numberOfTries = correctGuess ? gameState.guesses.indexOf(correctGuess) + 1 : 0;
     
-    // Calculate time spent
-    const timeSpent = 300 - timeRemaining;
+    // Calculate time spent - use correct initial time based on hard mode
+    const initialTime = hardMode ? 55 : 300;
+    const timeSpent = initialTime - timeRemaining;
     
     return {
       outcome: gameOutcome || 'loss',

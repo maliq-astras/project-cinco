@@ -398,7 +398,6 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
       onClose={onClose}
       title={<span className={righteous.className + ' uppercase'}>FEEDBACK</span>}
       colors={colors}
-      isMobile={window.innerWidth < 768}
       className="max-w-2xl"
     >
       <div
@@ -422,7 +421,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     <h3
                       className={
                         righteous.className +
-                        ' text-center mb-6' +
+                        ' text-center mb-6 text-gray-800 dark:text-white' +
                         (isMobile ? ' text-base' : ' text-2xl')
                       }
                       style={{ letterSpacing: 1 }}

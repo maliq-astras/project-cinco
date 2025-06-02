@@ -37,11 +37,26 @@ export function useFinalFiveModal() {
   const [timerReachedZero, setTimerReachedZero] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const maxRetries = 3;
   
   
   // Get current language from localStorage
   const language = typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en';
+  
+  // Detect if we're on a mobile device
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
   
   // Use React Query to fetch Final Five options if needed
   const { data: fetchedOptions, isLoading: optionsLoading } = useFinalFiveOptions({
@@ -561,6 +576,7 @@ export function useFinalFiveModal() {
     correctAnswer,
     isSlowConnection,
     verifyRetryCount,
+    isMobile,
     
     // Styles and helpers
     themeColor,

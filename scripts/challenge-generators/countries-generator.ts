@@ -18,53 +18,10 @@ const countryFactTypes = [
 const countryData = [
   {
     answer: {
-      en: "New Zealand",
-      es: "Nueva Zelanda"
-    },
-    facts: {
-      "Language(s)": {
-        en: "I have three officially recognized languages, with one of them being the first sign language to be given official status in any country.",
-        es: "Tengo tres idiomas oficialmente reconocidos, siendo uno de ellos el primer lenguaje de señas en recibir estatus oficial en cualquier país."
-      },
-      "Flag": {
-        en: "I am one of only a few countries whose flag features the Southern Cross constellation on a blue field.",
-        es: "Soy uno de los pocos países cuya bandera presenta la constelación de la Cruz del Sur sobre un campo azul."
-      },
-      "Notable City": {
-        en: "I have a city nicknamed the 'City of Sails' due to having more boats per capita than anywhere else in the world.",
-        es: "Tengo una ciudad apodada la 'Ciudad de las Velas' por tener más barcos per cápita que cualquier otro lugar del mundo."
-      },
-      "Political History": {
-        en: "I was the first country in the world to give women the right to vote in 1893, over 25 years before the United States.",
-        es: "Fui el primer país del mundo en dar a las mujeres el derecho al voto en 1893, más de 25 años antes que Estados Unidos."
-      },
-      "Economy": {
-        en: "I count tourism as a major economic driver, but my largest export earnings come from dairy products, which account for around 20% of my total exports.",
-        es: "El turismo es un importante motor económico, pero mis mayores ingresos por exportaciones provienen de productos lácteos, que representan alrededor del 20% de mis exportaciones totales."
-      },
-      "Culture & Tradition": {
-        en: "I have a rich indigenous culture with the Māori people, known for their haka dance, intricate tattoos, and traditional meeting houses called marae.",
-        es: "Tengo una rica cultura indígena con el pueblo Māori, conocido por su danza haka, tatuajes intrincados y casas de reunión tradicionales llamadas marae."
-      },
-      "Geography & Border": {
-        en: "I consist of two main islands and over 700 smaller islands, completely surrounded by ocean with no land borders to any other nation.",
-        es: "Consisto en dos islas principales y más de 700 islas más pequeñas, completamente rodeadas por océano sin fronteras terrestres con ninguna otra nación."
-      },
-      "Wildcard": {
-        en: "I was the last major habitable landmass to be settled by humans, with my indigenous population arriving around 700 years ago.",
-        es: "Fui la última masa de tierra habitable importante en ser poblada por humanos, con mi población indígena llegando hace unos 700 años."
-      }
-    },
-    alternatives: {
-      en: ["Australia", "Iceland", "Norway", "Finland", "Denmark", "Ireland", "Japan", "Fiji", "Canada"],
-      es: ["Australia", "Islandia", "Noruega", "Finlandia", "Dinamarca", "Irlanda", "Japón", "Fiyi", "Canadá"]
-    }
-  },
-  {
-    answer: {
       en: "Japan",
       es: "Japón"
     },
+    imageUrl: "https://res.cloudinary.com/dv8mf70xe/image/upload/v1748641680/japan_xzhec7.jpg",
     facts: {
       "Language(s)": {
         en: "I have only one official language, though several regional dialects exist across my archipelago.",

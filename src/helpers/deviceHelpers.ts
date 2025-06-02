@@ -35,6 +35,24 @@ export const deviceDetection = {
            window.innerWidth > 1000 && 
            window.innerWidth < 1400 && 
            window.innerHeight < 950;
+  },
+
+  isMobilePhone: () => {
+    // True mobile phones should get mobile UI
+    // Exclude tablets, Surface Duo, and other larger devices
+    if (deviceDetection.isSurfaceDuo()) return false;
+    
+    // Check for typical phone dimensions
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const maxDimension = Math.max(width, height);
+    const minDimension = Math.min(width, height);
+    
+    // Phones typically have:
+    // - Smaller width in portrait (< 500px)
+    // - Max dimension < 1000px (excludes most tablets)
+    // - Aspect ratio suggesting phone form factor
+    return minDimension < 500 && maxDimension < 1000;
   }
 };
 

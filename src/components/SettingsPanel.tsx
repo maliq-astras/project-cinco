@@ -39,8 +39,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     selectLanguage
   } = useSettingsPanel({ isOpen, onClose });
 
-  if (!isOpen) return null;
-
   // Toggle switch component with theme color
   const ToggleSwitch = ({ isOn, onToggle, disabled = false }: { isOn: boolean; onToggle: () => void; disabled?: boolean }) => (
     <button 
@@ -197,38 +195,51 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   if (isMobile) {
     return (
       <AnimatePresence>
-        <motion.div 
-          className={settingsPanelStyles.mobileContainer}
-          {...settingsPanelStyles.overlayAnimation}
-        >
-          <motion.div
-            className={settingsPanelStyles.mobilePanelClass}
-            style={settingsPanelStyles.mobilePanel(colors.primary)}
-            {...settingsPanelStyles.mobilePanelAnimation}
+        {isOpen && (
+          <motion.div 
+            key="mobile-settings"
+            className={settingsPanelStyles.mobileContainer}
+            {...settingsPanelStyles.overlayAnimation}
           >
-            <div className={settingsPanelStyles.mobileDragIndicator}></div>
-            <div className={`${inter.className} ${settingsPanelStyles.contentContainer}`}>
-              {settingsContent}
-            </div>
+            <motion.div
+              className={settingsPanelStyles.mobilePanelClass}
+              style={settingsPanelStyles.mobilePanel(colors.primary)}
+              {...settingsPanelStyles.mobilePanelAnimation}
+            >
+              <div className={settingsPanelStyles.mobileDragIndicator}></div>
+              <div className={`${inter.className} ${settingsPanelStyles.contentContainer}`}>
+                {settingsContent}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        )}
       </AnimatePresence>
     );
   }
 
   // For desktop, render a centered modal
   return (
-    <div 
-      className={settingsPanelStyles.desktopContainer}
-      onClick={handleOverlayClick}
-    >
-      <div 
-        className={`${inter.className} ${settingsPanelStyles.desktopPanelClass}`}
-        style={settingsPanelStyles.desktopPanel(colors.primary)}
-      >
-        {settingsContent}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          key="desktop-settings"
+          className={settingsPanelStyles.desktopContainer}
+          onClick={handleOverlayClick}
+          {...settingsPanelStyles.overlayAnimation}
+        >
+          <motion.div 
+            className={`${inter.className} ${settingsPanelStyles.desktopPanelClass}`}
+            style={settingsPanelStyles.desktopPanel(colors.primary)}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            {settingsContent}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

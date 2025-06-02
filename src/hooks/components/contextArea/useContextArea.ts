@@ -12,10 +12,18 @@ export function useBubbleContext() {
   const challenge = useGameStore(state => state.gameState.challenge);
   const hoveredFact = useGameStore(state => state.hoveredFact);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
+  const isGameOver = useGameStore(state => state.gameState.isGameOver);
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+  const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const { colors } = useTheme();
 
   // Determine message to show when hovering over a bubble
   const getMessage = () => {
+    // Don't show bubble context if the game is over, Final Five is active, or transitioning to Final Five
+    if (isGameOver || isFinalFiveActive || showFinalFiveTransition) {
+      return "";
+    }
+    
     const shouldShowHoverContext = hoveredFact !== null && 
       challenge?.facts && 
       !revealedFacts.includes(hoveredFact);

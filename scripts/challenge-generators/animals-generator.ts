@@ -21,6 +21,7 @@ const animalData = [
       en: "Platypus",
       es: "Ornitorrinco"
     },
+    imageUrl: "https://res.cloudinary.com/dv8mf70xe/image/upload/v1748641843/platypus_xdvscr.jpg",
     facts: {
       "Habitat": {
         en: "I am found exclusively in eastern Australia, including Tasmania, where I inhabit freshwater systems such as rivers, lakes, and streams.",

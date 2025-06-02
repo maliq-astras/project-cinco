@@ -32,6 +32,7 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
     answer: string;
     facts: Record<string, string>;
     alternatives: string[];
+    imageUrl?: string;
     translations?: {
       es?: {
         facts: Record<string, string>;
@@ -77,6 +78,7 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
           category: this.category
         })),
         answer: subject.answer,
+        imageUrl: subject.imageUrl,
         alternatives: subject.alternatives || []
       });
     }

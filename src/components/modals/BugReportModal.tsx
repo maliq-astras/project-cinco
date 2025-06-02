@@ -416,7 +416,6 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
       onClose={onClose}
       title={<span className={righteous.className + ' uppercase'}>BUG REPORT</span>}
       colors={colors}
-      isMobile={window.innerWidth < 768}
       className="max-w-2xl"
     >
       <div
@@ -440,7 +439,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                     <h3
                       className={
                         righteous.className +
-                        ' text-center mb-6' +
+                        ' text-center mb-6 text-gray-800 dark:text-white' +
                         (isMobile ? ' text-base' : ' text-2xl')
                       }
                       style={{ letterSpacing: 1 }}

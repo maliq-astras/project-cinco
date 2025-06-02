@@ -161,6 +161,7 @@ export interface Challenge {
     en: string;
     es: string;
   };
+  imageUrl?: string; // Add optional imageUrl field
   alternatives: {
     en: string[];
     es: string[];
