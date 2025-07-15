@@ -3,6 +3,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { useGameStore } from '../../../store/gameStore';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage, Language } from '../../../contexts/LanguageContext';
+import { deviceDetection } from '../../../helpers/deviceHelpers';
 
 // Format languages for display in the dropdown
 export const languages = [
@@ -45,7 +46,17 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   // Detect if we're on a mobile device
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      if (typeof window === 'undefined') {
+        setIsMobile(false);
+        return;
+      }
+      
+      // Use more inclusive mobile detection for consistent modal behavior
+      const isMobileWidth = window.innerWidth < 768;
+      const isActualMobile = deviceDetection.isMobilePhone();
+      
+      // Use mobile animations for both actual mobile phones and smaller tablet screens
+      setIsMobile(isMobileWidth || isActualMobile);
     };
     
     checkIfMobile();

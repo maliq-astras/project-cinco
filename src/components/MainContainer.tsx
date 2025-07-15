@@ -3,6 +3,7 @@
 import React, { CSSProperties } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMainContainer } from '../hooks/components/mainContainer/useMainContainer';
+import { useWrongAnswerOverlay } from '../hooks';
 import { mainContainerStyles } from '../styles/mainContainerStyles';
 import { 
   FactCard, 
@@ -16,10 +17,12 @@ import {
   BubbleContextArea, 
   GameInstructionsArea, 
   Navigation, 
-  FinalFiveIntro 
+  FinalFiveIntro,
+  WrongAnswerOverlay 
 } from './';
 import { useGameStore } from '../store/gameStore';
 import LandscapeWarning from './LandscapeWarning';
+import { MAX_WRONG_GUESSES } from '../helpers/gameLogic';
 
 export default function MainContainer() {
   const {
@@ -28,17 +31,25 @@ export default function MainContainer() {
     loadingComplete,
     isSmallLandscape,
     isTabletLandscape,
+    isTablet,
     isCompactHeader,
+    isTimerActive,
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
     colors,
     showGameMessage,
+    isChallengeLoading,
     gameControlsRef,
     handleLoadingComplete,
     getGameMessageProps,
     startFinalFive
   } = useMainContainer();
+  
+  // Wrong answer overlay hook
+  const wrongAnswerOverlay = useWrongAnswerOverlay({ 
+    maxGuesses: MAX_WRONG_GUESSES 
+  });
   
   // Get scale factor from the store
   const scaleFactor = useGameStore(state => state.scaleFactor);
@@ -146,7 +157,7 @@ export default function MainContainer() {
                       </div>
                       
                       {/* Bottom section */}
-                      <div className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}>
+                      <div className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-12' : ''}`}>
                         {/* Game instructions */}
                         {!isFinalFiveActive && (
                           <motion.div 
@@ -164,7 +175,7 @@ export default function MainContainer() {
                         {/* Game Controls */}
                         {!showGameMessage && !isFinalFiveActive && (
                           <motion.div
-                            className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}
+                            className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-4' : isTablet ? 'mb-12' : ''}`}
                             {...mainContainerStyles.staggeredFade(0.9)}
                           >
                             <GameControls ref={gameControlsRef} />
@@ -190,6 +201,9 @@ export default function MainContainer() {
               />
             </>
           )}
+          
+          {/* Wrong Answer Overlay */}
+          <WrongAnswerOverlay {...wrongAnswerOverlay} />
         </>
       )}
     </div>

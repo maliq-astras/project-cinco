@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../../../store/gameStore';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { GameControlsHandle } from '../../components/gameControls';
+import type { GameControlsHandle } from '../../../components/GameControls';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useChallenge } from '../../api';
 import { deviceDetection, getDeviceScaleFactor } from '../../../helpers';
+import { GameOutcome } from '../../../types';
 
 export function useMainContainer() {
   // Access game state
@@ -35,6 +36,7 @@ export function useMainContainer() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
   const [isTabletLandscape, setIsTabletLandscape] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [isCompactHeader, setIsCompactHeader] = useState(false);
   const { language } = useLanguage();
   
@@ -104,15 +106,19 @@ export function useMainContainer() {
       // Phone in landscape - show warning
       setIsSmallLandscape(isSmall && isLandscape);
       
+      // Tablet detection - both portrait and landscape
+      const isTabletDevice = (width >= 768 && width <= 1024) || (isMedium && (isLandscape || width >= 768));
+      setIsTablet(isTabletDevice);
+      
       // Tablet in landscape - scale content
-      const isTablet = isMedium && isLandscape;
-      setIsTabletLandscape(isTablet);
+      const isTabletLandscapeMode = isMedium && isLandscape;
+      setIsTabletLandscape(isTabletLandscapeMode);
       
       // Set compact header for any landscape mode with height below 650px
       setIsCompactHeader(isLandscape && height < 650);
       
       // Set scale factor using our device helper
-      setScaleFactor(getDeviceScaleFactor(width, height, isTablet));
+      setScaleFactor(getDeviceScaleFactor(width, height, isTabletLandscapeMode));
     };
     
     // Initial setup
@@ -164,7 +170,7 @@ export function useMainContainer() {
     const timeSpent = initialTime - timeRemaining;
     
     return {
-      outcome: gameOutcome || 'loss',
+      outcome: (gameOutcome || 'loss-time') as GameOutcome,
       correctAnswer,
       numberOfTries,
       timeSpent,
@@ -178,6 +184,7 @@ export function useMainContainer() {
     loadingComplete,
     isSmallLandscape,
     isTabletLandscape,
+    isTablet,
     isCompactHeader,
     isTimerActive,
     isFinalFiveActive,

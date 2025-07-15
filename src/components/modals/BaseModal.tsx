@@ -16,6 +16,8 @@ interface BaseModalProps {
     primary: string;
   };
   className?: string;
+  dismissible?: boolean;
+  mobileHeight?: string; // Allow custom mobile height
 }
 
 const baseModalStyles = {
@@ -27,7 +29,7 @@ const baseModalStyles = {
     borderRight: `1px solid var(--color-${primaryColor})`,
     maxHeight: '95vh'
   }),
-  mobilePanelClass: "absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg h-[75vh]",
+  mobilePanelClass: (height: string) => `absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg h-[${height}]`,
   mobileDragIndicator: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]",
   
   desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 backdrop-blur-md",
@@ -65,16 +67,19 @@ const BaseModal: React.FC<BaseModalProps> = ({
   title, 
   children, 
   colors,
-  className
+  className,
+  dismissible = true, // Default to true for backwards compatibility
+  mobileHeight = '75vh' // Default to 75vh if not provided
 }) => {
   // Get dark mode state from theme context
   const { darkMode } = useTheme();
   
-  // Use proper device detection from deviceHelpers
-  const isMobile = typeof window !== 'undefined' ? deviceDetection.isMobilePhone() : false;
+  // Use more inclusive mobile detection that matches FinalFiveModal behavior
+  const isMobile = typeof window !== 'undefined' ? 
+    (window.innerWidth < 768 || deviceDetection.isMobilePhone()) : false;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && !isMobile) {
+    if (e.target === e.currentTarget && !isMobile && dismissible) {
       onClose();
     }
   };
@@ -92,7 +97,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
               {...baseModalStyles.overlayAnimation}
             >
               <motion.div
-                className={baseModalStyles.mobilePanelClass + (className ? ` ${className}` : '')}
+                className={baseModalStyles.mobilePanelClass(mobileHeight) + (className ? ` ${className}` : '')}
                 style={baseModalStyles.mobilePanel(colors.primary)}
                 {...baseModalStyles.mobilePanelAnimation}
               >
@@ -103,6 +108,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       <h1 className={baseModalStyles.titleClass}>
                         {title}
                       </h1>
+                      {dismissible && (
                       <button 
                         onClick={onClose}
                         className={baseModalStyles.closeButtonClass}
@@ -112,9 +118,10 @@ const BaseModal: React.FC<BaseModalProps> = ({
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
+                      )}
                     </div>
                   )}
-                  {!title && (
+                  {!title && dismissible && (
                     <div className="flex justify-end mb-4">
                       <button 
                         onClick={onClose}
@@ -159,6 +166,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
                   <h1 className={baseModalStyles.titleClass}>
                     {title}
                   </h1>
+                  {dismissible && (
                   <button 
                     onClick={onClose}
                     className={baseModalStyles.closeButtonClass}
@@ -168,9 +176,10 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
+                  )}
                 </div>
               )}
-              {!title && (
+              {!title && dismissible && (
                 <div className="flex justify-end mb-6">
                   <button 
                     onClick={onClose}

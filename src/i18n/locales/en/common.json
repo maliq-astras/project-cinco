@@ -36,6 +36,14 @@
       "rotateDevice": "Rotate Your Device",
       "rotateDescription": "This game works best in portrait mode on smaller screens. Please rotate your device to continue playing."
     },
+    "wrongAnswer": {
+      "title": "Wrong Answer!",
+      "guessesLeft": "{{count}} guess left!",
+      "guessesLeft_one": "{{count}} guess left!",
+      "guessesLeft_other": "{{count}} guesses left!",
+      "noGuessesLeft": "No guesses left! Time for the Final Five!",
+      "keepTrying": "Keep trying, you've got this!"
+    },
     "finalFive": {
       "title": "FINAL 5",
       "intro": "Time for the Final Five!",

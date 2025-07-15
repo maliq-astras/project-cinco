@@ -11,3 +11,4 @@ export { BubbleContextArea, GameInstructionsArea } from './ContextArea';
 export { default as Navigation } from './Navigation';
 export { default as FinalFiveIntro } from './FinalFiveIntro';
 export { default as NavDropdownMenu } from './NavDropdownMenu'; 
+export { default as WrongAnswerOverlay } from './WrongAnswerOverlay'; 

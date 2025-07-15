@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { UserGuess } from '../../../types';
-import { handleToastNotification } from '../../../helpers/guessProgressBarHelpers';
 
 interface UseGuessProgressProps {
   guesses: UserGuess[];
@@ -49,12 +48,7 @@ export function useGuessProgress({
     if (wrongGuessCount > prevWrongGuessCount.current) {
       setIsShaking(true);
       
-      // Show toast notification for wrong guess
-      const lastGuess = guesses[guesses.length - 1];
-      if (lastGuess) {
-        const wasSkipped = lastGuess.guess === "___SKIPPED___";
-        handleToastNotification(wasSkipped);
-      }
+      // Note: Toast notification removed - now using WrongAnswerOverlay instead
       
       // Reset shake after animation completes
       setTimeout(() => {
@@ -66,7 +60,7 @@ export function useGuessProgress({
     }
     
     prevWrongGuessCount.current = wrongGuessCount;
-  }, [wrongGuessCount, guesses, onShakeComplete]);
+  }, [wrongGuessCount, onShakeComplete]);
 
   return {
     wrongGuesses,
