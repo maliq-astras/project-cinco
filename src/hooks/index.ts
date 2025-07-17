@@ -1,6 +1,3 @@
-// Export component-specific hooks
-export * from './components';
-
 // Export animation hooks
 export * from './animation';
 
@@ -15,8 +12,5 @@ export * from './card';
 
 // Import and re-export all hooks to make them easier to access
 export * from './api';
-export * from './components/mainContainer/useMainContainer';
 
-export * from './components/settingsPanel/useSettingsPanel';
-export * from './components/endGameMessage/useEndGameMessage'; 
 export { useWrongAnswerOverlay } from './ui/useWrongAnswerOverlay'; 

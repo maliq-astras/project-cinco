@@ -1,1 +1,0 @@
-export { useSettingsPanel, languages } from './useSettingsPanel'; 

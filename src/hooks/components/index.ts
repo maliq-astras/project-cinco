@@ -1,10 +1,1 @@
-export * from './factCard';
-export * from './guessProgressBar';
-export * from './iconContainer';
-export * from './contextArea';
-export * from './finalFiveIntro';
-export * from './gameTutorial';
-export * from './logo';
-export * from './navigation';
-export * from './settingsPanel';
-export * from './mainContainer';
+// All component hooks have been migrated to co-located structures
