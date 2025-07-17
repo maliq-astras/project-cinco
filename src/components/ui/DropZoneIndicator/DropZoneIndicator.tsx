@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { dropZoneIndicatorStyles } from '@/styles/dropZoneIndicatorStyles';
+import { dropZoneIndicatorStyles } from './dropZoneIndicatorStyles';
 
 interface DropZoneIndicatorProps {
   isVisible: boolean;

@@ -16,10 +16,12 @@ import {
   BubbleContextArea, 
   GameInstructionsArea, 
   Navigation, 
-  FinalFiveIntro 
+  FinalFiveIntro,
+  WrongAnswerOverlay 
 } from '@/components';
 import { useGameStore } from '@/store/gameStore';
 import LandscapeWarning from '../../ui/LandscapeWarning';
+import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 
 export default function MainContainer() {
   const {
@@ -42,6 +44,9 @@ export default function MainContainer() {
   
   // Get scale factor from the store
   const scaleFactor = useGameStore(state => state.scaleFactor);
+  
+  // Wrong answer overlay hook
+  const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
   
   // If in small landscape mode (phone), show a warning overlay
   if (isSmallLandscape) {
@@ -190,6 +195,14 @@ export default function MainContainer() {
               />
             </>
           )}
+          
+          {/* Wrong Answer Overlay */}
+          <WrongAnswerOverlay
+            isVisible={wrongAnswerOverlay.isVisible}
+            wrongGuessCount={wrongAnswerOverlay.wrongGuessCount}
+            maxGuesses={wrongAnswerOverlay.maxGuesses}
+            onAnimationComplete={wrongAnswerOverlay.onAnimationComplete}
+          />
         </>
       )}
     </div>

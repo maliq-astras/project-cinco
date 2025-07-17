@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
-import BaseModal from './BaseModal';
-import { useModalForm } from '../../hooks/components/modals/useModalForm';
+import { useTheme } from '../../../contexts/ThemeContext';
+import BaseModal from '../BaseModal/BaseModal';
+import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
 
 interface BugReportModalProps {

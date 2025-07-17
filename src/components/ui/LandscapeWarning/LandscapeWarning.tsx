@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { landscapeWarningStyles } from '@/styles/landscapeWarningStyles';
+import { landscapeWarningStyles } from './landscapeWarningStyles';
 
 interface LandscapeWarningProps {
   context?: 'game';

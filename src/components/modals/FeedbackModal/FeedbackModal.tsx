@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
-import BaseModal from './BaseModal';
-import { useModalForm } from '../../hooks/components/modals/useModalForm';
+import { useTheme } from '../../../contexts/ThemeContext';
+import BaseModal from '../BaseModal/BaseModal';
+import { useModalForm } from '../BugReportModal/useModalForm';
 import { Righteous } from 'next/font/google';
-import ModalNavButton from './ModalNavButton';
-import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../types';
+import ModalNavButton from '../ModalNavButton/ModalNavButton';
+import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
 import { useTranslation } from 'react-i18next';
-import { getCategoryName } from '../../helpers/i18nHelpers';
+import { getCategoryName } from '../../../helpers/i18nHelpers';
 
 interface FeedbackModalProps {
   isOpen: boolean;

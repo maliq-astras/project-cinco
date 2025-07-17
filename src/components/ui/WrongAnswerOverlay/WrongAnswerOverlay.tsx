@@ -27,8 +27,9 @@ export default function WrongAnswerOverlay({
   
   const remainingGuesses = maxGuesses - wrongGuessCount;
   
-  // Generate X marks based on wrong guess count
-  const xMarks = Array.from({ length: wrongGuessCount }, (_, i) => i);
+  // Always generate 5 X mark slots, but only show the ones with wrong guesses
+  const maxXMarks = 5;
+  const xMarkSlots = Array.from({ length: maxXMarks }, (_, i) => i);
   
   // Trigger shake animation after modal appears
   React.useEffect(() => {
@@ -129,7 +130,7 @@ export default function WrongAnswerOverlay({
       y: 0,
       opacity: 1,
       transition: {
-        delay: wrongGuessCount * 0.1 + 0.3,
+        delay: 0.8, // Fixed delay for consistent timing
         duration: 0.6,
         ease: "easeOut"
       }
@@ -159,9 +160,7 @@ export default function WrongAnswerOverlay({
           exit="exit"
         >
           <motion.div
-            className={`bg-white dark:bg-black rounded-2xl p-8 sm:p-12 shadow-2xl border-4 mx-4 text-center ${
-              wrongGuessCount >= 4 ? 'max-w-lg' : 'max-w-md'
-            }`}
+            className="bg-white dark:bg-black rounded-2xl p-4 sm:p-8 md:p-10 lg:p-12 shadow-2xl border-4 mx-4 text-center w-80 sm:w-96 md:w-[28rem] lg:w-[32rem]"
             style={{ 
               borderColor: `var(--color-${colors.primary})`,
               boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--color-${colors.primary})`
@@ -173,27 +172,24 @@ export default function WrongAnswerOverlay({
           >
             {/* X Marks Container */}
             <motion.div 
-              className={`flex justify-center items-center mb-6 flex-wrap ${
-                wrongGuessCount >= 4 ? 'gap-2 sm:gap-2' : 'gap-3'
-              }`}
+              className="flex justify-center items-center mb-6 gap-1 sm:gap-2 md:gap-2.5 lg:gap-3"
               variants={pulseVariants}
               animate="pulse"
             >
-              {xMarks.map((_, index) => (
+              {xMarkSlots.map((_, index) => (
                 <motion.div
                   key={index}
                   className="relative"
                   variants={xMarkVariants}
                   initial="hidden"
-                  animate="visible"
+                  animate={index < wrongGuessCount ? "visible" : "hidden"}
                   custom={index}
+                  style={{ 
+                    visibility: index < wrongGuessCount ? 'visible' : 'hidden'
+                  }}
                 >
                   <div
-                    className={`rounded-full flex items-center justify-center border-4 shadow-lg ${
-                      wrongGuessCount >= 4 
-                        ? 'w-10 h-10 sm:w-12 sm:h-12' 
-                        : 'w-12 h-12 sm:w-16 sm:h-16'
-                    }`}
+                    className="rounded-full flex items-center justify-center border-4 shadow-lg w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16"
                     style={{
                       backgroundColor: `var(--color-${colors.primary})`,
                       borderColor: `var(--color-${colors.accent})`,
@@ -201,11 +197,7 @@ export default function WrongAnswerOverlay({
                     }}
                   >
                     <motion.span
-                      className={`${righteous.className} text-white font-bold ${
-                        wrongGuessCount >= 4 
-                          ? 'text-lg sm:text-xl' 
-                          : 'text-2xl sm:text-3xl'
-                      }`}
+                      className={`${righteous.className} text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl`}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{
@@ -252,7 +244,7 @@ export default function WrongAnswerOverlay({
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 transition={{
-                  delay: wrongGuessCount * 0.1 + 0.4,
+                  delay: 0.9, // Fixed delay for consistent timing
                   duration: 0.4,
                   type: "spring",
                   stiffness: 300
@@ -267,7 +259,7 @@ export default function WrongAnswerOverlay({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: wrongGuessCount * 0.1 + 0.6,
+                  delay: 1.1, // Fixed delay for consistent timing
                   duration: 0.5
                 }}
               >
@@ -285,7 +277,7 @@ export default function WrongAnswerOverlay({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.75 }}
                     transition={{
-                      delay: wrongGuessCount * 0.1 + 0.8,
+                      delay: 1.3, // Fixed delay for consistent timing
                       duration: 0.4
                     }}
                   >
@@ -300,7 +292,7 @@ export default function WrongAnswerOverlay({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{
-                  delay: wrongGuessCount * 0.1 + 0.7,
+                  delay: 1.2, // Fixed delay for consistent timing
                   duration: 0.5
                 }}
               >
@@ -318,7 +310,7 @@ export default function WrongAnswerOverlay({
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{
-                        delay: wrongGuessCount * 0.1 + 0.5 + (i * 0.05),
+                        delay: 1.0 + (i * 0.05), // Fixed base delay for consistent timing
                         duration: 0.3,
                         type: "spring",
                         stiffness: 300

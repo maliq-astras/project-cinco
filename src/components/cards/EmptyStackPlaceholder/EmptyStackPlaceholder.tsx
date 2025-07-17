@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { factCardStackContainerStyles } from './FactCardStackContainer/FactCardStackContainer.styles';
+import { factCardStackContainerStyles } from '../FactCardStackContainer/FactCardStackContainer.styles';
 
 /**
  * Placeholder component displayed when no fact cards are visible

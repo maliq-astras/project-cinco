@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useGameStore } from '../../store/gameStore';
-import { capitalizeAnswer } from '../../helpers/gameLogic';
-import { getFactIcon, useIconFilter } from '../../helpers/iconHelpers';
-import { deviceDetection } from '../../helpers/deviceHelpers';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGameStore } from '@/store/gameStore';
+import { capitalizeAnswer } from '@/helpers/gameLogic';
+import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
+import { deviceDetection } from '@/helpers/deviceHelpers';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 

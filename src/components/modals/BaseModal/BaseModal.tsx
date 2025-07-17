@@ -2,8 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { createPortal } from 'react-dom';
-import { deviceDetection } from '../../helpers/deviceHelpers';
-import { useTheme } from '../../contexts/ThemeContext';
+import { deviceDetection } from '@/helpers/deviceHelpers';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const inter = Inter({ subsets: ['latin'] });
 

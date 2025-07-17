@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useGameStore } from '../../store/gameStore';
-import { UserGuess } from '../../types';
+import { useGameStore } from '@/store/gameStore';
+import { UserGuess } from '@/types';
 
 interface UseWrongAnswerOverlayProps {
   maxGuesses: number;
