@@ -1,44 +1,79 @@
 {
-    "answer": {
-      "en": "Sloth",
-      "es": "Perezoso"
+  "imageUrl": "https://your-cloudinary-url.com/animals/sloth.jpg",
+  "answer": {
+    "en": "Sloth",
+    "es": "Perezoso"
+  },
+  "facts": {
+    "Habitat": {
+      "en": "I spend my life 15-30 meters above the ground in the continuous canopy of tropical and cloud forests, rarely descending to the forest floor except once weekly for a very specific purpose.",
+      "es": "Paso mi vida entre 15-30 metros sobre el suelo en el dosel continuo de bosques tropicales y nubosos, raramente descendiendo al suelo del bosque excepto una vez por semana para un propósito muy específico."
     },
-    "facts": {
-      "Habitat": {
-        "en": "I spend my life 15-30 meters above the ground in the continuous canopy of tropical and cloud forests, rarely descending to the forest floor except once weekly for a very specific purpose.",
-        "es": "Paso mi vida entre 15-30 metros sobre el suelo en el dosel continuo de bosques tropicales y nubosos, raramente descendiendo al suelo del bosque excepto una vez por semana para un propósito muy específico."
-      },
-      "Diet": {
-        "en": "My highly specialized digestive system takes up to a month to process a single meal, and I can lose up to a third of my body weight during a single bowel movement.",
-        "es": "Mi sistema digestivo altamente especializado tarda hasta un mes en procesar una sola comida, y puedo perder hasta un tercio de mi peso corporal durante una sola evacuación intestinal."
-      },
-      "Physical Characteristics": {
-        "en": "Unlike most mammals, my body temperature fluctuates with my environment, ranging from 74-92°F (24-33°C), which helps conserve energy in my tropical home.",
-        "es": "A diferencia de la mayoría de los mamíferos, mi temperatura corporal fluctúa con mi entorno, oscilando entre 24-33°C, lo que ayuda a conservar energía en mi hogar tropical."
-      },
-      "Evolutionary History": {
-        "en": "My ancestors once included ground-dwelling giants the size of modern elephants that roamed North America until humans arrived on the continent around 11,000 years ago.",
-        "es": "Mis ancestros incluían gigantes terrestres del tamaño de elefantes modernos que vagaban por América del Norte hasta que los humanos llegaron al continente hace unos 11,000 años."
-      },
-      "Social Behavior": {
-        "en": "I live an almost entirely solitary existence with loosely defined home ranges rather than defended territories. Adult members of my species rarely interact outside of chance encounters, and we have very few vocalizations compared to other mammals.",
-        "es": "Vivo una existencia casi completamente solitaria con áreas de distribución vagamente definidas en lugar de territorios defendidos. Los miembros adultos de mi especie raramente interactúan fuera de encuentros casuales, y tenemos muy pocas vocalizaciones en comparación con otros mamíferos."
-      },
-      "Reproduction": {
-        "en": "Female members of my species emit a high-pitched scream that can be heard up to 700 meters away when ready to mate, causing nearby males to race toward the sound—the fastest male usually wins.",
-        "es": "Las hembras de mi especie emiten un grito agudo que puede ser escuchado hasta 700 metros de distancia cuando están listas para aparearse, causando que los machos cercanos corran hacia el sonido—el macho más rápido generalmente gana."
-      },
-      "Interspecies Relationships": {
-        "en": "My fur hosts an entire ecosystem including specialized moths found nowhere else, and the green algae growing in my coat provides up to 20% of my daily nutritional intake when I groom myself.",
-        "es": "Mi pelaje alberga un ecosistema entero que incluye polillas especializadas que no se encuentran en ningún otro lugar, y las algas verdes que crecen en mi pelaje proporcionan hasta el 20% de mi ingesta nutricional diaria cuando me acicalo."
-      },
-      "Wildcard": {
-        "en": "Despite having 30% less muscle mass than similar-sized mammals, I can rotate my head nearly 270° and am an excellent swimmer, able to hold my breath underwater for up to 40 minutes.",
-        "es": "A pesar de tener un 30% menos de masa muscular que mamíferos de tamaño similar, puedo girar mi cabeza casi 270° y soy un excelente nadador, capaz de contener la respiración bajo el agua hasta por 40 minutos."
-      }
+    "Diet": {
+      "en": "My highly specialized digestive system takes up to a month to process a single meal of leaves, and I can lose up to a third of my body weight during a single bowel movement.",
+      "es": "Mi sistema digestivo altamente especializado tarda hasta un mes en procesar una sola comida de hojas, y puedo perder hasta un tercio de mi peso corporal durante una sola evacuación intestinal."
     },
-    "alternatives": {
-      "en": ["Koala", "Anteater", "Armadillo", "Capybara", "Tapir", "Howler Monkey", "Tamandua", "Porcupine", "Opossum"],
-      "es": ["Koala", "Oso Hormiguero", "Armadillo", "Capibara", "Tapir", "Mono Aullador", "Tamandúa", "Puercoespín", "Zarigüeya"]
+    "Physical Characteristics": {
+      "en": "I have specialized curved claws that are 3-4 inches long which allow me to hang upside down from branches without expending any energy, as they lock into place.",
+      "es": "Tengo garras curvas especializadas de 7-10 centímetros de largo que me permiten colgarme boca abajo de las ramas sin gastar energía, ya que se fijan en su lugar."
+    },
+    "Evolutionary History": {
+      "en": "My ancestors once included ground-dwelling giants the size of modern elephants that roamed North America until humans arrived on the continent around 11,000 years ago.",
+      "es": "Mis ancestros incluían gigantes terrestres del tamaño de elefantes modernos que vagaban por América del Norte hasta que los humanos llegaron al continente hace unos 11,000 años."
+    },
+    "Social Behavior": {
+      "en": "I live an almost entirely solitary existence with loosely defined home ranges rather than defended territories. Adult members of my species rarely interact outside of chance encounters, and we have very few vocalizations compared to other mammals.",
+      "es": "Vivo una existencia casi completamente solitaria con áreas de distribución vagamente definidas en lugar de territorios defendidos. Los miembros adultos de mi especie raramente interactúan fuera de encuentros casuales, y tenemos muy pocas vocalizaciones en comparación con otros mamíferos."
+    },
+    "Reproduction": {
+      "en": "Females of my species can delay embryo development for months through embryonic diapause, essentially pausing pregnancy until environmental conditions become favorable for raising young.",
+      "es": "Las hembras de mi especie pueden retrasar el desarrollo del embrión durante meses a través de diapausa embrionaria, esencialmente pausando el embarazo hasta que las condiciones ambientales se vuelvan favorables para criar a los jóvenes."
+    },
+    "Interspecies Relationships": {
+      "en": "My fur hosts an entire ecosystem including specialized moths found nowhere else, and the green algae growing in my coat provides up to 20% of my daily nutritional intake when I groom myself.",
+      "es": "Mi pelaje alberga un ecosistema entero que incluye polillas especializadas que no se encuentran en ningún otro lugar, y las algas verdes que crecen en mi pelaje proporcionan hasta el 20% de mi ingesta nutricional diaria cuando me acicalo."
+    },
+    "Wildcard": {
+      "en": "I can slow my metabolism to such an extreme degree that my body temperature fluctuates with my environment like a reptile, blurring the line between warm and cold-blooded despite being a mammal.",
+      "es": "Puedo ralentizar mi metabolismo a un grado tan extremo que mi temperatura corporal fluctúa con mi entorno como un reptil, difuminando la línea entre sangre caliente y fría a pesar de ser un mamífero."
     }
+  },
+  "expanded": {
+    "Habitat": {
+      "en": "Sloths live almost exclusively in the treetops of Central and South American rainforests, spending 95% of their lives hanging from branches. They've evolved specialized curved claws that lock into position, allowing them to sleep while hanging without using any energy. The only time they venture to the ground is once a week to defecate at the base of specific trees - a dangerous journey that makes them vulnerable to predators like jaguars and ocelots. This weekly pilgrimage remains one of biology's great mysteries, as it would be much safer to simply defecate from the trees.",
+      "es": "Los perezosos viven casi exclusivamente en las copas de los árboles de las selvas tropicales de América Central y del Sur, pasando el 95% de sus vidas colgando de las ramas. Han desarrollado garras curvas especializadas que se fijan en posición, permitiéndoles dormir mientras cuelgan sin usar energía. La única vez que se aventuran al suelo es una vez por semana para defecar en la base de árboles específicos, un viaje peligroso que los hace vulnerables a depredadores como jaguares y ocelotes. Esta peregrinación semanal sigue siendo uno de los grandes misterios de la biología, ya que sería mucho más seguro simplemente defecar desde los árboles."
+    },
+    "Diet": {
+      "en": "Sloths have one of the most inefficient digestive systems in the mammal kingdom, with food taking 15-30 days to pass through their four-chambered stomach. They feed exclusively on leaves, which are notoriously difficult to digest and provide very few calories. Their stomach can account for up to 30% of their body weight when full, which is why they only defecate once a week in massive quantities. This incredibly slow metabolism is an evolutionary adaptation that allows them to survive on their low-energy diet, but it also means they move extremely slowly to conserve every calorie.",
+      "es": "Los perezosos tienen uno de los sistemas digestivos más ineficientes del reino mamífero, con la comida tardando 15-30 días en pasar por su estómago de cuatro cámaras. Se alimentan exclusivamente de hojas, que son notoriamente difíciles de digerir y proporcionan muy pocas calorías. Su estómago puede representar hasta el 30% de su peso corporal cuando está lleno, por lo que solo defecan una vez por semana en cantidades masivas. Este metabolismo increíblemente lento es una adaptación evolutiva que les permite sobrevivir con su dieta baja en energía, pero también significa que se mueven extremadamente lento para conservar cada caloría."
+    },
+    "Physical Characteristics": {
+      "en": "Sloth claws are remarkable structures measuring 3-4 inches long with a unique locking mechanism that allows them to hang effortlessly from branches. These curved claws automatically lock into position around branches through a specialized tendon system, requiring no muscular effort to maintain their grip. This passive hanging system is so efficient that sloths can sleep, eat, and even give birth while suspended upside down. The claws are essentially biological hooks that grow continuously throughout their lives, and the locking mechanism is so strong that dead sloths have been found still hanging from trees because the claws remain locked even after death.",
+      "es": "Las garras del perezoso son estructuras notables que miden 7-10 centímetros de largo con un mecanismo de bloqueo único que les permite colgarse sin esfuerzo de las ramas. Estas garras curvas se bloquean automáticamente en posición alrededor de las ramas a través de un sistema de tendones especializado, no requiriendo esfuerzo muscular para mantener su agarre. Este sistema de colgado pasivo es tan eficiente que los perezosos pueden dormir, comer e incluso dar a luz mientras están suspendidos boca abajo. Las garras son esencialmente ganchos biológicos que crecen continuamente durante toda su vida, y el mecanismo de bloqueo es tan fuerte que se han encontrado perezosos muertos todavía colgando de los árboles porque las garras permanecen bloqueadas incluso después de la muerte."
+    },
+    "Evolutionary History": {
+      "en": "Modern sloths belong to the order Pilosa, which they share with anteaters, and are part of the larger group Xenarthra that includes armadillos. However, today's tree sloths are dramatically different from their ancestors. Giant ground sloths like Megatherium americanum stood 3-4 meters tall and weighed up to 4 tons - larger than modern elephants. These massive creatures roamed across the Americas until the end of the last ice age, when climate change and human hunting drove them to extinction. The transition from giant ground dwellers to tiny tree hangers represents one of evolution's most dramatic size reductions, driven by the need to exploit an unexploited ecological niche in the forest canopy.",
+      "es": "Los perezosos modernos pertenecen al orden Pilosa, que comparten con los osos hormigueros, y son parte del grupo más grande Xenarthra que incluye a los armadillos. Sin embargo, los perezosos arbóreos de hoy son dramáticamente diferentes de sus ancestros. Los perezosos terrestres gigantes como Megatherium americanum medían 3-4 metros de altura y pesaban hasta 4 toneladas, más grandes que los elefantes modernos. Estas criaturas masivas vagaron por las Américas hasta el final de la última era glacial, cuando el cambio climático y la caza humana los llevaron a la extinción. La transición de gigantes terrestres a pequeños colgadores de árboles representa una de las reducciones de tamaño más dramáticas de la evolución, impulsada por la necesidad de explotar un nicho ecológico no explotado en el dosel del bosque."
+    },
+    "Social Behavior": {
+      "en": "Sloths are among the most solitary mammals on Earth. Unlike many arboreal species that live in groups for protection, sloths have evolved to be almost completely independent. They have overlapping home ranges but don't actively defend territories, and encounters between adults are typically brief and without conflict. Their social interactions are limited to mating and the extended period mothers spend with their young (up to 9 months). Sloths communicate primarily through scent marking and have only a few vocal calls - mainly distress calls when threatened. This extreme solitude is another adaptation to their low-energy lifestyle, as social behaviors would require precious calories they simply cannot spare.",
+      "es": "Los perezosos están entre los mamíferos más solitarios de la Tierra. A diferencia de muchas especies arbóreas que viven en grupos para protección, los perezosos han evolucionado para ser casi completamente independientes. Tienen áreas de distribución superpuestas pero no defienden activamente territorios, y los encuentros entre adultos son típicamente breves y sin conflicto. Sus interacciones sociales se limitan al apareamiento y el período extendido que las madres pasan con sus crías (hasta 9 meses). Los perezosos se comunican principalmente a través de marcas de olor y tienen solo unas pocas llamadas vocales, principalmente llamadas de angustia cuando están amenazados. Esta soledad extrema es otra adaptación a su estilo de vida de baja energía, ya que los comportamientos sociales requerirían calorías preciosas que simplemente no pueden permitirse."
+    },
+    "Reproduction": {
+      "en": "Sloth reproduction is fascinatingly adapted to their low-energy lifestyle and unpredictable rainforest environment. After mating, females can delay embryo development through diapause - essentially pausing pregnancy until conditions are optimal for raising young. Gestation typically lasts 5-6 months, but can extend up to 11 months with diapause. Mothers give birth to a single baby while hanging upside down, and the newborn must immediately cling to the mother's belly fur. Young sloths stay with their mothers for 6-9 months, learning which leaves are safe to eat in their specific territory.",
+      "es": "La reproducción del perezoso está fascinantemente adaptada a su estilo de vida de baja energía y al entorno impredecible de la selva tropical. Después del apareamiento, las hembras pueden retrasar el desarrollo del embrión a través de la diapausa, esencialmente pausando el embarazo hasta que las condiciones sean óptimas para criar a las crías. La gestación típicamente dura 5-6 meses, pero puede extenderse hasta 11 meses con diapausa. Las madres dan a luz a una sola cría mientras cuelgan boca abajo, y el recién nacido debe aferrarse inmediatamente al pelaje del vientre de la madre. Los perezosos jóvenes permanecen con sus madres por 6-9 meses, aprendiendo qué hojas son seguras para comer en su territorio específico."
+    },
+    "Interspecies Relationships": {
+      "en": "Sloths host one of nature's most remarkable symbiotic ecosystems right on their bodies. Their fur is home to entire species of moths, beetles, cockroaches, and bacteria found nowhere else on Earth. The most famous are sloth moths, which live exclusively in sloth fur and lay their eggs in sloth dung during the weekly ground visits. But the relationship goes deeper - these insects help fertilize algae that grows in the sloth's fur, creating a mobile garden. The algae provides part of their nutritional needs (especially nitrogen) when sloths groom themselves, essentially allowing them to photosynthesize like plants. This three-way partnership between sloth, insects, and algae is so specialized that if one partner disappears, the entire system collapses.",
+      "es": "Los perezosos albergan uno de los ecosistemas simbióticos más notables de la naturaleza directamente en sus cuerpos. Su pelaje es hogar de especies enteras de polillas, escarabajos, cucarachas y bacterias que no se encuentran en ningún otro lugar de la Tierra. Las más famosas son las polillas del perezoso, que viven exclusivamente en el pelaje del perezoso y ponen sus huevos en el excremento del perezoso durante las visitas semanales al suelo. Pero la relación va más profundo: estos insectos ayudan a fertilizar las algas que crecen en el pelaje del perezoso, creando un jardín móvil. Las algas proporcionan parte de sus necesidades nutricionales (especialmente nitrógeno) cuando los perezosos se acicalan, esencialmente permitiéndoles fotosintetizar como las plantas. Esta asociación de tres vías entre perezoso, insectos y algas es tan especializada que si un socio desaparece, todo el sistema colapsa."
+    },
+    "Wildcard": {
+      "en": "Sloths challenge our basic understanding of mammalian physiology by functioning almost like cold-blooded animals. While most mammals maintain a constant internal temperature around 98-100°F, sloths' body temperature can range from 75-95°F depending on environmental conditions. When it's cool, they bask in sunny spots like lizards to warm up; when it's hot, they seek shade and become less active. This pseudo-cold-blooded behavior allows them to save enormous amounts of energy that would normally be spent on thermoregulation. They can slow their heart rate to as low as 40 beats per minute and reduce their metabolic rate by up to 90% - essentially entering a state similar to hibernation while remaining conscious and functional.",
+      "es": "Los perezosos desafían nuestra comprensión básica de la fisiología mamífera funcionando casi como animales de sangre fría. Mientras que la mayoría de los mamíferos mantienen una temperatura interna constante alrededor de 37-38°C, la temperatura corporal de los perezosos puede variar de 24-35°C dependiendo de las condiciones ambientales. Cuando hace frío, se asolean en lugares soleados como lagartos para calentarse; cuando hace calor, buscan sombra y se vuelven menos activos. Este comportamiento pseudo-sangre fría les permite ahorrar enormes cantidades de energía que normalmente se gastarían en termorregulación. Pueden ralentizar su ritmo cardíaco hasta 40 latidos por minuto y reducir su tasa metabólica hasta en un 90%, esencialmente entrando en un estado similar a la hibernación mientras permanecen conscientes y funcionales."
+    }
+  },
+  "alternatives": {
+    "en": ["Koala", "Anteater", "Armadillo", "Capybara", "Tapir", "Howler Monkey", "Tamandua", "Porcupine", "Opossum"],
+    "es": ["Koala", "Oso Hormiguero", "Armadillo", "Capibara", "Tapir", "Mono Aullador", "Tamandúa", "Puercoespín", "Zarigüeya"]
   }
+}

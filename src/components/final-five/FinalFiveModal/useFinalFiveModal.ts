@@ -234,6 +234,16 @@ export function useFinalFiveModal() {
                     if (data.answer) {
                       setCorrectAnswer(data.answer);
                       
+                      // Track failed attempt - timeouts break streak
+                      useGameStore.getState().trackFailedAttempt();
+                      
+                      // Save today's game data for full endgame experience on refresh
+                      const currentState = useGameStore.getState();
+                      const numberOfTries = currentState.gameState.guesses.length;
+                      const initialTime = currentState.hardMode ? 55 : 300;
+                      const timeSpent = initialTime - currentState.timeRemaining;
+                      useGameStore.getState().saveTodayGameData('loss-final-five-time', data.answer, numberOfTries, timeSpent, currentState.gameState.challenge);
+                      
                       // NOW we can set the game to over and show continue button
                       // This is in the timer timeout flow, so we use loss-final-five-time
                       useGameStore.setState(state => ({

@@ -76,6 +76,9 @@
       "comeBackTomorrow": "Come back tomorrow for a new challenge!",
       "timeSpent": "{{minutes}}m {{seconds}}s",
       "share": "Share"
+    },
+    "streak": {
+      "dayStreak": "day streak!"
     }
   },
   "loading": {

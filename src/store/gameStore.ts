@@ -29,6 +29,28 @@ interface GameStore {
   isHardModeEnabled: boolean;
   setHardModeEnabled: (enabled: boolean) => void;
   
+  // Streak tracking
+  currentStreak: number;
+  weeklyCompletions: ('completed' | 'failed' | 'missed' | null)[]; // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+  lastCompletionDate: string | null; // ISO date string
+  updateStreak: () => void;
+  trackFailedAttempt: () => void;
+  resetWeeklyStreak: () => void;
+  updateMissedDays: () => void;
+  hasPlayedToday: () => boolean;
+  
+  // Today's game data for persistence
+  todayGameData: {
+    outcome: GameOutcome;
+    correctAnswer: string;
+    numberOfTries: number;
+    timeSpent: number;
+    completionDate: string; // ISO date string
+  } | null;
+  todayChallenge: any | null; // Store the challenge data for AnswerDetailsModal
+  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => void;
+  clearTodayGameData: () => void;
+  
   // Final Five specific state
   finalFiveTimeRemaining: number;
   isFinalFiveActive: boolean;
@@ -108,6 +130,15 @@ export const useGameStore = create<GameStore>()(
   // Hard mode settings
   hardMode: false, // Current game's hard mode state (can't be changed after start)
   isHardModeEnabled: false, // Setting that can be toggled before game starts
+  
+  // Streak tracking
+  currentStreak: 0,
+  weeklyCompletions: [null, null, null, null, null, null, null], // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+  lastCompletionDate: null,
+  
+  // Today's game data for persistence
+  todayGameData: null,
+  todayChallenge: null,
   setHardModeEnabled: (enabled: boolean) => {
     // Only allow changing if no game is in progress
     const { hasSeenClue } = get();
@@ -247,6 +278,61 @@ export const useGameStore = create<GameStore>()(
   fetchChallenge: async (language: string = 'en') => {
     try {
       const challenge = await fetchChallengeAPI(language);
+      
+      // Update missed days and clear stale data before checking if user has played today
+      get().updateMissedDays();
+      
+      // Check if user has already played today
+      const hasPlayedToday = get().hasPlayedToday();
+      
+      console.log('fetchChallenge - hasPlayedToday result:', hasPlayedToday);
+      
+      if (hasPlayedToday) {
+        console.log('User has already played, showing end game screen');
+        const { todayGameData, todayChallenge } = get();
+        
+        // Use saved game data if available for full endgame experience
+        if (todayGameData && todayChallenge) {
+          console.log('Using saved game data for full endgame experience');
+          set(state => ({
+            gameState: {
+              ...state.gameState,
+              loading: false,
+              challenge: todayChallenge,
+              isGameOver: true,
+              guesses: [] // Empty guesses since they already played
+            },
+            gameOutcome: todayGameData.outcome,
+            isVictoryAnimationActive: false, // Skip animations for replay attempts
+            victoryAnimationStep: todayGameData.outcome.includes('win') ? 'summary' : null
+          }));
+          return;
+        }
+        
+        // Fallback to basic status if no saved data (shouldn't happen with new system)
+        console.log('No saved game data found, using basic status');
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const { weeklyCompletions } = get();
+        const todayStatus = weeklyCompletions[dayOfWeek];
+        
+        // Determine the game outcome based on today's status
+        const gameOutcome = todayStatus === 'completed' ? 'standard-win' : 'loss-final-five-wrong';
+        
+        set(state => ({
+          gameState: {
+            ...state.gameState,
+            loading: false,
+            challenge,
+            isGameOver: true,
+            guesses: [] // Empty guesses since they already played
+          },
+          gameOutcome,
+          isVictoryAnimationActive: false, // Skip animations for replay attempts
+          victoryAnimationStep: null
+        }));
+        return;
+      }
       
       // Save the category to localStorage for use across different routes
       if (challenge && challenge.category && typeof window !== 'undefined') {
@@ -516,6 +602,16 @@ export const useGameStore = create<GameStore>()(
         };
 
         if (data.isCorrect) {
+          // Update streak on successful completion
+          get().updateStreak();
+          
+          // Save today's game data for full endgame experience on refresh
+          const numberOfTries = newGuesses.length;
+          const { hardMode, gameState, timeRemaining } = get();
+          const initialTime = hardMode ? 55 : 300;
+          const timeSpent = initialTime - timeRemaining;
+          get().saveTodayGameData('standard-win', guess, numberOfTries, timeSpent, gameState.challenge);
+          
           return {
             ...newState,
             isVictoryAnimationActive: true,
@@ -811,6 +907,16 @@ export const useGameStore = create<GameStore>()(
               isHidden: true
             };
             
+            // Track failed attempt - wrong answers break streak
+            get().trackFailedAttempt();
+            
+            // Save today's game data for full endgame experience on refresh
+            const currentState = get();
+            const numberOfTries = currentState.gameState.guesses.length + 1; // +1 for the current guess
+            const initialTime = currentState.hardMode ? 55 : 300;
+            const timeSpent = initialTime - currentState.timeRemaining;
+            get().saveTodayGameData('loss-final-five-wrong', correctAnswer, numberOfTries, timeSpent, currentState.gameState.challenge);
+            
             // Add both guesses to the state and set game over
             set(state => ({
               gameState: {
@@ -825,6 +931,16 @@ export const useGameStore = create<GameStore>()(
             return;
           } catch (error) {
             console.error('Error fetching correct answer:', error);
+            // Track failed attempt - wrong answers break streak
+            get().trackFailedAttempt();
+            
+            // Save today's game data for full endgame experience on refresh
+            const currentState = get();
+            const numberOfTries = currentState.gameState.guesses.length + 1; // +1 for the current guess
+            const initialTime = currentState.hardMode ? 55 : 300;
+            const timeSpent = initialTime - currentState.timeRemaining;
+            get().saveTodayGameData('loss-final-five-wrong', option, numberOfTries, timeSpent, currentState.gameState.challenge);
+            
             // If we can't get the correct answer, just add the incorrect guess
             set(state => ({
               gameState: {
@@ -853,6 +969,16 @@ export const useGameStore = create<GameStore>()(
       
       // If the guess was correct, show the victory animation
       if (data.isCorrect) {
+        // Update streak on successful completion
+        get().updateStreak();
+        
+        // Save today's game data for full endgame experience on refresh
+        const numberOfTries = get().gameState.guesses.length;
+        const { hardMode, gameState, timeRemaining } = get();
+        const initialTime = hardMode ? 55 : 300;
+        const timeSpent = initialTime - timeRemaining;
+        get().saveTodayGameData('final-five-win', option, numberOfTries, timeSpent, gameState.challenge);
+        
         set({
           isVictoryAnimationActive: true,
           victoryAnimationStep: 'bubbles',
@@ -906,6 +1032,215 @@ export const useGameStore = create<GameStore>()(
     set({ finalFiveError: null });
   },
   
+  // Streak tracking methods
+  updateStreak: () => {
+    console.log('updateStreak called!');
+    
+    // First, mark any missed days before processing current day
+    get().updateMissedDays();
+    
+    const now = new Date();
+    const today = now.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    
+    const { lastCompletionDate, weeklyCompletions, currentStreak } = get();
+    
+    console.log('updateStreak debug:', {
+      today,
+      dayOfWeek,
+      lastCompletionDate,
+      weeklyCompletions,
+      currentStreak
+    });
+    
+    // Check if already completed today
+    if (lastCompletionDate === today) {
+      console.log('Already completed today, skipping updateStreak');
+      return; // Already completed today
+    }
+    
+    // Check if it's a new week (Sunday) - reset if so
+    if (dayOfWeek === 0) {
+      const newWeeklyCompletions: ('completed' | 'failed' | 'missed' | null)[] = [null, null, null, null, null, null, null];
+      newWeeklyCompletions[0] = 'completed'; // Mark Sunday as completed
+      
+      set({
+        weeklyCompletions: newWeeklyCompletions,
+        lastCompletionDate: today,
+        currentStreak: 1
+      });
+      return;
+    }
+    
+    // Check if this is consecutive from yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    const newWeeklyCompletions = [...weeklyCompletions];
+    newWeeklyCompletions[dayOfWeek] = 'completed';
+    
+    let newStreak = currentStreak;
+    
+    // If last completion was yesterday, increment streak
+    if (lastCompletionDate === yesterdayStr) {
+      newStreak = currentStreak + 1;
+    } else {
+      // Check if there's a gap in this week
+      let hasGap = false;
+      for (let i = 0; i < dayOfWeek; i++) {
+        if (newWeeklyCompletions[i] !== 'completed') {
+          hasGap = true;
+          break;
+        }
+      }
+      
+      if (hasGap) {
+        // Start fresh streak when there's a gap
+        newStreak = 1;
+      } else {
+        // Continue streak if no gap
+        newStreak = currentStreak + 1;
+      }
+    }
+    
+
+    
+    console.log('updateStreak setting:', {
+      weeklyCompletions: newWeeklyCompletions,
+      lastCompletionDate: today,
+      currentStreak: newStreak
+    });
+    
+    set({
+      weeklyCompletions: newWeeklyCompletions,
+      lastCompletionDate: today,
+      currentStreak: newStreak
+    });
+  },
+  
+  resetWeeklyStreak: () => {
+    set({
+      weeklyCompletions: [null, null, null, null, null, null, null],
+      currentStreak: 0
+    });
+  },
+  
+  trackFailedAttempt: () => {
+    // First, mark any missed days before processing current day
+    get().updateMissedDays();
+    
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const dayOfWeek = now.getDay();
+    
+    const { lastCompletionDate, weeklyCompletions } = get();
+    
+    // Check if already completed or failed today
+    if (lastCompletionDate === today) {
+      return; // Already processed today
+    }
+    
+    const newWeeklyCompletions = [...weeklyCompletions];
+    newWeeklyCompletions[dayOfWeek] = 'failed';
+    
+    set({
+      weeklyCompletions: newWeeklyCompletions,
+      lastCompletionDate: today,
+      currentStreak: 0 // Failed attempts break the streak
+    });
+  },
+  
+  updateMissedDays: () => {
+    const now = new Date();
+    const currentDayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const today = now.toISOString().split('T')[0];
+    
+    const { weeklyCompletions, currentStreak, todayGameData } = get();
+    const newWeeklyCompletions = [...weeklyCompletions];
+    let hasChanges = false;
+    
+    // Clear today's game data if it's from a previous day
+    if (todayGameData && todayGameData.completionDate !== today) {
+      console.log('Clearing stale game data from previous day');
+      get().clearTodayGameData();
+    }
+    
+    // Mark all days from Sunday to yesterday as missed if they're null
+    for (let i = 0; i < currentDayOfWeek; i++) {
+      if (newWeeklyCompletions[i] === null) {
+        newWeeklyCompletions[i] = 'missed';
+        hasChanges = true;
+      }
+    }
+    
+    // Only update the weeklyCompletions if there were changes
+    // Don't reset streak if today is already completed
+    if (hasChanges) {
+      const todayCompleted = newWeeklyCompletions[currentDayOfWeek] === 'completed';
+      
+      set({
+        weeklyCompletions: newWeeklyCompletions,
+        // Only reset streak if today is not completed
+        currentStreak: todayCompleted ? Math.max(currentStreak, 1) : 0
+      });
+    }
+  },
+  
+  hasPlayedToday: () => {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const dayOfWeek = now.getDay();
+    
+    const { lastCompletionDate, weeklyCompletions } = get();
+    
+    console.log('Debug hasPlayedToday:', {
+      today,
+      dayOfWeek,
+      lastCompletionDate,
+      weeklyCompletions,
+      todayStatus: weeklyCompletions[dayOfWeek]
+    });
+    
+    // Check if last completion was today
+    if (lastCompletionDate === today) {
+      console.log('Already played today - lastCompletionDate matches');
+      return true;
+    }
+    
+    // Check if today's slot in weeklyCompletions is marked as completed or failed
+    // BUT only if we actually played TODAY (not just this day of week)
+    const todayStatus = weeklyCompletions[dayOfWeek];
+    const playedThisDayOfWeek = todayStatus === 'completed' || todayStatus === 'failed';
+    const actuallyPlayedToday = playedThisDayOfWeek && lastCompletionDate === today;
+    
+    console.log('hasPlayedToday result:', actuallyPlayedToday);
+    return actuallyPlayedToday;
+  },
+  
+  // Today's game data methods
+  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    set({
+      todayGameData: {
+        outcome,
+        correctAnswer,
+        numberOfTries,
+        timeSpent,
+        completionDate: today
+      },
+      todayChallenge: challenge
+    });
+  },
+  
+  clearTodayGameData: () => {
+    set({
+      todayGameData: null,
+      todayChallenge: null
+    });
+  },
+
   // Helper function to filter out previous guesses from Final Five options
   filterFinalFiveOptions: () => {
     const { gameState } = get();
@@ -954,10 +1289,34 @@ export const useGameStore = create<GameStore>()(
 }),
     {
       name: 'cinco-game-storage', // Unique name for localStorage key
+      version: 1, // Version for handling data migrations
       partialize: (state) => ({ 
-        // Only persist the hard mode setting
-        isHardModeEnabled: state.isHardModeEnabled 
+        // Only persist the hard mode setting and streak data
+        isHardModeEnabled: state.isHardModeEnabled,
+        currentStreak: state.currentStreak,
+        weeklyCompletions: state.weeklyCompletions,
+        lastCompletionDate: state.lastCompletionDate,
+        // Persist today's game data for full endgame experience on refresh
+        todayGameData: state.todayGameData,
+        todayChallenge: state.todayChallenge
       }),
+      migrate: (persistedState: any, version: number) => {
+        // Migration from version 0 to 1: convert boolean[] to new format
+        if (version === 0) {
+          const oldCompletions = persistedState.weeklyCompletions;
+          if (Array.isArray(oldCompletions) && oldCompletions.length === 7) {
+            // Convert boolean array to new format
+            const newCompletions = oldCompletions.map((completed: boolean) => 
+              completed ? 'completed' : null
+            );
+            return {
+              ...persistedState,
+              weeklyCompletions: newCompletions
+            };
+          }
+        }
+        return persistedState;
+      },
     }
   )
 ); 

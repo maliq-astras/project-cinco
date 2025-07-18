@@ -61,7 +61,7 @@ export const deviceDetection = {
  */
 export function getBubbleSize(windowWidth: number): number {
   if (deviceDetection.isGalaxyS9Plus()) {
-    return 60; // Extra small bubbles specifically for Galaxy S9+
+    return 50; // Extra small (xs) bubbles specifically for Galaxy S9+ to fit 4x2 grid
   }
   
   if (deviceDetection.isOtherGalaxyPhone()) {
@@ -94,7 +94,7 @@ export function getBubbleSize(windowWidth: number): number {
  */
 export function getGapSize(windowWidth: number): number {
   if (deviceDetection.isGalaxyS9Plus()) {
-    return 12; // Much tighter gap for Galaxy S9+
+    return 8; // Extra tight gap for Galaxy S9+ xs bubbles in 4x2 grid
   }
   
   if (deviceDetection.isSurfaceDuo()) {
@@ -115,10 +115,19 @@ export function getGapSize(windowWidth: number): number {
  * Get bubble grid configuration based on device type
  */
 export function getGridConfig(windowWidth: number) {
-  // Special case for Galaxy S9+ and other very narrow devices
-  if (deviceDetection.isGalaxyS9Plus() || windowWidth <= 330) {
+  // Special case for Galaxy S9+ - use 4x2 with extra small bubbles
+  if (deviceDetection.isGalaxyS9Plus()) {
     return {
-      cols: 3, // Reduce to 3 columns for Galaxy S9+
+      cols: 4, // Keep 4 columns for Galaxy S9+ with xs bubbles
+      rows: 2, // Keep 2 rows for Galaxy S9+
+      totalSlots: 8
+    };
+  }
+  
+  // Other very narrow devices that aren't Galaxy S9+
+  if (windowWidth <= 330) {
+    return {
+      cols: 3, // Reduce to 3 columns for other narrow devices
       rows: 3, // Adjust rows to keep total slots to ~8-9
       totalSlots: 9
     };
@@ -137,7 +146,7 @@ export function getGridConfig(windowWidth: number) {
  */
 export function getContainerHeight(windowWidth: number, gridConfig: { rows: number, cols: number }) {
   if (deviceDetection.isGalaxyS9Plus()) {
-    return 200; // Taller container for 3 rows of bubbles on Galaxy S9+
+    return 115; // Compact container for 2 rows of xs bubbles on Galaxy S9+
   }
   
   if (deviceDetection.isSurfaceDuo()) {

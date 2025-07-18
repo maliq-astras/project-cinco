@@ -17,7 +17,7 @@ import {
   GameInstructionsArea, 
   Navigation, 
   FinalFiveIntro,
-  WrongAnswerOverlay 
+  WrongAnswerOverlay
 } from '@/components';
 import { useGameStore } from '@/store/gameStore';
 import LandscapeWarning from '../../ui/LandscapeWarning';
@@ -36,6 +36,7 @@ export default function MainContainer() {
     finalFiveTransitionReason,
     colors,
     showGameMessage,
+    isAlreadyPlayedScenario,
     gameControlsRef,
     handleLoadingComplete,
     getGameMessageProps,
@@ -111,25 +112,29 @@ export default function MainContainer() {
                       className={`${mainContainerStyles.gameContent} ${isTabletLandscape ? 'py-0 gap-0' : ''}`}
                       {...mainContainerStyles.fadeOut}
                     >
-                      {/* Top section */}
-                      <div className={mainContainerStyles.topSection}>
-                        <FactCardStackContainer />
-                      </div>
+                      {/* Top section - hide for already-played scenarios */}
+                      {!isAlreadyPlayedScenario && (
+                        <div className={mainContainerStyles.topSection}>
+                          <FactCardStackContainer />
+                        </div>
+                      )}
                       
                       {/* Middle section */}
                       <div className={`${mainContainerStyles.middleSection} ${isTabletLandscape ? 'py-0' : ''}`} style={mainContainerStyles.sectionGap}>
-                        {/* Context line */}
-                        <motion.div 
-                          className={mainContainerStyles.contextLine}
-                          {...mainContainerStyles.staggeredFade(0)}
-                        >
-                          <div style={mainContainerStyles.contextLineBackground(colors.primary)} className="absolute inset-x-0 h-1"></div>
-                          <div className={mainContainerStyles.contextWrapper}>
-                            <div className={mainContainerStyles.contextContainer}>
-                              <BubbleContextArea />
+                        {/* Context line - hide for already-played scenarios */}
+                        {!isAlreadyPlayedScenario && (
+                          <motion.div 
+                            className={mainContainerStyles.contextLine}
+                            {...mainContainerStyles.staggeredFade(0)}
+                          >
+                            <div style={mainContainerStyles.contextLineBackground(colors.primary)} className="absolute inset-x-0 h-1"></div>
+                            <div className={mainContainerStyles.contextWrapper}>
+                              <div className={mainContainerStyles.contextContainer}>
+                                <BubbleContextArea />
+                              </div>
                             </div>
-                          </div>
-                        </motion.div>
+                          </motion.div>
+                        )}
 
                         {/* Fact Bubbles Area */}
                         <motion.div 
@@ -152,8 +157,8 @@ export default function MainContainer() {
                       
                       {/* Bottom section */}
                       <div className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}>
-                        {/* Game instructions */}
-                        {!isFinalFiveActive && (
+                        {/* Game instructions - hide for already-played scenarios */}
+                        {!isFinalFiveActive && !isAlreadyPlayedScenario && (
                           <motion.div 
                             className={mainContainerStyles.instructionsWrapper}
                             {...mainContainerStyles.staggeredFade(0.6)}
@@ -166,8 +171,8 @@ export default function MainContainer() {
                           </motion.div>
                         )}
 
-                        {/* Game Controls */}
-                        {!showGameMessage && !isFinalFiveActive && (
+                        {/* Game Controls - hide for already-played scenarios */}
+                        {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && (
                           <motion.div
                             className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}
                             {...mainContainerStyles.staggeredFade(0.9)}

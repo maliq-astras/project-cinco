@@ -5,7 +5,8 @@ import { useEndGameMessage, GameOutcome } from './useEndGameMessage';
 import { endGameMessageStyles } from './EndGameMessage.styles';
 import { useTranslation } from 'react-i18next';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
-import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal';
+import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal/AnswerDetailsModal';
+import StreakDisplay from '@/components/ui/StreakDisplay';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -139,10 +140,22 @@ export default function EndGameMessage({
             />
           ))}
           
-          {/* Message text */}
+          {/* Streak Display - appears first with enhanced animations */}
+          <motion.div 
+            className="mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <StreakDisplay shouldAnimate={true} />
+          </motion.div>
+          
+          {/* Message text - appears second */}
           <motion.div
             className={endGameMessageStyles.messageContent}
-            {...endGameMessageStyles.messageContentAnimation}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
           >
             {getMessage()}
             
@@ -171,20 +184,25 @@ export default function EndGameMessage({
                 </svg>
               </div>
             )}
-            
-            {/* "Come back tomorrow" message (animated in after a delay) */}
+          </motion.div>
+          
+          {/* "Come back tomorrow" message - appears last with reserved space */}
+          <div style={{ minHeight: '60px' }} className="flex items-center justify-center">
             <AnimatePresence>
               {showTomorrowMessage && (
                 <motion.div 
                   className={endGameMessageStyles.tomorrowMessage}
                   style={{ color: `var(--color-${colors.primary})` }}
-                  {...endGameMessageStyles.tomorrowMessageAnimation}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.6, delay: 2.0 }}
                 >
                   {t('game.endGame.comeBackTomorrow')}
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 

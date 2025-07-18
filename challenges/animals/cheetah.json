@@ -1,44 +1,79 @@
 {
-    "answer": {
-      "en": "Cheetah",
-      "es": "Guepardo"
+  "imageUrl": "https://your-cloudinary-url.com/animals/cheetah.jpg",
+  "answer": {
+    "en": "Cheetah",
+    "es": "Guepardo"
+  },
+  "facts": {
+    "Habitat": {
+      "en": "I thrive in open grasslands and savannas where I can see for miles, though some populations have adapted to semi-arid scrublands and even mountainous terrain up to 3,000 meters elevation.",
+      "es": "Prospero en praderas abiertas y sabanas donde puedo ver por kilómetros, aunque algunas poblaciones se han adaptado a matorrales semiáridos e incluso terreno montañoso hasta 3,000 metros de elevación."
     },
-    "facts": {
-      "Habitat": {
-        "en": "My population has declined by 92% in the last century, with small isolated groups now scattered across just 9% of my historical range that once spanned three continents including areas with minimal rainfall.",
-        "es": "Mi población ha disminuido un 92% en el último siglo, con pequeños grupos aislados ahora dispersos en apenas el 9% de mi rango histórico que alguna vez abarcó tres continentes, incluyendo áreas con mínimas precipitaciones."
-      },
-      "Diet": {
-        "en": "Unlike most carnivores who focus on ambush, I've evolved to hunt in full daylight when my specialized vision can detect prey movement up to 5km away, and I typically only need to drink water once every 3-4 days.",
-        "es": "A diferencia de la mayoría de los carnívoros que se centran en la emboscada, he evolucionado para cazar a plena luz del día cuando mi visión especializada puede detectar el movimiento de las presas hasta a 5 km de distancia, y normalmente solo necesito beber agua una vez cada 3-4 días."
-      },
-      "Physical Characteristics": {
-        "en": "My semi-retractable claws function more like cleats than weapons, providing crucial traction and my flexible spine to stretch to nearly double its relaxed length.",
-        "es": "Mis garras semi-retráctiles funcionan más como tacos que como armas, proporcionando tracción crucial y permitiendo que mi columna flexible se estire hasta casi el doble de su longitud relajada."
-      },
-      "Evolutionary History": {
-        "en": "Unlike all other members of my taxonomic family, I cannot hybridize with any of them due to having 38 chromosomes instead of 36. Fossil evidence shows my lineage diverged approximately 8.5 million years ago.",
-        "es": "A diferencia de todos los demás miembros de mi familia taxonómica, no puedo hibridarme con ninguno de ellos debido a tener 38 cromosomas en lugar de 36. La evidencia fósil muestra que mi linaje divergió hace aproximadamente 8.5 millones de años."
-      },
-      "Social Behavior": {
-        "en": "Males in my species often form lifelong coalitions with their brothers, sharing everything from hunting to mating opportunities, while females actively avoid each other except for brief cub playdates.",
-        "es": "Los machos de mi especie a menudo forman coaliciones de por vida con sus hermanos, compartiendo todo, desde la caza hasta las oportunidades de apareamiento, mientras que las hembras se evitan activamente entre sí, excepto por breves citas de juego para cachorros."
-      },
-      "Reproduction": {
-        "en": "Females of my species have one of the most unusual reproductive systems. We have no specific breeding season and can be pregnant with cubs from different fathers simultaneously.",
-        "es": "Las hembras de mi especie tienen uno de los sistemas reproductivos más inusuales. No tenemos una temporada específica de reproducción y podemos estar embarazadas de cachorros de diferentes padres simultáneamente."
-      },
-      "Interspecies Relationships": {
-        "en": "My species is not domesticated. However, from 1556 to 1605 Akbar the Great owned as many as 9,000 of my kind during his 49-year reign of the Mughal Empire, using us for hunting antelopes.",
-        "es": "Mi especie no es domesticada. Sin embargo, de 1556 a 1605, Akbar el Grande poseyó hasta 9,000 de mi especie durante su reinado de 49 años del Imperio Mogol, usando a mi especie para cazar antílopes."
-      },
-      "Wildcard": {
-        "en": "My central nervous system has evolved a unique 'fixed action pattern' that automatically stabilizes my head. Even if you could artificially rotate my body, my eyes would remain perfectly level with the horizon.",
-        "es": "Mi sistema nervioso central ha desarrollado un 'patrón de acción fijo' único que automáticamente estabiliza mi cabeza. Incluso si pudieras rotar artificialmente mi cuerpo, mis ojos permanecerían perfectamente nivelados con el horizonte."
-      }
+    "Diet": {
+      "en": "Unlike most carnivores who hunt at dawn and dusk, I hunt in full daylight when my specialized vision can detect prey movement up to 5 kilometers away.",
+      "es": "A diferencia de la mayoría de los carnívoros que cazan al amanecer y al anochecer, cazo a plena luz del día cuando mi visión especializada puede detectar el movimiento de las presas hasta a 5 kilómetros de distancia."
     },
-    "alternatives": {
-      "en": ["Leopard", "Jaguar", "Cougar", "Ocelot", "Lynx", "Caracal", "Serval", "Puma", "Lion"],
-      "es": ["Leopardo", "Jaguar", "Puma", "Ocelote", "Lince", "Caracal", "Serval", "Puma", "León"]
+    "Physical Characteristics": {
+      "en": "My semi-retractable claws function more like cleats than weapons, providing crucial traction during pursuit rather than serving as tools for killing prey.",
+      "es": "Mis garras semi-retráctiles funcionan más como tacos que como armas, proporcionando tracción crucial durante la persecución en lugar de servir como herramientas para matar presas."
+    },
+    "Evolutionary History": {
+      "en": "I cannot hybridize with the other members of my taxonomic family due to having 38 chromosomes instead of 36.",
+      "es": "No puedo hibridarme con los otros miembros de mi familia taxonómica debido a tener 38 cromosomas en lugar de 36."
+    },
+    "Social Behavior": {
+      "en": "Males of my species often form lifelong coalitions with their brothers, sharing territory and mating opportunities throughout their entire lives.",
+      "es": "Los machos de mi especie a menudo forman coaliciones de por vida con sus hermanos, compartiendo territorio y oportunidades de apareamiento durante toda su vida."
+    },
+    "Reproduction": {
+      "en": "Females of my species are induced ovulators with no specific breeding season and can be pregnant with cubs from different fathers simultaneously.",
+      "es": "Las hembras de mi especie son ovuladoras inducidas sin temporada específica de reproducción y pueden estar embarazadas de cachorros de diferentes padres simultáneamente."
+    },
+    "Interspecies Relationships": {
+      "en": "Akbar the Great, who ruled the Mughal Empire from 1556 to 1605, owned over 9,000 of my kind during his 49-year reign for hunting purposes.",
+      "es": "Akbar el Grande, quien gobernó el Imperio Mogol de 1556 a 1605, poseía más de 9,000 de mi especie durante sus 49 años de reinado para propósitos de caza."
+    },
+    "Wildcard": {
+      "en": "My central nervous system has evolved a unique head stabilization mechanism that automatically keeps my head perfectly level during high-speed chases, keeping my eyes locked on target regardless of my body position.",
+      "es": "Mi sistema nervioso central ha desarrollado un mecanismo único de estabilización de cabeza que automáticamente mantiene mi cabeza perfectamente nivelada durante persecuciones a alta velocidad, manteniendo mis ojos fijos en el objetivo independientemente de la posición de mi cuerpo."
     }
+  },
+  "expanded": {
+    "Habitat": {
+      "en": "Cheetahs once roamed across Africa, Asia, and even parts of Europe, but today they occupy only about 9% of their historic range. They prefer open grasslands, semi-arid scrublands, and savannas where their incredible speed can be fully utilized for hunting. Unlike other big cats that can adapt to various terrains, cheetahs require specific landscapes with good visibility and minimal obstacles. Their habitat loss is primarily due to human encroachment, agriculture, and livestock farming, which fragments their territory and reduces prey availability. Some cheetah populations have surprisingly adapted to mountainous regions in Iran and parts of East Africa, living at elevations up to 3,000 meters where they hunt smaller prey and navigate rocky terrain.",
+      "es": "Los guepardos una vez vagaron por África, Asia e incluso partes de Europa, pero hoy ocupan solo alrededor del 9% de su rango histórico. Prefieren praderas abiertas, matorrales semiáridos y sabanas donde su increíble velocidad puede ser completamente utilizada para cazar. A diferencia de otros grandes felinos que pueden adaptarse a varios terrenos, los guepardos requieren paisajes específicos con buena visibilidad y obstáculos mínimos. Su pérdida de hábitat se debe principalmente a la invasión humana, agricultura y ganadería, que fragmenta su territorio y reduce la disponibilidad de presas. Algunas poblaciones de guepardos se han adaptado sorprendentemente a regiones montañosas en Irán y partes del este de África, viviendo en elevaciones hasta 3,000 metros donde cazan presas más pequeñas y navegan terreno rocoso."
+    },
+    "Diet": {
+      "en": "Cheetahs are unique among big cats for their diurnal hunting strategy, actively pursuing prey during daylight hours when most other predators rest. This timing reduces competition but requires exceptional visual acuity—cheetahs can spot prey movement from up to 5 kilometers away. Their hunting success rate is relatively high at 40-50%, but they face significant challenges from kleptoparasitism, losing 10-15% of their kills to larger predators like lions, leopards, and hyenas. Cheetahs primarily hunt medium-sized antelopes like gazelles and impalas, but their lightweight build means they cannot take down prey much larger than themselves. Their hunting strategy relies on explosive speed rather than strength, making them specialists in pursuit predation.",
+      "es": "Los guepardos son únicos entre los grandes felinos por su estrategia de caza diurna, persiguiendo activamente presas durante las horas de luz cuando la mayoría de otros depredadores descansan. Este tiempo reduce la competencia pero requiere agudeza visual excepcional—los guepardos pueden detectar movimiento de presas desde hasta 5 kilómetros de distancia. Su tasa de éxito de caza es relativamente alta en 40-50%, pero enfrentan desafíos significativos del clepteparasitismo, perdiendo 10-15% de sus presas ante depredadores más grandes como leones, leopardos y hienas. Los guepardos cazan principalmente antílopes de tamaño mediano como gacelas e impalas, pero su constitución ligera significa que no pueden derribar presas mucho más grandes que ellos mismos. Su estrategia de caza depende de velocidad explosiva en lugar de fuerza, haciéndolos especialistas en depredación de persecución."
+    },
+    "Physical Characteristics": {
+      "en": "Cheetah claws are a remarkable evolutionary adaptation that sets them apart from all other cats. Unlike typical cat claws that retract completely, cheetah claws are semi-retractable and remain partially exposed, functioning like the cleats on running shoes. This provides crucial traction during high-speed chases and sharp turns while pursuing prey. The claws are also less curved than those of other cats, further optimizing them for grip rather than climbing or fighting. Additionally, cheetahs have enlarged nasal passages, lungs, and heart to maximize oxygen intake during sprints, while their lightweight skeleton reduces body mass for speed. Their distinctive tear marks, which run from their eyes to their mouth, help reduce glare from the sun during daytime hunts.",
+      "es": "Las garras del guepardo son una adaptación evolutiva notable que los distingue de todos los demás felinos. A diferencia de las garras típicas de gatos que se retraen completamente, las garras del guepardo son semi-retráctiles y permanecen parcialmente expuestas, funcionando como los tacos en zapatos de correr. Esto proporciona tracción crucial durante persecuciones a alta velocidad y giros cerrados mientras persiguen presas. Las garras también son menos curvas que las de otros gatos, optimizándolas aún más para agarre en lugar de trepar o pelear. Además, los guepardos tienen fosas nasales agrandadas, pulmones y corazón para maximizar la absorción de oxígeno durante sprints, mientras que su esqueleto ligero reduce la masa corporal para velocidad. Sus distintivas marcas de lágrimas, que van desde sus ojos hasta su boca, ayudan a reducir el resplandor del sol durante cacerías diurnas."
+    },
+    "Evolutionary History": {
+      "en": "Cheetahs represent one of evolution's most specialized predators, having diverged from other big cats approximately 8.5 million years ago. Their unique chromosome count of 38 (compared to 36 in other cats) makes them genetically isolated and unable to hybridize with any other feline species. This genetic bottleneck occurred around 10,000 years ago when cheetah populations crashed, possibly due to climate change at the end of the last ice age. All modern cheetahs are so genetically similar that they can accept skin grafts from unrelated individuals—a level of genetic uniformity normally seen only in laboratory-bred animals. Despite this lack of genetic diversity, cheetahs have survived as a species, though it makes them particularly vulnerable to diseases and environmental changes.",
+      "es": "Los guepardos representan uno de los depredadores más especializados de la evolución, habiendo divergido de otros grandes felinos hace aproximadamente 8.5 millones de años. Su conteo único de cromosomas de 38 (comparado con 36 en otros gatos) los hace genéticamente aislados e incapaces de hibridarse con cualquier otra especie felina. Este cuello de botella genético ocurrió hace alrededor de 10,000 años cuando las poblaciones de guepardos colapsaron, posiblemente debido al cambio climático al final de la última era glacial. Todos los guepardos modernos son tan genéticamente similares que pueden aceptar injertos de piel de individuos no relacionados—un nivel de uniformidad genética normalmente visto solo en animales criados en laboratorio. A pesar de esta falta de diversidad genética, los guepardos han sobrevivido como especie, aunque los hace particularmente vulnerables a enfermedades y cambios ambientales."
+    },
+    "Social Behavior": {
+      "en": "Cheetah social structure is more complex than most other big cats, with distinct patterns for males and females. Adult males often form permanent coalitions, typically consisting of 2-3 brothers from the same litter who stay together for life. These coalitions are more successful at defending territory and securing mating opportunities than solitary males. Female cheetahs, however, lead mostly solitary lives except when raising cubs. Mothers are extremely dedicated, teaching cubs essential hunting skills over 14-18 months before independence. Interestingly, female cheetahs with cubs will sometimes allow brief social interactions between their offspring and cubs from other mothers, creating temporary 'playdates' that help young cheetahs develop crucial social and survival skills.",
+      "es": "La estructura social del guepardo es más compleja que la mayoría de otros grandes felinos, with patrones distintos para machos y hembras. Los machos adultos a menudo forman coaliciones permanentes, típicamente consistiendo en 2-3 hermanos de la misma camada que permanecen juntos de por vida. Estas coaliciones son más exitosas defendiendo territorio y asegurando oportunidades de apareamiento que los machos solitarios. Las hembras guepardo, sin embargo, llevan vidas mayormente solitarias excepto cuando crían cachorros. Las madres son extremadamente dedicadas, enseñando a los cachorros habilidades esenciales de caza durante 14-18 meses antes de la independencia. Curiosamente, las hembras guepardo con cachorros a veces permitirán interacciones sociales breves entre su descendencia y cachorros de otras madres, creando 'citas de juego' temporales que ayudan a los guepardos jóvenes a desarrollar habilidades sociales y de supervivencia cruciales."
+    },
+    "Reproduction": {
+      "en": "Female cheetahs have one of the most challenging reproductive strategies in the big cat world. They are induced ovulators, meaning they only release eggs when mating occurs, and they have no specific breeding season. Remarkably, females can mate with multiple males during a single estrous cycle, resulting in litters where cubs may have different fathers—a strategy that increases genetic diversity in their offspring. Gestation lasts 90-95 days, after which mothers give birth to 2-5 cubs in hidden dens. Cub mortality is extremely high at 60-90%, primarily due to predation by lions, leopards, and hyenas. Mothers frequently move their cubs to new locations to avoid detection, and cubs don't open their eyes until they're about 10 days old.",
+      "es": "Las hembras guepardo tienen una de las estrategias reproductivas más desafiantes en el mundo de los grandes felinos. Son ovuladoras inducidas, lo que significa que solo liberan óvulos cuando ocurre el apareamiento, y no tienen temporada específica de reproducción. Notablemente, las hembras pueden aparearse con múltiples machos durante un solo ciclo de estro, resultando en camadas donde los cachorros pueden tener diferentes padres—una estrategia que aumenta la diversidad genética en su descendencia. La gestación dura 90-95 días, después de lo cual las madres dan a luz a 2-5 cachorros en guaridas ocultas. La mortalidad de cachorros es extremadamente alta en 60-90%, principalmente debido a la depredación por leones, leopardos y hienas. Las madres frecuentemente mueven a sus cachorros a nuevas ubicaciones para evitar detección, y los cachorros no abren sus ojos hasta que tienen alrededor de 10 días de edad."
+    },
+    "Interspecies Relationships": {
+      "en": "The relationship between cheetahs and humans spans over 5,000 years, with ancient civilizations from Egypt to India using cheetahs as hunting companions for royalty. Cheetahs were never domesticated but were captured from the wild, tamed, and trained for hunting expeditions—a practice unique among big cats due to cheetahs' relatively docile temperament. The most famous example is Akbar the Great of the Mughal Empire, who maintained over 9,000 cheetahs during his reign and used them to hunt blackbucks and other antelopes. These hunting cheetahs were transported hooded to hunting grounds, similar to falconry practices, and released to chase prey before returning to their handlers. This practice continued into the 20th century in some regions, though it contributed to cheetah population declines as wild individuals were constantly captured from the wild since cheetahs rarely bred successfully in captivity.",
+      "es": "La relación entre guepardos y humanos abarca más de 5,000 años, con civilizaciones antiguas desde Egipto hasta India usando guepardos como compañeros de caza para la realeza. Los guepardos nunca fueron domesticados pero fueron capturados del medio silvestre, domados y entrenados para expediciones de caza—una práctica única entre grandes felinos debido al temperamento relativamente dócil de los guepardos. El ejemplo más famoso es Akbar el Grande del Imperio Mogol, quien mantuvo más de 9,000 guepardos durante su reinado y los usó para cazar antílopes negros y otros antílopes. Estos guepardos de caza eran transportados encapuchados a campos de caza, similar a las prácticas de cetrería, y liberados para perseguir presas antes de regresar a sus manejadores. Esta práctica continuó hasta el siglo XX en algunas regiones, aunque contribuyó a las disminuciones de población de guepardos ya que individuos salvajes eran constantemente capturados del medio silvestre puesto que los guepardos rara vez se reproducían exitosamente en cautiverio."
+    },
+    "Wildcard": {
+      "en": "Cheetahs possess one of the most sophisticated neurological adaptations in the animal kingdom for high-speed pursuit—an automatic head stabilization system that keeps their head perfectly level during chases, regardless of their body's movement. This system is so precise that even during the dramatic leaps and turns of a high-speed chase, their head remains locked on target with their eyes focused on the prey. This adaptation is crucial for maintaining visual contact with prey during chases where cheetahs can cover 25 feet in a single stride and change direction almost instantaneously. The system involves complex inner ear mechanics and specialized neck muscles that work together to create what is essentially a biological gyroscope, allowing them to track moving targets with incredible precision.",
+      "es": "Los guepardos poseen una de las adaptaciones neurológicas más sofisticadas en el reino animal para persecución a alta velocidad—un sistema automático de estabilización de cabeza que mantiene su cabeza perfectamente nivelada durante persecuciones, independientemente del movimiento de su cuerpo. Este sistema es tan preciso que incluso durante los saltos dramáticos y giros de una persecución a alta velocidad, su cabeza permanece fija en el objetivo con sus ojos enfocados en la presa. Esta adaptación es crucial para mantener contacto visual con la presa durante persecuciones donde los guepardos pueden cubrir 7.5 metros en una sola zancada y cambiar dirección casi instantáneamente. El sistema involucra mecánicas complejas del oído interno y músculos especializados del cuello que trabajan juntos para crear lo que es esencialmente un giroscopio biológico, permitiéndoles rastrear objetivos en movimiento con precisión increíble."
+    }
+  },
+  "alternatives": {
+    "en": ["Leopard", "Jaguar", "Cougar", "Ocelot", "Lynx", "Caracal", "Serval", "Puma", "Lion"],
+    "es": ["Leopardo", "Jaguar", "Puma", "Ocelote", "Lince", "Caracal", "Serval", "Puma", "León"]
   }
+}

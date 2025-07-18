@@ -28,6 +28,7 @@ export function useMainContainer() {
   const shouldFocusInput = useGameStore(state => state.shouldFocusInput);
   const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
   const setScaleFactor = useGameStore(state => state.setScaleFactor);
+  const todayGameData = useGameStore(state => state.todayGameData);
 
   // Theme access
   const { colors } = useTheme();
@@ -144,9 +145,29 @@ export function useMainContainer() {
   const showGameMessage = (victoryAnimationStep === 'summary' && gameOutcome !== null) || 
                           gameOutcome === 'loss-time' || 
                           gameOutcome === 'loss-final-five-wrong' || 
-                          gameOutcome === 'loss-final-five-time';
+                          gameOutcome === 'loss-final-five-time' ||
+                          (gameState.isGameOver && gameOutcome !== null); // Show end game message for already-played scenarios
+  
+  // Debug logging for already-played scenarios
+  if (gameState.isGameOver && gameOutcome !== null && victoryAnimationStep !== 'summary') {
+    console.log('Already played scenario - showGameMessage:', showGameMessage, 'gameOutcome:', gameOutcome);
+  }
   
   const getGameMessageProps = () => {
+    // If we have saved game data from today, use it for accurate stats
+    if (todayGameData) {
+      console.log('Using saved game data for endgame message:', todayGameData);
+      return {
+        outcome: todayGameData.outcome,
+        correctAnswer: todayGameData.correctAnswer,
+        numberOfTries: todayGameData.numberOfTries,
+        timeSpent: todayGameData.timeSpent,
+      };
+    }
+    
+    // Fallback to calculating from current game state (live game)
+    console.log('Calculating endgame message from current game state');
+    
     // Find correct answer if it exists
     const correctGuess = gameState.guesses.find(g => g.isCorrect);
     
@@ -193,6 +214,7 @@ export function useMainContainer() {
     colors,
     showGameMessage,
     isChallengeLoading,
+    isAlreadyPlayedScenario: !!todayGameData && gameState.revealedFacts.length === 0, // Flag to indicate we're showing already-played data without cards
     
     // Refs
     gameControlsRef,

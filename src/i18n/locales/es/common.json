@@ -68,6 +68,9 @@
       "comeBackTomorrow": "¡Vuelve mañana para un nuevo desafío!",
       "timeSpent": "{{minutes}}m {{seconds}}s",
       "share": "Compartir"
+    },
+    "streak": {
+      "dayStreak": "¡racha de días!"
     }
   },
   "loading": {
