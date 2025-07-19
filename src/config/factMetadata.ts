@@ -306,42 +306,42 @@ export const factMetadata = {
   [CategoryType.FAMOUS_BRANDS]: {
     "Industry": {
       description: "The industry the brand is in.",
-      icon: "business",
+      icon: "industry",
       helpText: "The industry the brand is in"
     },
     "Origin": { 
       description: "The country, date, and story of the brand's founding.",
-      icon: "history-edu",
+      icon: "origin",
       helpText: "How and where the brand was established"
     },
     "Logo": {
       description: "The logo of the brand, its design, colors, or symbolism.",
-      icon: "design-services",
+      icon: "company-logo",
       helpText: "The visual identity of the brand"
     },  
     "Signature Product": {
       description: "The signature product of the brand, its design, colors, or symbolism.",
-      icon: "shopping-bag",
+      icon: "product",
       helpText: "The most recognizable product associated with the brand"
     },
     "Target Audience": {
       description: "The demographic or customer base the brand primarily serves.",
-      icon: "groups",
+      icon: "target-audience",
       helpText: "Who the brand's products are designed for"
     },
     "Tagline/Catchphrase": {
       description: "Famous slogans or marketing phrases associated with the brand.",
-      icon: "chat",
+      icon: "slogan",
       helpText: "Memorable phrases used in their advertising"
     },  
     "HQ Location": { 
       description: "The location of the brand's current headquarters.",
-      icon: "location-city",
+      icon: "headquarters",
       helpText: "Where the brand is based today"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   },

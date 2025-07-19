@@ -33,6 +33,18 @@ const animalIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
+// Famous brands fact types icon mapping
+const famousBrandIcons: IconMapping = {
+  'Industry': 'industry',
+  'Origin': 'origin',
+  'Logo': 'company-logo',
+  'Signature Product': 'product',
+  'Target Audience': 'target-audience',
+  'Tagline/Catchphrase': 'slogan',
+  'HQ Location': 'headquarters',
+  'Wildcard': 'wildcard'
+};
+
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
   'Director': 'director',
@@ -50,6 +62,7 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'countries': countryIcons,
   'animals': animalIcons,
   'movies': movieIcons,
+  'famous brands': famousBrandIcons,
   // Add more categories as you implement them
 };
 

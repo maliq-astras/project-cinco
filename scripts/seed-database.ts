@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import { CountriesGenerator } from './challenge-generators/countries-generator';
 import { AnimalsGenerator } from './challenge-generators/animals-generator';
+import { FamousBrandsGenerator } from './challenge-generators/famous-brands-generator';
 import { Challenge } from '../src/types';
 // Import other generators as needed
 
@@ -29,14 +30,16 @@ async function seedDatabase() {
     // Initialize generators
     const countriesGenerator = new CountriesGenerator();
     const animalsGenerator = new AnimalsGenerator();
+    const famousBrandsGenerator = new FamousBrandsGenerator();
     // Add other generators
     
     const today = new Date();
     
     // Generate just a few challenges for testing
     const challenges = [
-      ...countriesGenerator.generate(1, today),
-      ...animalsGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000))
+      ...famousBrandsGenerator.generate(1, today),
+      ...countriesGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000)),
+      ...animalsGenerator.generate(1, new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000))
     ];
     
     // Delete existing challenges
