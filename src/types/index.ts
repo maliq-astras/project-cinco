@@ -124,7 +124,7 @@ export type MovieFactType = "Behind the Scenes" | "Premiere" | "Character(s)" | 
 export type BookFactType = "Author" | "Illustration/Cover Design" | "Character(s)" | "Genre" | "Publication Date" | "Plot" | "Famous Lines" | "Wildcard";
 export type MusicalArtistFactType = "Genre" | "Background" | "Iconic Song" | "Debut" | "Achievements" | "Collaborations" | "Chart Performance" | "Wildcard";
 export type AthleteFactType = "Personal Life" | "Affiliations" | "Era" | "Nationality" | "Physique" | "Stats" | "Achievements" | "Wildcard";
-export type HistoricalFigureFactType = "Occupation" | "Background" | "Nationality" | "Legacy" | "Physical Appearance" | "Famous Quotes" | "Life's Conclusion" | "Wildcard";
+export type HistoricalFigureFactType = "Occupation" | "Early Life" | "Nationality" | "Legacy" | "Physical Appearance" | "Famous Quotes" | "Demise" | "Wildcard";
 export type FamousBrandFactType = "Industry" | "Origin" | "Logo" | "Signature Product" | "Target Audience" | "Tagline/Catchphrase" | "HQ Location" | "Brand Culture" | "Wildcard";
 export type TvShowFactType = "Genre" | "Debut" | "Character(s)" | "Season Structure" | "Iconic Episode" | "Network/Platform" | "Visual Style" | "Wildcard";
 

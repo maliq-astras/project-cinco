@@ -6,8 +6,8 @@
     "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1/countries/canada",
     "facts": {
       "Language(s)": {
-        "en": "I'm home to the world's largest concentration of people who can speak three or more languages fluently, with one major city reaching nearly 20% trilingual residents.",
-        "es": "Soy hogar de la mayor concentración mundial de personas que pueden hablar tres o más idiomas con fluidez, con una ciudad importante alcanzando casi el 20% de residentes trilingües."
+        "en": "I'm home to one of the world's largest concentrations of people who can speak three or more languages fluently, with one major city reaching nearly 20% trilingual residents.",
+        "es": "Soy hogar de una de las mayores concentraciones mundiales de personas que pueden hablar tres o más idiomas con fluidez, con una ciudad importante alcanzando casi el 20% de residentes trilingües."
       },
       "Flag": {
         "en": "My current flag took over 100 years to finalize because citizens couldn't agree between retaining colonial symbols versus creating uniquely national ones during the Great Flag Debate.",
@@ -30,8 +30,8 @@
         "es": "Soy el único país con deportes nacionales oficiales duales—uno para el verano y uno para el invierno—formalmente designados por legislación gubernamental en 1994."
       },
       "Geography & Borders": {
-        "en": "I possess the world's longest coastline at over 202,000 kilometers, yet 80% of my population lives within 100 kilometers of my southern border.",
-        "es": "Poseo la costa más larga del mundo con más de 202,000 kilómetros, sin embargo el 80% de mi población vive dentro de 100 kilómetros de mi frontera sur."
+        "en": "I possess the world's longest coastline at over 202,000 kilometers (125,517 miles), yet 80% of my population lives within 100 kilometers (62 miles) of my southern border.",
+        "es": "Poseo la costa más larga del mundo con más de 202,000 kilómetros (125,517 millas), sin embargo el 80% de mi población vive dentro de 100 kilómetros (62 millas) de mi frontera sur."
       },
       "Wildcard": {
         "en": "My national beverage is the Caesar, which uniquely contains clam juice mixed with vodka, Clamato, and Worcestershire sauce, served in a glass rimmed with celery salt.",

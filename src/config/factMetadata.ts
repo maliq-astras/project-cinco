@@ -220,42 +220,42 @@ export const factMetadata = {
   [CategoryType.ATHLETES]: {
     "Personal Life": {
       description: "The athlete's personal life, relationships, or background.",
-      icon: "person",
+      icon: "personal-life",
       helpText: "Information about their personal life"
     },
     "Affiliations": {
       description: "Major accomplishments or records.",
-      icon: "trophy",
+      icon: "affiliations",
       helpText: "Important achievements or records they hold"
     },
     "Era": {
       description: "The time period the athlete was most active or popular.",
-      icon: "date-range",
+      icon: "hometown",
       helpText: "The year or period when they were active"
     },
     "Nationality": {  
       description: "The country they were born in or are most associated with.",
-      icon: "flag",
+      icon: "nationality",
       helpText: "The country they were born in or are most associated with" 
     },
     "Physique": {
       description: "Physical characteristics, height, weight, etc.",
-      icon: "straighten",
+      icon: "physique",
       helpText: "Height, weight, or other physical attributes"
     },
     "Stats": {
       description: "Notable career statistics or records broken",
-      icon: "star",
+      icon: "stats",
       helpText: "Statistics about their performance"
     },
     "Achievements": {
       description: "Championships, awards or medals won.",
-      icon: "star",
+      icon: "achievements",
       helpText: "Notable accomplishments or milestones"
     },  
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   },

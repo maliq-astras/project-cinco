@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { CountriesGenerator } from './challenge-generators/countries-generator';
 import { AnimalsGenerator } from './challenge-generators/animals-generator';
 import { FamousBrandsGenerator } from './challenge-generators/famous-brands-generator';
+import { AthletesGenerator } from './challenge-generators/athletes-generator';
+import { HistoricalFiguresGenerator } from './challenge-generators/historical-figures-generator';
 import { Challenge } from '../src/types';
 // Import other generators as needed
 
@@ -31,15 +33,19 @@ async function seedDatabase() {
     const countriesGenerator = new CountriesGenerator();
     const animalsGenerator = new AnimalsGenerator();
     const famousBrandsGenerator = new FamousBrandsGenerator();
+    const athletesGenerator = new AthletesGenerator();
+    const historicalFiguresGenerator = new HistoricalFiguresGenerator();
     // Add other generators
     
     const today = new Date();
     
     // Generate just a few challenges for testing
     const challenges = [
-      ...famousBrandsGenerator.generate(1, today),
-      ...countriesGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000)),
-      ...animalsGenerator.generate(1, new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000))
+      ...historicalFiguresGenerator.generate(1, today),
+      ...athletesGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000)),
+      ...famousBrandsGenerator.generate(1, new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000)),
+      ...countriesGenerator.generate(1, new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000)),
+      ...animalsGenerator.generate(1, new Date(today.getTime() + 4 * 24 * 60 * 60 * 1000))
     ];
     
     // Delete existing challenges
