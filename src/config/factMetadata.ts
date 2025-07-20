@@ -263,42 +263,42 @@ export const factMetadata = {
   [CategoryType.HISTORICAL_FIGURES]: {  
     "Occupation": {
       description: "Their occupation, role, or field of expertise.",
-      icon: "business",
+      icon: "occupation",
       helpText: "Their occupation"
     },
     "Background": {
       description: "Their early life, family, and formative experiences.",
-      icon: "history-edu",
+      icon: "childhood",
       helpText: "Information about their origins and early years"
     },
     "Nationality": {
       description: "The country they were born in or are most associated with.",
-      icon: "flag",
+      icon: "nationality-globe",
       helpText: "The country they were born in or are most associated with" 
     },
     "Legacy": {
       description: "Their legacy or impact on history.",
-      icon: "star",
+      icon: "legacy",
       helpText: "Their legacy or impact"
     },
     "Physical Appearance": {
       description: "Physical appearance, height, weight, or other physical details.",
-      icon: "straighten",
+      icon: "appearance",
       helpText: "Physical appearance"
     },
     "Famous Quotes": {
       description: "Memorable sayings or written passages attributed to them.",
-      icon: "format-quote",
+      icon: "quote",
       helpText: "Words they're known for saying or writing"
     },
     "Life's Conclusion": {
       description: "Circumstances surrounding the end of their life.",
-      icon: "last-page",
+      icon: "demise",
       helpText: "How their life story ended"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   },

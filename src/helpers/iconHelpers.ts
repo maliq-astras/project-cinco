@@ -57,6 +57,18 @@ const athleteIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
+// Historical figures fact types icon mapping
+const historicalFigureIcons: IconMapping = {
+  'Occupation': 'occupation',
+  'Early Life': 'childhood',
+  'Nationality': 'nationality-globe',
+  'Legacy': 'legacy',
+  'Physical Appearance': 'appearance',
+  'Famous Quotes': 'quote',
+  'Demise': 'demise',
+  'Wildcard': 'wildcard'
+};
+
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
   'Director': 'director',
@@ -76,6 +88,7 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'movies': movieIcons,
   'famous brands': famousBrandIcons,
   'athletes': athleteIcons,
+  'historical figures': historicalFigureIcons,
   // Add more categories as you implement them
 };
 
