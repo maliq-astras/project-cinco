@@ -27,6 +27,7 @@ const Logo: React.FC<LogoProps> = ({
       alt="Fact 5"
       className={logoClassName}
       style={logoStyles.image(logoWidth, logoHeight)}
+      draggable="false"
     />
   );
 };

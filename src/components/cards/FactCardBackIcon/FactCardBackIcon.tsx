@@ -38,6 +38,7 @@ export default function FactCardBackIcon({
         width={icon.size}
         height={icon.size}
         style={iconStyle}
+        draggable="false"
       />
     </div>
   );

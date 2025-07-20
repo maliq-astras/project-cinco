@@ -210,6 +210,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
                   filter: 'brightness(0) invert(1)', // Makes icons white
                   opacity: 1
                 }}
+                draggable="false"
               />
             </motion.div>
           );

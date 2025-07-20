@@ -54,6 +54,7 @@ export default function IconContainer({
           width={icon.size}
           height={icon.size}
           style={iconStyle}
+          draggable="false"
         />
       )}
     </div>
