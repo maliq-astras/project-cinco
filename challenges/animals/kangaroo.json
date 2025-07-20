@@ -6,12 +6,12 @@
     "imageUrl": "https://res.cloudinary.com/fact5-trivia-game/image/upload/v1/animals/kangaroo_natural_habitat.jpg",
     "facts": {
       "Habitat": {
-        "en": "I thrive across diverse landscapes from arid deserts to temperate forests, with my range extending from sea level to elevations of 1,800 meters in mountainous regions.",
-        "es": "Prospero en diversos paisajes desde desiertos áridos hasta bosques templados, con mi rango extendiéndose desde el nivel del mar hasta elevaciones de 1,800 metros en regiones montañosas."
+        "en": "My species only inhabit one continent but we thrive across diverse landscapes from arid deserts to temperate forests.",
+        "es": "Mi especie habita solo un continente pero prospera en diversos paisajes desde desiertos áridos hasta bosques templados."
       },
       "Diet": {
-        "en": "I regurgitate and re-chew my food like a cow using my chambered stomach, but unlike true ruminants, my fermentation process occurs in my hindgut rather than my stomach.",
-        "es": "Regurgito y remastico mi comida como una vaca usando mi estómago con cámaras, pero a diferencia de los rumiantes verdaderos, mi proceso de fermentación ocurre en mi intestino posterior en lugar de mi estómago."
+        "en": "I regurgitate and re-chew my food like a cow using my chambered stomach, but unlike true ruminants, my fermentation process occurs in my hindgut (colon and intestines) rather than my stomach.",
+        "es": "Regurgito y remastico mi comida como una vaca usando mi estómago con cámaras, pero a diferencia de los rumiantes verdaderos, mi proceso de fermentación ocurre en mi intestino posterior (colon y intestinos) en lugar de mi estómago."
       },
       "Physical Characteristics": {
         "en": "My second and third toes are fused together in a condition called syndactyly, creating a specialized grooming claw that functions like a built-in comb for cleaning my fur.",
@@ -22,16 +22,16 @@
         "es": "Mi linaje divergió de otros de mi especie hace aproximadamente 15 millones de años cuando mis ancestros que vivían en árboles descendieron al suelo mientras el clima del continente se volvía más seco y las praderas se expandían."
       },
       "Social Behavior": {
-        "en": "When any member of my group detects danger, they thump their powerful tail on the ground to create vibrations that instantly alert the entire group, causing them to scatter in all directions simultaneously.",
-        "es": "Cuando cualquier miembro de mi grupo detecta peligro, golpean su cola poderosa en el suelo para crear vibraciones que instantáneamente alertan a todo el grupo, causando que se dispersen en todas las direcciones simultáneamente."
+        "en": "When any member of my group detects danger, they thump their tail on the ground to create vibrations that instantly alert the entire group, causing us to scatter in all directions simultaneously.",
+        "es": "Cuando cualquier miembro de mi grupo detecta peligro, golpean su cola en el suelo para crear vibraciones que instantáneamente alertan a todo el grupo, causando que nos dispersemos en todas las direcciones simultáneamente."
       },
       "Reproduction": {
         "en": "Females of my species can pause embryonic development for up to 11 months through embryonic diapause, essentially hitting the pause button on pregnancy until environmental conditions become favorable.",
         "es": "Las hembras de mi especie pueden pausar el desarrollo embrionario hasta 11 meses a través de diapausa embrionaria, esencialmente presionando el botón de pausa en el embarazo hasta que las condiciones ambientales se vuelvan favorables."
       },
       "Interspecies Relationships": {
-        "en": "When threatened by dingoes and driven into water, I use my powerful forelimbs to grab the attacking predator and attempt to hold it underwater until it drowns.",
-        "es": "Cuando soy amenazado por dingos y empujado al agua, uso mis poderosas patas delanteras para agarrar al depredador atacante e intento mantenerlo bajo el agua hasta que se ahogue."
+        "en": "When threatened by dingoes I flee into water where I use my powerful forelimbs to grab them and attempt to hold them underwater until they drown.",
+        "es": "Cuando soy amenazado por dingos me alejo al agua, donde uso mis poderosas patas delanteras para agarrarlos y intento mantenerlos bajo el agua hasta que se ahoguen."
       },
       "Wildcard": {
         "en": "I am one of only a few animals that becomes more energy-efficient as I move faster, requiring less metabolic energy per kilometer at high speeds than at slow speeds due to elastic energy storage in my tendons.",
