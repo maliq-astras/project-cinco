@@ -69,6 +69,18 @@ const historicalFigureIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
+// Musical artists fact types icon mapping
+const musicalArtistIcons: IconMapping = {
+  'Genre': 'music-genre',
+  'Background': 'background-musician',
+  'Iconic Song': 'iconic-song',
+  'Debut': 'debut',
+  'Achievements': 'grammy',
+  'Collaborations': 'collab',
+  'Chart Performance': 'charts',
+  'Wildcard': 'wildcard'
+};
+
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
   'Director': 'director',
@@ -89,6 +101,7 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'famous brands': famousBrandIcons,
   'athletes': athleteIcons,
   'historical figures': historicalFigureIcons,
+  'musical artists': musicalArtistIcons,
   // Add more categories as you implement them
 };
 

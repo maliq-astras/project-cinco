@@ -177,42 +177,42 @@ export const factMetadata = {
   [CategoryType.MUSICAL_ARTISTS]: {
     "Genre": {
       description: "The type or style of music this artist creates.",
-      icon: "music",
+      icon: "music-genre",
       helpText: "What kind of music this artist makes"
     },
     "Background": {
       description: "The artist's background, influences, or life before fame.",
-      icon: "history-edu",
+      icon: "background-musician",
       helpText: "Information about their origins and early life"
     },
     "Iconic Song": {
       description: "A popular or critically acclaimed song by this artist.",
-      icon: "music-note",
+      icon: "iconic-song",
       helpText: "Information about a notable song without naming it directly"
     },
     "Debut": {
       description: "When the artist first appeared on the music scene.",
-      icon: "date-range",
+      icon: "debut",
       helpText: "The year or period when they first became known"
     },
     "Achievements": {
       description: "Awards and nominations received by the artist",
-      icon: "star",
+      icon: "grammy",
       helpText: "Awards, nominations, or recognition the artist has received"
     },
     "Collaborations": {
       description: "Other artists or musicians the artist has worked with",
-      icon: "people",
+      icon: "collab",
       helpText: "Information about collaborators without naming them"
     },
     "Chart Performance": {
       description: "The artist's sales or charts & streaming metrics.",
-      icon: "trending-up",
+      icon: "charts",
       helpText: "How well the artist's music performed on the charts or streams"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   },
