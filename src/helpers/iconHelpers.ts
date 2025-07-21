@@ -49,7 +49,7 @@ const famousBrandIcons: IconMapping = {
 const athleteIcons: IconMapping = {
   'Personal Life': 'personal-life',
   'Affiliations': 'affiliations',
-  'Era': 'hometown', // Using hometown as a temporal/place indicator
+  'Era': 'time', 
   'Nationality': 'nationality',
   'Physique': 'physique',
   'Stats': 'stats',

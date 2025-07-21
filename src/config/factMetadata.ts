@@ -230,7 +230,7 @@ export const factMetadata = {
     },
     "Era": {
       description: "The time period the athlete was most active or popular.",
-      icon: "hometown",
+      icon: "time",
       helpText: "The year or period when they were active"
     },
     "Nationality": {  
