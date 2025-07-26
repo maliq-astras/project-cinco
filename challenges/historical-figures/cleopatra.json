@@ -6,7 +6,7 @@
     "imageUrl": "https://res.cloudinary.com/example/image/upload/v1/cleopatra_portrait.jpg",
     "facts": {
       "Occupation": {
-        "en": "I revolutionized royal governance by becoming the first ruler in my dynasty's 275-year reign to learn my land's native language, directly connecting with my subjects in ways my predecessors did not.",
+        "en": "I revolutionized royal governance by becoming the first ruler in my dynasty's 275-year reign to learn my land's native language.",
         "es": "Revolucioné la gobernanza real al convertirme en la primera gobernante en los 275 años de reinado de mi dinastía en aprender el idioma nativo de mi tierra, conectando directamente con mis súbditos de maneras que mis predecesores no pudieron."
       },
       "Early Life": {
@@ -18,24 +18,24 @@
         "es": "Descendía de un general que sirvió bajo Alejandro Magno, haciéndome étnicamente griega macedonia sin conexión de linaje con la tierra que gobernaba."
       },
       "Legacy": {
-        "en": "Despite ruling for only twenty-one years, I have inspired more operas, paintings, films, and literary works than most ancient rulers, becoming the archetypal powerful woman who challenges male authority across cultures.",
-        "es": "A pesar de gobernar solo veintiún años, he inspirado más óperas, pinturas, películas y obras literarias que la mayoría de los gobernantes antiguos, convirtiéndome en la mujer poderosa arquetípica que desafía la autoridad masculina a través de culturas."
+        "en": "My twenty-one years of rule and reputation as a powerful woman who challenges male authority has inspired many operas, paintings, films, and literary works.",
+        "es": "Mi reinado de veintiún años y reputación como una mujer poderosa que desafía la autoridad masculina ha inspirado muchas óperas, pinturas, películas y obras literarias."
       },
       "Physical Appearance": {
         "en": "Contemporary coins minted during my reign consistently depict me with a prominent aquiline nose and strong masculine features, crafted to project authority rather than conventional feminine beauty.",
         "es": "Las monedas contemporáneas acuñadas durante mi reinado me representan consistentemente con una nariz aguileña prominente y rasgos masculinos fuertes, diseñados para proyectar autoridad en lugar de belleza femenina convencional."
       },
       "Famous Quotes": {
-        "en": "When facing capture by Octavian's forces, I declared 'I will not be led in a triumph,' demonstrating my determination to control my own fate rather than suffer the humiliation of being paraded as a captive.",
-        "es": "Cuando enfrenté la captura por las fuerzas de Octavio, declaré 'No seré llevada en un triunfo,' demostrando mi determinación de controlar mi propio destino en lugar de sufrir la humillación de ser desfilada como una cautiva."
+        "en": "I once declared 'I will not be led in a triumph,' demonstrating my determination to control my own fate rather than suffer the humiliation of being paraded as a trophy of war.",
+        "es": "Declaré 'No seré llevada en un triunfo,' demostrando mi determinación de controlar mi propio destino en lugar de sufrir la humillación de ser desfilada como una trofea de guerra."
       },
       "Demise": {
         "en": "I died on the 12th of August 30 BC, with some claiming snake bite while others suggest I used a poisoned needle hidden in a hair comb.",
         "es": "Murió el 12 de agosto de 30 a.C. Algunos afirman mordedura de serpiente mientras otros sugieren que usó una aguja envenenada escondida en un peine para el cabello."
       },
       "Wildcard": {
-        "en": "I could reportedly conduct diplomatic audiences by conversing with foreign envoys in at least nine different languages, including Ethiopian, Troglodytic, Hebrew, Arabic, Median, and Parthian, rarely requiring an interpreter.",
-        "es": "Según los informes, podía dirigir audiencias diplomáticas conversando con enviados extranjeros en al menos nueve idiomas diferentes, incluyendo etíope, troglodítico, hebreo, árabe, medo y parto, rara vez requiriendo un intérprete."
+        "en": "I could reportedly conduct diplomatic audiences by conversing with foreign envoys in at least nine different languages, including Ethiopian, Troglodytic, Hebrew, Arabic, Median, and Parthian.",
+        "es": "Según los informes, podía dirigir audiencias diplomáticas conversando con enviados extranjeros en al menos nueve idiomas diferentes, incluyendo etíope, troglodítico, hebreo, árabe, medo y parto."
       }
     },
     "expanded": {

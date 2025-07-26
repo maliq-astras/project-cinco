@@ -6,8 +6,8 @@
     "imageUrl": "[Cloudinary URL for Alexander Hamilton portrait]",
     "facts": {
       "Occupation": {
-        "en": "As the first Treasury Secretary of the United States, I designed a financial system that transformed war debt into investment capital. Within months the bond market increased American securities' value by 300%.",
-        "es": "Como primer Secretario del Tesoro de los Estados Unidos, diseñé un sistema financiero que transformó la deuda de guerra en capital de inversión. En meses el mercado de bonos aumentó el valor de los valores estadounidenses en un 300%."
+        "en": "As the first Treasury Secretary of the United States, I designed a financial system that transformed war debt into investment capital.",
+        "es": "Como primer Secretario del Tesoro de los Estados Unidos, diseñé un sistema financiero que transformó la deuda de guerra en capital de inversión."
       },
       "Early Life": {
         "en": "My eloquent description of a devastating hurricane at age 15 so impressed local benefactors that they raised funds to send me from the Caribbean to the mainland colonies for formal education.",
