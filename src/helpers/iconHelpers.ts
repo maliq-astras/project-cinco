@@ -81,6 +81,18 @@ const musicalArtistIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
+// Books fact types icon mapping
+const bookIcons: IconMapping = {
+  'Author': 'author',
+  'Illustration/Cover': 'illustration',
+  'Character(s)': 'character-book',
+  'Genre': 'genre-book',
+  'Publication Date': 'publication',
+  'Plot': 'plot',
+  'Quote': 'book-quote',
+  'Wildcard': 'wildcard'
+};
+
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
   'Director': 'director',
@@ -98,6 +110,7 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'countries': countryIcons,
   'animals': animalIcons,
   'movies': movieIcons,
+  'books': bookIcons,
   'famous brands': famousBrandIcons,
   'athletes': athleteIcons,
   'historical figures': historicalFigureIcons,

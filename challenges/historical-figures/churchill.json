@@ -6,16 +6,16 @@
     "imageUrl": "[Cloudinary URL for Winston Churchill portrait]",
     "facts": {
       "Occupation": {
-        "en": "I served as both a war correspondent and a cavalry officer before age 25, reporting on conflicts across three continents while simultaneously holding military commissions.",
-        "es": "Serví como corresponsal de guerra y oficial de caballería antes de los 25 años, reportando sobre conflictos en tres continentes mientras mantenía simultáneamente comisiones militares."
+        "en": "I served as both a war correspondent and a cavalry officer before age 25, simultaneously reporting on conflicts while holding military commissions.",
+        "es": "Serví como corresponsal de guerra y oficial de caballería antes de los 25 años, reportando sobre conflictos mientras mantenía simultáneamente comisiones militares."
       },
       "Early Life": {
         "en": "Despite being born into aristocracy, I struggled academically at Harrow School in London and required three attempts to pass the entrance exam for the Royal Military College.",
         "es": "A pesar de nacer en la aristocracia, tuve dificultades académicas en la Escuela Harrow en Londres y necesité tres intentos para aprobar el examen de ingreso al Colegio Militar Real."
       },
       "Nationality": {
-        "en": "Though thoroughly British, my mother was American-born, making me one of the few British Prime Ministers with direct American ancestry through a prominent New York family.",
-        "es": "Aunque completamente británico, mi madre nació en América, convirtiéndome en uno de los pocos Primeros Ministros británicos con ascendencia americana directa a través de una prominente familia de Nueva York."
+        "en": "Though thoroughly British, my mother was American-born, making me one of the few British Prime Ministers with direct American ancestry.",
+        "es": "Aunque completamente británico, mi madre nació en América, convirtiéndome en uno de los pocos Primeros Ministros británicos con ascendencia americana directa."
       },
       "Legacy": {
         "en": "I remain the only British Prime Minister to have won the Nobel Prize in Literature since its inception in 1901.",

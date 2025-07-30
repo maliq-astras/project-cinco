@@ -134,42 +134,42 @@ export const factMetadata = {
   [CategoryType.BOOKS]: {
     "Author": {
       description: "Who wrote this book",
-      icon: "book",
+      icon: "author",
       helpText: "Information about the author without naming them directly"
     },
     "Illustration/Cover Design": {
       description: "Notable cover art, illustrations, or distinctive visual elements.",
-      icon: "palette",
+      icon: "illustration",
       helpText: "Visual elements associated with famous editions of the book"
     },
     "Character(s)": {
       description: "A memorable character from the book",
-      icon: "person",
+      icon: "character-book",
       helpText: "Description of a character without naming them"
     },
     "Genre": {
       description: "The book's genre, subgenre, or category.",
-      icon: "category",
+      icon: "genre-book",
       helpText: "What kind of book this is"
     },
     "Publication Date": {
       description: "When the book was first published or released.",
-      icon: "date-range",
+      icon: "publication",
       helpText: "The year or period when the book first appeared"
     },
     "Plot": {
       description: "The plot, theme or setting of the book.",
-      icon: "auto-stories",
+      icon: "plot",
       helpText: "The story of the book"
     },
     "Famous Lines": {
       description: "Memorable passages, opening lines, or quotes from the book.",
-      icon: "format-quote",
+      icon: "book-quote",
       helpText: "Recognizable words or phrases from the text"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "Something surprising or unusual about the book"
     }
   },
