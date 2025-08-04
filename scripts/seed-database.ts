@@ -8,6 +8,8 @@ import { AthletesGenerator } from './challenge-generators/athletes-generator';
 import { HistoricalFiguresGenerator } from './challenge-generators/historical-figures-generator';
 import { MusicalArtistsGenerator } from './challenge-generators/musical-artists-generator';
 import { BooksGenerator } from './challenge-generators/books-generator';
+import { TvShowsGenerator } from './challenge-generators/tv-shows-generator';
+import { MoviesGenerator } from './challenge-generators/movies-generator';
 import { Challenge } from '../src/types';
 // Import other generators as needed
 
@@ -39,19 +41,23 @@ async function seedDatabase() {
     const historicalFiguresGenerator = new HistoricalFiguresGenerator();
     const musicalArtistsGenerator = new MusicalArtistsGenerator();
     const booksGenerator = new BooksGenerator();
+    const tvShowsGenerator = new TvShowsGenerator();
+    const moviesGenerator = new MoviesGenerator();
     // Add other generators
     
     const today = new Date();
     
     // Generate just a few challenges for testing
     const challenges = [
-      ...booksGenerator.generate(1, today),
-      ...musicalArtistsGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000)),
-      ...historicalFiguresGenerator.generate(1, new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000)),
-      ...athletesGenerator.generate(1, new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000)),
-      ...famousBrandsGenerator.generate(1, new Date(today.getTime() + 4 * 24 * 60 * 60 * 1000)),
-      ...countriesGenerator.generate(1, new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000)),
-      ...animalsGenerator.generate(1, new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000))
+      ...moviesGenerator.generate(1, today),
+      ...tvShowsGenerator.generate(1, new Date(today.getTime() + 24 * 60 * 60 * 1000)),
+      ...booksGenerator.generate(1, new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000)),
+      ...musicalArtistsGenerator.generate(1, new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000)),
+      ...historicalFiguresGenerator.generate(1, new Date(today.getTime() + 4 * 24 * 60 * 60 * 1000)),
+      ...athletesGenerator.generate(1, new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000)),
+      ...famousBrandsGenerator.generate(1, new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000)),
+      ...countriesGenerator.generate(1, new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)),
+      ...animalsGenerator.generate(1, new Date(today.getTime() + 8 * 24 * 60 * 60 * 1000))
     ];
     
     // Delete existing challenges

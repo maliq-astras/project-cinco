@@ -93,15 +93,27 @@ const bookIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
+// TV shows fact types icon mapping
+const tvShowIcons: IconMapping = {
+  'Genre': 'tv-genre',
+  'Debut': 'tv-debut',
+  'Character(s)': 'character-tv',
+  'Season Structure': 'tv-seasons',
+  'Iconic Episode': 'tv-episode',
+  'Network/Platform': 'tv-network',
+  'Visual Style': 'tv-visual',
+  'Wildcard': 'wildcard'
+};
+
 // Add mappings for other categories as they are implemented
 const movieIcons: IconMapping = {
-  'Director': 'director',
-  'Premiere': 'release-date',
-  'Character(s)': 'character',
-  'Genre': 'genre',
-  'Critical Reception': 'awards',
-  'Box Office': 'boxoffice',
-  'Production': 'studio',
+  'Behind the Scenes': 'behind-the-scenes',
+  'Premiere': 'premiere',
+  'Character(s)': 'movie-character',
+  'Genre': 'movie-genre',
+  'Critical Reception': 'crit-reception',
+  'Box Office': 'box-office',
+  'Famous Line': 'famous-line',
   'Wildcard': 'wildcard'
 };
 
@@ -115,6 +127,7 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'athletes': athleteIcons,
   'historical figures': historicalFigureIcons,
   'musical artists': musicalArtistIcons,
+  'tv shows': tvShowIcons,
   // Add more categories as you implement them
 };
 

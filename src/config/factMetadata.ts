@@ -91,42 +91,42 @@ export const factMetadata = {
   [CategoryType.MOVIES]: {
     "Behind the Scenes": {
       description: "Production stories, challenges, innovations, or creative decisions.",
-      icon: "movie",
+      icon: "behind-the-scenes",
       helpText: "Interesting facts about how the film was made"
     },
     "Premiere": {
       description: "Time period or major events that coincide with the film's release.",
-      icon: "date-range",
+      icon: "premiere",
       helpText: "The decade or period when the film came out"
     },
     "Character(s)": {
       description: "A memorable character from the film",
-      icon: "person",
+      icon: "movie-character",
       helpText: "Description of a character without naming them"
     },
     "Genre": {
       description: "The type or style of film",
-      icon: "category",
+      icon: "movie-genre",
       helpText: "What kind of movie this is"
     },
     "Critical Reception": {
       description: "The film's ratings, critical reviews, or awards.",
-      icon: "star",
+      icon: "crit-reception",
       helpText: "Ratings, reviews, or awards the film received"
     },
     "Box Office": {
       description: "Financial performance, ticket sales, and revenue figures.",
-      icon: "attach-money",
+      icon: "box-office",
       helpText: "How well the movie performed financially"
     },
     "Famous Line": {
       description: "Memorable quotes or dialogue from the movie.",
-      icon: "chat",
+      icon: "famous-line",
       helpText: "Iconic lines that viewers remember from the film"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",
-      icon: "stars",
+      icon: "wildcard",
       helpText: "Something surprising or unusual about the movie"
     }
   },
@@ -349,42 +349,42 @@ export const factMetadata = {
   [CategoryType.TV_SHOWS]: {
     "Genre": {
       description: "The genre of the show, its subgenre, or category.",
-      icon: "category",
+      icon: "tv-genre",
       helpText: "The genre of the show"
     },
     "Debut": {
       description: "The debut of the show, its first episode, or the time period it was first aired.",
-      icon: "date-range",
+      icon: "tv-debut",
       helpText: "The debut of the show"
     },
     "Character(s)": { 
       description: "A memorable character from the show, its role, or background.",
-      icon: "person",
+      icon: "character-tv",
       helpText: "Description of a character without naming them"
     },
     "Season Structure": { 
       description: "Number of seasons, episodes per season, or format evolution.",
-      icon: "view-timeline",
+      icon: "tv-seasons",
       helpText: "How the series was structured and evolved"
     },
     "Iconic Episode": {
       description: "The most critically acclaimed or popular episode of the series.",
-      icon: "star",
+      icon: "tv-episode",
       helpText: "A standout episode from the show's run"
     },
     "Network/Platform": {
       description: "The network or platform that airs the show, its streaming service, or other distribution channels.",
-      icon: "tv",
+      icon: "tv-network",
       helpText: "The network or platform that airs the show"
     },
     "Visual Style": {
       description: "The visual style of the show, its cinematography, or visual effects.",
-      icon: "palette",
+      icon: "tv-visual",
       helpText: "The distinctive look or visual approach of the show"
     },
     "Wildcard": {
       description: "Unique fun fact of an unknown variety",    
-      icon: "stars",
+      icon: "wildcard",
       helpText: "An interesting fact that doesn't fit other categories"
     }
   }
