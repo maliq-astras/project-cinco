@@ -4,6 +4,7 @@
     "es": "Francia"
   },
   "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1/countries/france",
+  "citation": "Image source to be added",
   "facts": {
     "Language(s)": {
       "en": "I officially ban the use of English words in government documents and require all foreign terms in advertising to have translations in my official language by law.",
@@ -73,7 +74,27 @@
     }
   },
   "alternatives": {
-    "en": ["Germany", "Italy", "Spain", "Belgium", "Netherlands", "Switzerland", "United Kingdom", "Austria", "Portugal"],
-    "es": ["Alemania", "Italia", "España", "Bélgica", "Países Bajos", "Suiza", "Reino Unido", "Austria", "Portugal"]
+    "en": [
+      "Germany",
+      "Italy",
+      "Spain",
+      "Belgium",
+      "Netherlands",
+      "Switzerland",
+      "United Kingdom",
+      "Austria",
+      "Portugal"
+    ],
+    "es": [
+      "Alemania",
+      "Italia",
+      "España",
+      "Bélgica",
+      "Países Bajos",
+      "Suiza",
+      "Reino Unido",
+      "Austria",
+      "Portugal"
+    ]
   }
 }

@@ -1,79 +1,100 @@
 {
-    "answer": {
-      "en": "Google",
-      "es": "Google"
+  "answer": {
+    "en": "Google",
+    "es": "Google"
+  },
+  "imageUrl": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/google-headquarters-googleplex.jpg",
+  "citation": "Image source to be added",
+  "facts": {
+    "Industry": {
+      "en": "I operate across over 20 different technology disciplines and have acquired more than 200 companies throughout my history to expand my reach.",
+      "es": "Opero en más de 20 disciplinas tecnológicas diferentes y he adquirido más de 200 empresas a lo largo de mi historia para expandir mi alcance."
     },
-    "imageUrl": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234567890/google-headquarters-googleplex.jpg",
-    "facts": {
-      "Industry": {
-        "en": "I operate across over 20 different technology disciplines and have acquired more than 200 companies throughout my history to expand my reach.",
-        "es": "Opero en más de 20 disciplinas tecnológicas diferentes y he adquirido más de 200 empresas a lo largo de mi historia para expandir mi alcance."
-      },
-      "Origin": {
-        "en": "I started as a research project at Stanford University that consumed nearly half the institution's entire network bandwidth when launched in August 1996.",
-        "es": "Comencé como un proyecto de investigación en la Universidad de Stanford que consumió casi la mitad del ancho de banda de toda la red de la institución cuando se lanzó en agosto de 1996."
-      },
-      "Logo": {
-        "en": "My brand name originated from a spelling error for a mathematical term meaning 10 to the 100th power.",
-        "es": "Mi nombre de marca se originó de un error ortográfico para un término matemático que significa 10 elevado a la potencia 100."
-      },
-      "Signature Product": {
-        "en": "One of my signature services launched in 2004 was so revolutionary compared to competitors' offerings that many initially dismissed it as an April Fool's joke.",
-        "es": "Uno de mis servicios emblemáticos lanzado en 2004 fue tan revolucionario comparado con las ofertas de los competidores que muchos inicialmente lo descartaron como una broma del Día de los Inocentes."
-      },
-      "Target Audience": {
-        "en": "I serve over 2.9 billion active users daily across all my platforms, making me one of the most widely used technology services globally.",
-        "es": "Sirvo a más de 2.9 mil millones de usuarios activos diariamente en todas mis plataformas, convirtiéndome en uno de los servicios tecnológicos más utilizados a nivel mundial."
-      },
-      "Tagline/Catchphrase": {
-        "en": "Unlike most major brands, I've never needed a memorable tagline. Despite minimal marketing my name became a verb in dictionaries.",
-        "es": "A diferencia de la mayoría de las grandes marcas, nunca he necesitado un eslogan memorable. A pesar de la mínima publicidad, mi nombre se convirtió en un verbo en los diccionarios."
-      },
-      "HQ Location": {
-        "en": "My Mountain View campus includes buildings like the Gradient Canopy and features a visitor center that opened in October 2023.",
-        "es": "Mi campus de Mountain View incluye edificios como Gradient Canopy y cuenta con un centro de visitantes que abrió en octubre de 2023."
-      },
-      "Wildcard": {
-        "en": "In January 2020, I became only the fourth U.S. company to reach a trillion-dollar market valuation, following three other tech giants.",
-        "es": "En enero de 2020, me convertí en solo la cuarta empresa estadounidense en alcanzar una valoración de mercado de un billón de dólares, siguiendo a otros tres gigantes tecnológicos."
-      }
+    "Origin": {
+      "en": "I started as a research project at Stanford University that consumed nearly half the institution's entire network bandwidth when launched in August 1996.",
+      "es": "Comencé como un proyecto de investigación en la Universidad de Stanford que consumió casi la mitad del ancho de banda de toda la red de la institución cuando se lanzó en agosto de 1996."
     },
-    "expanded": {
-      "Industry": {
-        "en": "Google's business empire spans an extraordinary breadth of over 20 different technology disciplines, from artificial intelligence and quantum computing to biotechnology and urban planning. Through strategic acquisitions of more than 200 companies, Google has expanded far beyond its original focus into areas including robotics, drone delivery, fiber optic internet infrastructure, and even anti-aging research. This massive portfolio includes everything from smart home devices and wearable technology to autonomous vehicles and balloon-powered internet. Google's diverse holdings demonstrate a strategy of betting on multiple future technologies simultaneously, ensuring relevance regardless of which innovations ultimately transform society.",
-        "es": "El imperio empresarial de Google abarca una amplitud extraordinaria de más de 20 disciplinas tecnológicas diferentes, desde inteligencia artificial y computación cuántica hasta biotecnología y planificación urbana. A través de adquisiciones estratégicas de más de 200 empresas, Google se ha expandido mucho más allá de su enfoque original hacia áreas que incluyen robótica, entrega con drones, infraestructura de internet de fibra óptica e incluso investigación antienvejecimiento. Esta cartera masiva incluye todo, desde dispositivos domésticos inteligentes y tecnología portátil hasta vehículos autónomos e internet impulsado por globos. Las diversas participaciones de Google demuestran una estrategia de apostar en múltiples tecnologías futuras simultáneamente, asegurando relevancia independientemente de qué innovaciones finalmente transformen la sociedad."
-      },
-      "Origin": {
-        "en": "Google began as a research project called BackRub in 1996, emerging from the Stanford Digital Library Project where two PhD students explored the mathematical properties of the World Wide Web. The project's breakthrough came from analyzing 'back links' - treating the web as a massive graph where pages gained importance based on incoming links from other important pages. This revolutionary approach consumed enormous computing resources, using nearly half of Stanford's network bandwidth and running on a makeshift network of borrowed computers. The founders built their first data center in a friend's garage, processing an index that grew from 25 million pages to over 75 million within months, revolutionizing how information could be organized and accessed on the rapidly expanding internet.",
-        "es": "Google comenzó como un proyecto de investigación llamado BackRub en 1996, emergiendo del Proyecto de Biblioteca Digital de Stanford donde dos estudiantes de doctorado exploraron las propiedades matemáticas de la World Wide Web. El avance del proyecto vino del análisis de 'enlaces de retroceso' - tratando la web como un gráfico masivo donde las páginas ganaban importancia basándose en enlaces entrantes de otras páginas importantes. Este enfoque revolucionario consumió enormes recursos informáticos, usando casi la mitad del ancho de banda de la red de Stanford y ejecutándose en una red improvisada de computadoras prestadas. Los fundadores construyeron su primer centro de datos en el garaje de un amigo, procesando un índice que creció de 25 millones de páginas a más de 75 millones en meses, revolucionando cómo la información podía ser organizada y accedida en el internet en rápida expansión."
-      },
-      "Logo": {
-        "en": "Google's visual identity has undergone several transformations since adopting the Catull typeface in 1999, moving away from the original BackRub logo. The name itself resulted from a fortuitous misspelling during a brainstorming session when 'googol' - the mathematical term for 10^100 - was incorrectly typed as 'Google' while checking domain availability. This serendipitous error created one of the most recognizable brands in history. The colorful lettering was designed to convey a sense of playfulness while maintaining professionalism, with each iteration of the logo becoming cleaner and more refined. The mathematical reference in Google's name perfectly captured the founders' ambition to organize the seemingly infinite amount of information on the web.",
-        "es": "La identidad visual de Google ha sufrido varias transformaciones desde que adoptó la tipografía Catull en 1999, alejándose del logo original de BackRub. El nombre en sí resultó de un error ortográfico fortuito durante una sesión de lluvia de ideas cuando 'googol' - el término matemático para 10^100 - fue escrito incorrectamente como 'Google' mientras se verificaba la disponibilidad del dominio. Este error fortuito creó una de las marcas más reconocibles de la historia. Las letras coloridas fueron diseñadas para transmitir un sentido de diversión mientras mantenían el profesionalismo, con cada iteración del logo volviéndose más limpia y refinada. La referencia matemática en el nombre de Google capturó perfectamente la ambición de los fundadores de organizar la cantidad aparentemente infinita de información en la web."
-      },
-      "Signature Product": {
-        "en": "When Google launched Gmail on April 1, 2004, the technology world was stunned by the offering of 1 gigabyte of free storage - a capacity that seemed impossibly generous when competitors like Hotmail and Yahoo were offering just 2-4 megabytes. The timing of the announcement led many to believe it was an elaborate April Fool's prank, especially given Google's history of pranks on that date. The service revolutionized email by introducing conversation threading, powerful search capabilities, and virtually unlimited storage that eliminated the need to delete messages. This bold move forced the entire industry to dramatically increase storage offerings and set new standards for web-based email services.",
-        "es": "Cuando Google lanzó Gmail el 1 de abril de 2004, el mundo tecnológico quedó atónito por la oferta de 1 gigabyte de almacenamiento gratuito, una capacidad que parecía imposiblemente generosa cuando competidores como Hotmail y Yahoo ofrecían solo 2-4 megabytes. El momento del anuncio llevó a muchos a creer que era una elaborada broma del Día de los Inocentes, especialmente dada la historia de Google de bromas en esa fecha. El servicio revolucionó el correo electrónico introduciendo el agrupamiento de conversaciones, potentes capacidades de búsqueda y almacenamiento virtualmente ilimitado que eliminó la necesidad de eliminar mensajes. Este movimiento audaz obligó a toda la industria a aumentar drásticamente las ofertas de almacenamiento y establecer nuevos estándares para los servicios de correo electrónico basados en la web."
-      },
-      "Target Audience": {
-        "en": "With over 2.9 billion daily active users across all platforms, Google has achieved a scale of human connection unprecedented in history. This staggering number represents more than a third of the global population engaging with Google's services every single day. From students in rural villages accessing educational content to Fortune 500 companies managing their digital infrastructure, Google's user base transcends every demographic boundary imaginable. The universality of Google's reach means it serves everyone from a five-year-old watching educational videos to a ninety-year-old checking email, making Google perhaps the most demographically diverse technology platform ever created.",
-        "es": "Con más de 2.9 mil millones de usuarios activos diarios en todas las plataformas, Google ha logrado una escala de conexión humana sin precedentes en la historia. Este número asombroso representa más de un tercio de la población mundial interactuando con los servicios de Google cada día. Desde estudiantes en aldeas rurales accediendo a contenido educativo hasta empresas Fortune 500 gestionando su infraestructura digital, la base de usuarios de Google trasciende todos los límites demográficos imaginables. La universalidad del alcance de Google significa que sirve a todos, desde un niño de cinco años viendo videos educativos hasta una persona de noventa años revisando el correo electrónico, convirtiendo a Google quizás en la plataforma tecnológica más demográficamente diversa jamás creada."
-      },
-      "Tagline/Catchphrase": {
-        "en": "In a unique phenomenon among global brands, Google has never required a traditional advertising tagline or catchphrase because the brand name itself became so culturally embedded that it entered dictionaries worldwide as a verb. This linguistic evolution - where people universally say they'll 'google' something to find information - represents perhaps the ultimate marketing achievement. The Oxford English Dictionary and Merriam-Webster both added 'google' as a verb in 2006, acknowledging how completely the company had transformed from a corporate name into an action billions perform daily. This organic language adoption surpassed any crafted slogan, making traditional brand messaging unnecessary when a company name literally defines an everyday human behavior.",
-        "es": "En un fenómeno único entre las marcas globales, Google nunca ha requerido un eslogan publicitario tradicional porque el nombre de marca se volvió tan culturalmente integrado que entró en diccionarios de todo el mundo como un verbo. Esta evolución lingüística, donde las personas universalmente dicen que van a 'googlear' algo para encontrar información, representa quizás el logro de marketing definitivo. El Oxford English Dictionary y Merriam-Webster agregaron 'google' como verbo en 2006, reconociendo cuán completamente la empresa se había transformado de un nombre corporativo en una acción que miles de millones realizan diariamente. Esta adopción orgánica del lenguaje superó cualquier eslogan elaborado, haciendo innecesario el mensaje de marca tradicional cuando el nombre de una empresa literalmente define un comportamiento humano cotidiano."
-      },
-      "HQ Location": {
-        "en": "Google's Mountain View headquarters has evolved into a sprawling complex that includes innovative architectural projects like the Gradient Canopy building, designed by renowned architects. The campus opened its first public-facing Google Visitor Experience in October 2023, featuring a store, café, plaza with public art, and community event spaces. This represents a significant shift toward community integration, as the campus had been largely closed to the public for decades. The headquarters continues to expand with new buildings that blur the lines between indoor and outdoor spaces, featuring distinctive tent-like structures and emphasizing sustainability with features like the largest geothermal installation in North America.",
-        "es": "La sede de Google en Mountain View ha evolucionado en un complejo extenso que incluye proyectos arquitectónicos innovadores como el edificio Gradient Canopy, diseñado por arquitectos de renombre. El campus abrió su primera Experiencia de Visitante de Google de cara al público en octubre de 2023, con una tienda, cafetería, plaza con arte público y espacios para eventos comunitarios. Esto representa un cambio significativo hacia la integración comunitaria, ya que el campus había estado en gran parte cerrado al público durante décadas. La sede continúa expandiéndose con nuevos edificios que difuminan las líneas entre espacios interiores y exteriores, con estructuras distintivas en forma de tienda y enfatizando la sostenibilidad con características como la instalación geotérmica más grande de América del Norte."
-      },
-      "Wildcard": {
-        "en": "Google's achievement of trillion-dollar status in January 2020 marked a significant milestone in corporate history, as the company became only the fourth American technology company to reach this valuation. This accomplishment came after Apple first broke the barrier in 2018, followed by Microsoft and Amazon. The timing was particularly notable as it occurred during a period of increased scrutiny of big tech companies and just before the global pandemic would accelerate digital transformation worldwide. Reaching this valuation represented not just financial success but validation of Google's business model that generates revenue primarily through advertising while offering most consumer services for free, an approach that redefined how technology companies could achieve massive scale.",
-        "es": "El logro de Google del estatus de billón de dólares en enero de 2020 marcó un hito significativo en la historia corporativa, ya que la empresa se convirtió en solo la cuarta empresa tecnológica estadounidense en alcanzar esta valoración. Este logro vino después de que Apple rompiera primero la barrera en 2018, seguido por Microsoft y Amazon. El momento fue particularmente notable ya que ocurrió durante un período de mayor escrutinio de las grandes empresas tecnológicas y justo antes de que la pandemia global acelerara la transformación digital en todo el mundo. Alcanzar esta valoración representó no solo el éxito financiero sino la validación del modelo de negocio de Google que genera ingresos principalmente a través de publicidad mientras ofrece la mayoría de los servicios al consumidor de forma gratuita, un enfoque que redefinió cómo las empresas tecnológicas podrían lograr una escala masiva."
-      }
+    "Logo": {
+      "en": "My brand name originated from a spelling error for a mathematical term meaning 10 to the 100th power.",
+      "es": "Mi nombre de marca se originó de un error ortográfico para un término matemático que significa 10 elevado a la potencia 100."
     },
-    "alternatives": {
-      "en": ["Microsoft", "Amazon", "Apple", "Meta", "Yahoo", "Baidu", "Bing", "DuckDuckGo", "Yandex"],
-      "es": ["Microsoft", "Amazon", "Apple", "Meta", "Yahoo", "Baidu", "Bing", "DuckDuckGo", "Yandex"]
+    "Signature Product": {
+      "en": "One of my signature services launched in 2004 was so revolutionary compared to competitors' offerings that many initially dismissed it as an April Fool's joke.",
+      "es": "Uno de mis servicios emblemáticos lanzado en 2004 fue tan revolucionario comparado con las ofertas de los competidores que muchos inicialmente lo descartaron como una broma del Día de los Inocentes."
+    },
+    "Target Audience": {
+      "en": "I serve over 2.9 billion active users daily across all my platforms, making me one of the most widely used technology services globally.",
+      "es": "Sirvo a más de 2.9 mil millones de usuarios activos diariamente en todas mis plataformas, convirtiéndome en uno de los servicios tecnológicos más utilizados a nivel mundial."
+    },
+    "Tagline/Catchphrase": {
+      "en": "Unlike most major brands, I've never needed a memorable tagline. Despite minimal marketing my name became a verb in dictionaries.",
+      "es": "A diferencia de la mayoría de las grandes marcas, nunca he necesitado un eslogan memorable. A pesar de la mínima publicidad, mi nombre se convirtió en un verbo en los diccionarios."
+    },
+    "HQ Location": {
+      "en": "My Mountain View campus includes buildings like the Gradient Canopy and features a visitor center that opened in October 2023.",
+      "es": "Mi campus de Mountain View incluye edificios como Gradient Canopy y cuenta con un centro de visitantes que abrió en octubre de 2023."
+    },
+    "Wildcard": {
+      "en": "In January 2020, I became only the fourth U.S. company to reach a trillion-dollar market valuation, following three other tech giants.",
+      "es": "En enero de 2020, me convertí en solo la cuarta empresa estadounidense en alcanzar una valoración de mercado de un billón de dólares, siguiendo a otros tres gigantes tecnológicos."
     }
+  },
+  "expanded": {
+    "Industry": {
+      "en": "Google's business empire spans an extraordinary breadth of over 20 different technology disciplines, from artificial intelligence and quantum computing to biotechnology and urban planning. Through strategic acquisitions of more than 200 companies, Google has expanded far beyond its original focus into areas including robotics, drone delivery, fiber optic internet infrastructure, and even anti-aging research. This massive portfolio includes everything from smart home devices and wearable technology to autonomous vehicles and balloon-powered internet. Google's diverse holdings demonstrate a strategy of betting on multiple future technologies simultaneously, ensuring relevance regardless of which innovations ultimately transform society.",
+      "es": "El imperio empresarial de Google abarca una amplitud extraordinaria de más de 20 disciplinas tecnológicas diferentes, desde inteligencia artificial y computación cuántica hasta biotecnología y planificación urbana. A través de adquisiciones estratégicas de más de 200 empresas, Google se ha expandido mucho más allá de su enfoque original hacia áreas que incluyen robótica, entrega con drones, infraestructura de internet de fibra óptica e incluso investigación antienvejecimiento. Esta cartera masiva incluye todo, desde dispositivos domésticos inteligentes y tecnología portátil hasta vehículos autónomos e internet impulsado por globos. Las diversas participaciones de Google demuestran una estrategia de apostar en múltiples tecnologías futuras simultáneamente, asegurando relevancia independientemente de qué innovaciones finalmente transformen la sociedad."
+    },
+    "Origin": {
+      "en": "Google began as a research project called BackRub in 1996, emerging from the Stanford Digital Library Project where two PhD students explored the mathematical properties of the World Wide Web. The project's breakthrough came from analyzing 'back links' - treating the web as a massive graph where pages gained importance based on incoming links from other important pages. This revolutionary approach consumed enormous computing resources, using nearly half of Stanford's network bandwidth and running on a makeshift network of borrowed computers. The founders built their first data center in a friend's garage, processing an index that grew from 25 million pages to over 75 million within months, revolutionizing how information could be organized and accessed on the rapidly expanding internet.",
+      "es": "Google comenzó como un proyecto de investigación llamado BackRub en 1996, emergiendo del Proyecto de Biblioteca Digital de Stanford donde dos estudiantes de doctorado exploraron las propiedades matemáticas de la World Wide Web. El avance del proyecto vino del análisis de 'enlaces de retroceso' - tratando la web como un gráfico masivo donde las páginas ganaban importancia basándose en enlaces entrantes de otras páginas importantes. Este enfoque revolucionario consumió enormes recursos informáticos, usando casi la mitad del ancho de banda de la red de Stanford y ejecutándose en una red improvisada de computadoras prestadas. Los fundadores construyeron su primer centro de datos en el garaje de un amigo, procesando un índice que creció de 25 millones de páginas a más de 75 millones en meses, revolucionando cómo la información podía ser organizada y accedida en el internet en rápida expansión."
+    },
+    "Logo": {
+      "en": "Google's visual identity has undergone several transformations since adopting the Catull typeface in 1999, moving away from the original BackRub logo. The name itself resulted from a fortuitous misspelling during a brainstorming session when 'googol' - the mathematical term for 10^100 - was incorrectly typed as 'Google' while checking domain availability. This serendipitous error created one of the most recognizable brands in history. The colorful lettering was designed to convey a sense of playfulness while maintaining professionalism, with each iteration of the logo becoming cleaner and more refined. The mathematical reference in Google's name perfectly captured the founders' ambition to organize the seemingly infinite amount of information on the web.",
+      "es": "La identidad visual de Google ha sufrido varias transformaciones desde que adoptó la tipografía Catull en 1999, alejándose del logo original de BackRub. El nombre en sí resultó de un error ortográfico fortuito durante una sesión de lluvia de ideas cuando 'googol' - el término matemático para 10^100 - fue escrito incorrectamente como 'Google' mientras se verificaba la disponibilidad del dominio. Este error fortuito creó una de las marcas más reconocibles de la historia. Las letras coloridas fueron diseñadas para transmitir un sentido de diversión mientras mantenían el profesionalismo, con cada iteración del logo volviéndose más limpia y refinada. La referencia matemática en el nombre de Google capturó perfectamente la ambición de los fundadores de organizar la cantidad aparentemente infinita de información en la web."
+    },
+    "Signature Product": {
+      "en": "When Google launched Gmail on April 1, 2004, the technology world was stunned by the offering of 1 gigabyte of free storage - a capacity that seemed impossibly generous when competitors like Hotmail and Yahoo were offering just 2-4 megabytes. The timing of the announcement led many to believe it was an elaborate April Fool's prank, especially given Google's history of pranks on that date. The service revolutionized email by introducing conversation threading, powerful search capabilities, and virtually unlimited storage that eliminated the need to delete messages. This bold move forced the entire industry to dramatically increase storage offerings and set new standards for web-based email services.",
+      "es": "Cuando Google lanzó Gmail el 1 de abril de 2004, el mundo tecnológico quedó atónito por la oferta de 1 gigabyte de almacenamiento gratuito, una capacidad que parecía imposiblemente generosa cuando competidores como Hotmail y Yahoo ofrecían solo 2-4 megabytes. El momento del anuncio llevó a muchos a creer que era una elaborada broma del Día de los Inocentes, especialmente dada la historia de Google de bromas en esa fecha. El servicio revolucionó el correo electrónico introduciendo el agrupamiento de conversaciones, potentes capacidades de búsqueda y almacenamiento virtualmente ilimitado que eliminó la necesidad de eliminar mensajes. Este movimiento audaz obligó a toda la industria a aumentar drásticamente las ofertas de almacenamiento y establecer nuevos estándares para los servicios de correo electrónico basados en la web."
+    },
+    "Target Audience": {
+      "en": "With over 2.9 billion daily active users across all platforms, Google has achieved a scale of human connection unprecedented in history. This staggering number represents more than a third of the global population engaging with Google's services every single day. From students in rural villages accessing educational content to Fortune 500 companies managing their digital infrastructure, Google's user base transcends every demographic boundary imaginable. The universality of Google's reach means it serves everyone from a five-year-old watching educational videos to a ninety-year-old checking email, making Google perhaps the most demographically diverse technology platform ever created.",
+      "es": "Con más de 2.9 mil millones de usuarios activos diarios en todas las plataformas, Google ha logrado una escala de conexión humana sin precedentes en la historia. Este número asombroso representa más de un tercio de la población mundial interactuando con los servicios de Google cada día. Desde estudiantes en aldeas rurales accediendo a contenido educativo hasta empresas Fortune 500 gestionando su infraestructura digital, la base de usuarios de Google trasciende todos los límites demográficos imaginables. La universalidad del alcance de Google significa que sirve a todos, desde un niño de cinco años viendo videos educativos hasta una persona de noventa años revisando el correo electrónico, convirtiendo a Google quizás en la plataforma tecnológica más demográficamente diversa jamás creada."
+    },
+    "Tagline/Catchphrase": {
+      "en": "In a unique phenomenon among global brands, Google has never required a traditional advertising tagline or catchphrase because the brand name itself became so culturally embedded that it entered dictionaries worldwide as a verb. This linguistic evolution - where people universally say they'll 'google' something to find information - represents perhaps the ultimate marketing achievement. The Oxford English Dictionary and Merriam-Webster both added 'google' as a verb in 2006, acknowledging how completely the company had transformed from a corporate name into an action billions perform daily. This organic language adoption surpassed any crafted slogan, making traditional brand messaging unnecessary when a company name literally defines an everyday human behavior.",
+      "es": "En un fenómeno único entre las marcas globales, Google nunca ha requerido un eslogan publicitario tradicional porque el nombre de marca se volvió tan culturalmente integrado que entró en diccionarios de todo el mundo como un verbo. Esta evolución lingüística, donde las personas universalmente dicen que van a 'googlear' algo para encontrar información, representa quizás el logro de marketing definitivo. El Oxford English Dictionary y Merriam-Webster agregaron 'google' como verbo en 2006, reconociendo cuán completamente la empresa se había transformado de un nombre corporativo en una acción que miles de millones realizan diariamente. Esta adopción orgánica del lenguaje superó cualquier eslogan elaborado, haciendo innecesario el mensaje de marca tradicional cuando el nombre de una empresa literalmente define un comportamiento humano cotidiano."
+    },
+    "HQ Location": {
+      "en": "Google's Mountain View headquarters has evolved into a sprawling complex that includes innovative architectural projects like the Gradient Canopy building, designed by renowned architects. The campus opened its first public-facing Google Visitor Experience in October 2023, featuring a store, café, plaza with public art, and community event spaces. This represents a significant shift toward community integration, as the campus had been largely closed to the public for decades. The headquarters continues to expand with new buildings that blur the lines between indoor and outdoor spaces, featuring distinctive tent-like structures and emphasizing sustainability with features like the largest geothermal installation in North America.",
+      "es": "La sede de Google en Mountain View ha evolucionado en un complejo extenso que incluye proyectos arquitectónicos innovadores como el edificio Gradient Canopy, diseñado por arquitectos de renombre. El campus abrió su primera Experiencia de Visitante de Google de cara al público en octubre de 2023, con una tienda, cafetería, plaza con arte público y espacios para eventos comunitarios. Esto representa un cambio significativo hacia la integración comunitaria, ya que el campus había estado en gran parte cerrado al público durante décadas. La sede continúa expandiéndose con nuevos edificios que difuminan las líneas entre espacios interiores y exteriores, con estructuras distintivas en forma de tienda y enfatizando la sostenibilidad con características como la instalación geotérmica más grande de América del Norte."
+    },
+    "Wildcard": {
+      "en": "Google's achievement of trillion-dollar status in January 2020 marked a significant milestone in corporate history, as the company became only the fourth American technology company to reach this valuation. This accomplishment came after Apple first broke the barrier in 2018, followed by Microsoft and Amazon. The timing was particularly notable as it occurred during a period of increased scrutiny of big tech companies and just before the global pandemic would accelerate digital transformation worldwide. Reaching this valuation represented not just financial success but validation of Google's business model that generates revenue primarily through advertising while offering most consumer services for free, an approach that redefined how technology companies could achieve massive scale.",
+      "es": "El logro de Google del estatus de billón de dólares en enero de 2020 marcó un hito significativo en la historia corporativa, ya que la empresa se convirtió en solo la cuarta empresa tecnológica estadounidense en alcanzar esta valoración. Este logro vino después de que Apple rompiera primero la barrera en 2018, seguido por Microsoft y Amazon. El momento fue particularmente notable ya que ocurrió durante un período de mayor escrutinio de las grandes empresas tecnológicas y justo antes de que la pandemia global acelerara la transformación digital en todo el mundo. Alcanzar esta valoración representó no solo el éxito financiero sino la validación del modelo de negocio de Google que genera ingresos principalmente a través de publicidad mientras ofrece la mayoría de los servicios al consumidor de forma gratuita, un enfoque que redefinió cómo las empresas tecnológicas podrían lograr una escala masiva."
+    }
+  },
+  "alternatives": {
+    "en": [
+      "Microsoft",
+      "Amazon",
+      "Apple",
+      "Meta",
+      "Yahoo",
+      "Baidu",
+      "Bing",
+      "DuckDuckGo",
+      "Yandex"
+    ],
+    "es": [
+      "Microsoft",
+      "Amazon",
+      "Apple",
+      "Meta",
+      "Yahoo",
+      "Baidu",
+      "Bing",
+      "DuckDuckGo",
+      "Yandex"
+    ]
   }
+}

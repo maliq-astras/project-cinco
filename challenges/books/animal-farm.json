@@ -4,6 +4,7 @@
     "es": "Rebelión en la Granja"
   },
   "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1640000000/books/animal_farm_cover.jpg",
+  "citation": "Image source to be added",
   "facts": {
     "Author": {
       "en": "My author wrote me in just four months during 1943-1944 while working as literary editor of Tribune magazine.",
@@ -73,7 +74,27 @@
     }
   },
   "alternatives": {
-    "en": ["1984", "Brave New World", "The Communist Manifesto", "One Day in the Life of Ivan Denisovich", "Doctor Zhivago", "The Gulag Archipelago", "We", "Darkness at Noon", "The Road to Wigan Pier"],
-    "es": ["1984", "Un Mundo Feliz", "El Manifiesto Comunista", "Un Día en la Vida de Iván Denísovich", "Doctor Zhivago", "Archipiélago Gulag", "Nosotros", "El Cero y el Infinito", "El Camino a Wigan Pier"]
+    "en": [
+      "1984",
+      "Brave New World",
+      "The Communist Manifesto",
+      "One Day in the Life of Ivan Denisovich",
+      "Doctor Zhivago",
+      "The Gulag Archipelago",
+      "We",
+      "Darkness at Noon",
+      "The Road to Wigan Pier"
+    ],
+    "es": [
+      "1984",
+      "Un Mundo Feliz",
+      "El Manifiesto Comunista",
+      "Un Día en la Vida de Iván Denísovich",
+      "Doctor Zhivago",
+      "Archipiélago Gulag",
+      "Nosotros",
+      "El Cero y el Infinito",
+      "El Camino a Wigan Pier"
+    ]
   }
 }

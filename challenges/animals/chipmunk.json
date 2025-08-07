@@ -4,6 +4,7 @@
     "es": "Ardilla Listada"
   },
   "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1/animals/chipmunk",
+  "citation": "Image source to be added",
   "facts": {
     "Habitat": {
       "en": "I am found on only two continents. 24 of my species thrive throughout North America while just one species inhabits the vast forests of northern Asia from Russia to Japan.",
@@ -73,7 +74,27 @@
     }
   },
   "alternatives": {
-    "en": ["Ground Squirrel", "Prairie Dog", "Marmot", "Tree Squirrel", "Flying Squirrel", "Hamster", "Gopher", "Vole", "Pika"],
-    "es": ["Ardilla Terrestre", "Perrito de la Pradera", "Marmota", "Ardilla Arborícola", "Ardilla Voladora", "Hámster", "Tuza", "Campañol", "Pica"]
+    "en": [
+      "Ground Squirrel",
+      "Prairie Dog",
+      "Marmot",
+      "Tree Squirrel",
+      "Flying Squirrel",
+      "Hamster",
+      "Gopher",
+      "Vole",
+      "Pika"
+    ],
+    "es": [
+      "Ardilla Terrestre",
+      "Perrito de la Pradera",
+      "Marmota",
+      "Ardilla Arborícola",
+      "Ardilla Voladora",
+      "Hámster",
+      "Tuza",
+      "Campañol",
+      "Pica"
+    ]
   }
 }

@@ -1,79 +1,100 @@
 {
-    "answer": {
-      "en": "Rihanna",
-      "es": "Rihanna"
+  "answer": {
+    "en": "Rihanna",
+    "es": "Rihanna"
+  },
+  "imageUrl": "[Cloudinary URL for Rihanna performance photo]",
+  "citation": "Image source to be added",
+  "facts": {
+    "Genre": {
+      "en": "I was named by Billboard as the third greatest pop star of the 21st century, ranking ahead of artists like Madonna and Whitney Houston.",
+      "es": "Fui nombrada por Billboard como la tercera estrella pop más grande del siglo XXI, clasificando por delante de artistas como Madonna y Whitney Houston."
     },
-    "imageUrl": "[Cloudinary URL for Rihanna performance photo]",
-    "facts": {
-      "Genre": {
-        "en": "I was named by Billboard as the third greatest pop star of the 21st century, ranking ahead of artists like Madonna and Whitney Houston.",
-        "es": "Fui nombrada por Billboard como la tercera estrella pop más grande del siglo XXI, clasificando por delante de artistas como Madonna y Whitney Houston."
-      },
-      "Background": {
-        "en": "I served as a cadet in my country's military youth program at age 11, where my drill sergeant was Shontelle, who later became a recording artist herself.",
-        "es": "Serví como cadete en el programa militar juvenil de mi país a los 11 años, donde mi sargento de instrucción era Shontelle, quien luego se convirtió en artista de grabación."
-      },
-      "Iconic Song": {
-        "en": "My 2011 hit with Calvin Harris has over 1 billion views on YouTube and won both a Grammy and MTV VMA for Video of the Year.",
-        "es": "Mi éxito de 2011 con Calvin Harris tiene más de 1 mil millones de visualizaciones en YouTube y ganó tanto un Grammy como un VMA de MTV por Video del Año."
-      },
-      "Debut": {
-        "en": "My debut single was one of only three songs I recorded for my demo tape that got me signed to Def Jam in 2005.",
-        "es": "Mi sencillo debut fue una de solo tres canciones que grabé para mi cinta demo que me consiguió firmar con Def Jam en 2005."
-      },
-      "Achievements": {
-        "en": "I received the first-ever Icon Award at the American Music Awards in 2014, presented by my mother in front of a live television audience.",
-        "es": "Recibí el primer Premio Icono en los American Music Awards en 2014, presentado por mi madre frente a una audiencia de televisión en vivo."
-      },
-      "Collaborations": {
-        "en": "My 2015 track with Paul McCartney gave the former Beatle his first top-ten hit in 29 years.",
-        "es": "Mi canción de 2015 con Paul McCartney le dio al ex-Beatle su primer éxito top-ten en 29 años."
-      },
-      "Chart Performance": {
-        "en": "I achieved 14 number-one singles and 2 number-one albums during my first 11 years in the music industry, from 2005 to 2016.",
-        "es": "Logré 14 sencillos número uno y 2 álbumes número uno durante mis primeros 11 años en la industria musical, de 2005 a 2016."
-      },
-      "Wildcard": {
-        "en": "In 2012 I performed seven shows in seven countries over seven days on a chartered Boeing 777 aircraft.",
-        "es": "En 2012 realicé siete shows en siete países durante siete días en un avión Boeing 777 fletado."
-      }
+    "Background": {
+      "en": "I served as a cadet in my country's military youth program at age 11, where my drill sergeant was Shontelle, who later became a recording artist herself.",
+      "es": "Serví como cadete en el programa militar juvenil de mi país a los 11 años, donde mi sargento de instrucción era Shontelle, quien luego se convirtió en artista de grabación."
     },
-    "expanded": {
-      "Genre": {
-        "en": "Billboard's comprehensive ranking of the 21st century's greatest pop stars placed me at number three, ahead of legendary artists like Madonna and Whitney Houston. This prestigious list recognized my impact on pop culture, music innovation, and global influence over the past two decades. The ranking considered factors including chart performance, cultural impact, artistic evolution, and lasting influence on the music industry. Being positioned above icons who shaped previous generations of pop music demonstrates how significantly I've influenced modern pop culture and the music landscape since my debut in 2005.",
-        "es": "La clasificación integral de Billboard de las estrellas pop más grandes del siglo XXI me ubicó en el número tres, por delante de artistas legendarios como Madonna y Whitney Houston. Esta prestigiosa lista reconoció mi impacto en la cultura pop, la innovación musical y la influencia global durante las últimas dos décadas. La clasificación consideró factores como el rendimiento en las listas, el impacto cultural, la evolución artística y la influencia duradera en la industria musical. Estar posicionada por encima de íconos que moldearon generaciones anteriores de música pop demuestra cuán significativamente he influenciado la cultura pop moderna y el panorama musical desde mi debut en 2005."
-      },
-      "Background": {
-        "en": "My early military training in the Barbados Cadet Corps at age 11 provided discipline and structure that would later benefit my music career. Shontelle, who served as my drill sergeant during this time, would go on to become a successful recording artist in her own right, known for hits like 'T-Shirt' and 'Impossible.' This unique connection represents how small the Barbadian music community is, where future stars often cross paths early in life. The military-style training taught me discipline, teamwork, and leadership skills that proved invaluable when navigating the demanding music industry and building my global empire.",
-        "es": "Mi entrenamiento militar temprano en el Cuerpo de Cadetes de Barbados a los 11 años proporcionó disciplina y estructura que luego beneficiarían mi carrera musical. Shontelle, quien sirvió como mi sargento de instrucción durante este tiempo, se convertiría en una artista de grabación exitosa por derecho propio, conocida por éxitos como 'T-Shirt' e 'Impossible.' Esta conexión única representa cuán pequeña es la comunidad musical barbadense, donde las futuras estrellas a menudo se cruzan temprano en la vida. El entrenamiento de estilo militar me enseñó disciplina, trabajo en equipo y habilidades de liderazgo que resultaron invaluables al navegar la exigente industria musical y construir mi imperio global."
-      },
-      "Iconic Song": {
-        "en": "'We Found Love' became a defining track of the early 2010s dance-pop era and showcased my ability to blend pop sensibilities with electronic dance music. The collaboration with Calvin Harris created an infectious anthem that dominated clubs, radio, and streaming platforms worldwide. The music video, directed by Melina Matsoukas, sparked controversy for its raw portrayal of a toxic relationship but earned critical acclaim for its artistic vision. Its billion-view milestone on YouTube solidified its status as one of the most-watched music videos of all time, while its Grammy and MTV VMA wins recognized both its musical excellence and visual storytelling impact.",
-        "es": "'We Found Love' se convirtió en una canción definitoria de la era dance-pop de principios de 2010 y mostró mi capacidad para combinar sensibilidades pop con música electrónica de baile. La colaboración con Calvin Harris creó un himno contagioso que dominó clubes, radio y plataformas de streaming en todo el mundo. El video musical, dirigido por Melina Matsoukas, provocó controversia por su retrato crudo de una relación tóxica pero obtuvo aclamación crítica por su visión artística. Su hito de mil millones de visualizaciones en YouTube solidificó su estatus como uno de los videos musicales más vistos de todos los tiempos, mientras que sus premios Grammy y MTV VMA reconocieron tanto su excelencia musical como el impacto de su narrativa visual."
-      },
-      "Debut": {
-        "en": "The demo tape that launched my career contained just three carefully selected songs that represented my potential as an artist. Along with 'Pon de Replay,' I recorded 'For the Love of You' (a Whitney Houston cover) and 'The Last Time,' showcasing my vocal range and versatility. Producer Evan Rogers strategically chose these tracks to demonstrate different aspects of my abilities - from Caribbean-influenced pop to R&B ballads. When Jay-Z heard the demo at Def Jam, he was immediately impressed and invited me for an audition that same day, leading to a six-album record deal that would change my life forever.",
-        "es": "La cinta demo que lanzó mi carrera contenía solo tres canciones cuidadosamente seleccionadas que representaban mi potencial como artista. Junto con 'Pon de Replay,' grabé 'For the Love of You' (un cover de Whitney Houston) y 'The Last Time,' mostrando mi rango vocal y versatilidad. El productor Evan Rogers eligió estratégicamente estas pistas para demostrar diferentes aspectos de mis habilidades - desde pop con influencia caribeña hasta baladas R&B. Cuando Jay-Z escuchó la demo en Def Jam, quedó inmediatamente impresionado y me invitó a una audición ese mismo día, llevando a un contrato discográfico de seis álbumes que cambiaría mi vida para siempre."
-      },
-      "Achievements": {
-        "en": "The Icon Award at the 2014 American Music Awards represented a career-defining moment, as I became the first artist ever to receive this newly created honor. Having my mother, Monica Braithwaite, present the award made it even more meaningful, creating an emotional television moment that highlighted the importance of family in my journey. The award recognized not just my musical achievements but my broader cultural impact, fashion influence, and business ventures. At just 26 years old, receiving such a prestigious lifetime achievement-style award demonstrated how quickly I had risen to iconic status in the entertainment industry.",
-        "es": "El Premio Icono en los American Music Awards de 2014 representó un momento definitorio en mi carrera, ya que me convertí en la primera artista en recibir este honor recién creado. Que mi madre, Monica Braithwaite, presentara el premio lo hizo aún más significativo, creando un momento televisivo emocional que destacó la importancia de la familia en mi viaje. El premio reconoció no solo mis logros musicales sino mi impacto cultural más amplio, influencia en la moda y empresas comerciales. A solo 26 años, recibir un premio tan prestigioso de estilo logro de por vida demostró cuán rápidamente había alcanzado el estatus icónico en la industria del entretenimiento."
-      },
-      "Collaborations": {
-        "en": "'FourFiveSeconds' marked a remarkable achievement for Paul McCartney, giving the Beatles legend his first top-ten hit since 'Spies Like Us' in 1986. The collaboration also featured Kanye West, creating an unlikely but successful trio that blended indie-folk, soul, and hip-hop elements. The track's minimalist acoustic guitar-driven sound was a departure from my usual dance-pop style, showcasing my versatility as an artist. McCartney's return to the top ten after nearly three decades proved that great music transcends generational boundaries, while the song's success introduced a new generation of fans to the former Beatle's timeless appeal.",
-        "es": "'FourFiveSeconds' marcó un logro notable para Paul McCartney, dándole a la leyenda de los Beatles su primer éxito top-ten desde 'Spies Like Us' en 1986. La colaboración también incluyó a Kanye West, creando un trío poco probable pero exitoso que mezcló elementos de indie-folk, soul y hip-hop. El sonido minimalista impulsado por guitarra acústica de la pista fue una desviación de mi estilo habitual dance-pop, mostrando mi versatilidad como artista. El regreso de McCartney al top ten después de casi tres décadas demostró que la gran música trasciende las barreras generacionales, mientras que el éxito de la canción introdujo a una nueva generación de fanáticos al atractivo atemporal del ex-Beatle."
-      },
-      "Chart Performance": {
-        "en": "My chart dominance during my first decade in music was unprecedented for a female artist, achieving 14 number-one singles and two chart-topping albums in just 11 years. This included consecutive number-one albums with 'Unapologetic' in 2012 and 'Anti' in 2016, demonstrating my ability to evolve artistically while maintaining commercial appeal. My singles success spanned multiple genres, from Caribbean-influenced pop to electronic dance music to R&B ballads. This consistent chart performance established me as one of the most successful artists of the 2000s and 2010s, with a hit rate that few artists in music history have matched across such a sustained period.",
-        "es": "Mi dominio en las listas durante mi primera década en la música fue sin precedentes para una artista femenina, logrando 14 sencillos número uno y dos álbumes en la cima de las listas en solo 11 años. Esto incluyó álbumes número uno consecutivos con 'Unapologetic' en 2012 y 'Anti' en 2016, demostrando mi capacidad para evolucionar artísticamente mientras mantenía el atractivo comercial. El éxito de mis sencillos abarcó múltiples géneros, desde pop con influencia caribeña hasta música electrónica de baile y baladas R&B. Este rendimiento consistente en las listas me estableció como una de las artistas más exitosas de los 2000 y 2010, con una tasa de éxitos que pocos artistas en la historia de la música han igualado durante un período tan sostenido."
-      },
-      "Wildcard": {
-        "en": "The 777 Tour was one of the most ambitious promotional campaigns in music history, flying journalists, fans, and crew across seven countries in seven days aboard a specially chartered Boeing 777 aircraft. The tour included stops in Mexico City, Toronto, Stockholm, Paris, Berlin, London, and New York, with intimate performances at each location to promote my seventh album 'Unapologetic.' Despite logistical challenges and some criticism about the demanding schedule, the tour created unprecedented media coverage and became legendary in music industry circles. The concept was so unique that it inspired a documentary and remains one of the most talked-about promotional events in modern music history.",
-        "es": "La Gira 777 fue una de las campañas promocionales más ambiciosas en la historia de la música, volando periodistas, fanáticos y equipo a través de siete países en siete días a bordo de un avión Boeing 777 especialmente fletado. La gira incluyó paradas en Ciudad de México, Toronto, Estocolmo, París, Berlín, Londres y Nueva York, con actuaciones íntimas en cada ubicación para promover mi séptimo álbum 'Unapologetic.' A pesar de los desafíos logísticos y algunas críticas sobre el horario exigente, la gira creó una cobertura mediática sin precedentes y se volvió legendaria en los círculos de la industria musical. El concepto fue tan único que inspiró un documental y sigue siendo uno de los eventos promocionales más comentados en la historia musical moderna."
-      }
+    "Iconic Song": {
+      "en": "My 2011 hit with Calvin Harris has over 1 billion views on YouTube and won both a Grammy and MTV VMA for Video of the Year.",
+      "es": "Mi éxito de 2011 con Calvin Harris tiene más de 1 mil millones de visualizaciones en YouTube y ganó tanto un Grammy como un VMA de MTV por Video del Año."
     },
-    "alternatives": {
-      "en": ["Beyoncé", "Alicia Keys", "Nicki Minaj", "Lauryn Hill", "Shakira", "Jennifer Lopez", "Christina Aguilera", "Mariah Carey", "Whitney Houston"],
-      "es": ["Beyoncé", "Alicia Keys", "Nicki Minaj", "Lauryn Hill", "Shakira", "Jennifer López", "Christina Aguilera", "Mariah Carey", "Whitney Houston"]
+    "Debut": {
+      "en": "My debut single was one of only three songs I recorded for my demo tape that got me signed to Def Jam in 2005.",
+      "es": "Mi sencillo debut fue una de solo tres canciones que grabé para mi cinta demo que me consiguió firmar con Def Jam en 2005."
+    },
+    "Achievements": {
+      "en": "I received the first-ever Icon Award at the American Music Awards in 2014, presented by my mother in front of a live television audience.",
+      "es": "Recibí el primer Premio Icono en los American Music Awards en 2014, presentado por mi madre frente a una audiencia de televisión en vivo."
+    },
+    "Collaborations": {
+      "en": "My 2015 track with Paul McCartney gave the former Beatle his first top-ten hit in 29 years.",
+      "es": "Mi canción de 2015 con Paul McCartney le dio al ex-Beatle su primer éxito top-ten en 29 años."
+    },
+    "Chart Performance": {
+      "en": "I achieved 14 number-one singles and 2 number-one albums during my first 11 years in the music industry, from 2005 to 2016.",
+      "es": "Logré 14 sencillos número uno y 2 álbumes número uno durante mis primeros 11 años en la industria musical, de 2005 a 2016."
+    },
+    "Wildcard": {
+      "en": "In 2012 I performed seven shows in seven countries over seven days on a chartered Boeing 777 aircraft.",
+      "es": "En 2012 realicé siete shows en siete países durante siete días en un avión Boeing 777 fletado."
     }
+  },
+  "expanded": {
+    "Genre": {
+      "en": "Billboard's comprehensive ranking of the 21st century's greatest pop stars placed me at number three, ahead of legendary artists like Madonna and Whitney Houston. This prestigious list recognized my impact on pop culture, music innovation, and global influence over the past two decades. The ranking considered factors including chart performance, cultural impact, artistic evolution, and lasting influence on the music industry. Being positioned above icons who shaped previous generations of pop music demonstrates how significantly I've influenced modern pop culture and the music landscape since my debut in 2005.",
+      "es": "La clasificación integral de Billboard de las estrellas pop más grandes del siglo XXI me ubicó en el número tres, por delante de artistas legendarios como Madonna y Whitney Houston. Esta prestigiosa lista reconoció mi impacto en la cultura pop, la innovación musical y la influencia global durante las últimas dos décadas. La clasificación consideró factores como el rendimiento en las listas, el impacto cultural, la evolución artística y la influencia duradera en la industria musical. Estar posicionada por encima de íconos que moldearon generaciones anteriores de música pop demuestra cuán significativamente he influenciado la cultura pop moderna y el panorama musical desde mi debut en 2005."
+    },
+    "Background": {
+      "en": "My early military training in the Barbados Cadet Corps at age 11 provided discipline and structure that would later benefit my music career. Shontelle, who served as my drill sergeant during this time, would go on to become a successful recording artist in her own right, known for hits like 'T-Shirt' and 'Impossible.' This unique connection represents how small the Barbadian music community is, where future stars often cross paths early in life. The military-style training taught me discipline, teamwork, and leadership skills that proved invaluable when navigating the demanding music industry and building my global empire.",
+      "es": "Mi entrenamiento militar temprano en el Cuerpo de Cadetes de Barbados a los 11 años proporcionó disciplina y estructura que luego beneficiarían mi carrera musical. Shontelle, quien sirvió como mi sargento de instrucción durante este tiempo, se convertiría en una artista de grabación exitosa por derecho propio, conocida por éxitos como 'T-Shirt' e 'Impossible.' Esta conexión única representa cuán pequeña es la comunidad musical barbadense, donde las futuras estrellas a menudo se cruzan temprano en la vida. El entrenamiento de estilo militar me enseñó disciplina, trabajo en equipo y habilidades de liderazgo que resultaron invaluables al navegar la exigente industria musical y construir mi imperio global."
+    },
+    "Iconic Song": {
+      "en": "'We Found Love' became a defining track of the early 2010s dance-pop era and showcased my ability to blend pop sensibilities with electronic dance music. The collaboration with Calvin Harris created an infectious anthem that dominated clubs, radio, and streaming platforms worldwide. The music video, directed by Melina Matsoukas, sparked controversy for its raw portrayal of a toxic relationship but earned critical acclaim for its artistic vision. Its billion-view milestone on YouTube solidified its status as one of the most-watched music videos of all time, while its Grammy and MTV VMA wins recognized both its musical excellence and visual storytelling impact.",
+      "es": "'We Found Love' se convirtió en una canción definitoria de la era dance-pop de principios de 2010 y mostró mi capacidad para combinar sensibilidades pop con música electrónica de baile. La colaboración con Calvin Harris creó un himno contagioso que dominó clubes, radio y plataformas de streaming en todo el mundo. El video musical, dirigido por Melina Matsoukas, provocó controversia por su retrato crudo de una relación tóxica pero obtuvo aclamación crítica por su visión artística. Su hito de mil millones de visualizaciones en YouTube solidificó su estatus como uno de los videos musicales más vistos de todos los tiempos, mientras que sus premios Grammy y MTV VMA reconocieron tanto su excelencia musical como el impacto de su narrativa visual."
+    },
+    "Debut": {
+      "en": "The demo tape that launched my career contained just three carefully selected songs that represented my potential as an artist. Along with 'Pon de Replay,' I recorded 'For the Love of You' (a Whitney Houston cover) and 'The Last Time,' showcasing my vocal range and versatility. Producer Evan Rogers strategically chose these tracks to demonstrate different aspects of my abilities - from Caribbean-influenced pop to R&B ballads. When Jay-Z heard the demo at Def Jam, he was immediately impressed and invited me for an audition that same day, leading to a six-album record deal that would change my life forever.",
+      "es": "La cinta demo que lanzó mi carrera contenía solo tres canciones cuidadosamente seleccionadas que representaban mi potencial como artista. Junto con 'Pon de Replay,' grabé 'For the Love of You' (un cover de Whitney Houston) y 'The Last Time,' mostrando mi rango vocal y versatilidad. El productor Evan Rogers eligió estratégicamente estas pistas para demostrar diferentes aspectos de mis habilidades - desde pop con influencia caribeña hasta baladas R&B. Cuando Jay-Z escuchó la demo en Def Jam, quedó inmediatamente impresionado y me invitó a una audición ese mismo día, llevando a un contrato discográfico de seis álbumes que cambiaría mi vida para siempre."
+    },
+    "Achievements": {
+      "en": "The Icon Award at the 2014 American Music Awards represented a career-defining moment, as I became the first artist ever to receive this newly created honor. Having my mother, Monica Braithwaite, present the award made it even more meaningful, creating an emotional television moment that highlighted the importance of family in my journey. The award recognized not just my musical achievements but my broader cultural impact, fashion influence, and business ventures. At just 26 years old, receiving such a prestigious lifetime achievement-style award demonstrated how quickly I had risen to iconic status in the entertainment industry.",
+      "es": "El Premio Icono en los American Music Awards de 2014 representó un momento definitorio en mi carrera, ya que me convertí en la primera artista en recibir este honor recién creado. Que mi madre, Monica Braithwaite, presentara el premio lo hizo aún más significativo, creando un momento televisivo emocional que destacó la importancia de la familia en mi viaje. El premio reconoció no solo mis logros musicales sino mi impacto cultural más amplio, influencia en la moda y empresas comerciales. A solo 26 años, recibir un premio tan prestigioso de estilo logro de por vida demostró cuán rápidamente había alcanzado el estatus icónico en la industria del entretenimiento."
+    },
+    "Collaborations": {
+      "en": "'FourFiveSeconds' marked a remarkable achievement for Paul McCartney, giving the Beatles legend his first top-ten hit since 'Spies Like Us' in 1986. The collaboration also featured Kanye West, creating an unlikely but successful trio that blended indie-folk, soul, and hip-hop elements. The track's minimalist acoustic guitar-driven sound was a departure from my usual dance-pop style, showcasing my versatility as an artist. McCartney's return to the top ten after nearly three decades proved that great music transcends generational boundaries, while the song's success introduced a new generation of fans to the former Beatle's timeless appeal.",
+      "es": "'FourFiveSeconds' marcó un logro notable para Paul McCartney, dándole a la leyenda de los Beatles su primer éxito top-ten desde 'Spies Like Us' en 1986. La colaboración también incluyó a Kanye West, creando un trío poco probable pero exitoso que mezcló elementos de indie-folk, soul y hip-hop. El sonido minimalista impulsado por guitarra acústica de la pista fue una desviación de mi estilo habitual dance-pop, mostrando mi versatilidad como artista. El regreso de McCartney al top ten después de casi tres décadas demostró que la gran música trasciende las barreras generacionales, mientras que el éxito de la canción introdujo a una nueva generación de fanáticos al atractivo atemporal del ex-Beatle."
+    },
+    "Chart Performance": {
+      "en": "My chart dominance during my first decade in music was unprecedented for a female artist, achieving 14 number-one singles and two chart-topping albums in just 11 years. This included consecutive number-one albums with 'Unapologetic' in 2012 and 'Anti' in 2016, demonstrating my ability to evolve artistically while maintaining commercial appeal. My singles success spanned multiple genres, from Caribbean-influenced pop to electronic dance music to R&B ballads. This consistent chart performance established me as one of the most successful artists of the 2000s and 2010s, with a hit rate that few artists in music history have matched across such a sustained period.",
+      "es": "Mi dominio en las listas durante mi primera década en la música fue sin precedentes para una artista femenina, logrando 14 sencillos número uno y dos álbumes en la cima de las listas en solo 11 años. Esto incluyó álbumes número uno consecutivos con 'Unapologetic' en 2012 y 'Anti' en 2016, demostrando mi capacidad para evolucionar artísticamente mientras mantenía el atractivo comercial. El éxito de mis sencillos abarcó múltiples géneros, desde pop con influencia caribeña hasta música electrónica de baile y baladas R&B. Este rendimiento consistente en las listas me estableció como una de las artistas más exitosas de los 2000 y 2010, con una tasa de éxitos que pocos artistas en la historia de la música han igualado durante un período tan sostenido."
+    },
+    "Wildcard": {
+      "en": "The 777 Tour was one of the most ambitious promotional campaigns in music history, flying journalists, fans, and crew across seven countries in seven days aboard a specially chartered Boeing 777 aircraft. The tour included stops in Mexico City, Toronto, Stockholm, Paris, Berlin, London, and New York, with intimate performances at each location to promote my seventh album 'Unapologetic.' Despite logistical challenges and some criticism about the demanding schedule, the tour created unprecedented media coverage and became legendary in music industry circles. The concept was so unique that it inspired a documentary and remains one of the most talked-about promotional events in modern music history.",
+      "es": "La Gira 777 fue una de las campañas promocionales más ambiciosas en la historia de la música, volando periodistas, fanáticos y equipo a través de siete países en siete días a bordo de un avión Boeing 777 especialmente fletado. La gira incluyó paradas en Ciudad de México, Toronto, Estocolmo, París, Berlín, Londres y Nueva York, con actuaciones íntimas en cada ubicación para promover mi séptimo álbum 'Unapologetic.' A pesar de los desafíos logísticos y algunas críticas sobre el horario exigente, la gira creó una cobertura mediática sin precedentes y se volvió legendaria en los círculos de la industria musical. El concepto fue tan único que inspiró un documental y sigue siendo uno de los eventos promocionales más comentados en la historia musical moderna."
+    }
+  },
+  "alternatives": {
+    "en": [
+      "Beyoncé",
+      "Alicia Keys",
+      "Nicki Minaj",
+      "Lauryn Hill",
+      "Shakira",
+      "Jennifer Lopez",
+      "Christina Aguilera",
+      "Mariah Carey",
+      "Whitney Houston"
+    ],
+    "es": [
+      "Beyoncé",
+      "Alicia Keys",
+      "Nicki Minaj",
+      "Lauryn Hill",
+      "Shakira",
+      "Jennifer López",
+      "Christina Aguilera",
+      "Mariah Carey",
+      "Whitney Houston"
+    ]
   }
+}

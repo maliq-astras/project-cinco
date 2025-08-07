@@ -4,6 +4,7 @@
     "es": "Guepardo"
   },
   "imageUrl": "https://your-cloudinary-url.com/animals/cheetah.jpg",
+  "citation": "Image source to be added",
   "facts": {
     "Habitat": {
       "en": "I thrive in open grasslands and savannas where I can see for miles, though some of my populations have adapted to semi-arid scrublands and even mountainous terrain.",
@@ -73,7 +74,27 @@
     }
   },
   "alternatives": {
-    "en": ["Leopard", "Jaguar", "Cougar", "Ocelot", "Lynx", "Caracal", "Serval", "Puma", "Lion"],
-    "es": ["Leopardo", "Jaguar", "Puma", "Ocelote", "Lince", "Caracal", "Serval", "Puma", "León"]
+    "en": [
+      "Leopard",
+      "Jaguar",
+      "Cougar",
+      "Ocelot",
+      "Lynx",
+      "Caracal",
+      "Serval",
+      "Puma",
+      "Lion"
+    ],
+    "es": [
+      "Leopardo",
+      "Jaguar",
+      "Puma",
+      "Ocelote",
+      "Lince",
+      "Caracal",
+      "Serval",
+      "Puma",
+      "León"
+    ]
   }
 }

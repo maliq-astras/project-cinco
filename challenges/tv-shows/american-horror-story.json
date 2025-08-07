@@ -1,99 +1,100 @@
 {
-    "answer": {
-      "en": "American Horror Story",
-      "es": "American Horror Story"
+  "answer": {
+    "en": "American Horror Story",
+    "es": "American Horror Story"
+  },
+  "youtubeUrl": "https://www.youtube.com/embed/placeholder",
+  "citation": "Video source to be added",
+  "facts": {
+    "Genre": {
+      "en": "I blur the line between speculative fiction and societal critique, exploring themes like technology, mass hysteria, or fame through the lens of fear and terror.",
+      "es": "Difumino la línea entre la ficción especulativa y la crítica social, explorando temas como la tecnología, la histeria colectiva o la fama a través del lente del miedo y el terror."
     },
-    "imageUrl": "https://res.cloudinary.com/dpztq4l7t/image/upload/v1695830400/fact5/ahs_promo.jpg",
-    "facts": {
-      "Genre": {
-        "en": "I blur the line between speculative fiction and societal critique, exploring themes like technology, mass hysteria, or fame through the lens of fear and terror.",
-        "es": "Difumino la línea entre la ficción especulativa y la crítica social, explorando temas como la tecnología, la histeria colectiva o la fama a través del lente del miedo y el terror."
-      },
-      "Debut": {
-        "en": "My pilot episode achieved the highest ratings my network had ever recorded for a series premiere, earning 3.2 million viewers in October 2011.",
-        "es": "Mi episodio piloto logró las calificaciones más altas que mi cadena había registrado para el estreno de una serie, obteniendo 3.2 millones de espectadores en octubre de 2011."
-      },
-      "Characters": {
-        "en": "One of my lead actresses has earned multiple Emmy nominations for playing entirely different roles across different seasons.",
-        "es": "Una de mis actrices principales ha recibido múltiples nominaciones al Emmy por interpretar papeles completamente distintos a lo largo de diferentes temporadas."
-      },
-      "Season Structure": {
-        "en": "I have been running for 12 seasons, each of which typically contains 10-13 episodes, with more coming soon.",
-        "es": "He estado en emisión durante 12 temporadas, cada una típicamente contiene entre 10-13 episodios, y se vienen más pronto."
-      },
-      "Iconic Episode": {
-        "en": "My fourth season required building an entire city compound with interior sets for all buildings, creating the largest set ever constructed in the show's history.",
-        "es": "Mi cuarta temporada requirió construir un complejo de ciudad completo con sets interiores para todos los edificios, creando el set más grande jamás construido en la historia del programa."
-      },
-      "Network/Platform": {
-        "en": "My success helped transform my cable network's reputation from a channel that runs syndicated reruns to one that produces award-winning originals.",
-        "es": "Mi éxito ayudó a transformar la reputación de mi cadena de cable, pasando de un canal que transmitía repeticiones sindicadas a uno que produce originales galardonados."
-      },
-      "Visual Style": {
-        "en": "I am shot on traditional 16mm and 35mm film stock rather than digital cameras, with hand-cranked equipment used specifically for authentic period flashback sequences.",
-        "es": "Soy filmada en película tradicional de 16mm y 35mm en lugar de cámaras digitales, con equipo de manivela usado específicamente para secuencias de flashback de época auténticas."
-      },
-      "Wildcard": {
-        "en": "My creator is a The Walking Dead fan and called it 'the greatest TV viewing experience' he had ever seen.",
-        "es": "Mi creador es fanático de The Walking Dead y lo llamó 'la mejor experiencia de visualización de TV' que había visto jamás."
-      }
+    "Debut": {
+      "en": "My pilot episode achieved the highest ratings my network had ever recorded for a series premiere, earning 3.2 million viewers in October 2011.",
+      "es": "Mi episodio piloto logró las calificaciones más altas que mi cadena había registrado para el estreno de una serie, obteniendo 3.2 millones de espectadores en octubre de 2011."
     },
-    "expanded": {
-      "Genre": {
-        "en": "American Horror Story operates on a sophisticated level of social commentary, using horror as a vehicle to examine contemporary anxieties and cultural phenomena. Each season tackles different aspects of modern life, from the digital age's impact on privacy and identity to the psychological effects of political polarization and celebrity culture. The show's genius lies in its ability to transform abstract societal concerns into visceral, terrifying narratives that force viewers to confront uncomfortable truths about human nature and modern civilization. By wrapping social criticism in supernatural horror, the series makes complex political and cultural commentary accessible to mainstream audiences while maintaining the emotional impact that only genuine fear can provide.",
-        "es": "American Horror Story opera en un nivel sofisticado de comentario social, usando el horror como vehículo para examinar ansiedades contemporáneas y fenómenos culturales. Cada temporada aborda diferentes aspectos de la vida moderna, desde el impacto de la era digital en la privacidad e identidad hasta los efectos psicológicos de la polarización política y la cultura de celebridades. El genio del programa radica en su capacidad de transformar preocupaciones sociales abstractas en narrativas viscerales y aterradoras que obligan a los espectadores a confrontar verdades incómodas sobre la naturaleza humana y la civilización moderna. Al envolver la crítica social en horror sobrenatural, la serie hace que el comentario político y cultural complejo sea accesible para audiencias principales mientras mantiene el impacto emocional que solo el miedo genuino puede proporcionar."
-      },
-      "Debut": {
-        "en": "The premiere of American Horror Story marked a watershed moment for both FX Networks and television horror as a genre. The 3.2 million viewers who tuned in represented not just record-breaking numbers for the cable network, but also a demonstration that audiences were hungry for sophisticated, serialized horror content on television. This debut performance established American Horror Story as FX's flagship series and proved that horror could be both critically acclaimed and commercially successful on cable television. The show's immediate success paved the way for the network's transformation into a destination for prestige television, influencing the broader industry's approach to genre programming and anthology storytelling.",
-        "es": "El estreno de American Horror Story marcó un momento decisivo tanto para FX Networks como para el horror televisivo como género. Los 3.2 millones de espectadores que sintonizaron representaron no solo números récord para la cadena de cable, sino también una demostración de que las audiencias tenían hambre de contenido de horror sofisticado y serializado en televisión. Este rendimiento de debut estableció a American Horror Story como la serie insignia de FX y demostró que el horror podía ser tanto aclamado por la crítica como comercialmente exitoso en televisión por cable. El éxito inmediato del programa allanó el camino para la transformación de la cadena en un destino para televisión de prestigio, influyendo en el enfoque de la industria hacia la programación de género y la narrativa antológica."
-      },
-      "Characters": {
-        "en": "Sarah Paulson's remarkable achievement in earning five Emmy nominations across different American Horror Story seasons represents a unique accomplishment in television history. Her ability to completely transform herself into distinctly different characters while maintaining her exceptional performance quality demonstrates the rare versatility that anthology television demands. From playing the ambitious journalist Lana Winters in Asylum to the conflicted witch Cordelia Goode in Coven, and from the conjoined twins Bette and Dot Tattler in Freak Show to the drug-addicted ghost Sally McKenna in Hotel, Paulson has proven that anthology casting can showcase an actor's full range. Her consistent recognition by the Television Academy validates the creative potential of the repertory company approach that American Horror Story pioneered.",
-        "es": "El logro notable de Sarah Paulson al ganar cinco nominaciones al Emmy a lo largo de diferentes temporadas de American Horror Story representa un logro único en la historia de la televisión. Su capacidad de transformarse completamente en personajes distintamente diferentes mientras mantiene su calidad de actuación excepcional demuestra la versatilidad rara que la televisión antológica demanda. Desde interpretar a la periodista ambiciosa Lana Winters en Asylum hasta la bruja conflictuada Cordelia Goode en Coven, y desde las gemelas siamesas Bette y Dot Tattler en Freak Show hasta el fantasma adicto a las drogas Sally McKenna en Hotel, Paulson ha demostrado que el casting antológico puede mostrar el rango completo de un actor. Su reconocimiento consistente por parte de la Academia de Televisión valida el potencial creativo del enfoque de compañía repertorio que American Horror Story fue pionera."
-      },
-      "Season Structure": {
-        "en": "American Horror Story's twelve-season run represents one of the most successful anthology series in television history, with each installment functioning as a complete miniseries while contributing to a larger interconnected universe. The show's consistent episode count of 10-13 episodes per season allows for tight, focused storytelling that avoids the padding often seen in longer series, while providing enough time to develop complex characters and intricate plots. This structure has proven commercially viable and creatively sustainable, as evidenced by the network's commitment to additional seasons. The series has demonstrated that anthology television can maintain audience loyalty across different stories, locations, and time periods, challenging the conventional wisdom that viewers require consistent characters to remain engaged.",
-        "es": "Las doce temporadas de American Horror Story representan una de las series antológicas más exitosas en la historia de la televisión, con cada entrega funcionando como una miniserie completa mientras contribuye a un universo interconectado más grande. El conteo consistente de episodios del programa de 10-13 episodios por temporada permite una narrativa apretada y enfocada que evita el relleno a menudo visto en series más largas, mientras proporciona tiempo suficiente para desarrollar personajes complejos y tramas intrincadas. Esta estructura ha demostrado ser comercialmente viable y creativamente sostenible, como lo evidencia el compromiso de la cadena con temporadas adicionales. La serie ha demostrado que la televisión antológica puede mantener la lealtad de la audiencia a través de diferentes historias, ubicaciones y períodos de tiempo, desafiando la sabiduría convencional de que los espectadores requieren personajes consistentes para mantenerse comprometidos."
-      },
-      "Iconic Episode": {
-        "en": "The construction of an entire fictional city for American Horror Story: Freak Show represents one of the most ambitious production undertakings in television history. Creator Ryan Murphy's decision to build a complete 1950s Jupiter, Florida compound required unprecedented coordination between production designers, construction crews, and various technical departments. The massive set included not only exterior facades but fully functional interiors for multiple buildings, creating an immersive environment that allowed for seamless storytelling across the season. This production choice exemplifies the show's commitment to authenticity and visual storytelling, demonstrating how substantial financial investment in physical environments can elevate the narrative quality and create a more compelling viewing experience for audiences.",
-        "es": "La construcción de una ciudad ficticia completa para American Horror Story: Freak Show representa una de las empresas de producción más ambiciosas en la historia de la televisión. La decisión del creador Ryan Murphy de construir un complejo completo de Jupiter, Florida de los años 1950 requirió coordinación sin precedentes entre diseñadores de producción, equipos de construcción y varios departamentos técnicos. El set masivo incluyó no solo fachadas exteriores sino interiores completamente funcionales para múltiples edificios, creando un ambiente inmersivo que permitió una narrativa fluida a lo largo de la temporada. Esta elección de producción ejemplifica el compromiso del programa con la autenticidad y la narrativa visual, demostrando cómo la inversión financiera sustancial en ambientes físicos puede elevar la calidad narrativa y crear una experiencia de visualización más convincente para las audiencias."
-      },
-      "Network/Platform": {
-        "en": "American Horror Story's success catalyzed a fundamental transformation of FX Networks from a basic cable channel primarily known for airing syndicated reruns into a prestigious destination for original programming. Before the show's debut, FX struggled with brand identity and was largely perceived as a secondary outlet for recycled content from other networks. The critical acclaim and commercial success of American Horror Story established FX as a legitimate competitor to premium cable networks like HBO and Showtime, proving that basic cable could produce content of comparable quality and cultural impact. This transformation influenced the broader television landscape, inspiring other cable networks to invest more heavily in original scripted programming and helping to usher in the current golden age of television.",
-        "es": "El éxito de American Horror Story catalizó una transformación fundamental de FX Networks de un canal de cable básico conocido principalmente por transmitir repeticiones sindicadas a un destino prestigioso para programación original. Antes del debut del programa, FX luchaba con la identidad de marca y era percibido en gran medida como una salida secundaria para contenido reciclado de otras cadenas. El éxito crítico y comercial de American Horror Story estableció a FX como un competidor legítimo de las cadenas de cable premium como HBO y Showtime, demostrando que el cable básico podía producir contenido de calidad comparable e impacto cultural. Esta transformación influyó en el panorama televisivo más amplio, inspirando a otras cadenas de cable a invertir más fuertemente en programación con guión original y ayudando a inaugurar la era dorada actual de la televisión."
-      },
-      "Visual Style": {
-        "en": "American Horror Story's commitment to shooting on traditional film stock rather than digital cameras reflects a deliberate artistic choice that significantly impacts the show's visual aesthetic and emotional resonance. The use of 16mm and 35mm film creates a distinctive grain structure and color palette that digital cameras cannot replicate, contributing to the show's atmospheric and often unsettling visual tone. The specialized use of hand-cranked cameras for period flashback sequences demonstrates the production team's dedication to authenticity, as these manual techniques produce the subtle visual irregularities and frame rate variations that genuinely evoke historical film footage. This technical approach represents a rare commitment to analog filmmaking in an increasingly digital television landscape, setting American Horror Story apart from most contemporary productions.",
-        "es": "El compromiso de American Horror Story de filmar en película tradicional en lugar de cámaras digitales refleja una elección artística deliberada que impacta significativamente la estética visual del programa y la resonancia emocional. El uso de película de 16mm y 35mm crea una estructura de grano distintiva y paleta de colores que las cámaras digitales no pueden replicar, contribuyendo al tono visual atmosférico y a menudo inquietante del programa. El uso especializado de cámaras de manivela para secuencias de flashback de época demuestra la dedicación del equipo de producción a la autenticidad, ya que estas técnicas manuales producen las irregularidades visuales sutiles y variaciones de velocidad de fotogramas que genuinamente evocan metraje de película histórica. Este enfoque técnico representa un compromiso raro con la cinematografía analógica en un panorama televisivo cada vez más digital, distinguiendo a American Horror Story de la mayoría de las producciones contemporáneas."
-      },
-      "Wildcard": {
-        "en": "Ryan Murphy's public acknowledgment of The Walking Dead as 'the greatest TV viewing experience' he had ever seen reveals the profound impact that AMC's zombie series had on shaping American Horror Story's creative direction and tone. This influence extended beyond superficial similarities to encompass fundamental approaches to serialized horror storytelling, character development under extreme circumstances, and the creation of sustained atmospheric tension across multiple episodes. Murphy's admiration for The Walking Dead's ability to blend character drama with horror elements became a cornerstone of American Horror Story's narrative philosophy, demonstrating how successful creators often build upon and reinterpret the innovations of their predecessors. This creative inspiration highlights the interconnected nature of television development and the way groundbreaking shows influence subsequent productions in the same genre.",
-        "es": "El reconocimiento público de Ryan Murphy de The Walking Dead como 'la mejor experiencia de visualización de TV' que había visto revela el impacto profundo que la serie de zombis de AMC tuvo en dar forma a la dirección creativa y el tono de American Horror Story. Esta influencia se extendió más allá de similitudes superficiales para abarcar enfoques fundamentales de la narrativa de horror serializada, el desarrollo de personajes bajo circunstancias extremas, y la creación de tensión atmosférica sostenida a través de múltiples episodios. La admiración de Murphy por la capacidad de The Walking Dead de combinar drama de personajes con elementos de horror se convirtió en una piedra angular de la filosofía narrativa de American Horror Story, demostrando cómo los creadores exitosos a menudo construyen sobre y reinterpretan las innovaciones de sus predecesores. Esta inspiración creativa destaca la naturaleza interconectada del desarrollo televisivo y la forma en que los programas revolucionarios influyen en producciones subsiguientes en el mismo género."
-      }
+    "Characters": {
+      "en": "One of my lead actresses has earned multiple Emmy nominations for playing entirely different roles across different seasons.",
+      "es": "Una de mis actrices principales ha recibido múltiples nominaciones al Emmy por interpretar papeles completamente distintos a lo largo de diferentes temporadas."
     },
-    "alternatives": {
-      "en": [
-        "The Haunting of Hill House",
-        "Penny Dreadful",
-        "Bates Motel",
-        "Castle Rock",
-        "Channel Zero",
-        "Scream Queens",
-        "Ratched",
-        "The Terror",
-        "True Blood"
-      ],
-      "es": [
-        "La Maldición de Hill House",
-        "Penny Dreadful",
-        "Bates Motel",
-        "Castle Rock",
-        "Channel Zero",
-        "Scream Queens",
-        "Ratched",
-        "The Terror",
-        "True Blood"
-      ]
+    "Season Structure": {
+      "en": "I have been running for 12 seasons, each of which typically contains 10-13 episodes, with more coming soon.",
+      "es": "He estado en emisión durante 12 temporadas, cada una típicamente contiene entre 10-13 episodios, y se vienen más pronto."
+    },
+    "Iconic Episode": {
+      "en": "My fourth season required building an entire city compound with interior sets for all buildings, creating the largest set ever constructed in the show's history.",
+      "es": "Mi cuarta temporada requirió construir un complejo de ciudad completo con sets interiores para todos los edificios, creando el set más grande jamás construido en la historia del programa."
+    },
+    "Network/Platform": {
+      "en": "My success helped transform my cable network's reputation from a channel that runs syndicated reruns to one that produces award-winning originals.",
+      "es": "Mi éxito ayudó a transformar la reputación de mi cadena de cable, pasando de un canal que transmitía repeticiones sindicadas a uno que produce originales galardonados."
+    },
+    "Visual Style": {
+      "en": "I am shot on traditional 16mm and 35mm film stock rather than digital cameras, with hand-cranked equipment used specifically for authentic period flashback sequences.",
+      "es": "Soy filmada en película tradicional de 16mm y 35mm en lugar de cámaras digitales, con equipo de manivela usado específicamente para secuencias de flashback de época auténticas."
+    },
+    "Wildcard": {
+      "en": "My creator is a The Walking Dead fan and called it 'the greatest TV viewing experience' he had ever seen.",
+      "es": "Mi creador es fanático de The Walking Dead y lo llamó 'la mejor experiencia de visualización de TV' que había visto jamás."
     }
+  },
+  "expanded": {
+    "Genre": {
+      "en": "American Horror Story operates on a sophisticated level of social commentary, using horror as a vehicle to examine contemporary anxieties and cultural phenomena. Each season tackles different aspects of modern life, from the digital age's impact on privacy and identity to the psychological effects of political polarization and celebrity culture. The show's genius lies in its ability to transform abstract societal concerns into visceral, terrifying narratives that force viewers to confront uncomfortable truths about human nature and modern civilization. By wrapping social criticism in supernatural horror, the series makes complex political and cultural commentary accessible to mainstream audiences while maintaining the emotional impact that only genuine fear can provide.",
+      "es": "American Horror Story opera en un nivel sofisticado de comentario social, usando el horror como vehículo para examinar ansiedades contemporáneas y fenómenos culturales. Cada temporada aborda diferentes aspectos de la vida moderna, desde el impacto de la era digital en la privacidad e identidad hasta los efectos psicológicos de la polarización política y la cultura de celebridades. El genio del programa radica en su capacidad de transformar preocupaciones sociales abstractas en narrativas viscerales y aterradoras que obligan a los espectadores a confrontar verdades incómodas sobre la naturaleza humana y la civilización moderna. Al envolver la crítica social en horror sobrenatural, la serie hace que el comentario político y cultural complejo sea accesible para audiencias principales mientras mantiene el impacto emocional que solo el miedo genuino puede proporcionar."
+    },
+    "Debut": {
+      "en": "The premiere of American Horror Story marked a watershed moment for both FX Networks and television horror as a genre. The 3.2 million viewers who tuned in represented not just record-breaking numbers for the cable network, but also a demonstration that audiences were hungry for sophisticated, serialized horror content on television. This debut performance established American Horror Story as FX's flagship series and proved that horror could be both critically acclaimed and commercially successful on cable television. The show's immediate success paved the way for the network's transformation into a destination for prestige television, influencing the broader industry's approach to genre programming and anthology storytelling.",
+      "es": "El estreno de American Horror Story marcó un momento decisivo tanto para FX Networks como para el horror televisivo como género. Los 3.2 millones de espectadores que sintonizaron representaron no solo números récord para la cadena de cable, sino también una demostración de que las audiencias tenían hambre de contenido de horror sofisticado y serializado en televisión. Este rendimiento de debut estableció a American Horror Story como la serie insignia de FX y demostró que el horror podía ser tanto aclamado por la crítica como comercialmente exitoso en televisión por cable. El éxito inmediato del programa allanó el camino para la transformación de la cadena en un destino para televisión de prestigio, influyendo en el enfoque de la industria hacia la programación de género y la narrativa antológica."
+    },
+    "Characters": {
+      "en": "Sarah Paulson's remarkable achievement in earning five Emmy nominations across different American Horror Story seasons represents a unique accomplishment in television history. Her ability to completely transform herself into distinctly different characters while maintaining her exceptional performance quality demonstrates the rare versatility that anthology television demands. From playing the ambitious journalist Lana Winters in Asylum to the conflicted witch Cordelia Goode in Coven, and from the conjoined twins Bette and Dot Tattler in Freak Show to the drug-addicted ghost Sally McKenna in Hotel, Paulson has proven that anthology casting can showcase an actor's full range. Her consistent recognition by the Television Academy validates the creative potential of the repertory company approach that American Horror Story pioneered.",
+      "es": "El logro notable de Sarah Paulson al ganar cinco nominaciones al Emmy a lo largo de diferentes temporadas de American Horror Story representa un logro único en la historia de la televisión. Su capacidad de transformarse completamente en personajes distintamente diferentes mientras mantiene su calidad de actuación excepcional demuestra la versatilidad rara que la televisión antológica demanda. Desde interpretar a la periodista ambiciosa Lana Winters en Asylum hasta la bruja conflictuada Cordelia Goode en Coven, y desde las gemelas siamesas Bette y Dot Tattler en Freak Show hasta el fantasma adicto a las drogas Sally McKenna en Hotel, Paulson ha demostrado que el casting antológico puede mostrar el rango completo de un actor. Su reconocimiento consistente por parte de la Academia de Televisión valida el potencial creativo del enfoque de compañía repertorio que American Horror Story fue pionera."
+    },
+    "Season Structure": {
+      "en": "American Horror Story's twelve-season run represents one of the most successful anthology series in television history, with each installment functioning as a complete miniseries while contributing to a larger interconnected universe. The show's consistent episode count of 10-13 episodes per season allows for tight, focused storytelling that avoids the padding often seen in longer series, while providing enough time to develop complex characters and intricate plots. This structure has proven commercially viable and creatively sustainable, as evidenced by the network's commitment to additional seasons. The series has demonstrated that anthology television can maintain audience loyalty across different stories, locations, and time periods, challenging the conventional wisdom that viewers require consistent characters to remain engaged.",
+      "es": "Las doce temporadas de American Horror Story representan una de las series antológicas más exitosas en la historia de la televisión, con cada entrega funcionando como una miniserie completa mientras contribuye a un universo interconectado más grande. El conteo consistente de episodios del programa de 10-13 episodios por temporada permite una narrativa apretada y enfocada que evita el relleno a menudo visto en series más largas, mientras proporciona tiempo suficiente para desarrollar personajes complejos y tramas intrincadas. Esta estructura ha demostrado ser comercialmente viable y creativamente sostenible, como lo evidencia el compromiso de la cadena con temporadas adicionales. La serie ha demostrado que la televisión antológica puede mantener la lealtad de la audiencia a través de diferentes historias, ubicaciones y períodos de tiempo, desafiando la sabiduría convencional de que los espectadores requieren personajes consistentes para mantenerse comprometidos."
+    },
+    "Iconic Episode": {
+      "en": "The construction of an entire fictional city for American Horror Story: Freak Show represents one of the most ambitious production undertakings in television history. Creator Ryan Murphy's decision to build a complete 1950s Jupiter, Florida compound required unprecedented coordination between production designers, construction crews, and various technical departments. The massive set included not only exterior facades but fully functional interiors for multiple buildings, creating an immersive environment that allowed for seamless storytelling across the season. This production choice exemplifies the show's commitment to authenticity and visual storytelling, demonstrating how substantial financial investment in physical environments can elevate the narrative quality and create a more compelling viewing experience for audiences.",
+      "es": "La construcción de una ciudad ficticia completa para American Horror Story: Freak Show representa una de las empresas de producción más ambiciosas en la historia de la televisión. La decisión del creador Ryan Murphy de construir un complejo completo de Jupiter, Florida de los años 1950 requirió coordinación sin precedentes entre diseñadores de producción, equipos de construcción y varios departamentos técnicos. El set masivo incluyó no solo fachadas exteriores sino interiores completamente funcionales para múltiples edificios, creando un ambiente inmersivo que permitió una narrativa fluida a lo largo de la temporada. Esta elección de producción ejemplifica el compromiso del programa con la autenticidad y la narrativa visual, demostrando cómo la inversión financiera sustancial en ambientes físicos puede elevar la calidad narrativa y crear una experiencia de visualización más convincente para las audiencias."
+    },
+    "Network/Platform": {
+      "en": "American Horror Story's success catalyzed a fundamental transformation of FX Networks from a basic cable channel primarily known for airing syndicated reruns into a prestigious destination for original programming. Before the show's debut, FX struggled with brand identity and was largely perceived as a secondary outlet for recycled content from other networks. The critical acclaim and commercial success of American Horror Story established FX as a legitimate competitor to premium cable networks like HBO and Showtime, proving that basic cable could produce content of comparable quality and cultural impact. This transformation influenced the broader television landscape, inspiring other cable networks to invest more heavily in original scripted programming and helping to usher in the current golden age of television.",
+      "es": "El éxito de American Horror Story catalizó una transformación fundamental de FX Networks de un canal de cable básico conocido principalmente por transmitir repeticiones sindicadas a un destino prestigioso para programación original. Antes del debut del programa, FX luchaba con la identidad de marca y era percibido en gran medida como una salida secundaria para contenido reciclado de otras cadenas. El éxito crítico y comercial de American Horror Story estableció a FX como un competidor legítimo de las cadenas de cable premium como HBO y Showtime, demostrando que el cable básico podía producir contenido de calidad comparable e impacto cultural. Esta transformación influyó en el panorama televisivo más amplio, inspirando a otras cadenas de cable a invertir más fuertemente en programación con guión original y ayudando a inaugurar la era dorada actual de la televisión."
+    },
+    "Visual Style": {
+      "en": "American Horror Story's commitment to shooting on traditional film stock rather than digital cameras reflects a deliberate artistic choice that significantly impacts the show's visual aesthetic and emotional resonance. The use of 16mm and 35mm film creates a distinctive grain structure and color palette that digital cameras cannot replicate, contributing to the show's atmospheric and often unsettling visual tone. The specialized use of hand-cranked cameras for period flashback sequences demonstrates the production team's dedication to authenticity, as these manual techniques produce the subtle visual irregularities and frame rate variations that genuinely evoke historical film footage. This technical approach represents a rare commitment to analog filmmaking in an increasingly digital television landscape, setting American Horror Story apart from most contemporary productions.",
+      "es": "El compromiso de American Horror Story de filmar en película tradicional en lugar de cámaras digitales refleja una elección artística deliberada que impacta significativamente la estética visual del programa y la resonancia emocional. El uso de película de 16mm y 35mm crea una estructura de grano distintiva y paleta de colores que las cámaras digitales no pueden replicar, contribuyendo al tono visual atmosférico y a menudo inquietante del programa. El uso especializado de cámaras de manivela para secuencias de flashback de época demuestra la dedicación del equipo de producción a la autenticidad, ya que estas técnicas manuales producen las irregularidades visuales sutiles y variaciones de velocidad de fotogramas que genuinamente evocan metraje de película histórica. Este enfoque técnico representa un compromiso raro con la cinematografía analógica en un panorama televisivo cada vez más digital, distinguiendo a American Horror Story de la mayoría de las producciones contemporáneas."
+    },
+    "Wildcard": {
+      "en": "Ryan Murphy's public acknowledgment of The Walking Dead as 'the greatest TV viewing experience' he had ever seen reveals the profound impact that AMC's zombie series had on shaping American Horror Story's creative direction and tone. This influence extended beyond superficial similarities to encompass fundamental approaches to serialized horror storytelling, character development under extreme circumstances, and the creation of sustained atmospheric tension across multiple episodes. Murphy's admiration for The Walking Dead's ability to blend character drama with horror elements became a cornerstone of American Horror Story's narrative philosophy, demonstrating how successful creators often build upon and reinterpret the innovations of their predecessors. This creative inspiration highlights the interconnected nature of television development and the way groundbreaking shows influence subsequent productions in the same genre.",
+      "es": "El reconocimiento público de Ryan Murphy de The Walking Dead como 'la mejor experiencia de visualización de TV' que había visto revela el impacto profundo que la serie de zombis de AMC tuvo en dar forma a la dirección creativa y el tono de American Horror Story. Esta influencia se extendió más allá de similitudes superficiales para abarcar enfoques fundamentales de la narrativa de horror serializada, el desarrollo de personajes bajo circunstancias extremas, y la creación de tensión atmosférica sostenida a través de múltiples episodios. La admiración de Murphy por la capacidad de The Walking Dead de combinar drama de personajes con elementos de horror se convirtió en una piedra angular de la filosofía narrativa de American Horror Story, demostrando cómo los creadores exitosos a menudo construyen sobre y reinterpretan las innovaciones de sus predecesores. Esta inspiración creativa destaca la naturaleza interconectada del desarrollo televisivo y la forma en que los programas revolucionarios influyen en producciones subsiguientes en el mismo género."
+    }
+  },
+  "alternatives": {
+    "en": [
+      "The Haunting of Hill House",
+      "Penny Dreadful",
+      "Bates Motel",
+      "Castle Rock",
+      "Channel Zero",
+      "Scream Queens",
+      "Ratched",
+      "The Terror",
+      "True Blood"
+    ],
+    "es": [
+      "La Maldición de Hill House",
+      "Penny Dreadful",
+      "Bates Motel",
+      "Castle Rock",
+      "Channel Zero",
+      "Scream Queens",
+      "Ratched",
+      "The Terror",
+      "True Blood"
+    ]
   }
+}

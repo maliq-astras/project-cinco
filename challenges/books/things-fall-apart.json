@@ -4,6 +4,7 @@
     "es": "Todo Se Desmorona"
   },
   "imageUrl": "[Cloudinary URL for Things Fall Apart book cover]",
+  "citation": "Image source to be added",
   "facts": {
     "Author": {
       "en": "My author wrote me as a direct response to Joseph Conrad's portrayal of Africa, conducting extensive research into Igbo oral traditions to ensure authentic cultural representation.",
@@ -73,7 +74,27 @@
     }
   },
   "alternatives": {
-    "en": ["Arrow of God", "No Longer at Ease", "Heart of Darkness", "The Palm-Wine Drinkard", "Purple Hibiscus", "Half of a Yellow Sun", "Nervous Conditions", "So Long a Letter", "The Beautiful Ones Are Not Yet Born"],
-    "es": ["La Flecha de Dios", "Ya No Hay Sosiego", "El Corazón de las Tinieblas", "El Bebedor de Vino de Palma", "Hibisco Morado", "Medio Sol Amarillo", "Condiciones Nerviosas", "Tan Larga Carta", "Los Hermosos Aún No Han Nacido"]
+    "en": [
+      "Arrow of God",
+      "No Longer at Ease",
+      "Heart of Darkness",
+      "The Palm-Wine Drinkard",
+      "Purple Hibiscus",
+      "Half of a Yellow Sun",
+      "Nervous Conditions",
+      "So Long a Letter",
+      "The Beautiful Ones Are Not Yet Born"
+    ],
+    "es": [
+      "La Flecha de Dios",
+      "Ya No Hay Sosiego",
+      "El Corazón de las Tinieblas",
+      "El Bebedor de Vino de Palma",
+      "Hibisco Morado",
+      "Medio Sol Amarillo",
+      "Condiciones Nerviosas",
+      "Tan Larga Carta",
+      "Los Hermosos Aún No Han Nacido"
+    ]
   }
 }
