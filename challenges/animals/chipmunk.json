@@ -7,8 +7,8 @@
   "citation": "Photo by Chelsea Faucher on Unsplash",
   "facts": {
     "Habitat": {
-      "en": "I am found on only two continents. 24 of my species thrive throughout North America while just one species inhabits the vast forests of northern Asia from Russia to Japan.",
-      "es": "Me encuentro en solo dos continentes. 24 de mis especies prosperan a través de América del Norte mientras que solo una especie habita los vastos bosques del norte de Asia desde Rusia hasta Japón."
+      "en": "I am found on only two continents: 24 of my species thrive across North America, while just one inhabits the vast forests of northern Asia, from Russia to Japan.",
+      "es": "Me encuentro en solo dos continentes: 24 de mis especies prosperan a través de América del Norte, mientras que solo una especie habita los vastos bosques del norte de Asia, desde Rusia hasta Japón."
     },
     "Diet": {
       "en": "Despite my reputation as a seed-eater, I am actually an opportunistic omnivore that regularly hunts and consumes bird eggs, nestlings, small snakes, frogs, and even adult birds when the opportunity arises.",
@@ -35,8 +35,8 @@
       "es": "Sirvo como un socio crucial en mantener la salud del bosque dispersando esporas de hongos micorrízicos a través de mi sistema digestivo, estableciendo redes simbióticas vitales entre hongos y raíces de árboles."
     },
     "Wildcard": {
-      "en": "During winter hibernation, my heart rate drops from 350 beats per minute to just 4 beats per minute while my body temperature plummets to within 1-2 degrees of freezing.",
-      "es": "Durante la hibernación invernal, mi frecuencia cardíaca baja de 350 latidos por minuto a solo 4 latidos por minuto mientras mi temperatura corporal se desploma a 1-2 grados del punto de congelación."
+      "en": "During winter hibernation, my heart rate drops from 350 beats per minute to just 4, while my body temperature falls to around 40°F, just a few degrees above freezing.",
+      "es": "Durante la hibernación invernal, mi frecuencia cardíaca baja de 350 latidos por minuto a solo 4 latidos por minuto mientras mi temperatura corporal se desploma a alrededor de 40°F, solo unos grados por encima del punto de congelación."
     }
   },
   "expanded": {
