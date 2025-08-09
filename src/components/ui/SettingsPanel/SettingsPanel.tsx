@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Inter } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSettingsPanel, languages } from './useSettingsPanel';
+import { useSettingsPanel } from './useSettingsPanel';
 import { settingsPanelStyles } from './SettingsPanel.styles';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/contexts/LanguageContext';
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,6 +16,8 @@ interface SettingsPanelProps {
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  
   const {
     colors,
     darkMode,
@@ -29,14 +32,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     selectedLanguage,
     handleLanguageChange,
     isMobile,
-    handleOverlayClick,
-    isLanguageLocked,
-    // Language dropdown props
-    isLanguageDropdownOpen,
-    dropdownPosition,
-    languageSelectRef,
-    toggleLanguageDropdown,
-    selectLanguage
+    handleOverlayClick
   } = useSettingsPanel({ isOpen, onClose });
 
   // Toggle switch component with theme color
@@ -126,10 +122,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           </div>
           <div className={settingsPanelStyles.languageSelectContainer}>
             <div 
-              ref={languageSelectRef}
               className={settingsPanelStyles.languageSelectClass}
               style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
-              onClick={toggleLanguageDropdown}
+              onClick={() => {
+                console.log('Dropdown clicked, current state:', isLanguageDropdownOpen);
+                setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+              }}
             >
               <span>{SUPPORTED_LANGUAGES.includes(selectedLanguage) ? t(`ui.language.${selectedLanguage}`) : selectedLanguage}</span>
               <div className={settingsPanelStyles.languageSelectArrow}>
@@ -138,11 +136,39 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
                 </svg>
               </div>
             </div>
+            
+            {/* Simple dropdown - no portal, just absolute positioning */}
+            {isLanguageDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-32 overflow-y-auto z-50">
+                {SUPPORTED_LANGUAGES.map(langCode => (
+                  <div
+                    key={langCode}
+                    className={`px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm border-b border-gray-200 dark:border-gray-600 last:border-b-0 ${
+                      selectedLanguage === langCode ? 'font-medium' : ''
+                    }`}
+                    style={{
+                      backgroundColor: selectedLanguage === langCode ? `var(--color-${colors.primary})` : 'transparent',
+                      color: selectedLanguage === langCode ? 'white' : 'inherit',
+                    }}
+                    onClick={() => {
+                      console.log('Language option clicked:', langCode);
+                      const fakeEvent = {
+                        target: { value: langCode }
+                      } as React.ChangeEvent<HTMLSelectElement>;
+                      handleLanguageChange(fakeEvent);
+                      setIsLanguageDropdownOpen(false);
+                    }}
+                  >
+                    {t(`ui.language.${langCode}`)}
+                  </div>
+                ))}
+                <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed border-b-0">
+                  More coming soon!
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        {isLanguageLocked && (
-          <p className={settingsPanelStyles.settingErrorText}>{t('ui.settings.languageLocked')}</p>
-        )}
       </div>
 
       <div className={settingsPanelStyles.footer}>
@@ -151,95 +177,68 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         </p>
       </div>
       
-      {/* Dropdown portal */}
-      {isLanguageDropdownOpen && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-            width: `${dropdownPosition.width}px`,
-            zIndex: 9999
-          }}
-          className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-32 overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {languages.map((lang) => (
-            <div
-              key={lang.code}
-              className={
-                !SUPPORTED_LANGUAGES.includes(lang.code) || isLanguageLocked
-                  ? `${settingsPanelStyles.languageOptionDisabled} language-dropdown-option`
-                  : `${settingsPanelStyles.languageOptionClass} language-dropdown-option`
-              }
-              style={
-                SUPPORTED_LANGUAGES.includes(lang.code) && !isLanguageLocked
-                  ? settingsPanelStyles.languageOption(selectedLanguage === lang.code, colors.primary)
-                  : undefined
-              }
-              onClick={() => {
-                if (SUPPORTED_LANGUAGES.includes(lang.code) && !isLanguageLocked) {
-                  selectLanguage(lang.code);
-                }
-              }}
-            >
-              {SUPPORTED_LANGUAGES.includes(lang.code) ? t(`ui.language.${lang.code}`) : lang.name}
-            </div>
-          ))}
-        </div>
-      )}
+
     </>
   );
 
   // For mobile, render a slide-up panel similar to Final Five
   if (isMobile) {
     return (
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            key="mobile-settings"
-            className={settingsPanelStyles.mobileContainer}
-            {...settingsPanelStyles.overlayAnimation}
-          >
-            <motion.div
-              className={settingsPanelStyles.mobilePanelClass}
-              style={settingsPanelStyles.mobilePanel(colors.primary)}
-              {...settingsPanelStyles.mobilePanelAnimation}
+      <>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div 
+              key="mobile-settings"
+              className={settingsPanelStyles.mobileContainer}
+              {...settingsPanelStyles.overlayAnimation}
             >
-              <div className={settingsPanelStyles.mobileDragIndicator}></div>
-              <div className={`${inter.className} ${settingsPanelStyles.contentContainer}`}>
-                {settingsContent}
-              </div>
+              <motion.div
+                className={settingsPanelStyles.mobilePanelClass}
+                style={settingsPanelStyles.mobilePanel(colors.primary)}
+                {...settingsPanelStyles.mobilePanelAnimation}
+              >
+                <div className={settingsPanelStyles.mobileDragIndicator}></div>
+                <div className={`${inter.className} ${settingsPanelStyles.contentContainer}`}>
+                  {settingsContent}
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+        
+
+
+      </>
     );
   }
 
   // For desktop, render a centered modal
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div 
-          key="desktop-settings"
-          className={settingsPanelStyles.desktopContainer}
-          onClick={handleOverlayClick}
-          {...settingsPanelStyles.overlayAnimation}
-        >
+    <>
+      <AnimatePresence>
+        {isOpen && (
           <motion.div 
-            className={`${inter.className} ${settingsPanelStyles.desktopPanelClass}`}
-            style={settingsPanelStyles.desktopPanel(colors.primary)}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            key="desktop-settings"
+            className={settingsPanelStyles.desktopContainer}
+            onClick={handleOverlayClick}
+            {...settingsPanelStyles.overlayAnimation}
           >
-            {settingsContent}
+            <motion.div 
+              className={`${inter.className} ${settingsPanelStyles.desktopPanelClass}`}
+              style={settingsPanelStyles.desktopPanel(colors.primary)}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              {settingsContent}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+      
+
+    </>
   );
 };
 

@@ -14,6 +14,7 @@ interface LanguageContextType {
   language: Language;
   changeLanguage: (newLanguage: Language) => void;
   isLanguageLocked: boolean;
+  isLanguageSwitching: boolean;
 }
 
 // Create context with default values
@@ -40,23 +41,75 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
     return 'en';
   });
+  const [isLanguageSwitching, setIsLanguageSwitching] = useState(false);
   const { i18n } = useTranslation();
   const { hasMadeGuess } = useGameStore();
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
+  const shouldPauseTimer = useGameStore(state => state.shouldPauseTimer);
+  const setShouldPauseTimer = useGameStore(state => state.setShouldPauseTimer);
 
   useEffect(() => {
+    console.log('LanguageContext useEffect triggered:', { language, isLanguageSwitching });
+    
     i18n.changeLanguage(language);
     localStorage.setItem('language', language);
     
-    // When language changes, refetch the challenge in the new language
-    fetchChallenge(language);
-  }, [language, i18n, fetchChallenge]);
-
-  const changeLanguage = (newLanguage: Language) => {
-    if (hasMadeGuess) {
-      return; // Don't allow language changes after a guess has been made
+    console.log('Updated i18n and localStorage to:', language);
+    
+    // Only fetch challenge if we're not in the middle of a language switch
+    // The changeLanguage function will handle fetching after reset
+    if (!isLanguageSwitching) {
+      console.log('Fetching challenge from useEffect for language:', language);
+      fetchChallenge(language);
+    } else {
+      console.log('Skipping fetchChallenge in useEffect because isLanguageSwitching is true');
     }
-    setLanguage(newLanguage);
+  }, [language, i18n, fetchChallenge, isLanguageSwitching]);
+
+  const changeLanguage = async (newLanguage: Language) => {
+    console.log('LanguageContext.changeLanguage called:', { current: language, new: newLanguage });
+    
+    // Remove the restriction - users can now change language anytime
+    if (language === newLanguage) {
+      console.log('Language is already set to:', newLanguage, '- returning early');
+      return; // No change needed
+    }
+    
+    // Start the language switching process - show loader FIRST
+    setIsLanguageSwitching(true);
+    setShouldPauseTimer(true); // Pause the game timer
+    
+    // Wait longer to ensure the loader is fully visible before changing anything
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    try {
+      // Change the language first
+      console.log('Setting language state to:', newLanguage);
+      setLanguage(newLanguage);
+      
+      // Wait a bit to ensure language change is processed
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Just fetch the challenge in the new language - don't reset game state
+      // This preserves user progress, revealed facts, guesses, timer, etc.
+      console.log('Fetching challenge in new language:', newLanguage);
+      const gameStore = useGameStore.getState();
+      await gameStore.fetchChallenge(newLanguage);
+      
+      // Ensure minimum loading time of 2.5 seconds
+      const minLoadingTime = 2500;
+      
+      // Wait for minimum loading time
+      await new Promise(resolve => setTimeout(resolve, minLoadingTime));
+      
+    } catch (error) {
+      console.error('Error during language change:', error);
+    } finally {
+      // Always restore timer and hide loading after minimum time
+      console.log('Language change completed, cleaning up...');
+      setIsLanguageSwitching(false);
+      setShouldPauseTimer(false); // Resume the game timer
+    }
   };
 
   // Check if language is supported
@@ -68,7 +121,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const value = {
     language,
     changeLanguage,
-    isLanguageLocked: hasMadeGuess
+    isLanguageLocked: false, // Remove the restriction - language can always be changed
+    isLanguageSwitching
   };
 
   return (

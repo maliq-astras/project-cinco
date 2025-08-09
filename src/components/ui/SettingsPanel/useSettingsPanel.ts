@@ -95,18 +95,22 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   }, []);
 
   const toggleLanguageDropdown = () => {
-    if (isLanguageLocked) return;
+    console.log('toggleLanguageDropdown called, current state:', isLanguageDropdownOpen);
     
+    // Remove the language lock restriction - users can always change language
     if (!isLanguageDropdownOpen && languageSelectRef.current) {
       const rect = languageSelectRef.current.getBoundingClientRect();
-      setDropdownPosition({
+      const position = {
         top: rect.bottom + window.scrollY,
         left: rect.left + window.scrollX,
         width: rect.width
-      });
+      };
+      console.log('Setting dropdown position:', position);
+      setDropdownPosition(position);
     }
     
     setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+    console.log('Dropdown state will be:', !isLanguageDropdownOpen);
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -123,26 +127,27 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     setIsSoundEnabled(!isSoundEnabled);
   };
   
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (isLanguageLocked) return; // Don't change language if it's locked
-    
+  const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // Remove language lock restriction - users can always change language
     const newLang = e.target.value;
     
     // Only change language if it's one of the supported languages
     if (SUPPORTED_LANGUAGES.includes(newLang)) {
       setSelectedLanguage(newLang as Language);
-      changeLanguage(newLang as Language);
+      await changeLanguage(newLang as Language);
     }
   };
   
   // Function for the custom select to update language
-  const selectLanguage = (lang: string) => {
-    if (isLanguageLocked) return;
+  const selectLanguage = async (lang: string) => {
+    console.log('selectLanguage called with:', lang);
     
+    // Remove language lock restriction - users can always change language
     if (SUPPORTED_LANGUAGES.includes(lang)) {
-      setSelectedLanguage(lang as Language);
-      changeLanguage(lang as Language);
       setIsLanguageDropdownOpen(false);
+      console.log('Calling changeLanguage with:', lang);
+      await changeLanguage(lang as Language);
+      // selectedLanguage will be updated automatically via the useEffect that syncs with language context
     }
   };
 

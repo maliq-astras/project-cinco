@@ -161,7 +161,9 @@ export interface Challenge {
     en: string;
     es: string;
   };
-  imageUrl?: string; // Add optional imageUrl field
+  imageUrl?: string; // Cloudinary image URL
+  youtubeUrl?: string; // YouTube embed URL
+  citation?: string; // Attribution text for media
   alternatives: {
     en: string[];
     es: string[];

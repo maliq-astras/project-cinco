@@ -3,6 +3,7 @@ export { default as Timer } from './ui/Timer';
 export { default as LoadingAnimation } from './ui/LoadingAnimation';
 export { default as WrongAnswerOverlay } from './ui/WrongAnswerOverlay';
 export { default as IconContainer } from './ui/IconContainer';
+export { LanguageSwitchLoader } from './ui/LanguageSwitchLoader';
 
 // Game Components
 export { default as GameControls } from './game/GameControls';

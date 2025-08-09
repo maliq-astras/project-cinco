@@ -71,12 +71,14 @@ interface GameStore {
   isSettingsPanelOpen: boolean;
   isTutorialOpen: boolean;
   shouldPauseTimer: boolean;
+  setShouldPauseTimer: (pause: boolean) => void;
   scaleFactor: number;
   
   // Victory animation states
   isVictoryAnimationActive: boolean;
   victoryAnimationStep: 'bubbles' | 'summary' | 'cards' | null;
   gameOutcome: GameOutcome | null;
+  showGameMessage: boolean;
   
   // Computed values should not be in the store interface
   
@@ -86,6 +88,7 @@ interface GameStore {
   decrementFinalFiveTimer: () => void;
   startTimer: () => void;
   resetTimer: () => void;
+  resetGameState: () => void;
   setHoveredFact: (factIndex: number | null) => void;
   setShouldFocusInput: (shouldFocus: boolean) => void;
   setScaleFactor: (factor: number) => void;
@@ -180,6 +183,7 @@ export const useGameStore = create<GameStore>()(
   isVictoryAnimationActive: false,
   victoryAnimationStep: null,
   gameOutcome: null,
+  showGameMessage: false,
   
   // Basic setters
   setWindowWidth: (width: number) => set({ windowWidth: width }),
@@ -271,8 +275,53 @@ export const useGameStore = create<GameStore>()(
       hardMode: isHardModeEnabled,
     });
   },
+  
+  resetGameState: () => {
+    const { isHardModeEnabled } = get();
+    const timeRemaining = isHardModeEnabled ? 55 : 300;
+    const finalFiveTimeRemaining = isHardModeEnabled ? 5 : 55;
+    
+    set({
+      // Reset core game state
+      gameState: initialGameState,
+      timeRemaining,
+      isTimerActive: false,
+      hasSeenClue: false,
+      canRevealNewClue: true,
+      canMakeGuess: false,
+      lastRevealedFactIndex: null,
+      isPendingFinalFiveTransition: false,
+      isProcessingGuess: false,
+      hasMadeGuess: false,
+      
+      // Reset Final Five state
+      finalFiveTimeRemaining,
+      isFinalFiveActive: false,
+      showFinalFiveTransition: false,
+      finalFiveTransitionReason: null,
+      finalFiveError: null,
+      isFetchingFinalFiveOptions: false,
+      
+      // Reset UI and animation states
+      hoveredFact: null,
+      viewingFact: null,
+      cardSourcePosition: null,
+      isDrawingFromStack: false,
+      isReturningToStack: false,
+      isCardAnimatingOut: false,
+      shouldFocusInput: false,
+      isSettingsPanelOpen: false,
+      
+      // Reset game outcome states  
+      gameOutcome: null,
+      isVictoryAnimationActive: false,
+      victoryAnimationStep: null,
+      showGameMessage: false
+    });
+  },
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
+  setShouldPauseTimer: (pause: boolean) => set({ shouldPauseTimer: pause }),
   
   // Game logic actions
   fetchChallenge: async (language: string = 'en') => {

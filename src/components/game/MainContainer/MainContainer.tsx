@@ -17,9 +17,11 @@ import {
   GameInstructionsArea, 
   Navigation, 
   FinalFiveIntro,
-  WrongAnswerOverlay
+  WrongAnswerOverlay,
+  LanguageSwitchLoader
 } from '@/components';
 import { useGameStore } from '@/store/gameStore';
+import { useLanguage } from '@/contexts/LanguageContext';
 import LandscapeWarning from '../../ui/LandscapeWarning';
 import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 
@@ -45,6 +47,9 @@ export default function MainContainer() {
   
   // Get scale factor from the store
   const scaleFactor = useGameStore(state => state.scaleFactor);
+  
+  // Language switching state
+  const { isLanguageSwitching } = useLanguage();
   
   // Wrong answer overlay hook
   const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
@@ -208,6 +213,9 @@ export default function MainContainer() {
             maxGuesses={wrongAnswerOverlay.maxGuesses}
             onAnimationComplete={wrongAnswerOverlay.onAnimationComplete}
           />
+          
+          {/* Language Switch Loader */}
+          <LanguageSwitchLoader isVisible={isLanguageSwitching} />
         </>
       )}
     </div>
