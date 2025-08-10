@@ -1,12 +1,14 @@
 // scripts/challenge-generators/tv-shows-generator.ts
 import { CategoryType, TvShowFactType } from '../../src/types';
 import { BaseChallengeGenerator } from './generator';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // TV show fact types
 const tvShowFactTypes: TvShowFactType[] = [
   "Genre",
   "Debut",
-  "Character(s)", 
+  "Characters", 
   "Season Structure",
   "Iconic Episode",
   "Network/Platform",
@@ -14,8 +16,30 @@ const tvShowFactTypes: TvShowFactType[] = [
   "Wildcard"
 ];
 
-// TV shows data with facts for each fact type
-const tvShowData = [
+// Load real challenge data from JSON files
+function loadTvShowData() {
+  const tvShowsDir = path.join(__dirname, '../../challenges/tv-shows');
+  const tvShowFiles = fs.readdirSync(tvShowsDir).filter(file => file.endsWith('.json'));
+  
+  return tvShowFiles.map(file => {
+    const filePath = path.join(tvShowsDir, file);
+    const tvShowData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    
+    // Transform the data to match the expected format
+    return {
+      answer: tvShowData.answer,
+      facts: tvShowData.facts,
+      expanded: tvShowData.expanded,
+      alternatives: tvShowData.alternatives,
+      imageUrl: tvShowData.imageUrl,
+      youtubeUrl: tvShowData.youtubeUrl,
+      citation: tvShowData.citation
+    };
+  });
+}
+
+// TV shows data with facts for each fact type (fallback data)
+const fallbackTvShowData = [
   {
     answer: {
       en: "Breaking Bad",
@@ -155,6 +179,16 @@ const tvShowData = [
 
 export class TvShowsGenerator extends BaseChallengeGenerator {
   constructor() {
-    super(CategoryType.TV_SHOWS, tvShowFactTypes, tvShowData);
+    // Try to load real data, fall back to hardcoded data if needed
+    let dataToUse;
+    try {
+      dataToUse = loadTvShowData();
+      console.log(`Loaded ${dataToUse.length} real TV show challenges from JSON files`);
+    } catch (error) {
+      console.warn('Could not load real TV show data, using fallback data:', error);
+      dataToUse = fallbackTvShowData;
+    }
+    
+    super(CategoryType.TV_SHOWS, tvShowFactTypes, dataToUse);
   }
 }

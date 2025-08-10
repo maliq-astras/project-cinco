@@ -169,47 +169,143 @@
     "reproduction": "Reproducción",
     "interspecies relationships": "Relaciones Interespecíficas",
     
-    "director": "Director",
+    "behind the scenes": "Detrás de Escena",
     "premiere": "Estreno",
-    "character(s)": "Personaje(s)",
+    "characters": "Personajes",
     "genre": "Género",
     "critical reception": "Recepción Crítica",
     "box office": "Taquilla",
-    "production": "Producción",
+    "famous lines": "Líneas Famosas",
     
     "author": "Autor",
-    "publication": "Publicación",
+    "illustration/cover": "Ilustración/Portada",
+    "publication date": "Fecha de Publicación",
     "plot": "Trama",
-    "narrative style": "Estilo Narrativo",
+    "quote": "Cita",
     
     "background": "Antecedentes",
-    "era": "Época",
-    "songs & albums": "Canciones y Álbumes",
+    "iconic song": "Canción Icónica",
+    "debut": "Debut",
     "achievements": "Logros",
     "collaborations": "Colaboraciones",
-    "chart performance": "Rendimiento en Listas",
+    "chart performance": "Rendimiento en Charts",
     
     "personal life": "Vida Personal",
     "affiliations": "Afiliaciones",
+    "era": "Época",
     "nationality": "Nacionalidad",
     "physique": "Físico",
     "stats": "Estadísticas",
     
     "occupation": "Ocupación",
-    "important dates": "Fechas Importantes",
+    "early life": "Vida Temprana",
     "legacy": "Legado",
     "physical appearance": "Apariencia Física",
+    "famous quotes": "Citas Famosas",
+    "demise": "Fallecimiento",
     
     "industry": "Industria",
+    "origin": "Origen",
     "logo": "Logo",
-    "location": "Ubicación",
-    "signature product": "Producto Distintivo",
-    "financials": "Finanzas",
+    "signature product": "Producto Insignia",
+    "target audience": "Audiencia Objetivo",
+    "tagline/catchphrase": "Eslogan/Frase Publicitaria",
+    "hq location": "Ubicación de Sede",
     "brand culture": "Cultura de Marca",
     
-    "debut": "Debut",
-    "network/platform": "Canal/Plataforma",
+    "season structure": "Estructura de Temporada",
+    "iconic episode": "Episodio Icónico",
+    "network/platform": "Red/Plataforma",
     "visual style": "Estilo Visual"
+  },
+  "bugReport": {
+    "steps": {
+      "bugType": "¿Qué experimentaste?",
+      "deviceType": "¿Qué dispositivo estás usando?",
+      "details": "¿Puedes proporcionar más detalles?",
+      "file": "¿Te gustaría subir una captura de pantalla o foto?"
+    },
+    "tags": {
+      "appCrashed": "La aplicación se cerró",
+      "uiGlitch": "Error de interfaz",
+      "factCardDidntReveal": "La carta de hecho no se reveló",
+      "bubbleDidntRespond": "La burbuja no respondió",
+      "guessInputNotWorking": "La entrada de adivinanza no funciona",
+      "progressBarIssue": "Problema con la barra de progreso",
+      "timerIssue": "Problema con el temporizador",
+      "skipButtonNotWorking": "El botón de saltar no funciona",
+      "finalFiveRoundProblem": "Problema en la ronda Final Five",
+      "victoryAnimationDidntPlay": "La animación de victoria no se reprodujo",
+      "wrongAnswerMarked": "Respuesta incorrecta marcada como correcta/incorrecta",
+      "categoryNotLoading": "La categoría no carga",
+      "loadingScreenStuck": "Pantalla de carga atascada",
+      "settingsNotSaving": "La configuración no se guarda",
+      "themeColorIssue": "Problema de tema/color",
+      "languageNotSwitching": "El idioma no cambia",
+      "tutorialNotWorking": "El tutorial no funciona",
+      "mobileLandscapeLayoutIssue": "Problema de diseño móvil/horizontal",
+      "accessibilityIssue": "Problema de accesibilidad",
+      "other": "Otro"
+    },
+    "devices": {
+      "iphone": "iPhone",
+      "androidPhone": "Teléfono Android",
+      "ipad": "iPad",
+      "androidTablet": "Tableta Android",
+      "windowsPC": "PC Windows",
+      "mac": "Mac",
+      "chromebook": "Chromebook",
+      "other": "Otro"
+    },
+    "fileUpload": {
+      "clickOrDrag": "Haz clic o arrastra y suelta para subir",
+      "dropHere": "Suelta tu archivo aquí",
+      "optional": "(Opcional)"
+    },
+    "details": {
+      "placeholder": "¿Qué estabas haciendo cuando pasó? ¿Qué esperabas?"
+    },
+    "success": {
+      "title": "¡Gracias!",
+      "message": "Tu reporte de error ha sido enviado exitosamente."
+    },
+    "navigation": {
+      "prev": "Atrás",
+      "next": "Sig.",
+      "skip": "Saltar"
+    }
+  },
+  "feedback": {
+    "steps": {
+      "rating": "¿Cómo calificarías tu experiencia?",
+      "difficulty": "¿Cómo calificarías la dificultad?",
+      "favoriteCategory": "¿Cuál fue tu categoría favorita?",
+      "leastFavoriteCategory": "¿Cuál fue tu categoría menos favorita?"
+    },
+    "difficulty": {
+      "easy": "Fácil",
+      "hard": "Difícil",
+      "options": {
+        "tooEasy": "Muy Fácil",
+        "somewhatEasy": "Algo Fácil",
+        "justRight": "Perfecto",
+        "somewhatChallenging": "Algo Desafiante",
+        "tooChallenging": "Muy Desafiante"
+      }
+    },
+    "category": {
+      "favoriteInstructions": "Selecciona hasta 3 de tus categorías favoritas.",
+      "leastFavoriteInstructions": "Selecciona hasta 3 de tus categorías menos favoritas."
+    },
+    "success": {
+      "title": "¡Gracias!",
+      "message": "Tus comentarios han sido enviados exitosamente."
+    },
+    "navigation": {
+      "prev": "Atrás",
+      "next": "Sig.",
+      "submit": "Enviar"
+    }
   },
   "tutorial": {
     "navigation": {

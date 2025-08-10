@@ -99,7 +99,7 @@ export const factMetadata = {
       icon: "premiere",
       helpText: "The decade or period when the film came out"
     },
-    "Character(s)": {
+    "Characters": {
       description: "A memorable character from the film",
       icon: "movie-character",
       helpText: "Description of a character without naming them"
@@ -119,7 +119,7 @@ export const factMetadata = {
       icon: "box-office",
       helpText: "How well the movie performed financially"
     },
-    "Famous Line": {
+    "Famous Lines": {
       description: "Memorable quotes or dialogue from the movie.",
       icon: "famous-line",
       helpText: "Iconic lines that viewers remember from the film"
@@ -142,7 +142,7 @@ export const factMetadata = {
       icon: "illustration",
       helpText: "Visual elements associated with famous editions of the book"
     },
-    "Character(s)": {
+    "Characters": {
       description: "A memorable character from the book",
       icon: "character-book",
       helpText: "Description of a character without naming them"
@@ -357,7 +357,7 @@ export const factMetadata = {
       icon: "tv-debut",
       helpText: "The debut of the show"
     },
-    "Character(s)": { 
+    "Characters": { 
       description: "A memorable character from the show, its role, or background.",
       icon: "character-tv",
       helpText: "Description of a character without naming them"

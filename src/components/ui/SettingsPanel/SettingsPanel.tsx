@@ -125,7 +125,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
               className={settingsPanelStyles.languageSelectClass}
               style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
               onClick={() => {
-                console.log('Dropdown clicked, current state:', isLanguageDropdownOpen);
                 setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
               }}
             >
@@ -151,11 +150,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
                       color: selectedLanguage === langCode ? 'white' : 'inherit',
                     }}
                     onClick={() => {
-                      console.log('Language option clicked:', langCode);
-                      const fakeEvent = {
-                        target: { value: langCode }
-                      } as React.ChangeEvent<HTMLSelectElement>;
-                      handleLanguageChange(fakeEvent);
+                      handleLanguageChange({ target: { value: langCode } } as React.ChangeEvent<HTMLSelectElement>);
                       setIsLanguageDropdownOpen(false);
                     }}
                   >

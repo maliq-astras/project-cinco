@@ -4,6 +4,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import BaseModal from '../BaseModal/BaseModal';
 import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
+import { useTranslation } from 'react-i18next';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -67,42 +68,43 @@ const bugReportModalStyles = {
 };
 
 const ALL_BUG_TAGS = [
-  'App crashed',
-  'UI glitch',
-  "Fact card didn't reveal",
-  'Bubble didn\'t respond',
-  'Guess input not working',
-  'Progress bar issue',
-  'Timer issue',
-  'Skip button not working',
-  'Final Five round problem',
-  "Victory animation didn't play",
-  'Wrong answer marked correct/incorrect',
-  'Category not loading',
-  'Loading screen stuck',
-  'Settings not saving',
-  'Theme/color issue',
-  'Language not switching',
-  'Tutorial not working',
-  'Mobile/landscape layout issue',
-  'Accessibility issue',
-  'Other',
+  'appCrashed',
+  'uiGlitch',
+  'factCardDidntReveal',
+  'bubbleDidntRespond',
+  'guessInputNotWorking',
+  'progressBarIssue',
+  'timerIssue',
+  'skipButtonNotWorking',
+  'finalFiveRoundProblem',
+  'victoryAnimationDidntPlay',
+  'wrongAnswerMarked',
+  'categoryNotLoading',
+  'loadingScreenStuck',
+  'settingsNotSaving',
+  'themeColorIssue',
+  'languageNotSwitching',
+  'tutorialNotWorking',
+  'mobileLandscapeLayoutIssue',
+  'accessibilityIssue',
+  'other',
 ];
 const INITIAL_TAGS_SHOWN = 6;
 
 const deviceOptions = [
-  'iPhone',
-  'Android phone',
-  'iPad',
-  'Android tablet',
-  'Windows PC',
-  'Mac',
-  'Chromebook',
-  'Other',
+  'iphone',
+  'androidPhone',
+  'ipad',
+  'androidTablet',
+  'windowsPC',
+  'mac',
+  'chromebook',
+  'other',
 ];
 
 const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -120,19 +122,19 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
 
   const steps = [
     {
-      label: 'What did you experience?',
+      label: t('bugReport.steps.bugType'),
       type: 'bugType'
     },
     {
-      label: 'What device are you using?',
+      label: t('bugReport.steps.deviceType'),
       type: 'deviceType'
     },
     {
-      label: 'Can you provide more details?',
+      label: t('bugReport.steps.details'),
       type: 'details'
     },
     {
-      label: 'Would you like to upload a screenshot or photo?',
+      label: t('bugReport.steps.file'),
       type: 'file'
     }
   ];
@@ -236,9 +238,9 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
             <svg className={bugReportModalStyles.successIcon + ' mb-4'} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <h3 className={bugReportModalStyles.successTitle}>Thank You!</h3>
+            <h3 className={bugReportModalStyles.successTitle}>{t('bugReport.success.title')}</h3>
             <p className={bugReportModalStyles.successMessage}>
-              Your bug report has been submitted successfully.
+              {t('bugReport.success.message')}
             </p>
           </div>
         </motion.div>
@@ -314,7 +316,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                     }}
                     aria-pressed={selected}
                   >
-                    {option}
+                    {t(`bugReport.tags.${option}`)}
                   </button>
                 );
               })}
@@ -339,7 +341,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                   }}
                   aria-pressed={selected}
                 >
-                  {option}
+                  {t(`bugReport.devices.${option}`)}
                 </button>
               );
             })}
@@ -354,7 +356,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
               maxLength={400}
               className="block mx-auto w-[95vw] h-48 md:h-64 resize-none px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800/50 dark:text-white"
               style={{ maxWidth: 'calc(100% - 3rem)' }}
-              placeholder="What were you doing when it happened? What did you expect?"
+              placeholder={t('bugReport.details.placeholder')}
             />
             <div className="text-xs text-gray-400 mt-2 w-full max-w-2xl md:max-w-3xl mx-auto text-right">
               {formData.bugDetails.length}/400
@@ -384,9 +386,9 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <p className={bugReportModalStyles.fileUploadText}>
-                  {isDragging ? 'Drop your file here' : 'Click or drag and drop to upload'}
+                  {isDragging ? t('bugReport.fileUpload.dropHere') : t('bugReport.fileUpload.clickOrDrag')}
                 </p>
-                <p className={bugReportModalStyles.fileUploadOptional}>(Optional)</p>
+                <p className={bugReportModalStyles.fileUploadOptional}>{t('bugReport.fileUpload.optional')}</p>
               </div>
             ) : (
               <div className={bugReportModalStyles.filePreviewContainer}>
@@ -501,7 +503,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                       justifyContent: 'center',
                       borderTopRightRadius: 8,
                       borderBottomRightRadius: 8,
-                    }}>Prev</span>
+                    }}>{t('bugReport.navigation.prev')}</span>
                   </button>
                 ) : <span />}
                 <button
@@ -539,7 +541,7 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
                     borderTopLeftRadius: 8,
                     borderBottomLeftRadius: 8,
                     marginRight: 2,
-                  }}>{(steps[step].type === 'file' && !formData.file) ? 'Skip' : 'Next'}</span>
+                  }}>{(steps[step].type === 'file' && !formData.file) ? t('bugReport.navigation.skip') : t('bugReport.navigation.next')}</span>
                   {/* Arrow segment */}
                   <span style={{
                     background: `var(--color-${colors.primary})`,

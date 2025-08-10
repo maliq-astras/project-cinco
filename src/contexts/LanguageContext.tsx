@@ -49,29 +49,22 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const setShouldPauseTimer = useGameStore(state => state.setShouldPauseTimer);
 
   useEffect(() => {
-    console.log('LanguageContext useEffect triggered:', { language, isLanguageSwitching });
     
     i18n.changeLanguage(language);
     localStorage.setItem('language', language);
-    
-    console.log('Updated i18n and localStorage to:', language);
-    
+        
     // Only fetch challenge if we're not in the middle of a language switch
     // The changeLanguage function will handle fetching after reset
     if (!isLanguageSwitching) {
-      console.log('Fetching challenge from useEffect for language:', language);
       fetchChallenge(language);
     } else {
-      console.log('Skipping fetchChallenge in useEffect because isLanguageSwitching is true');
     }
   }, [language, i18n, fetchChallenge, isLanguageSwitching]);
 
   const changeLanguage = async (newLanguage: Language) => {
-    console.log('LanguageContext.changeLanguage called:', { current: language, new: newLanguage });
     
     // Remove the restriction - users can now change language anytime
     if (language === newLanguage) {
-      console.log('Language is already set to:', newLanguage, '- returning early');
       return; // No change needed
     }
     
@@ -84,7 +77,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     
     try {
       // Change the language first
-      console.log('Setting language state to:', newLanguage);
       setLanguage(newLanguage);
       
       // Wait a bit to ensure language change is processed
@@ -92,7 +84,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       
       // Just fetch the challenge in the new language - don't reset game state
       // This preserves user progress, revealed facts, guesses, timer, etc.
-      console.log('Fetching challenge in new language:', newLanguage);
       const gameStore = useGameStore.getState();
       await gameStore.fetchChallenge(newLanguage);
       
@@ -106,7 +97,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       console.error('Error during language change:', error);
     } finally {
       // Always restore timer and hide loading after minimum time
-      console.log('Language change completed, cleaning up...');
       setIsLanguageSwitching(false);
       setShouldPauseTimer(false); // Resume the game timer
     }

@@ -156,7 +156,6 @@ export function useMainContainer() {
   const getGameMessageProps = () => {
     // If we have saved game data from today, use it for accurate stats
     if (todayGameData) {
-      console.log('Using saved game data for endgame message:', todayGameData);
       return {
         outcome: todayGameData.outcome,
         correctAnswer: todayGameData.correctAnswer,
@@ -166,7 +165,6 @@ export function useMainContainer() {
     }
     
     // Fallback to calculating from current game state (live game)
-    console.log('Calculating endgame message from current game state');
     
     // Find correct answer if it exists
     const correctGuess = gameState.guesses.find(g => g.isCorrect);

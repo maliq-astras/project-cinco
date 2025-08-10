@@ -94,9 +94,7 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     };
   }, []);
 
-  const toggleLanguageDropdown = () => {
-    console.log('toggleLanguageDropdown called, current state:', isLanguageDropdownOpen);
-    
+  const toggleLanguageDropdown = () => {  
     // Remove the language lock restriction - users can always change language
     if (!isLanguageDropdownOpen && languageSelectRef.current) {
       const rect = languageSelectRef.current.getBoundingClientRect();
@@ -105,12 +103,10 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
         left: rect.left + window.scrollX,
         width: rect.width
       };
-      console.log('Setting dropdown position:', position);
       setDropdownPosition(position);
     }
     
     setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-    console.log('Dropdown state will be:', !isLanguageDropdownOpen);
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -140,12 +136,10 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   
   // Function for the custom select to update language
   const selectLanguage = async (lang: string) => {
-    console.log('selectLanguage called with:', lang);
     
     // Remove language lock restriction - users can always change language
     if (SUPPORTED_LANGUAGES.includes(lang)) {
       setIsLanguageDropdownOpen(false);
-      console.log('Calling changeLanguage with:', lang);
       await changeLanguage(lang as Language);
       // selectedLanguage will be updated automatically via the useEffect that syncs with language context
     }

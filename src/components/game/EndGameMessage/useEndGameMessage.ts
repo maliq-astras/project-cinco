@@ -78,7 +78,6 @@ export const useEndGameMessage = ({
           if (attempt > 0) {
             // Wait with exponential backoff
             await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-            console.log(`Retry ${attempt + 1}/3 for correct answer...`);
           }
           
           response = await fetch('/api/final-five-answer', {

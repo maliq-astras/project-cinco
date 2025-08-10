@@ -216,7 +216,6 @@ export function useFinalFiveModal() {
                 try {
                   // Add a small delay between retries
                   if (attempt > 0) {
-                    console.log(`Retry attempt ${attempt + 1} for correct answer`);
                     await new Promise(resolve => setTimeout(resolve, attempt * 1000));
                   }
                   

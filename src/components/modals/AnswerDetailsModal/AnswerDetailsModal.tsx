@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
 import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
 import { deviceDetection } from '@/helpers/deviceHelpers';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 
@@ -89,7 +90,12 @@ const answerDetailsModalStyles = {
   },
   backButton: "flex items-center gap-2 mb-3 text-sm cursor-pointer hover:opacity-70 transition-opacity",
   detailTitle: "text-lg font-bold mb-3 text-white",
-  detailContent: "flex-1 text-white leading-relaxed overflow-y-auto text-sm",
+  detailContent: (isMobileDevice: boolean) => {
+    if (isMobileDevice) {
+      return "flex-1 text-white leading-relaxed overflow-y-scroll text-sm h-48 max-h-48 pr-2 scrollbar-always-visible"; // Fixed height with scroll on mobile, padding for scrollbar
+    }
+    return "flex-1 text-white leading-relaxed overflow-y-scroll text-lg pr-2 scrollbar-always-visible"; // Larger text on desktop, padding for scrollbar
+  },
 };
 
 const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({ 
@@ -98,6 +104,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   answer 
 }) => {
   const { colors, darkMode } = useTheme();
+  const { language } = useLanguage();
   const challenge = useGameStore(state => state.gameState.challenge);
   const getFilter = useIconFilter();
   
@@ -255,8 +262,14 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
       </div>
       
       {/* Fact content */}
-      <div className={answerDetailsModalStyles.detailContent}>
-        {placeholderFacts[selectedFact!]}
+      <div 
+        className={answerDetailsModalStyles.detailContent(isMobileDevice)}
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: `var(--color-${colors.primary}) transparent`
+        }}
+      >
+        {challenge?.expanded?.[factTypes[selectedFact!]]?.[language] || placeholderFacts[selectedFact!]}
       </div>
       
       {/* Left-aligned rounded back arrow button */}

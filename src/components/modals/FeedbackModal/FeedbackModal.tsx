@@ -65,11 +65,11 @@ const feedbackModalStyles = {
 const categoryOptions = Object.values(CategoryType);
 
 const difficultyOptions = [
-  'Too Easy',
-  'Somewhat Easy',
-  'Just Right',
-  'Somewhat Challenging',
-  'Too Challenging',
+  'tooEasy',
+  'somewhatEasy',
+  'justRight',
+  'somewhatChallenging',
+  'tooChallenging',
 ];
 
 const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
@@ -78,19 +78,19 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
 
   const steps = [
     {
-      label: 'How would you rate your experience?',
+      label: t('feedback.steps.rating'),
       type: 'rating'
     },
     {
-      label: 'How would you rate the difficulty?',
+      label: t('feedback.steps.difficulty'),
       type: 'difficulty'
     },
     {
-      label: 'What was your favorite category?',
+      label: t('feedback.steps.favoriteCategory'),
       type: 'favoriteCategory'
     },
     {
-      label: 'What was your least favorite category?',
+      label: t('feedback.steps.leastFavoriteCategory'),
       type: 'leastFavoriteCategory'
     }
   ];
@@ -172,7 +172,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     onClick={() => onChange(idx)}
                     onMouseEnter={() => setHovered(idx)}
                     onMouseLeave={() => setHovered(null)}
-                    aria-label={difficultyOptions[idx - 1]}
+                    aria-label={t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}
                     className="transition-all duration-150 focus:outline-none"
                     style={{
                       width: sizes[idx - 1],
@@ -191,14 +191,14 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     }}
                   >
                     {/* For accessibility, visually hidden label */}
-                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{difficultyOptions[idx - 1]}</span>
+                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}</span>
                   </button>
                   {/* Absolutely position Easy/Hard below first/last bubble */}
                   {idx === 1 && (
-                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[0], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[0] + 6 }}>Easy</span>
+                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[0], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[0] + 6 }}>{t('feedback.difficulty.easy')}</span>
                   )}
                   {idx === 5 && (
-                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[4], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[4] + 6 }}>Hard</span>
+                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[4], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[4] + 6 }}>{t('feedback.difficulty.hard')}</span>
                   )}
                 </div>
               );
@@ -206,7 +206,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'right', lineHeight: '44px', height: 48 }}>Easy</span>
+            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'right', lineHeight: '44px', height: 48 }}>{t('feedback.difficulty.easy')}</span>
             <div className="flex gap-6 items-center">
               {[1, 2, 3, 4, 5].map((idx) => {
                 const isActive = (hovered ? idx === hovered : idx === value);
@@ -217,7 +217,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     onClick={() => onChange(idx)}
                     onMouseEnter={() => setHovered(idx)}
                     onMouseLeave={() => setHovered(null)}
-                    aria-label={difficultyOptions[idx - 1]}
+                    aria-label={t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}
                     className="transition-all duration-150 focus:outline-none"
                     style={{
                       width: sizes[idx - 1],
@@ -236,12 +236,12 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     }}
                   >
                     {/* For accessibility, visually hidden label */}
-                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{difficultyOptions[idx - 1]}</span>
+                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}</span>
                   </button>
                 );
               })}
             </div>
-            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'left', lineHeight: '44px', height: 48 }}>Hard</span>
+            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'left', lineHeight: '44px', height: 48 }}>{t('feedback.difficulty.hard')}</span>
           </div>
         )}
       </div>
@@ -261,9 +261,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
             <svg className={feedbackModalStyles.successIcon + ' mb-4'} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <h3 className={feedbackModalStyles.successTitle}>Thank You!</h3>
+            <h3 className={feedbackModalStyles.successTitle}>{t('feedback.success.title')}</h3>
             <p className={feedbackModalStyles.successMessage}>
-              Your feedback has been submitted successfully.
+              {t('feedback.success.message')}
             </p>
           </div>
         </motion.div>
@@ -295,7 +295,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
 
         {currentStep.type === 'favoriteCategory' && (
           <div className="flex flex-col items-center w-full mb-6">
-            <div className="mb-4 text-center text-base font-medium opacity-80">Select up to 3 of your favorite categories.</div>
+            <div className="mb-4 text-center text-base font-medium opacity-80">{t('feedback.category.favoriteInstructions')}</div>
             <div className="flex flex-wrap gap-3 justify-center w-full max-w-2xl">
               {categoryOptions.map((option) => {
                 const selected = Array.isArray(formData.favoriteCategory)
@@ -343,7 +343,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
 
         {currentStep.type === 'leastFavoriteCategory' && (
           <div className="flex flex-col items-center w-full mb-6">
-            <div className="mb-4 text-center text-base font-medium opacity-80">Select up to 3 of your least favorite categories.</div>
+            <div className="mb-4 text-center text-base font-medium opacity-80">{t('feedback.category.leastFavoriteInstructions')}</div>
             <div className="flex flex-wrap gap-3 justify-center w-full max-w-2xl">
               {categoryOptions.map((option) => {
                 const selected = Array.isArray(formData.leastFavoriteCategory)
@@ -438,7 +438,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                 {step > 0 ? (
                   <ModalNavButton
                     direction="prev"
-                    label="Prev"
+                    label={t('feedback.navigation.prev')}
                     onClick={handleBack}
                     disabled={false}
                     primaryColor={colors.primary}
@@ -447,7 +447,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                 ) : <span />}
                 <ModalNavButton
                   direction="next"
-                  label={step === steps.length - 1 ? 'Submit' : 'Next'}
+                  label={step === steps.length - 1 ? t('feedback.navigation.submit') : t('feedback.navigation.next')}
                   onClick={handleNext}
                   disabled={!isStepValid(step)}
                   primaryColor={colors.primary}

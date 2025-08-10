@@ -6,7 +6,7 @@ import { BaseChallengeGenerator } from './generator';
 const bookFactTypes: BookFactType[] = [
   "Author",
   "Illustration/Cover",
-  "Character(s)", 
+  "Characters", 
   "Genre",
   "Publication Date",
   "Plot",

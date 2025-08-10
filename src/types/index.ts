@@ -120,13 +120,13 @@ export const categoryColorMap: Record<CategoryType, ThemeColors> = {
 // Define fact types for each category
 export type CountryFactType = "Language(s)" | "Flag" | "Notable City" | "Political History" | "Economy" | "Culture & Tradition" | "Geography & Border" | "Wildcard";
 export type AnimalFactType = "Habitat" | "Diet" | "Physical Characteristic" | "Evolutionary History" | "Social Behavior" | "Reproduction" | "Interspecies Relationships" | "Wildcard";
-export type MovieFactType = "Behind the Scenes" | "Premiere" | "Character(s)" | "Genre" | "Critical Reception" | "Box Office" | "Famous Line" | "Wildcard";
-export type BookFactType = "Author" | "Illustration/Cover" | "Character(s)" | "Genre" | "Publication Date" | "Plot" | "Quote" | "Wildcard";
+export type MovieFactType = "Behind the Scenes" | "Premiere" | "Characters" | "Genre" | "Critical Reception" | "Box Office" | "Famous Lines" | "Wildcard";
+export type BookFactType = "Author" | "Illustration/Cover" | "Characters" | "Genre" | "Publication Date" | "Plot" | "Quote" | "Wildcard";
 export type MusicalArtistFactType = "Genre" | "Background" | "Iconic Song" | "Debut" | "Achievements" | "Collaborations" | "Chart Performance" | "Wildcard";
 export type AthleteFactType = "Personal Life" | "Affiliations" | "Era" | "Nationality" | "Physique" | "Stats" | "Achievements" | "Wildcard";
 export type HistoricalFigureFactType = "Occupation" | "Early Life" | "Nationality" | "Legacy" | "Physical Appearance" | "Famous Quotes" | "Demise" | "Wildcard";
 export type FamousBrandFactType = "Industry" | "Origin" | "Logo" | "Signature Product" | "Target Audience" | "Tagline/Catchphrase" | "HQ Location" | "Brand Culture" | "Wildcard";
-export type TvShowFactType = "Genre" | "Debut" | "Character(s)" | "Season Structure" | "Iconic Episode" | "Network/Platform" | "Visual Style" | "Wildcard";
+export type TvShowFactType = "Genre" | "Debut" | "Characters" | "Season Structure" | "Iconic Episode" | "Network/Platform" | "Visual Style" | "Wildcard";
 
 // Map categories to their fact types
 export type CategoryFactTypeMap = {
@@ -157,6 +157,7 @@ export interface Challenge {
   date: string;
   category: CategoryType;
   facts: Fact<CategoryType>[];
+  expanded?: Record<string, { en: string; es: string }>;
   answer: {
     en: string;
     es: string;

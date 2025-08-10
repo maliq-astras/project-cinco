@@ -1,21 +1,45 @@
 // scripts/challenge-generators/movies-generator.ts
 import { CategoryType, MovieFactType } from '../../src/types';
 import { BaseChallengeGenerator } from './generator';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Movie fact types
 const movieFactTypes: MovieFactType[] = [
   "Behind the Scenes",
   "Premiere",
-  "Character(s)", 
+  "Characters", 
   "Genre",
   "Critical Reception",
   "Box Office",
-  "Famous Line",
+  "Famous Lines",
   "Wildcard"
 ];
 
-// Movies data with facts for each fact type
-const movieData = [
+// Load real challenge data from JSON files
+function loadMovieData() {
+  const moviesDir = path.join(__dirname, '../../challenges/movies');
+  const movieFiles = fs.readdirSync(moviesDir).filter(file => file.endsWith('.json'));
+  
+  return movieFiles.map(file => {
+    const filePath = path.join(moviesDir, file);
+    const movieData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    
+    // Transform the data to match the expected format
+    return {
+      answer: movieData.answer,
+      facts: movieData.facts,
+      expanded: movieData.expanded,
+      alternatives: movieData.alternatives,
+      imageUrl: movieData.imageUrl,
+      youtubeUrl: movieData.youtubeUrl,
+      citation: movieData.citation
+    };
+  });
+}
+
+// Movies data with facts for each fact type (fallback data)
+const fallbackMovieData = [
   {
     answer: {
       en: "The Godfather",
@@ -155,6 +179,16 @@ const movieData = [
 
 export class MoviesGenerator extends BaseChallengeGenerator {
   constructor() {
-    super(CategoryType.MOVIES, movieFactTypes, movieData);
+    // Try to load real data, fall back to hardcoded data if needed
+    let dataToUse;
+    try {
+      dataToUse = loadMovieData();
+      console.log(`Loaded ${dataToUse.length} real movie challenges from JSON files`);
+    } catch (error) {
+      console.warn('Could not load real movie data, using fallback data:', error);
+      dataToUse = fallbackMovieData;
+    }
+    
+    super(CategoryType.MOVIES, movieFactTypes, dataToUse);
   }
 }

@@ -85,7 +85,7 @@ const musicalArtistIcons: IconMapping = {
 const bookIcons: IconMapping = {
   'Author': 'author',
   'Illustration/Cover': 'illustration',
-  'Character(s)': 'character-book',
+  'Characters': 'character-book',
   'Genre': 'genre-book',
   'Publication Date': 'publication',
   'Plot': 'plot',
@@ -97,7 +97,7 @@ const bookIcons: IconMapping = {
 const tvShowIcons: IconMapping = {
   'Genre': 'tv-genre',
   'Debut': 'tv-debut',
-  'Character(s)': 'character-tv',
+  'Characters': 'character-tv',
   'Season Structure': 'tv-seasons',
   'Iconic Episode': 'tv-episode',
   'Network/Platform': 'tv-network',
@@ -109,11 +109,11 @@ const tvShowIcons: IconMapping = {
 const movieIcons: IconMapping = {
   'Behind the Scenes': 'behind-the-scenes',
   'Premiere': 'premiere',
-  'Character(s)': 'movie-character',
+  'Characters': 'movie-character',
   'Genre': 'movie-genre',
   'Critical Reception': 'crit-reception',
   'Box Office': 'box-office',
-  'Famous Line': 'famous-line',
+  'Famous Lines': 'famous-line',
   'Wildcard': 'wildcard'
 };
 

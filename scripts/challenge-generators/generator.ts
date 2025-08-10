@@ -31,8 +31,11 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
   protected subjectPool: { 
     answer: string;
     facts: Record<string, string>;
+    expanded?: Record<string, string>;
     alternatives: string[];
     imageUrl?: string;
+    youtubeUrl?: string;
+    citation?: string;
     translations?: {
       es?: {
         facts: Record<string, string>;
@@ -77,8 +80,11 @@ export abstract class BaseChallengeGenerator implements ChallengeGenerator {
           content: subject.facts[factType] || `No fact available for ${factType}`,
           category: this.category
         })),
+        expanded: subject.expanded,
         answer: subject.answer,
         imageUrl: subject.imageUrl,
+        youtubeUrl: subject.youtubeUrl,
+        citation: subject.citation,
         alternatives: subject.alternatives || []
       });
     }

@@ -161,7 +161,7 @@
   },
   "factTypes": {
     "language(s)": "Language(s)",
-    "flag": "Flag",
+    "flag": "Flag", 
     "notable city": "Notable City",
     "political history": "Political History",
     "economy": "Economy",
@@ -170,54 +170,150 @@
     "wildcard": "Wildcard",
     
     "habitat": "Habitat",
-    "diet": "Diet",
+    "diet": "Diet", 
     "physical characteristic": "Physical Characteristic",
     "evolutionary history": "Evolutionary History",
     "social behavior": "Social Behavior",
     "reproduction": "Reproduction",
     "interspecies relationships": "Interspecies Relationships",
     
-    "director": "Director",
+    "behind the scenes": "Behind the Scenes",
     "premiere": "Premiere",
-    "character(s)": "Character(s)",
+    "characters": "Characters",
     "genre": "Genre",
     "critical reception": "Critical Reception",
     "box office": "Box Office",
-    "production": "Production",
+    "famous lines": "Famous Lines",
     
     "author": "Author",
-    "publication": "Publication",
+    "illustration/cover": "Illustration/Cover",
+    "publication date": "Publication Date",
     "plot": "Plot",
-    "narrative style": "Narrative Style",
+    "quote": "Quote",
     
     "background": "Background",
-    "era": "Era",
-    "songs & albums": "Songs & Albums",
+    "iconic song": "Iconic Song",
+    "debut": "Debut", 
     "achievements": "Achievements",
     "collaborations": "Collaborations",
     "chart performance": "Chart Performance",
     
     "personal life": "Personal Life",
     "affiliations": "Affiliations",
+    "era": "Era",
     "nationality": "Nationality",
     "physique": "Physique",
     "stats": "Stats",
     
     "occupation": "Occupation",
-    "important dates": "Important Dates",
+    "early life": "Early Life",
     "legacy": "Legacy",
-    "physical appearance": "Physical Appearance",
+    "physical appearance": "Physical Appearance", 
+    "famous quotes": "Famous Quotes",
+    "demise": "Demise",
     
     "industry": "Industry",
+    "origin": "Origin",
     "logo": "Logo",
-    "location": "Location",
     "signature product": "Signature Product",
-    "financials": "Financials",
+    "target audience": "Target Audience",
+    "tagline/catchphrase": "Tagline/Catchphrase",
+    "hq location": "HQ Location",
     "brand culture": "Brand Culture",
     
-    "debut": "Debut",
+    "season structure": "Season Structure",
+    "iconic episode": "Iconic Episode",
     "network/platform": "Network/Platform",
     "visual style": "Visual Style"
+  },
+  "bugReport": {
+    "steps": {
+      "bugType": "What did you experience?",
+      "deviceType": "What device are you using?",
+      "details": "Can you provide more details?",
+      "file": "Would you like to upload a screenshot or photo?"
+    },
+    "tags": {
+      "appCrashed": "App crashed",
+      "uiGlitch": "UI glitch",
+      "factCardDidntReveal": "Fact card didn't reveal",
+      "bubbleDidntRespond": "Bubble didn't respond",
+      "guessInputNotWorking": "Guess input not working",
+      "progressBarIssue": "Progress bar issue",
+      "timerIssue": "Timer issue",
+      "skipButtonNotWorking": "Skip button not working",
+      "finalFiveRoundProblem": "Final Five round problem",
+      "victoryAnimationDidntPlay": "Victory animation didn't play",
+      "wrongAnswerMarked": "Wrong answer marked correct/incorrect",
+      "categoryNotLoading": "Category not loading",
+      "loadingScreenStuck": "Loading screen stuck",
+      "settingsNotSaving": "Settings not saving",
+      "themeColorIssue": "Theme/color issue",
+      "languageNotSwitching": "Language not switching",
+      "tutorialNotWorking": "Tutorial not working",
+      "mobileLandscapeLayoutIssue": "Mobile/landscape layout issue",
+      "accessibilityIssue": "Accessibility issue",
+      "other": "Other"
+    },
+    "devices": {
+      "iphone": "iPhone",
+      "androidPhone": "Android phone",
+      "ipad": "iPad",
+      "androidTablet": "Android tablet",
+      "windowsPC": "Windows PC",
+      "mac": "Mac",
+      "chromebook": "Chromebook",
+      "other": "Other"
+    },
+    "fileUpload": {
+      "clickOrDrag": "Click or drag and drop to upload",
+      "dropHere": "Drop your file here",
+      "optional": "(Optional)"
+    },
+    "details": {
+      "placeholder": "What were you doing when it happened? What did you expect?"
+    },
+    "success": {
+      "title": "Thank You!",
+      "message": "Your bug report has been submitted successfully."
+    },
+    "navigation": {
+      "prev": "Prev",
+      "next": "Next",
+      "skip": "Skip"
+    }
+  },
+  "feedback": {
+    "steps": {
+      "rating": "How would you rate your experience?",
+      "difficulty": "How would you rate the difficulty?",
+      "favoriteCategory": "What was your favorite category?",
+      "leastFavoriteCategory": "What was your least favorite category?"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "hard": "Hard",
+      "options": {
+        "tooEasy": "Too Easy",
+        "somewhatEasy": "Somewhat Easy",
+        "justRight": "Just Right",
+        "somewhatChallenging": "Somewhat Challenging",
+        "tooChallenging": "Too Challenging"
+      }
+    },
+    "category": {
+      "favoriteInstructions": "Select up to 3 of your favorite categories.",
+      "leastFavoriteInstructions": "Select up to 3 of your least favorite categories."
+    },
+    "success": {
+      "title": "Thank You!",
+      "message": "Your feedback has been submitted successfully."
+    },
+    "navigation": {
+      "prev": "Prev",
+      "next": "Next",
+      "submit": "Submit"
+    }
   },
   "tutorial": {
     "navigation": {

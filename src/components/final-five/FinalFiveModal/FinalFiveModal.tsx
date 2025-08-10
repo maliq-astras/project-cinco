@@ -97,8 +97,7 @@ export default function FinalFiveModal() {
         </motion.div>
       </div>
     );
-    if (typeof window === 'undefined') return null;
-    return createPortal(errorModal, document.body);
+    return errorModal;
   }
   
   const modal = (
@@ -307,6 +306,5 @@ export default function FinalFiveModal() {
       )}
     </AnimatePresence>
   );
-  if (typeof window === 'undefined') return null;
-  return createPortal(modal, document.body);
+  return modal;
 } 

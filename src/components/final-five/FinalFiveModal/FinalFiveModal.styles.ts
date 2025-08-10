@@ -5,7 +5,7 @@ import { deviceDetection } from '@/helpers/deviceHelpers';
 
 export const finalFiveStyles = {
   // Main modal container
-  modalContainer: "fixed inset-0 z-50 flex md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
+  modalContainer: "fixed inset-0 z-[60] flex md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
   
   // Modal content panel
   modalContent: "w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
