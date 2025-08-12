@@ -29,6 +29,10 @@ interface GameStore {
   isHardModeEnabled: boolean;
   setHardModeEnabled: (enabled: boolean) => void;
   
+  // Autocomplete settings
+  isAutocompleteEnabled: boolean;
+  setAutocompleteEnabled: (enabled: boolean) => void;
+  
   // Streak tracking
   currentStreak: number;
   weeklyCompletions: ('completed' | 'failed' | 'missed' | null)[]; // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
@@ -134,6 +138,9 @@ export const useGameStore = create<GameStore>()(
   hardMode: false, // Current game's hard mode state (can't be changed after start)
   isHardModeEnabled: false, // Setting that can be toggled before game starts
   
+  // Autocomplete settings
+  isAutocompleteEnabled: false, // Default to disabled, like dark mode
+  
   // Streak tracking
   currentStreak: 0,
   weeklyCompletions: [null, null, null, null, null, null, null], // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
@@ -155,6 +162,10 @@ export const useGameStore = create<GameStore>()(
         finalFiveTimeRemaining: enabled ? 5 : 55 // Also update Final Five timer when toggling hard mode
       });
     }
+  },
+  
+  setAutocompleteEnabled: (enabled: boolean) => {
+    set({ isAutocompleteEnabled: enabled });
   },
   
   // Final Five specific state
@@ -1342,6 +1353,7 @@ export const useGameStore = create<GameStore>()(
       partialize: (state) => ({ 
         // Only persist the hard mode setting and streak data
         isHardModeEnabled: state.isHardModeEnabled,
+        isAutocompleteEnabled: state.isAutocompleteEnabled,
         currentStreak: state.currentStreak,
         weeklyCompletions: state.weeklyCompletions,
         lastCompletionDate: state.lastCompletionDate,

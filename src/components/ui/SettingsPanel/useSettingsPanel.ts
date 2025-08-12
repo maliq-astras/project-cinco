@@ -25,6 +25,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   // Use separate selectors for each state value to avoid the infinite loop
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
   const setHardModeEnabled = useGameStore(state => state.setHardModeEnabled);
+  const isAutocompleteEnabled = useGameStore(state => state.isAutocompleteEnabled);
+  const setAutocompleteEnabled = useGameStore(state => state.setAutocompleteEnabled);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
   const hasMadeGuess = useGameStore(state => state.hasMadeGuess);
   
@@ -119,6 +121,10 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     setHardModeEnabled(!isHardModeEnabled);
   };
   
+  const toggleAutocomplete = () => {
+    setAutocompleteEnabled(!isAutocompleteEnabled);
+  };
+  
   const toggleSound = () => {
     setIsSoundEnabled(!isSoundEnabled);
   };
@@ -151,6 +157,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     toggleDarkMode,
     isHardModeEnabled,
     toggleHardMode,
+    isAutocompleteEnabled,
+    toggleAutocomplete,
     hasSeenClue,
     isSoundEnabled,
     toggleSound,

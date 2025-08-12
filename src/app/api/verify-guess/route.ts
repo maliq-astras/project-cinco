@@ -3,6 +3,9 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { Challenge } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
+import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
+import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
+import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
 
 // Cache the answers for a challenge for 24 hours
 const getChallengeAnswers = unstable_cache(
@@ -54,13 +57,30 @@ initializeIndexes().catch(console.error);
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting check
+    const rateLimitResponse = checkRateLimit(request, RATE_LIMITS.GUESS);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Request size validation
+    const sizeResponse = await validateRequestSize(request, SIZE_LIMITS.SMALL);
+    if (sizeResponse) return sizeResponse;
+
     const { challengeId, guess, language = 'en' } = await request.json();
     
-    if (!challengeId || !guess) {
-      return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
-      );
+    // Validate inputs
+    const errors: string[] = [];
+    
+    const challengeIdError = validateInput(challengeId, VALIDATION_RULES.challengeId);
+    if (challengeIdError) errors.push(`challengeId: ${challengeIdError}`);
+    
+    const guessError = validateInput(guess, VALIDATION_RULES.guess);
+    if (guessError) errors.push(`guess: ${guessError}`);
+    
+    const languageError = validateInput(language, VALIDATION_RULES.language);
+    if (languageError) errors.push(`language: ${languageError}`);
+    
+    if (errors.length > 0) {
+      return createValidationResponse(errors);
     }
     
     const answer = await getChallengeAnswers(challengeId, language as 'en' | 'es');

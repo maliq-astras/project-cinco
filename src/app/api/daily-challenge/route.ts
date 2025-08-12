@@ -3,6 +3,8 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { Challenge, Fact, CategoryType } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
+import { validateInput, VALIDATION_RULES } from '@/middleware/validation';
+import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 
 // Initialize database indexes
 export async function initializeIndexes() {
@@ -49,8 +51,21 @@ const getDailyChallenge = unstable_cache(
 
 export async function GET(request: Request) {
   try {
+    // Rate limiting check
+    const rateLimitResponse = checkRateLimit(request, RATE_LIMITS.DAILY_CHALLENGE);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { searchParams } = new URL(request.url);
     const language = (searchParams.get('lang') || 'en') as 'en' | 'es';
+    
+    // Validate language parameter
+    const languageError = validateInput(language, VALIDATION_RULES.language);
+    if (languageError) {
+      return NextResponse.json(
+        { error: `Invalid language: ${languageError}` },
+        { status: 400 }
+      );
+    }
     
     const challenge = await getDailyChallenge();
     

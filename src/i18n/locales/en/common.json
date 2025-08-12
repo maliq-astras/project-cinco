@@ -124,6 +124,8 @@
       "hardMode": "Hard Mode",
       "hardModeDesc": "Less time to guess!",
       "cannotChangeDifficulty": "Cannot change difficulty after game has started",
+      "autocomplete": "Autocomplete",
+      "autocompleteDesc": "Show suggestions while typing",
       "sound": "Sound Effects",
       "soundDesc": "Enable or disable game sounds",
       "highContrast": "High Contrast Mode",

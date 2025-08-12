@@ -1,10 +1,13 @@
-import React, { forwardRef} from 'react';
+import React, { forwardRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import GuessProgressBar from '../GuessProgressBar';
 import Timer from '../../ui/Timer';
 import { useGameControls, GameControlsHandle } from './useGameControls';
 import { gameControlsStyles } from './GameControls.styles';
+import Autocomplete from './Autocomplete';
+import { useGameStore } from '@/store/gameStore';
+import { CategoryType } from '@/types';
 
 const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const { t } = useTranslation();
@@ -22,6 +25,23 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     isSkipConfirmActive,
     isTouchDevice
   } = useGameControls(ref);
+
+  const gameState = useGameStore(state => state.gameState);
+  const isAutocompleteEnabled = useGameStore(state => state.isAutocompleteEnabled);
+  const [hasSuggestionSelected, setHasSuggestionSelected] = useState(false);
+
+  // Handle autocomplete suggestion selection
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputValue(suggestion);
+    // Focus back to input after selection and set cursor to end
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        // Set cursor position to the end of the text
+        inputRef.current.setSelectionRange(suggestion.length, suggestion.length);
+      }
+    }, 0);
+  };
 
   return (
     <div id="game-controls" className={gameControlsStyles.container}>
@@ -52,7 +72,25 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
 
               <div className={gameControlsStyles.inputContainer}>
                 <div className="relative">
-                  <form onSubmit={handleSubmit} className="relative">
+                  <form onSubmit={(e) => {
+                    // Prevent submission if a suggestion is selected
+                    if (hasSuggestionSelected) {
+                      e.preventDefault();
+                      return;
+                    }
+                    handleSubmit(e);
+                  }} className="relative">
+                    {/* Autocomplete suggestions */}
+                    <Autocomplete
+                      category={gameState.challenge?.category || CategoryType.COUNTRIES}
+                      query={inputValue}
+                      onSuggestionClick={handleSuggestionClick}
+                      primaryColor={colors.primary}
+                      isVisible={isAutocompleteEnabled && !isInputDisabled() && inputValue.length >= 2}
+                      inputRef={inputRef}
+                      previousGuesses={gameState.guesses?.map(g => g.guess) || []}
+                      onSelectionChange={setHasSuggestionSelected}
+                    />
                     <input
                       id="game-input"
                       ref={inputRef}

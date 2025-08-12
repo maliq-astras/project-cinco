@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 export const timerStyles = {
   // Container styles
   outerContainer: (isVictoryAnimationActive: boolean): string => 
-    `flex items-center justify-center h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px] ${isVictoryAnimationActive ? 'opacity-0' : ''}`,
+    `flex items-center justify-center h-[66px] sm:h-[76px] min-w-[60px] sm:min-w-[80px] ${isVictoryAnimationActive ? 'opacity-0' : ''}`,
   
   // Base styles shared by all timer variants
   baseClasses: "font-iceberg flex items-center justify-center",
@@ -22,7 +22,7 @@ export const timerStyles = {
       return `${timerStyles.baseClasses} ${className} aspect-square w-full h-full max-w-[150px] max-h-[150px] text-3xl rounded-lg border-2`;
     } else {
       // Default timer used in GameControls
-      return `${timerStyles.baseClasses} ${className} text-xl rounded-lg h-[66px] sm:h-[76px] min-w-[70px] sm:min-w-[80px] border-2`;
+      return `${timerStyles.baseClasses} ${className} text-lg sm:text-xl rounded-lg h-[66px] sm:h-[76px] min-w-[60px] sm:min-w-[80px] border-2`;
     }
   },
   

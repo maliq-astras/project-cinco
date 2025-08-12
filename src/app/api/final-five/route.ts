@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import { Challenge } from '@/types';
+import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
+import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
+import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
 
 type FinalFiveRequest = {
   challengeId: string;
@@ -170,7 +173,31 @@ function createFinalFiveOptions(answer: string, availableAlternatives: string[])
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting check
+    const rateLimitResponse = checkRateLimit(request, RATE_LIMITS.FINAL_FIVE);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Request size validation
+    const sizeResponse = await validateRequestSize(request, SIZE_LIMITS.MEDIUM);
+    if (sizeResponse) return sizeResponse;
+
     const { challengeId, previousGuesses = [], language = 'en' } = await request.json() as FinalFiveRequest;
+    
+    // Validate inputs
+    const errors: string[] = [];
+    
+    const challengeIdError = validateInput(challengeId, VALIDATION_RULES.challengeId);
+    if (challengeIdError) errors.push(`challengeId: ${challengeIdError}`);
+    
+    const languageError = validateInput(language, VALIDATION_RULES.language);
+    if (languageError) errors.push(`language: ${languageError}`);
+    
+    const previousGuessesError = validateInput(previousGuesses, VALIDATION_RULES.previousGuesses);
+    if (previousGuessesError) errors.push(`previousGuesses: ${previousGuessesError}`);
+    
+    if (errors.length > 0) {
+      return createValidationResponse(errors);
+    }
     
     // Fetch the challenge
     const result = await fetchChallengeById(challengeId, language);
@@ -198,7 +225,7 @@ export async function POST(request: Request) {
       normalizedPreviousGuesses,
       answer,
       previousGuesses,
-      challengeId,
+      challengeId!,
       language
     );
     
@@ -225,20 +252,30 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    // Rate limiting check
+    const rateLimitResponse = checkRateLimit(request, RATE_LIMITS.FINAL_FIVE);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { searchParams } = new URL(request.url);
     const challengeId = searchParams.get('id');
     const previousGuessesParam = searchParams.get('previousGuesses');
     const language = (searchParams.get('lang') || 'en') as 'en' | 'es';
     
-    if (!challengeId) {
-      return NextResponse.json(
-        { error: 'Missing challenge ID' }, 
-        { status: 400 }
-      );
+    // Validate inputs
+    const errors: string[] = [];
+    
+    const challengeIdError = validateInput(challengeId, VALIDATION_RULES.challengeId);
+    if (challengeIdError) errors.push(`challengeId: ${challengeIdError}`);
+    
+    const languageError = validateInput(language, VALIDATION_RULES.language);
+    if (languageError) errors.push(`language: ${languageError}`);
+    
+    if (errors.length > 0) {
+      return createValidationResponse(errors);
     }
     
-    // Fetch the challenge
-    const result = await fetchChallengeById(challengeId, language);
+    // Fetch the challenge (challengeId is guaranteed to be valid string after validation)
+    const result = await fetchChallengeById(challengeId!, language);
     if ('error' in result) {
       return NextResponse.json(
         { error: result.error }, 
@@ -273,7 +310,7 @@ export async function GET(request: Request) {
       normalizedPreviousGuesses,
       answer,
       previousGuesses,
-      challengeId,
+      challengeId!,
       language
     );
     

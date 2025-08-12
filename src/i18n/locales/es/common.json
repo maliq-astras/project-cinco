@@ -116,6 +116,8 @@
       "hardMode": "Modo Difícil",
       "hardModeDesc": "¡Menos tiempo para adivinar!",
       "cannotChangeDifficulty": "No se puede cambiar la dificultad después de comenzar el juego",
+      "autocomplete": "Autocompletar",
+      "autocompleteDesc": "Mostrar sugerencias mientras escribes",
       "sound": "Efectos de Sonido",
       "soundDesc": "Activar o desactivar sonidos del juego",
       "highContrast": "Modo de Alto Contraste",

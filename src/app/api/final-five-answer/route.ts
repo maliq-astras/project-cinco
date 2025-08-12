@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
+import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
+import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
+import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
 
 // Cache for challenge answers to reduce database load
 const answerCache = new Map<string, string>();
@@ -26,10 +29,27 @@ initializeIndexes().catch(console.error);
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting check
+    const rateLimitResponse = checkRateLimit(request, RATE_LIMITS.FINAL_FIVE);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Request size validation
+    const sizeResponse = await validateRequestSize(request, SIZE_LIMITS.SMALL);
+    if (sizeResponse) return sizeResponse;
+
     const { challengeId, language = 'en' } = await request.json();
     
-    if (!challengeId) {
-      return NextResponse.json({ error: 'Missing challenge ID' }, { status: 400 });
+    // Validate inputs
+    const errors: string[] = [];
+    
+    const challengeIdError = validateInput(challengeId, VALIDATION_RULES.challengeId);
+    if (challengeIdError) errors.push(`challengeId: ${challengeIdError}`);
+    
+    const languageError = validateInput(language, VALIDATION_RULES.language);
+    if (languageError) errors.push(`language: ${languageError}`);
+    
+    if (errors.length > 0) {
+      return createValidationResponse(errors);
     }
     
     // Try to get cached answer

@@ -24,6 +24,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     toggleDarkMode,
     isHardModeEnabled,
     toggleHardMode,
+    isAutocompleteEnabled,
+    toggleAutocomplete,
     hasSeenClue,
     isSoundEnabled,
     toggleSound,
@@ -92,6 +94,18 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             isOn={isHardModeEnabled} 
             onToggle={toggleHardMode} 
             disabled={hasSeenClue}
+          />
+        </div>
+
+        {/* Autocomplete Toggle */}
+        <div className={settingsPanelStyles.settingRow}>
+          <div className={settingsPanelStyles.settingTextContainer}>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.settings.autocomplete')}</p>
+            <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.autocompleteDesc')}</p>
+          </div>
+          <ToggleSwitch 
+            isOn={isAutocompleteEnabled} 
+            onToggle={toggleAutocomplete} 
           />
         </div>
 
