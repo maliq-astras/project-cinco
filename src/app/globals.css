@@ -1,3 +1,7 @@
+/* Hide scrollbars for the expanding game input textarea specifically */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

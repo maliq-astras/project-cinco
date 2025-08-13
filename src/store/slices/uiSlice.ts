@@ -1,0 +1,76 @@
+import { StateCreator } from 'zustand';
+
+export interface UISlice {
+  // UI and animation states
+  hoveredFact: number | null;
+  viewingFact: number | null;
+  cardSourcePosition: { x: number, y: number } | null;
+  isDrawingFromStack: boolean;
+  isReturningToStack: boolean;
+  isCardAnimatingOut: boolean;
+  shouldFocusInput: boolean;
+  windowWidth: number;
+  scaleFactor: number;
+  
+  // Panel and modal states
+  isSettingsPanelOpen: boolean;
+  isTutorialOpen: boolean;
+  
+  // Autocomplete settings
+  isAutocompleteEnabled: boolean;
+  
+  // Actions
+  setWindowWidth: (width: number) => void;
+  setHoveredFact: (factIndex: number | null) => void;
+  setShouldFocusInput: (shouldFocus: boolean) => void;
+  setScaleFactor: (factor: number) => void;
+  setSettingsPanelOpen: (isOpen: boolean) => void;
+  setTutorialOpen: (isOpen: boolean) => void;
+  setAutocompleteEnabled: (enabled: boolean) => void;
+}
+
+export const createUISlice: StateCreator<
+  any,
+  [],
+  [],
+  UISlice
+> = (set, get, api) => ({
+  // Initial state
+  hoveredFact: null,
+  viewingFact: null,
+  cardSourcePosition: null,
+  isDrawingFromStack: false,
+  isReturningToStack: false,
+  isCardAnimatingOut: false,
+  shouldFocusInput: false,
+  windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
+  scaleFactor: 1, // Default scale factor (1 = 100%)
+  
+  // Panel and modal states
+  isSettingsPanelOpen: false,
+  isTutorialOpen: false,
+  
+  // Autocomplete settings
+  isAutocompleteEnabled: false, // Default to disabled, like dark mode
+  
+  // Actions
+  setWindowWidth: (width: number) => set({ windowWidth: width }),
+  setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
+  setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
+  setScaleFactor: (factor: number) => set({ scaleFactor: factor }),
+  
+  setAutocompleteEnabled: (enabled: boolean) => {
+    set({ isAutocompleteEnabled: enabled });
+  },
+  
+  // Add methods to control the settings panel and tutorial
+  setSettingsPanelOpen: (isOpen: boolean) => set({ isSettingsPanelOpen: isOpen }),
+  setTutorialOpen: (isOpen: boolean) => {
+    // Always set both states to the same value
+    set({ 
+      isTutorialOpen: isOpen,
+    });
+    // Also pause/unpause timer through dependency
+    get().setShouldPauseTimer(isOpen);
+  }
+});

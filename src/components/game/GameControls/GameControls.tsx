@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import GuessProgressBar from '../GuessProgressBar';
@@ -6,6 +6,7 @@ import Timer from '../../ui/Timer';
 import { useGameControls, GameControlsHandle } from './useGameControls';
 import { gameControlsStyles } from './GameControls.styles';
 import Autocomplete from './Autocomplete';
+import { useAutoGrowTextarea } from './useAutoGrowTextarea';
 import { useGameStore } from '@/store/gameStore';
 import { CategoryType } from '@/types';
 
@@ -29,6 +30,14 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const gameState = useGameStore(state => state.gameState);
   const isAutocompleteEnabled = useGameStore(state => state.isAutocompleteEnabled);
   const [hasSuggestionSelected, setHasSuggestionSelected] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textareaShellRef = useRef<HTMLDivElement>(null);
+  useAutoGrowTextarea(
+    inputRef as unknown as React.RefObject<HTMLTextAreaElement>,
+    textareaShellRef as unknown as React.RefObject<HTMLDivElement>,
+    inputValue,
+    { maxHeightPx: 120 }
+  );
 
   // Handle autocomplete suggestion selection
   const handleSuggestionClick = (suggestion: string) => {
@@ -70,16 +79,16 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                 <Timer seconds={timeRemaining} />
               </div>
 
-              <div className={gameControlsStyles.inputContainer}>
-                <div className="relative">
-                  <form onSubmit={(e) => {
+                <div className={gameControlsStyles.inputContainer}>
+                <div ref={textareaShellRef} className={gameControlsStyles.inputShell}>
+                  <form ref={formRef} onSubmit={(e) => {
                     // Prevent submission if a suggestion is selected
                     if (hasSuggestionSelected) {
                       e.preventDefault();
                       return;
                     }
                     handleSubmit(e);
-                  }} className="relative">
+                  }}>
                     {/* Autocomplete suggestions */}
                     <Autocomplete
                       category={gameState.challenge?.category || CategoryType.COUNTRIES}
@@ -91,15 +100,24 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
                       previousGuesses={gameState.guesses?.map(g => g.guess) || []}
                       onSelectionChange={setHasSuggestionSelected}
                     />
-                    <input
+                    <textarea
                       id="game-input"
                       ref={inputRef}
-                      className={gameControlsStyles.input(isInputDisabled())}
+                        className={`${gameControlsStyles.input(isInputDisabled())} ${gameControlsStyles.inputPosition} hide-scrollbar`}
                       style={gameControlsStyles.inputWithTheme(colors.primary)}
                       disabled={isInputDisabled()}
                       autoComplete="off"
                       value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
+                       onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey && !hasSuggestionSelected) {
+                            e.preventDefault();
+                            // Submit the form programmatically
+                            formRef.current?.requestSubmit();
+                          }
+                        }}
+                       rows={1}
+                       maxLength={200}
                     />
                     <button
                       type="submit"

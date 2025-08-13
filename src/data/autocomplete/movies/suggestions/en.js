@@ -9,7 +9,6 @@ export const moviesSuggestions = [
   "Finding Nemo",
   "Groundhog Day",
   "Inception",
-  "Shrek",
   "The Martian",
   "When Harry Met Sally",
 
@@ -337,10 +336,8 @@ export const moviesSuggestions = [
   "The Prince of Egypt", // 1998
   "The Road to El Dorado", // 2000
   "Chicken Run", // 2000
-  "Shrek", // 2001
   "Spirit: Stallion of the Cimarron", // 2002
   "Sinbad: Legend of the Seven Seas", // 2003
-  "Shrek 2", // 2004
   "Shark Tale", // 2004
   "Madagascar", // 2005
   "Over the Hedge", // 2006

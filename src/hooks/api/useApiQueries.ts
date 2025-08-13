@@ -59,7 +59,6 @@ async function fetchFinalFiveOptionsFromApi(params: {
       // If this isn't the first attempt, wait before retrying
       if (attempt > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        console.log(`Retrying Final Five fetch (attempt ${attempt} of ${retries})...`);
       }
       
       // Create AbortController for timeout

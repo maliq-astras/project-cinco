@@ -21,7 +21,7 @@ const feedbackModalStyles = {
   content: "flex flex-col items-center justify-center min-h-[400px]",
   
   // Steps
-  stepContainer: "w-full max-w-md mx-auto",
+  stepContainer: "w-full md:max-w-md mx-auto px-4 md:px-0",
   stepLabel: "text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 text-center",
   
   // Star Rating
@@ -392,20 +392,23 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     );
   };
 
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={<span className={righteous.className + ' uppercase'}>FEEDBACK</span>}
       colors={colors}
-      className="max-w-2xl"
+      className={isMobile ? undefined : "max-w-2xl"}
+      mobileHeight={"auto"}
     >
       <div
         className={feedbackModalStyles.content}
         style={{
-          height: 540,
-          minHeight: 540,
-          maxHeight: 540,
+          height: isMobile ? 'auto' : 540,
+          minHeight: isMobile ? undefined : 540,
+          maxHeight: isMobile ? '85vh' : 540,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',

@@ -76,7 +76,6 @@ export const useFeedback = () => {
 
   const handleSubmit = () => {
     // In a real implementation, this would send the feedback to a server
-    console.log('Feedback submitted:', formData);
     setSubmitted(true);
   };
 

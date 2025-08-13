@@ -61,7 +61,8 @@ export const deviceDetection = {
  */
 export function getBubbleSize(windowWidth: number): number {
   if (deviceDetection.isGalaxyS9Plus()) {
-    return 50; // Extra small (xs) bubbles specifically for Galaxy S9+ to fit 4x2 grid
+    // Increase bubble size on Galaxy S9+; still fits 4x2 with current gaps
+    return 60;
   }
   
   if (deviceDetection.isOtherGalaxyPhone()) {
@@ -145,8 +146,10 @@ export function getGridConfig(windowWidth: number) {
  * Get container height for bubble grid based on device type
  */
 export function getContainerHeight(windowWidth: number, gridConfig: { rows: number, cols: number }) {
+  // For Galaxy S9+, compute dynamically using current bubble and gap sizes so
+  // visual adjustments stay in sync when we tweak sizes above
   if (deviceDetection.isGalaxyS9Plus()) {
-    return 115; // Compact container for 2 rows of xs bubbles on Galaxy S9+
+    return gridConfig.rows * getBubbleSize(windowWidth) + getGapSize(windowWidth) * (gridConfig.rows - 1);
   }
   
   if (deviceDetection.isSurfaceDuo()) {

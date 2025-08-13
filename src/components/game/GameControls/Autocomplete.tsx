@@ -11,7 +11,7 @@ interface AutocompleteProps {
   onSuggestionClick: (suggestion: string) => void;
   primaryColor: string;
   isVisible: boolean;
-  inputRef: React.RefObject<HTMLInputElement | null>;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
   previousGuesses?: string[];
   onSelectionChange?: (hasSelection: boolean) => void;
 }
@@ -34,6 +34,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   const { language } = useLanguage();
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [inputFocused, setInputFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -67,14 +68,35 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     }
   };
 
-  // Debounced effect for getting suggestions
+  // Track input focus so we only show suggestions while actively typing/focused
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    const handleFocus = () => setInputFocused(true);
+    const handleBlur = () => {
+      setInputFocused(false);
+      setSuggestions([]);
+      setSelectedIndex(-1);
+      onSelectionChange?.(false);
+    };
+    el.addEventListener('focus', handleFocus);
+    el.addEventListener('blur', handleBlur);
+    // Initialize current focus state
+    setInputFocused(document.activeElement === el);
+    return () => {
+      el.removeEventListener('focus', handleFocus);
+      el.removeEventListener('blur', handleBlur);
+    };
+  }, [inputRef, onSelectionChange]);
+
+  // Debounced effect for getting suggestions (only when focused and visible)
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
     debounceRef.current = setTimeout(() => {
-      if (isVisible && category && query) {
+      if (isVisible && inputFocused && category && query) {
         getSuggestions(query);
       } else {
         setSuggestions([]);
@@ -86,7 +108,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, category, isVisible, previousGuesses, language]);
+  }, [query, category, isVisible, inputFocused, previousGuesses, language]);
 
   // Reset selected index when suggestions change and notify parent
   useEffect(() => {
@@ -118,17 +140,15 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(prev => {
+            setSelectedIndex(prev => {
             const newIndex = prev < suggestions.length - 1 ? prev + 1 : 0;
-            console.log('Arrow Down - prev:', prev, 'new:', newIndex, 'suggestions:', suggestions.length);
             return newIndex;
           });
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex(prev => {
+            setSelectedIndex(prev => {
             const newIndex = prev > 0 ? prev - 1 : suggestions.length - 1;
-            console.log('Arrow Up - prev:', prev, 'new:', newIndex, 'suggestions:', suggestions.length);
             return newIndex;
           });
           break;
@@ -146,8 +166,8 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
       }
     };
 
-    inputElement.addEventListener('keydown', handleKeyDown);
-    return () => inputElement.removeEventListener('keydown', handleKeyDown);
+    inputElement.addEventListener('keydown', handleKeyDown as EventListener);
+    return () => inputElement.removeEventListener('keydown', handleKeyDown as EventListener);
   }, [isVisible, suggestions, selectedIndex, onSuggestionClick, inputRef]);
 
   // Position the autocomplete above the input
@@ -165,13 +185,13 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     return {
       position: 'fixed' as const,
       left: leftPosition,
-      bottom: window.innerHeight - inputRect.top + 5, // 5px above the input
+      bottom: window.innerHeight - inputRect.top + 6, // attach to the top of the textarea since it will translateY upwards
       width: isSmallPhone ? window.innerWidth - 32 : desktopWidth,
-      zIndex: 9999 // High z-index to float above everything
+      zIndex: 58
     };
   };
 
-  if (!isVisible || suggestions.length === 0) return null;
+  if (!isVisible || !inputFocused || suggestions.length === 0) return null;
 
   const autocompleteContent = (
     <motion.div
@@ -207,8 +227,9 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: index * 0.02 }}
-            onClick={() => {
-              // Clear suggestions immediately when clicked
+            // Use onMouseDown so selection happens before input blur
+            onMouseDown={(e) => {
+              e.preventDefault(); // keep input focused (prevents blur during click)
               setSuggestions([]);
               setSelectedIndex(-1);
               onSuggestionClick(suggestion.text);

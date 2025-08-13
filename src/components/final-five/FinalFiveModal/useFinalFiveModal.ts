@@ -37,7 +37,8 @@ export function useFinalFiveModal() {
   const [timerReachedZero, setTimerReachedZero] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  // Initialize based on current viewport so initial animations choose the right variant
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== 'undefined' ? window.innerWidth < 768 : false));
   const maxRetries = 3;
   
   // Get current language from localStorage
@@ -588,6 +589,7 @@ export function useFinalFiveModal() {
     
     // Styles and helpers
     themeColor,
+    primaryColorClass: colors.primary,
     getMessage,
     getCardStyles: useCallback((option: string) => {
     // Front of card (with number 5)

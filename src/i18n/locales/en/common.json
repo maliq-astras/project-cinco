@@ -41,8 +41,7 @@
       "guessesLeft": "{{count}} guess left!",
       "guessesLeft_one": "{{count}} guess left!",
       "guessesLeft_other": "{{count}} guesses left!",
-      "noGuessesLeft": "No guesses left! Time for the Final Five!",
-      "keepTrying": "Keep trying, you've got this!"
+      "noGuessesLeft": "No guesses left!"
     },
     "finalFive": {
       "title": "FINAL 5",

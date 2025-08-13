@@ -26,7 +26,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const { colors } = useTheme();
   
   // Create a ref for the input element
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   
   // Expose the focusInput method to parent components
   useImperativeHandle(ref, () => ({

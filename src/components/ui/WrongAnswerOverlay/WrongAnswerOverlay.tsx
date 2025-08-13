@@ -269,21 +269,6 @@ export default function WrongAnswerOverlay({
                     : t('game.wrongAnswer.noGuessesLeft')
                   }
                 </p>
-                
-                {remainingGuesses > 0 && (
-                  <motion.p 
-                    className="text-sm opacity-75"
-                    style={{ color: `var(--color-${colors.accent})` }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.75 }}
-                    transition={{
-                      delay: 1.3, // Fixed delay for consistent timing
-                      duration: 0.4
-                    }}
-                  >
-                    {t('game.wrongAnswer.keepTrying')}
-                  </motion.p>
-                )}
               </motion.div>
 
               {/* Progress indicator */}

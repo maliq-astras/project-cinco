@@ -28,19 +28,21 @@ const answerDetailsModalStyles = {
       return "flex flex-col h-full gap-2 justify-center overflow-hidden max-w-xs mx-auto"; // Minimal spacing for Surface Duo
     }
     if (isMobileDevice) {
-      return "flex flex-col h-full gap-6 justify-center overflow-hidden w-full px-4"; // Use full width on mobile
+      return "flex flex-col h-[92vh] gap-4 justify-start items-stretch overflow-hidden w-full px-4 pt-10"; // Fill viewport height on mobile and avoid X overlap
     }
     if (isLandscape) {
       return "flex flex-row h-full gap-8 items-center justify-center overflow-hidden w-full px-8"; // Side-by-side in landscape
     }
-    return "flex flex-col h-full gap-6 justify-center overflow-hidden w-full max-w-none px-8"; // Much larger on desktop
+    // Stacked tablet/desktop portrait: avoid vertical re-centering shifts
+    return "flex flex-col h-[92vh] gap-6 justify-start items-stretch overflow-hidden w-full max-w-none px-8 pt-8";
   },
   
   // Photo section - larger on mobile to fill space better
   photoSection: "flex-shrink-0",
   photoSize: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
     if (isSurfaceDuo) {
-      return 'w-full aspect-[5/2]'; // Much smaller and wider for Surface Duo
+      // Treat Surface Duo like stacked-tablet portrait to avoid “zoomed” look
+      return 'w-full h-[38vh]';
     }
     if (isMobileDevice) {
       return 'w-full aspect-[3/2]'; // Mobile aspect ratio, full width
@@ -48,7 +50,8 @@ const answerDetailsModalStyles = {
     if (isLandscape) {
       return 'w-1/2 aspect-[16/10] max-h-[70vh]'; // Half width in landscape, taller aspect ratio
     }
-    return `w-full max-w-4xl mx-auto aspect-[2/1]`; // Much larger on desktop
+    // Stacked tablet/desktop portrait: fixed height to avoid content shift
+    return 'w-full h-[40vh]';
   },
   photoContainer: "relative bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden w-full h-full",
   placeholderPhoto: "w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600",
@@ -56,33 +59,47 @@ const answerDetailsModalStyles = {
   // Right panel section - larger on mobile 
   rightPanel: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
     if (isSurfaceDuo) {
-      return 'flex-shrink-0 w-full aspect-[5/2]'; // Match photo aspect ratio
+      return 'flex-1 min-h-0 w-full overflow-hidden';
     }
     if (isMobileDevice) {
-      return 'flex-shrink-0 w-full aspect-[3/2]'; // Match mobile photo aspect ratio
+      return 'flex-1 min-h-0 w-full overflow-hidden'; // Flexible height panel on mobile; uses remaining space
     }
     if (isLandscape) {
       return 'flex-shrink-0 w-1/2 aspect-[16/10] max-h-[70vh]'; // Match landscape photo dimensions
     }
-    return `flex-shrink-0 w-full max-w-4xl mx-auto aspect-[2/1]`; // Match desktop photo dimensions
+    // Stacked tablet/desktop portrait: let panel take remaining space and scroll internally
+    return 'flex-1 min-h-0 w-full overflow-hidden';
   },
   
   // Grid view - adjusted for mobile
   gridContainer: (isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    return "w-full h-full flex items-center justify-center"; // Simply fill the rightPanel container
+    if (isMobileDevice) {
+      return "w-full h-full overflow-y-auto"; // Allow internal scroll on mobile to avoid overlap
+    }
+    if (!isLandscape) {
+      // Stacked tablet/desktop portrait
+      return "w-full h-full overflow-y-auto";
+    }
+    return "w-full h-full flex items-center justify-center"; // Fill the rightPanel container on larger screens
   },
-  factsGrid: (isMobileDevice: boolean, isSurfaceDuo: boolean) => {
+  factsGrid: (isMobileDevice: boolean, isSurfaceDuo: boolean, isExtraNarrowPhone?: boolean, isNarrowPhone?: boolean) => {
     if (isSurfaceDuo) {
-      return "grid grid-cols-4 grid-rows-2 gap-2 w-full h-full max-w-none"; // Ensure full width
+      return "grid grid-cols-4 grid-rows-2 gap-2 w-full h-full max-w-none"; // Duo: tighter spacing
     }
     if (isMobileDevice) {
-      return "grid grid-cols-4 grid-rows-2 gap-4 w-full h-full max-w-none"; // Ensure full width
+      const gap = isExtraNarrowPhone ? 'gap-1 px-1' : (isNarrowPhone ? 'gap-1 px-2' : 'gap-2 px-2');
+      return `grid grid-cols-2 grid-rows-4 ${gap} w-full h-full max-w-none justify-center`;
     }
-    return "grid grid-cols-4 grid-rows-2 gap-4 w-full h-full max-w-none"; // Ensure full width
+    return "grid grid-cols-4 grid-rows-2 gap-3 w-full h-full max-w-none px-4"; // Desktop/tablet: slightly tighter too
   },
-  factIcon: "aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 border-2",
+  factIcon: (isMobileDevice: boolean, isNarrowPhone?: boolean, isExtraNarrowPhone?: boolean) => {
+    const base = "aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 border-2";
+    if (!isMobileDevice) return base;
+    const widthClass = isExtraNarrowPhone ? 'w-[68%]' : (isNarrowPhone ? 'w-[57%]' : 'w-[78%]');
+    return `${base} ${widthClass} mx-auto`;
+  },
   factIconActive: "border-2",
-  factIconImage: "w-10 h-10", // Increased from w-8 h-8 to w-10 h-10
+  factIconImage: "w-9 h-9", // Slightly smaller to improve fit
   
   // Detail view - fills available space on mobile
   detailContainer: (isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
@@ -92,9 +109,9 @@ const answerDetailsModalStyles = {
   detailTitle: "text-lg font-bold mb-3 text-white",
   detailContent: (isMobileDevice: boolean) => {
     if (isMobileDevice) {
-      return "flex-1 text-white leading-relaxed overflow-y-scroll text-sm h-48 max-h-48 pr-2 scrollbar-always-visible"; // Fixed height with scroll on mobile, padding for scrollbar
+      return "flex-1 text-white leading-relaxed overflow-y-auto text-sm pr-2 scrollbar-always-visible"; // Fill panel and scroll internally
     }
-    return "flex-1 text-white leading-relaxed overflow-y-scroll text-lg pr-2 scrollbar-always-visible"; // Larger text on desktop, padding for scrollbar
+    return "flex-1 text-white leading-relaxed overflow-y-auto text-lg pr-2 scrollbar-always-visible"; // Larger text on desktop
   },
 };
 
@@ -111,6 +128,8 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   // Detect mobile device for special mobile styling
   const isMobileDevice = typeof window !== 'undefined' ? 
     window.innerWidth < 480 && Math.max(window.innerWidth, window.innerHeight) < 1000 : false;
+  const isExtraNarrowPhone = typeof window !== 'undefined' ? window.innerWidth <= 330 : false;
+  const isNarrowPhone = typeof window !== 'undefined' ? !isExtraNarrowPhone && window.innerWidth <= 375 : false;
   
   // Detect bigger phones that need extra spacing
   const isBigMobileDevice = typeof window !== 'undefined' ? 
@@ -211,14 +230,14 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
 
   const renderFactsGrid = () => (
     <div className={answerDetailsModalStyles.gridContainer(isMobileDevice, isSurfaceDuo, isLandscape)}>
-      <div className={answerDetailsModalStyles.factsGrid(isMobileDevice, isSurfaceDuo)}>
+      <div className={answerDetailsModalStyles.factsGrid(isMobileDevice, isSurfaceDuo, isExtraNarrowPhone, isNarrowPhone)}>
         {factTypes.map((factType, index) => {
           const icon = getFactIcon(factType, false, 32, category);
           
           return (
             <motion.div
               key={index}
-              className={answerDetailsModalStyles.factIcon}
+              className={answerDetailsModalStyles.factIcon(isMobileDevice, isNarrowPhone, isExtraNarrowPhone)}
               onClick={() => setSelectedFact(index)}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -228,6 +247,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
               style={{
                 backgroundColor: `var(--color-${colors.primary})`,
                 borderColor: `var(--color-${colors.primary})`,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
               }}
             >
               <img 

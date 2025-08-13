@@ -67,7 +67,6 @@ export const useBugReport = () => {
   };
 
   const selectBugType = (type: string) => {
-    console.log('Selecting bug type:', type);
     setBugType(type);
     setIsDropdownOpen(false);
     

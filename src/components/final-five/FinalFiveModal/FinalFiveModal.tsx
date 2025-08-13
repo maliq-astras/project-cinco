@@ -7,6 +7,7 @@ import { useFinalFiveModal } from './useFinalFiveModal';
 import Timer from '../../ui/Timer';
 import FinalFiveCard from '../FinalFiveCard';
 import { finalFiveStyles } from './FinalFiveModal.styles';
+import BaseModal from '@/components/modals/BaseModal/BaseModal';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
@@ -37,6 +38,7 @@ export default function FinalFiveModal() {
     
     // Styles and helpers
     themeColor,
+    primaryColorClass,
     getMessage,
     getCardStyles,
     isCorrectOption,
@@ -54,84 +56,53 @@ export default function FinalFiveModal() {
   const resetFinalFiveError = useGameStore(state => state.resetFinalFiveError);
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   
-  // If there's an error, show error state instead of normal content
+  // If there's an error, show error state instead of normal content via BaseModal
   if (finalFiveError) {
-    const errorModal = (
-      <div className={finalFiveStyles.modalContainer}>
-        <motion.div 
-          className={finalFiveStyles.modalContent}
-          initial={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95 }}
-          animate={isMobile ? { y: 0 } : { opacity: 1, scale: 1 }}
-          exit={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95 }}
-          transition={{ 
-            type: "tween", 
-            duration: 0.3,
-            ease: [0.16, 1, 0.3, 1]
-          }}
+    return (
+      <BaseModal
+        isOpen={true}
+        onClose={() => resetFinalFiveError()}
+        colors={{ primary: primaryColorClass }}
+        mobileHeight={'auto'}
+      >
+        <div className="flex flex-col items-center justify-center p-6 text-center">
+          <div className={finalFiveStyles.warningIcon.container}>
+            <div className={finalFiveStyles.warningIcon.icon}>
+              <span className="text-2xl">!</span>
+            </div>
+            <p>{finalFiveError}</p>
+          </div>
+          <button
+            className={finalFiveStyles.continueButton}
+            style={{ backgroundColor: themeColor }}
+            onClick={() => {
+              resetFinalFiveError();
+              triggerFinalFive();
+            }}
+          >
+            {t('ui.buttons.tryAgain')}
+          </button>
+        </div>
+      </BaseModal>
+    );
+  }
+  
+  const modal = (
+    <AnimatePresence>
+      {(options.length > 0 && isFinalFiveActive) && (
+        <BaseModal
+          isOpen={true}
+          onClose={() => {}}
+          colors={{ primary: primaryColorClass }}
+          mobileHeight={'auto'}
+          dismissible={false}
         >
-          <div className={finalFiveStyles.mobileHandle}></div>
           <h2 
             className={`${finalFiveStyles.header} ${righteous.className}`}
             style={{ color: themeColor }}
           >
             {t('game.finalFive.title')}
           </h2>
-          <div className="flex flex-col items-center justify-center p-6 text-center">
-            <div className={finalFiveStyles.warningIcon.container}>
-              <div className={finalFiveStyles.warningIcon.icon}>
-                <span className="text-2xl">!</span>
-              </div>
-              <p>{finalFiveError}</p>
-            </div>
-            <button
-              className={finalFiveStyles.continueButton}
-              style={{ backgroundColor: themeColor }}
-              onClick={() => {
-                resetFinalFiveError();
-                triggerFinalFive();
-              }}
-            >
-              {t('ui.buttons.tryAgain')}
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    );
-    return errorModal;
-  }
-  
-  const modal = (
-    <AnimatePresence>
-      {(options.length > 0 && isFinalFiveActive) && (
-        <div className={finalFiveStyles.modalContainer}>
-          <motion.div 
-            className={finalFiveStyles.modalContent}
-            initial={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95 }}
-            animate={isMobile ? { y: 0 } : { opacity: 1, scale: 1 }}
-            exit={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95 }}
-            transition={{ 
-              type: "tween", 
-              duration: 0.3,
-              ease: [0.16, 1, 0.3, 1],
-              willChange: "transform"
-            }}
-            style={{ 
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "translateZ(0)",
-              WebkitTransform: "translateZ(0)" 
-            }}
-          >
-            {/* Small handle for mobile - only visible on small screens */}
-            <div className={finalFiveStyles.mobileHandle}></div>
-            
-            {/* Header */}
-            <h2 
-              className={`${finalFiveStyles.header} ${righteous.className}`}
-              style={{ color: themeColor }}
-            >
-              {t('game.finalFive.title')}
-            </h2>
             
             {/* Message */}
             <div className={`${finalFiveStyles.message} text-center`}>
@@ -301,8 +272,7 @@ export default function FinalFiveModal() {
                 )}
               </AnimatePresence>
             </div>
-          </motion.div>
-        </div>
+        </BaseModal>
       )}
     </AnimatePresence>
   );

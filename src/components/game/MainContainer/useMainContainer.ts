@@ -150,7 +150,7 @@ export function useMainContainer() {
   
   // Debug logging for already-played scenarios
   if (gameState.isGameOver && gameOutcome !== null && victoryAnimationStep !== 'summary') {
-    console.log('Already played scenario - showGameMessage:', showGameMessage, 'gameOutcome:', gameOutcome);
+  // Silence verbose logging in production
   }
   
   const getGameMessageProps = () => {

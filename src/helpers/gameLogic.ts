@@ -32,7 +32,6 @@ export async function fetchChallenge(language: string = 'en', retries = 3): Prom
       // If this isn't the first attempt, wait before retrying
       if (attempt > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        console.log(`Retrying challenge fetch (attempt ${attempt} of ${retries})...`);
       }
       
       // Create AbortController for timeout
@@ -73,7 +72,6 @@ export async function verifyGuess(challengeId: string, guess: string, language: 
       // If this isn't the first attempt, wait before retrying
       if (attempt > 0) {
         await new Promise(resolve => setTimeout(resolve, 800 * attempt));
-        console.log(`Retrying guess verification (attempt ${attempt} of ${retries})...`);
       }
       
       // Create AbortController for timeout
@@ -122,7 +120,6 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
       // If this isn't the first attempt, wait before retrying
       if (attempt > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        console.log(`Retrying Final Five fetch (attempt ${attempt} of ${retries})...`);
       }
       
       // Create AbortController for timeout

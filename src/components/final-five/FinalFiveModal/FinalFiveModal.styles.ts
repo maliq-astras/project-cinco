@@ -5,10 +5,12 @@ import { deviceDetection } from '@/helpers/deviceHelpers';
 
 export const finalFiveStyles = {
   // Main modal container
-  modalContainer: "fixed inset-0 z-[60] flex md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
+  // On mobile, anchor content at the bottom; on md+ center it vertically
+  modalContainer: "fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
   
   // Modal content panel
-  modalContent: "w-full max-w-[580px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 mx-0 md:mx-4 md:p-6 absolute md:relative bottom-0 md:bottom-auto dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
+  // Full-width bottom sheet on small screens; centered panel with max width on md+
+  modalContent: "w-screen max-w-none md:w-full md:max-w-[620px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 md:p-6 mx-0 md:mx-4 relative dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
   
   // Mobile handle
   mobileHandle: "w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-4 md:hidden",
@@ -22,8 +24,8 @@ export const finalFiveStyles = {
   // Header
   header: "text-4xl font-bold text-center mb-6",
   
-  // Message
-  message: "text-left mb-6 text-gray-700 dark:text-gray-300 font-display",
+  // Message (reserve height to prevent layout shift when text/loader changes)
+  message: "text-left mb-6 text-gray-700 dark:text-gray-300 font-display min-h-[60px]",
   
   // Card grid
   getCardGrid: () => {
@@ -37,8 +39,8 @@ export const finalFiveStyles = {
       return "grid grid-cols-2 gap-4 mb-6 mx-auto max-w-[420px]";
     }
     
-    // Default layout
-    return "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto max-w-[500px]";
+    // Default layout: full width on mobile, constrained center on md+
+    return "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto w-full md:max-w-[600px] px-2 md:px-0";
   },
   
   // Card styles
