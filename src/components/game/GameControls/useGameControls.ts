@@ -1,9 +1,10 @@
-import { FormEvent, useRef, useImperativeHandle, Ref, useState, useCallback, useEffect } from 'react';
+import { FormEvent, useRef, useImperativeHandle, Ref, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { showToastMessage } from '@/helpers/uiHelpers';
 import { isDuplicateGuess } from '@/helpers/gameLogic';
+import { InputBarHandle } from '../InputBar';
 
 export interface GameControlsHandle {
   focusInput: () => void;
@@ -23,16 +24,17 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const hardMode = useGameStore(state => state.hardMode);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
+  const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const { colors } = useTheme();
   
-  // Create a ref for the input element
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Create a ref for the InputBar component
+  const inputBarRef = useRef<InputBarHandle>(null);
   
   // Expose the focusInput method to parent components
   useImperativeHandle(ref, () => ({
     focusInput: () => {
-      if (inputRef.current && !isInputDisabled()) {
-        inputRef.current.focus();
+      if (inputBarRef.current && !isInputDisabled()) {
+        inputBarRef.current.focusInput();
       }
     }
   }));
@@ -69,6 +71,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     // Set processing state immediately
     useGameStore.setState({ isProcessingGuess: true, hasMadeGuess: true });
     setInputValue('');
+    setHasUserInput(false); // Reset user input flag so context area becomes visible again
     submitGuess(guess);
   };
 
@@ -107,7 +110,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   };
 
   return {
-    inputRef,
+    inputBarRef,
     timeRemaining,
     isVictoryAnimationActive,
     colors,

@@ -35,6 +35,8 @@ export function useMainContainer() {
 
   // Component state
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [headerEntranceComplete, setHeaderEntranceComplete] = useState(false);
+  const [gameEntranceComplete, setGameEntranceComplete] = useState(false);
   const [isSmallLandscape, setIsSmallLandscape] = useState(false);
   const [isTabletLandscape, setIsTabletLandscape] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -139,6 +141,16 @@ export function useMainContainer() {
   // Handle loading complete
   const handleLoadingComplete = () => {
     setLoadingComplete(true);
+    
+    // Start header entrance after 0.5s blank period
+    setTimeout(() => {
+      setHeaderEntranceComplete(true);
+    }, 500);
+    
+    // Start game entrance after header animation begins
+    setTimeout(() => {
+      setGameEntranceComplete(true);
+    }, 1200); // 0.5s blank + 0.7s for header sequence
   };
 
   // Prepare game message data
@@ -201,6 +213,8 @@ export function useMainContainer() {
     gameState,
     viewingFact,
     loadingComplete,
+    headerEntranceComplete,
+    gameEntranceComplete,
     isSmallLandscape,
     isTabletLandscape,
     isTablet,

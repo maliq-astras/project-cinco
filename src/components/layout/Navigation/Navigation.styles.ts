@@ -59,5 +59,15 @@ export const navigationStyles = {
   navIconClass: "p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900",
   compactNavIconClass: "p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900",
   iconSize: "w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8",
-  compactIconSize: "w-5 h-5"
+  compactIconSize: "w-5 h-5",
+
+  // Header entrance animations
+  headerAnimations: {
+    // Navigation icons animation (similar to FactCard X button)
+    navigationIcons: {
+      initial: { opacity: 0, scale: 0.8, rotate: -90 },
+      animate: { opacity: 1, scale: 1, rotate: 0 },
+      transition: { duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }
+    }
+  }
 } as const; 

@@ -35,6 +35,9 @@ export const contextAreaStyles = {
   })
 } as const;
 
+// Utility class to hide element visually without affecting layout
+export const visibilityHiddenClass = "visibility-hidden";
+
 /**
  * Get responsive text size based on screen width
  */

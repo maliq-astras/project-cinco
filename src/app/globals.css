@@ -2,6 +2,11 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Keep element in layout but make it invisible */
+.visibility-hidden {
+  visibility: hidden;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

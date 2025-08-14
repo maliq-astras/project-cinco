@@ -76,8 +76,19 @@ export function useFactBubble({
   // Create particles for pop animation
   const particles = useParticles(8);
 
+  // Handle drag start
+  const handleDragStart = () => {
+    if (isClickable) {
+      // Show category name during drag by setting hovered fact
+      setHoveredFact(factIndex);
+    }
+  };
+
   // Handle drag end
   const handleDragEnd = (event: any, info: any) => {
+    // Clear hovered fact when drag ends
+    setHoveredFact(null);
+    
     if (isRevealed || isPopping || !isClickable) return;
 
     // Get the card area element
@@ -204,6 +215,7 @@ export function useFactBubble({
     colors,
     colorStyle,
     bubbleAnimation,
+    handleDragStart,
     handleDragEnd,
     mouseHandlers,
     getIconFilter: getFilter,

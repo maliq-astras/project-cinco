@@ -7,6 +7,10 @@ export { LanguageSwitchLoader } from './ui/LanguageSwitchLoader';
 
 // Game Components
 export { default as GameControls } from './game/GameControls';
+export { default as InputBar } from './game/InputBar';
+export { default as GameButtons } from './game/GameButtons';
+export { default as ToastMessages } from './game/ToastMessages';
+export { default as Autocomplete } from './game/Autocomplete';
 export { default as EndGameMessage } from './game/EndGameMessage';
 export { default as GuessProgressBar } from './game/GuessProgressBar';
 export { default as MainContainer } from './game/MainContainer'; 

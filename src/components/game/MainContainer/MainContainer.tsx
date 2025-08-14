@@ -30,6 +30,8 @@ export default function MainContainer() {
     gameState,
     viewingFact,
     loadingComplete,
+    headerEntranceComplete,
+    gameEntranceComplete,
     isSmallLandscape,
     isTabletLandscape,
     isCompactHeader,
@@ -87,8 +89,8 @@ export default function MainContainer() {
         </div>
       ) : (
         <>
-          <Navigation />
-          <Header />
+          <Navigation headerEntranceComplete={headerEntranceComplete} />
+          <Header headerEntranceComplete={headerEntranceComplete} />
 
           <main className={isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} style={scaleStyle}>
             {gameState.challenge && (
@@ -115,13 +117,20 @@ export default function MainContainer() {
                     <motion.div
                       key="game-content"
                       className={`${mainContainerStyles.gameContent} ${isTabletLandscape ? 'py-0 gap-0' : ''}`}
-                      {...mainContainerStyles.fadeOut}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: gameEntranceComplete ? 1 : 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       {/* Top section - hide for already-played scenarios */}
                       {!isAlreadyPlayedScenario && (
-                        <div className={mainContainerStyles.topSection}>
+                        <motion.div 
+                          className={mainContainerStyles.topSection}
+                          {...mainContainerStyles.gameEntranceAnimation.cardStack}
+                          animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.cardStack.animate : mainContainerStyles.gameEntranceAnimation.cardStack.initial}
+                        >
                           <FactCardStackContainer />
-                        </div>
+                        </motion.div>
                       )}
                       
                       {/* Middle section */}
@@ -130,7 +139,8 @@ export default function MainContainer() {
                         {!isAlreadyPlayedScenario && (
                           <motion.div 
                             className={mainContainerStyles.contextLine}
-                            {...mainContainerStyles.staggeredFade(0)}
+                            {...mainContainerStyles.gameEntranceAnimation.topSection}
+                            animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.topSection.animate : mainContainerStyles.gameEntranceAnimation.topSection.initial}
                           >
                             <div style={mainContainerStyles.contextLineBackground(colors.primary)} className="absolute inset-x-0 h-1"></div>
                             <div className={mainContainerStyles.contextWrapper}>
@@ -144,7 +154,8 @@ export default function MainContainer() {
                         {/* Fact Bubbles Area */}
                         <motion.div 
                           className={mainContainerStyles.factBubblesWrapper}
-                          {...mainContainerStyles.staggeredFade(0.3)}
+                          {...mainContainerStyles.gameEntranceAnimation.middleSection}
+                          animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.middleSection.animate : mainContainerStyles.gameEntranceAnimation.middleSection.initial}
                         >
                           <div className={mainContainerStyles.factBubblesContainer}>
                             {!isFinalFiveActive && (
@@ -161,31 +172,29 @@ export default function MainContainer() {
                       </div>
                       
                       {/* Bottom section */}
-                      <div className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}>
+                      <motion.div 
+                        className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}
+                        {...mainContainerStyles.gameEntranceAnimation.bottomSection}
+                        animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.bottomSection.animate : mainContainerStyles.gameEntranceAnimation.bottomSection.initial}
+                      >
                         {/* Game instructions - hide for already-played scenarios */}
                         {!isFinalFiveActive && !isAlreadyPlayedScenario && (
-                          <motion.div 
-                            className={mainContainerStyles.instructionsWrapper}
-                            {...mainContainerStyles.staggeredFade(0.6)}
-                          >
+                          <div className={mainContainerStyles.instructionsWrapper}>
                             <div className={mainContainerStyles.instructionsContainer}>
                               <div className={mainContainerStyles.instructionsInner}>
                                 <GameInstructionsArea />
                               </div>
                             </div>
-                          </motion.div>
+                          </div>
                         )}
 
                         {/* Game Controls - hide for already-played scenarios */}
                         {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && (
-                          <motion.div
-                            className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}
-                            {...mainContainerStyles.staggeredFade(0.9)}
-                          >
+                          <div className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}>
                             <GameControls ref={gameControlsRef} />
-                          </motion.div>
+                          </div>
                         )}
-                      </div>
+                      </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>

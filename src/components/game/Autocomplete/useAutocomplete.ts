@@ -1,36 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import { CategoryType } from '@/types';
 import { getAutocompleteSuggestions, Language } from '@/helpers/autocompleteHelper';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-interface AutocompleteProps {
-  category: CategoryType;
-  query: string;
-  onSuggestionClick: (suggestion: string) => void;
-  primaryColor: string;
-  isVisible: boolean;
-  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
-  previousGuesses?: string[];
-  onSelectionChange?: (hasSelection: boolean) => void;
-}
 
 interface AutocompleteSuggestion {
   text: string;
   id: string;
 }
 
-const Autocomplete: React.FC<AutocompleteProps> = ({
+interface UseAutocompleteProps {
+  category: CategoryType;
+  query: string;
+  isVisible: boolean;
+  inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
+  previousGuesses: string[];
+  onSuggestionClick: (suggestion: string) => void;
+  onSelectionChange?: (hasSelection: boolean) => void;
+}
+
+export const useAutocomplete = ({
   category,
   query,
-  onSuggestionClick,
-  primaryColor,
   isVisible,
   inputRef,
-  previousGuesses = [],
+  previousGuesses,
+  onSuggestionClick,
   onSelectionChange
-}) => {
+}: UseAutocompleteProps) => {
   const { language } = useLanguage();
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -191,83 +187,13 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     };
   };
 
-  if (!isVisible || !inputFocused || suggestions.length === 0) return null;
-
-  const autocompleteContent = (
-    <motion.div
-      ref={containerRef}
-      style={{
-        ...getPosition(),
-        border: `2px solid var(--color-${primaryColor})`,
-        maxHeight: '240px', // Max 5 items * 48px
-        overflowY: 'auto',
-        backdropFilter: 'blur(8px)',
-        boxShadow: `0 10px 25px rgba(0,0,0,0.15), 0 0 0 1px var(--color-${primaryColor}20)`
-      }}
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-      animate={{ 
-        opacity: 1, 
-        y: 0, 
-        scale: 1,
-        height: suggestions.length * 48 + 16 // Animate height changes smoothly
-      }}
-      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      transition={{ 
-        duration: 0.2, 
-        ease: "easeOut",
-        height: { duration: 0.3, ease: "easeInOut" } // Smooth height transitions
-      }}
-      className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-hidden"
-    >
-      <AnimatePresence>
-        {suggestions.map((suggestion, index) => (
-          <motion.button
-            key={suggestion.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: index * 0.02 }}
-            // Use onMouseDown so selection happens before input blur
-            onMouseDown={(e) => {
-              e.preventDefault(); // keep input focused (prevents blur during click)
-              setSuggestions([]);
-              setSelectedIndex(-1);
-              onSuggestionClick(suggestion.text);
-            }}
-            onMouseEnter={() => {
-              // Only update selection on mouse enter if not using keyboard
-              setSelectedIndex(index);
-            }}
-            onMouseLeave={() => {
-              // Don't reset selection on mouse leave to avoid conflicts with keyboard
-            }}
-            className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-150 focus:outline-none text-gray-900 dark:text-gray-100"
-            style={{
-              backgroundColor: selectedIndex === index 
-                ? `var(--color-${primaryColor}30)` 
-                : 'transparent',
-              color: selectedIndex === index 
-                ? `var(--color-${primaryColor})` 
-                : undefined, // Let CSS classes handle default colors
-              borderLeft: selectedIndex === index 
-                ? `4px solid var(--color-${primaryColor})` 
-                : '4px solid transparent',
-              fontWeight: selectedIndex === index ? '700' : '500'
-            }}
-          >
-            <span className="block text-sm font-medium truncate">
-              {suggestion.text}
-            </span>
-          </motion.button>
-        ))}
-      </AnimatePresence>
-    </motion.div>
-  );
-
-  // Render using portal to ensure it floats above everything
-  return typeof window !== 'undefined' 
-    ? createPortal(autocompleteContent, document.body)
-    : null;
+  return {
+    suggestions,
+    selectedIndex,
+    inputFocused,
+    containerRef,
+    setSelectedIndex,
+    setSuggestions,
+    getPosition
+  };
 };
-
-export default Autocomplete;

@@ -48,6 +48,7 @@ export default function FactBubble({
     bubbleAnimation,
     
     // Handlers
+    handleDragStart,
     handleDragEnd,
     mouseHandlers,
     
@@ -69,10 +70,11 @@ export default function FactBubble({
   // Get translated fact type
   const translatedFactType = getFactTypeName(factType, t);
 
-  // Handle drag start
-  const handleDragStart = () => {
+  // Handle drag start - now uses the hook's handleDragStart
+  const onDragStart = () => {
     if (isClickable) {
       setIsDragging(true);
+      handleDragStart(); // This will set hoveredFact to show category name
     }
   };
 
@@ -96,7 +98,7 @@ export default function FactBubble({
               dragElastic={0.1}
               dragMomentum={false}
               dragSnapToOrigin={true}
-              onDragStart={handleDragStart}
+              onDragStart={onDragStart}
               onDragEnd={(event, info) => {
                 setIsDragging(false);
                 handleDragEnd(event, info);

@@ -17,6 +17,7 @@ export function useBubbleContext() {
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
+  const hasUserInput = useGameStore(state => state.hasUserInput);
 
   // Determine message to show when hovering over a bubble
   const getMessage = () => {
@@ -55,6 +56,7 @@ export function useGameInstructions() {
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
+  const hasUserInput = useGameStore(state => state.hasUserInput);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [isLongRequest, setIsLongRequest] = useState(false);
@@ -139,7 +141,7 @@ export function useGameInstructions() {
   return {
     message: getMessage(),
     textColor: colors.primary,
-    textClassName: getContextTextClassNames(colors.primary, contextAreaStyles.instructions, windowWidth),
+    textClassName: `${getContextTextClassNames(colors.primary, contextAreaStyles.instructions, windowWidth)} ${hasUserInput ? 'visibility-hidden' : ''}`,
     shouldAnimate: true,
     isHidden: isGameOver,
     animationProps: animation,

@@ -11,6 +11,8 @@ export interface UISlice {
   shouldFocusInput: boolean;
   windowWidth: number;
   scaleFactor: number;
+  // Input presence flag (do not store the actual text)
+  hasUserInput: boolean;
   
   // Panel and modal states
   isSettingsPanelOpen: boolean;
@@ -27,6 +29,7 @@ export interface UISlice {
   setSettingsPanelOpen: (isOpen: boolean) => void;
   setTutorialOpen: (isOpen: boolean) => void;
   setAutocompleteEnabled: (enabled: boolean) => void;
+  setHasUserInput: (hasInput: boolean) => void;
 }
 
 export const createUISlice: StateCreator<
@@ -45,6 +48,7 @@ export const createUISlice: StateCreator<
   shouldFocusInput: false,
   windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
   scaleFactor: 1, // Default scale factor (1 = 100%)
+  hasUserInput: false,
   
   // Panel and modal states
   isSettingsPanelOpen: false,
@@ -58,6 +62,7 @@ export const createUISlice: StateCreator<
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
   setScaleFactor: (factor: number) => set({ scaleFactor: factor }),
+  setHasUserInput: (hasInput: boolean) => set({ hasUserInput: hasInput }),
   
   setAutocompleteEnabled: (enabled: boolean) => {
     set({ isAutocompleteEnabled: enabled });
