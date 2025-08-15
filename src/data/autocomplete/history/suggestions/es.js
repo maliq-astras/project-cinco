@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
 // Official Spanish historical figure names - keeping international names when commonly used
-export const historicalFiguresSuggestions = [
-  // Challenge figures (from /challenges/historical-figures/)
+export const historySuggestions = [
+  // Challenge figures (from /challenges/history/)
   "Abraham Lincoln",
   "Albert Einstein",
   "Alexander Hamilton",

@@ -128,16 +128,16 @@ const getFilterForColor = (colorClass: string): string => {
     // Orange (Books)
     'orange-600': 'invert(48%) sepia(82%) saturate(1523%) hue-rotate(360deg) brightness(103%) contrast(97%)',
     
-    // Fuchsia (Musical Artists)
+    // Fuchsia (Musicians)
     'fuchsia-600': 'invert(26%) sepia(67%) saturate(6373%) hue-rotate(293deg) brightness(91%) contrast(96%)',
     
     // Red (Athletes)
     'red-600': 'invert(13%) sepia(90%) saturate(4235%) hue-rotate(356deg) brightness(95%) contrast(124%)',
     
-    // Amber (Historical Figures)
+    // Amber (History)
     'amber-500': 'invert(72%) sepia(32%) saturate(6908%) hue-rotate(8deg) brightness(103%) contrast(103%)',
     
-    // Teal (Famous Brands)
+    // Teal (Companies)
     'teal-500': 'invert(55%) sepia(53%) saturate(933%) hue-rotate(131deg) brightness(90%) contrast(101%)',
     
     // Indigo (TV Shows)

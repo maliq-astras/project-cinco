@@ -33,7 +33,7 @@ const animalIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
-// Famous brands fact types icon mapping
+// Companies fact types icon mapping
 const famousBrandIcons: IconMapping = {
   'Industry': 'industry',
   'Origin': 'origin',
@@ -57,7 +57,7 @@ const athleteIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
-// Historical figures fact types icon mapping
+// History fact types icon mapping
 const historicalFigureIcons: IconMapping = {
   'Occupation': 'occupation',
   'Early Life': 'childhood',
@@ -69,7 +69,7 @@ const historicalFigureIcons: IconMapping = {
   'Wildcard': 'wildcard'
 };
 
-// Musical artists fact types icon mapping
+// Musicians fact types icon mapping
 const musicalArtistIcons: IconMapping = {
   'Genre': 'music-genre',
   'Background': 'background-musician',
@@ -123,10 +123,10 @@ const categoryIconMappings: { [key: string]: IconMapping } = {
   'animals': animalIcons,
   'movies': movieIcons,
   'books': bookIcons,
-  'famous brands': famousBrandIcons,
+  'companies': famousBrandIcons,
   'athletes': athleteIcons,
-  'historical figures': historicalFigureIcons,
-  'musical artists': musicalArtistIcons,
+  'history': historicalFigureIcons,
+  'musicians': musicalArtistIcons,
   'tv shows': tvShowIcons,
   // Add more categories as you implement them
 };
@@ -156,10 +156,10 @@ export function useIconFilter() {
       'animals': 'emerald-600',
       'movies': 'violet-600',
       'books': 'orange-600',
-      'musical artists': 'fuchsia-600',
+      'musicians': 'fuchsia-600',
       'athletes': 'red-600',
-      'historical figures': 'amber-500',
-      'famous brands': 'teal-500',
+      'history': 'amber-500',
+      'companies': 'teal-500',
       'tv shows': 'indigo-500',
     };
     

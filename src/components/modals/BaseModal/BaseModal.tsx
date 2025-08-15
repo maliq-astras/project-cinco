@@ -22,7 +22,7 @@ interface BaseModalProps {
 
 const baseModalStyles = {
   // Main containers
-  mobileContainer: "fixed inset-0 bg-black bg-opacity-70 z-50 backdrop-blur-md",
+  mobileContainer: "fixed inset-0 bg-black bg-opacity-70 z-[999] backdrop-blur-md",
   mobilePanel: (primaryColor: string) => ({
     borderTop: `4px solid var(--color-${primaryColor})`,
     borderLeft: `1px solid var(--color-${primaryColor})`,
@@ -32,7 +32,7 @@ const baseModalStyles = {
   mobilePanelClass: (height: string) => `absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg h-[${height}]`,
   mobileDragIndicator: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]",
   
-  desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 backdrop-blur-md",
+  desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[999] backdrop-blur-md",
   desktopPanel: (primaryColor: string) => ({
     border: `2px solid var(--color-${primaryColor})`,
     maxHeight: '90vh'

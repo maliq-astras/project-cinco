@@ -35,6 +35,7 @@ export default function MainContainer() {
     isSmallLandscape,
     isTabletLandscape,
     isCompactHeader,
+    responsiveLayoutMode,
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
@@ -47,8 +48,8 @@ export default function MainContainer() {
     startFinalFive
   } = useMainContainer();
   
-  // Get scale factor from the store
-  const scaleFactor = useGameStore(state => state.scaleFactor);
+  // Get responsive layout mode from the store
+  const scaleFactor = useGameStore(state => state.scaleFactor); // Keep for backward compatibility
   
   // Language switching state
   const { isLanguageSwitching } = useLanguage();
@@ -61,21 +62,37 @@ export default function MainContainer() {
     return <LandscapeWarning context="game" />;
   }
 
-  // Create scaling style for tablet landscape mode
-  const scaleStyle: CSSProperties = isTabletLandscape ? {
-    transform: `scale(${scaleFactor})`,
-    transformOrigin: 'center top',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column' as 'column',
-    alignItems: 'center',
-    overflow: 'visible',
-    // Add specific padding adjustments for Surface Pro 7
-    paddingBottom: isCompactHeader ? 
-      (window.innerWidth >= 1350 && window.innerWidth <= 1380 && window.innerHeight >= 900 && window.innerHeight <= 930 ? '100px' : '150px') :
-      (window.innerWidth >= 1350 && window.innerWidth <= 1380 && window.innerHeight >= 900 && window.innerHeight <= 930 ? '80px' : '120px')
-  } : {};
+  // Create responsive layout classes and smart scaling for no-scroll experience
+  const getResponsiveLayoutClasses = () => {
+    if (!isTabletLandscape) return '';
+    
+    switch (responsiveLayoutMode) {
+      case 'compact':
+        return 'layout-compact';
+      case 'spacious':
+        return 'layout-spacious';
+      default:
+        return 'layout-normal';
+    }
+  };
+
+  // Create smart scaling style only when needed for no-scroll experience
+  const getSmartScalingStyle = (): CSSProperties => {
+    if (!isTabletLandscape || scaleFactor >= 0.99) {
+      return {}; // No scaling needed
+    }
+    
+    return {
+      transform: `scale(${scaleFactor})`,
+      transformOrigin: 'center top',
+      height: '100%',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      alignItems: 'center',
+      overflow: 'visible'
+    };
+  };
 
   return (
     <div className={isTabletLandscape ? mainContainerStyles.tabletLandscapeContainer : mainContainerStyles.container}>
@@ -92,7 +109,10 @@ export default function MainContainer() {
           <Navigation headerEntranceComplete={headerEntranceComplete} />
           <Header headerEntranceComplete={headerEntranceComplete} />
 
-          <main className={isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} style={scaleStyle}>
+          <main 
+            className={`${isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} ${getResponsiveLayoutClasses()}`}
+            style={getSmartScalingStyle()}
+          >
             {gameState.challenge && (
               <>
                 {/* Final Five Transition Container - Absolute overlay */}

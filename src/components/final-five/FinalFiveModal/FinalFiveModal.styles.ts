@@ -6,7 +6,7 @@ import { deviceDetection } from '@/helpers/deviceHelpers';
 export const finalFiveStyles = {
   // Main modal container
   // On mobile, anchor content at the bottom; on md+ center it vertically
-  modalContainer: "fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
+  modalContainer: "fixed inset-0 z-[999] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
   
   // Modal content panel
   // Full-width bottom sheet on small screens; centered panel with max width on md+

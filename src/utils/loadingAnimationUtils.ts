@@ -8,10 +8,10 @@ export const SAMPLE_CATEGORIES = [
   'ANIMALS',
   'BOOKS',
   'ATHLETES',
-  'MUSICAL ARTISTS',
-  'HISTORICAL FIGURES',
+  'MUSICIANS',
+  'HISTORY',
   'TV SHOWS',
-  'FAMOUS BRANDS'
+  'COMPANIES'
 ];
 
 // Map category names to CategoryType enum values
@@ -21,10 +21,10 @@ export const categoryNameToType: Record<string, CategoryType> = {
   'ANIMALS': CategoryType.ANIMALS,
   'BOOKS': CategoryType.BOOKS,
   'ATHLETES': CategoryType.ATHLETES,
-  'MUSICAL ARTISTS': CategoryType.MUSICAL_ARTISTS,
-  'HISTORICAL FIGURES': CategoryType.HISTORICAL_FIGURES,
+  'MUSICIANS': CategoryType.MUSICIANS,
+  'HISTORY': CategoryType.HISTORY,
   'TV SHOWS': CategoryType.TV_SHOWS,
-  'FAMOUS BRANDS': CategoryType.FAMOUS_BRANDS
+  'COMPANIES': CategoryType.COMPANIES
 };
 
 // Fisher-Yates shuffle algorithm to randomize array
@@ -96,7 +96,7 @@ export const getColorRGB = (colorClass: string): string => {
     'orange-400': '251, 146, 60',
     'orange-700': '194, 65, 12',
     
-    // Fuchsia (Musical Artists)
+    // Fuchsia (Musicians)
     'fuchsia-600': '192, 38, 211',
     'fuchsia-500': '217, 70, 239',
     'fuchsia-400': '232, 121, 249',
@@ -108,13 +108,13 @@ export const getColorRGB = (colorClass: string): string => {
     'red-400': '248, 113, 113',
     'red-700': '185, 28, 28',
     
-    // Amber (Historical Figures)
+    // Amber (History)
     'amber-600': '217, 119, 6',
     'amber-500': '245, 158, 11',
     'amber-400': '251, 191, 36',
     'amber-300': '252, 211, 77',
     
-    // Teal (Famous Brands)
+    // Teal (Companies)
     'teal-600': '13, 148, 136',
     'teal-500': '20, 184, 166',
     'teal-400': '45, 212, 191',

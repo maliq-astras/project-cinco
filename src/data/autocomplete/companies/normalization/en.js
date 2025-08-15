@@ -1,7 +1,7 @@
 // Normalization data (grouped catch-all variations)
-// Maps user input variations to the official brand name
-export const famousBrandsNormalization = {
-  // Challenge brands - common variations and abbreviations
+// Maps user input variations to the official company name
+export const companiesNormalization = {
+  // Challenge companies - common variations and abbreviations
   "McDonald's": [
     "McDonalds", // Without apostrophe
     "Mickey D's",

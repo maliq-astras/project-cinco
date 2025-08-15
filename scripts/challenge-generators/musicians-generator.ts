@@ -1,9 +1,9 @@
-// scripts/challenge-generators/musical-artists-generator.ts
+// scripts/challenge-generators/musicians-generator.ts
 import { CategoryType, MusicalArtistFactType } from '../../src/types';
 import { BaseChallengeGenerator } from './generator';
 
-// Musical artist fact types
-const musicalArtistFactTypes: MusicalArtistFactType[] = [
+// Musician fact types
+const musicianFactTypes: MusicalArtistFactType[] = [
   "Genre",
   "Background",
   "Iconic Song", 
@@ -14,8 +14,8 @@ const musicalArtistFactTypes: MusicalArtistFactType[] = [
   "Wildcard"
 ];
 
-// Musical artists data with facts for each fact type
-const musicalArtistData = [
+// Musicians data with facts for each fact type
+const musicianData = [
   {
     answer: {
       en: "Beyoncé",
@@ -153,8 +153,8 @@ const musicalArtistData = [
   }
 ];
 
-export class MusicalArtistsGenerator extends BaseChallengeGenerator {
+export class MusiciansGenerator extends BaseChallengeGenerator {
   constructor() {
-    super(CategoryType.MUSICAL_ARTISTS, musicalArtistFactTypes, musicalArtistData);
+    super(CategoryType.MUSICIANS, musicianFactTypes, musicianData);
   }
 } 

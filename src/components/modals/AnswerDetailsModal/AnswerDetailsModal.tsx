@@ -17,7 +17,7 @@ interface AnswerDetailsModalProps {
 
 const answerDetailsModalStyles = {
   // Overlay
-  overlay: "fixed inset-0 bg-black bg-opacity-70 z-50 backdrop-blur-md flex items-center justify-center p-4",
+  overlay: "fixed inset-0 bg-black bg-opacity-70 z-[999] backdrop-blur-md flex items-center justify-center p-4",
   
   // Close button
   closeButton: "absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 transition-colors z-10",

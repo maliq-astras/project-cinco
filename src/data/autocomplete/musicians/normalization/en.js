@@ -1,8 +1,8 @@
 // Normalization data (grouped catch-all variations)
 // Maps user input variations to the official artist/band name
 // IMPORTANT: Stage names, real names, nicknames, and common misspellings
-export const musicalArtistsNormalization = {
-  // Challenge artists - common variations and real names
+export const musiciansNormalization = {
+  // Challenge musicians - common variations and real names
   "Adele": [
     "Adele Adkins",
     "Adele Laurie Blue Adkins"

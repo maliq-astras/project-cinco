@@ -1,6 +1,6 @@
 // Normalization data (grouped catch-all variations)
 // Maps user input variations to the official historical figure name
-export const historicalFiguresNormalization = {
+export const historyNormalization = {
   // Challenge figures - common variations and nicknames
   "Abraham Lincoln": [
     "Abe Lincoln",

@@ -3,6 +3,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCardStack } from '@/hooks/card';
 import { calculateCardPosition, getCardAnimationVariants } from '@/helpers/uiHelpers';
+import { deviceDetection } from '@/helpers/deviceHelpers';
 
 /**
  * Hook for managing FactCardStack logic and interactions
@@ -34,6 +35,11 @@ export function useFactCardStack() {
 
   // Responsive card sizes based on screen width
   const getCardSize = () => {
+    // Special case for iPad Air landscape - needs smaller cards to fit
+    if (deviceDetection.isIpadAirLandscape()) {
+      return { width: 100, height: 150 }; // Smaller cards for iPad Air landscape
+    }
+    
     // iPhone-specific sizes (around 390-430px width)
     if (windowWidth >= 375 && windowWidth <= 430) return { width: 90, height: 135 }; 
     

@@ -72,6 +72,56 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
       </div>
 
       <div className={settingsPanelStyles.settingsContainer}>
+        {/* Language Dropdown - Moved to top for better dropdown space */}
+        <div className={settingsPanelStyles.settingRow}>
+          <div className={settingsPanelStyles.settingTextContainer}>
+            <p className={settingsPanelStyles.settingTitle}>{t('ui.language.select')}</p>
+          </div>
+          <div className={settingsPanelStyles.languageSelectContainer}>
+            <div 
+              className={settingsPanelStyles.languageSelectClass}
+              style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
+              onClick={() => {
+                setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+              }}
+            >
+              <span>{SUPPORTED_LANGUAGES.includes(selectedLanguage) ? t(`ui.language.${selectedLanguage}`) : selectedLanguage}</span>
+              <div className={settingsPanelStyles.languageSelectArrow}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Simple dropdown - no portal, just absolute positioning */}
+            {isLanguageDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-32 overflow-y-auto z-50">
+                {SUPPORTED_LANGUAGES.map(langCode => (
+                  <div
+                    key={langCode}
+                    className={`px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm border-b border-gray-200 dark:border-gray-600 last:border-b-0 ${
+                      selectedLanguage === langCode ? 'font-medium' : ''
+                    }`}
+                    style={{
+                      backgroundColor: selectedLanguage === langCode ? `var(--color-${colors.primary})` : 'transparent',
+                      color: selectedLanguage === langCode ? 'white' : 'inherit',
+                    }}
+                    onClick={() => {
+                      handleLanguageChange({ target: { value: langCode } } as React.ChangeEvent<HTMLSelectElement>);
+                      setIsLanguageDropdownOpen(false);
+                    }}
+                  >
+                    {t(`ui.language.${langCode}`)}
+                  </div>
+                ))}
+                <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed border-b-0">
+                  More coming soon!
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Theme Toggle */}
         <div className={settingsPanelStyles.settingRow}>
           <div className={settingsPanelStyles.settingTextContainer}>
@@ -127,56 +177,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             <p className={settingsPanelStyles.settingDescription}>{t('ui.settings.highContrastDesc')}</p>
           </div>
           <ToggleSwitch isOn={isHighContrast} onToggle={toggleHighContrast} />
-        </div>
-
-        {/* Language Dropdown */}
-        <div className={settingsPanelStyles.settingRow}>
-          <div className={settingsPanelStyles.settingTextContainer}>
-            <p className={settingsPanelStyles.settingTitle}>{t('ui.language.select')}</p>
-          </div>
-          <div className={settingsPanelStyles.languageSelectContainer}>
-            <div 
-              className={settingsPanelStyles.languageSelectClass}
-              style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
-              onClick={() => {
-                setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-              }}
-            >
-              <span>{SUPPORTED_LANGUAGES.includes(selectedLanguage) ? t(`ui.language.${selectedLanguage}`) : selectedLanguage}</span>
-              <div className={settingsPanelStyles.languageSelectArrow}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-            
-            {/* Simple dropdown - no portal, just absolute positioning */}
-            {isLanguageDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-32 overflow-y-auto z-50">
-                {SUPPORTED_LANGUAGES.map(langCode => (
-                  <div
-                    key={langCode}
-                    className={`px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm border-b border-gray-200 dark:border-gray-600 last:border-b-0 ${
-                      selectedLanguage === langCode ? 'font-medium' : ''
-                    }`}
-                    style={{
-                      backgroundColor: selectedLanguage === langCode ? `var(--color-${colors.primary})` : 'transparent',
-                      color: selectedLanguage === langCode ? 'white' : 'inherit',
-                    }}
-                    onClick={() => {
-                      handleLanguageChange({ target: { value: langCode } } as React.ChangeEvent<HTMLSelectElement>);
-                      setIsLanguageDropdownOpen(false);
-                    }}
-                  >
-                    {t(`ui.language.${langCode}`)}
-                  </div>
-                ))}
-                <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed border-b-0">
-                  More coming soon!
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 

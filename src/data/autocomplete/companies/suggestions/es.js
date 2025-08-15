@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
-// Official Spanish brand names - keeping international names when commonly used
-export const famousBrandsSuggestions = [
-  // Challenge brands (from /challenges/famous-brands/)
+// Official Spanish company names - keeping international names when commonly used
+export const companiesSuggestions = [
+  // Challenge companies (from /challenges/companies/)
   "Apple",
   "Coca-Cola",
   "Disney",

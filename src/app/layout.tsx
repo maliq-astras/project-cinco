@@ -47,6 +47,12 @@ const righteous = Righteous({
 export const metadata: Metadata = {
   title: "Fact 5 - Daily Trivia Challenge",
   description: "Test your knowledge with daily trivia challenges",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 
 export default function RootLayout({
@@ -57,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {

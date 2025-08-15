@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 export const settingsPanelStyles = {
   // Main containers
-  mobileContainer: "fixed inset-0 bg-black bg-opacity-70 z-[70] backdrop-blur-md",
+  mobileContainer: "fixed inset-0 bg-black bg-opacity-70 z-[999] backdrop-blur-md",
   mobilePanelClass: "absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg min-h-[510px]",
   mobilePanel: (primaryColor: string): CSSProperties => ({
     borderTop: `4px solid var(--color-${primaryColor})`,
@@ -12,7 +12,7 @@ export const settingsPanelStyles = {
   }),
   mobileDragIndicator: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]",
   
-  desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[70] backdrop-blur-md",
+  desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[999] backdrop-blur-md",
   desktopPanelClass: "bg-white dark:bg-black rounded-xl shadow-lg p-6 max-w-md w-full mx-4",
   desktopPanel: (primaryColor: string): CSSProperties => ({
     border: `2px solid var(--color-${primaryColor})`,
@@ -41,11 +41,15 @@ export const settingsPanelStyles = {
   settingErrorText: "text-sm text-red-500 dark:text-red-400 mt-1",
   
   // Toggle switch
-  toggleSwitchClass: "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black",
+  toggleSwitchClass: "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black shrink-0",
   toggleSwitch: (isOn: boolean, primaryColor: string, disabled: boolean): CSSProperties => ({
     backgroundColor: isOn ? `var(--color-${primaryColor})` : '#9ca3af',
     opacity: disabled ? 0.5 : 1,
-    cursor: disabled ? 'not-allowed' : 'pointer'
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    minWidth: '2.75rem', // 44px - ensure it doesn't shrink
+    width: '2.75rem', // 44px - force exact width
+    height: '1.5rem', // 24px - force exact height
+    borderRadius: '9999px' // ensure fully rounded
   }),
   toggleDot: (isOn: boolean): string => isOn ? "inline-block h-4 w-4 rounded-full bg-white transition-transform transform translate-x-5" : "inline-block h-4 w-4 rounded-full bg-white transition-transform transform translate-x-0.5",
   

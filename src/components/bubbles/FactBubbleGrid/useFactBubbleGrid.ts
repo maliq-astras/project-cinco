@@ -23,8 +23,9 @@ export function useFactBubbleGrid() {
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
-  // Grid layout configuration using the helper function
-  const gridConfig = getGridConfig(windowWidth);
+  // Grid layout configuration using the helper function (unified XS-XL system)
+  const windowHeight = window.innerHeight;
+  const gridConfig = getGridConfig(windowHeight);
 
   // Calculate grid items to display
   const gridItems = useMemo<BubbleGridItem[]>(() => {
@@ -79,27 +80,45 @@ export function useFactBubbleGrid() {
     }
   });
   
-  // Calculate container width
-  const bubbleSizeValue = getBubbleSize(windowWidth);
-  const gapSizeValue = getGapSize(windowWidth);
+  // Window height already declared above for grid config
   
-  const containerWidth = Math.min(
-    windowWidth - 32, // Account for page padding
-    (bubbleSizeValue * gridConfig.cols) + (gapSizeValue * (gridConfig.cols - 1)) // Bubbles + gaps
-  );
+  // Calculate container width using unified XS-XL system
+  const bubbleSizeValue = getBubbleSize(windowHeight);
+  const gapSizeValue = getGapSize(windowHeight);
+  
+  // Use full available width to ensure proper centering
+  const containerWidth = windowWidth - 32; // Account for page padding
+  
+  // Calculate maximum bubble size that fits in the container
+  const maxBubbleSize = Math.floor((containerWidth - (gapSizeValue * (gridConfig.cols - 1))) / gridConfig.cols);
+  
+  // Use the smaller of calculated size or maximum fit size
+  const finalBubbleSize = Math.min(bubbleSizeValue, maxBubbleSize);
+  
+  // Debug logging for bubble size constraints
+  if (finalBubbleSize < bubbleSizeValue) {
+    console.log('Bubble size constrained:', {
+      windowWidth,
+      windowHeight,
+      originalBubbleSize: bubbleSizeValue,
+      maxBubbleSize,
+      finalBubbleSize,
+      gridConfig
+    });
+  }
   
   // Grid style props
   const gridStyle = {
     gridTemplateColumns: `repeat(${gridConfig.cols}, 1fr)`,
     width: `${containerWidth}px`,
     gap: `${gapSizeValue}px`,
-    height: `${getContainerHeight(windowWidth, gridConfig)}px`
+    height: `${getContainerHeight(windowHeight, gridConfig)}px`
   };
   
   return {
     gridItems,
     gridStyle,
-    bubbleSize: bubbleSizeValue,
+    bubbleSize: finalBubbleSize, // Use constrained bubble size
     animationProps,
     isVictoryAnimationActive
   };

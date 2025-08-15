@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
 // Official artist/band names - keeping international names when commonly used in Spanish
-export const musicalArtistsSuggestions = [
-  // Challenge artists (from /challenges/musical-artists/)
+export const musiciansSuggestions = [
+  // Challenge musicians (from /challenges/musicians/)
   "Adele",
   "Alicia Keys",
   "Bob Marley",

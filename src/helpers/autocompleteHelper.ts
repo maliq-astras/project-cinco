@@ -21,25 +21,25 @@ import { countriesNormalization as countriesDataEn } from '@/data/autocomplete/c
 import { countriesSuggestions as countriesEs } from '@/data/autocomplete/countries/suggestions/es.js';
 import { countriesNormalization as countriesDataEs } from '@/data/autocomplete/countries/normalization/es.js';
 
-import { famousBrandsSuggestions as famousBrandsEn } from '@/data/autocomplete/famous-brands/suggestions/en.js';
-import { famousBrandsNormalization as famousBrandsDataEn } from '@/data/autocomplete/famous-brands/normalization/en.js';
-import { famousBrandsSuggestions as famousBrandsEs } from '@/data/autocomplete/famous-brands/suggestions/es.js';
-import { famousBrandsNormalization as famousBrandsDataEs } from '@/data/autocomplete/famous-brands/normalization/es.js';
+import { companiesSuggestions as companiesEn } from '@/data/autocomplete/companies/suggestions/en.js';
+import { companiesNormalization as companiesDataEn } from '@/data/autocomplete/companies/normalization/en.js';
+import { companiesSuggestions as companiesEs } from '@/data/autocomplete/companies/suggestions/es.js';
+import { companiesNormalization as companiesDataEs } from '@/data/autocomplete/companies/normalization/es.js';
 
-import { historicalFiguresSuggestions as historicalFiguresEn } from '@/data/autocomplete/historical-figures/suggestions/en.js';
-import { historicalFiguresNormalization as historicalFiguresDataEn } from '@/data/autocomplete/historical-figures/normalization/en.js';
-import { historicalFiguresSuggestions as historicalFiguresEs } from '@/data/autocomplete/historical-figures/suggestions/es.js';
-import { historicalFiguresNormalization as historicalFiguresDataEs } from '@/data/autocomplete/historical-figures/normalization/es.js';
+import { historySuggestions as historyEn } from '@/data/autocomplete/history/suggestions/en.js';
+import { historyNormalization as historyDataEn } from '@/data/autocomplete/history/normalization/en.js';
+import { historySuggestions as historyEs } from '@/data/autocomplete/history/suggestions/es.js';
+import { historyNormalization as historyDataEs } from '@/data/autocomplete/history/normalization/es.js';
 
 import { moviesSuggestions as moviesEn } from '@/data/autocomplete/movies/suggestions/en.js';
 import { moviesNormalization as moviesDataEn } from '@/data/autocomplete/movies/normalization/en.js';
 import { moviesSuggestions as moviesEs } from '@/data/autocomplete/movies/suggestions/es.js';
 import { moviesNormalization as moviesDataEs } from '@/data/autocomplete/movies/normalization/es.js';
 
-import { musicalArtistsSuggestions as musicalArtistsEn } from '@/data/autocomplete/musical-artists/suggestions/en.js';
-import { musicalArtistsNormalization as musicalArtistsDataEn } from '@/data/autocomplete/musical-artists/normalization/en.js';
-import { musicalArtistsSuggestions as musicalArtistsEs } from '@/data/autocomplete/musical-artists/suggestions/es.js';
-import { musicalArtistsNormalization as musicalArtistsDataEs } from '@/data/autocomplete/musical-artists/normalization/es.js';
+import { musiciansSuggestions as musiciansEn } from '@/data/autocomplete/musicians/suggestions/en.js';
+import { musiciansNormalization as musiciansDataEn } from '@/data/autocomplete/musicians/normalization/en.js';
+import { musiciansSuggestions as musiciansEs } from '@/data/autocomplete/musicians/suggestions/es.js';
+import { musiciansNormalization as musiciansDataEs } from '@/data/autocomplete/musicians/normalization/es.js';
 
 import { tvShowsSuggestions as tvShowsEn } from '@/data/autocomplete/tv-shows/suggestions/en.js';
 import { tvShowsNormalization as tvShowsDataEn } from '@/data/autocomplete/tv-shows/normalization/en.js';
@@ -67,21 +67,21 @@ const newCategorySuggestions: Partial<Record<CategoryType, Record<Language, { su
     en: { suggestions: countriesEn, data: countriesDataEn },
     es: { suggestions: countriesEs, data: countriesDataEs }
   },
-  [CategoryType.FAMOUS_BRANDS]: {
-    en: { suggestions: famousBrandsEn, data: famousBrandsDataEn },
-    es: { suggestions: famousBrandsEs, data: famousBrandsDataEs }
+  [CategoryType.COMPANIES]: {
+    en: { suggestions: companiesEn, data: companiesDataEn },
+    es: { suggestions: companiesEs, data: companiesDataEs }
   },
-  [CategoryType.HISTORICAL_FIGURES]: {
-    en: { suggestions: historicalFiguresEn, data: historicalFiguresDataEn },
-    es: { suggestions: historicalFiguresEs, data: historicalFiguresDataEs }
+  [CategoryType.HISTORY]: {
+    en: { suggestions: historyEn, data: historyDataEn },
+    es: { suggestions: historyEs, data: historyDataEs }
   },
   [CategoryType.MOVIES]: {
     en: { suggestions: moviesEn, data: moviesDataEn },
     es: { suggestions: moviesEs, data: moviesDataEs }
   },
-  [CategoryType.MUSICAL_ARTISTS]: {
-    en: { suggestions: musicalArtistsEn, data: musicalArtistsDataEn },
-    es: { suggestions: musicalArtistsEs, data: musicalArtistsDataEs }
+  [CategoryType.MUSICIANS]: {
+    en: { suggestions: musiciansEn, data: musiciansDataEn },
+    es: { suggestions: musiciansEs, data: musiciansDataEs }
   },
   [CategoryType.TV_SHOWS]: {
     en: { suggestions: tvShowsEn, data: tvShowsDataEn },

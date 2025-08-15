@@ -33,8 +33,36 @@ export const deviceDetection = {
   isTabletLandscape: () => {
     return window.innerWidth > window.innerHeight && 
            window.innerWidth > 1000 && 
-           window.innerWidth < 1400 && 
-           window.innerHeight < 950;
+           window.innerWidth < 1600 && // More conservative - tablets only
+           window.innerHeight < 1100 && // More conservative - tablets only
+           window.innerHeight > 500; // Ensure it's not a phone
+  },
+
+  isLargeTabletLandscape: () => {
+    // Specifically for iPad Pro and other large tablets that need tablet treatment
+    return window.innerWidth > window.innerHeight && 
+           window.innerWidth >= 1600 && 
+           window.innerWidth < 2000 && 
+           window.innerHeight >= 1000 && 
+           window.innerHeight < 1200;
+  },
+
+  isTabletPortrait: () => {
+    // Detect tablets in portrait mode (iPad Pro, iPad Air, etc.)
+    return window.innerHeight > window.innerWidth && 
+           window.innerHeight > 1000 && 
+           window.innerHeight < 1600 && 
+           window.innerWidth > 700 && 
+           window.innerWidth < 1200;
+  },
+
+  isLargeTabletPortrait: () => {
+    // Specifically for large tablets in portrait mode (iPad Pro, etc.)
+    return window.innerHeight > window.innerWidth && 
+           window.innerHeight >= 1300 && 
+           window.innerHeight < 1600 && 
+           window.innerWidth >= 1000 && 
+           window.innerWidth < 1200;
   },
 
   isMobilePhone: () => {
@@ -53,163 +81,242 @@ export const deviceDetection = {
     // - Max dimension < 1000px (excludes most tablets)
     // - Aspect ratio suggesting phone form factor
     return minDimension < 500 && maxDimension < 1000;
+  },
+
+  isNestHubMax: () => {
+    // Nest Hub Max has a 1280x800 resolution
+    return window.innerWidth >= 1270 && window.innerWidth <= 1290 && 
+           window.innerHeight >= 790 && window.innerHeight <= 810;
+  },
+
+  isNestHub: () => {
+    // Regular Nest Hub has a 1024x600 resolution
+    return window.innerWidth >= 1014 && window.innerWidth <= 1034 && 
+           window.innerHeight >= 590 && window.innerHeight <= 610;
+  },
+
+  isIpadAirLandscape: () => {
+    // iPad Air landscape has approximately 1180x820 resolution
+    return window.innerWidth >= 1170 && window.innerWidth <= 1190 && 
+           window.innerHeight >= 810 && window.innerHeight <= 830;
   }
 };
 
 /**
- * Get bubble size based on device type and screen dimensions
+ * Get bubble size based on screen height (XS-XL system)
+ * Unified scaling system for consistent proportions
  */
-export function getBubbleSize(windowWidth: number): number {
-  if (deviceDetection.isGalaxyS9Plus()) {
-    // Increase bubble size on Galaxy S9+; still fits 4x2 with current gaps
-    return 60;
+export function getBubbleSize(windowHeight: number): number {
+  // Special case for Nest Hub Max - needs smaller bubbles to fit
+  if (deviceDetection.isNestHubMax()) {
+    return 65; // Smaller bubbles for Nest Hub Max
   }
   
-  if (deviceDetection.isOtherGalaxyPhone()) {
-    return 62; // Smaller bubbles for other Samsung Galaxy phones
+  // Special case for regular Nest Hub - needs larger bubbles
+  if (deviceDetection.isNestHub()) {
+    return 70; // Larger bubbles for regular Nest Hub
   }
   
-  if (deviceDetection.isSurfacePro7()) {
-    return 75; // Smaller bubbles specifically for Surface Pro 7 in landscape
+  // Special case for iPad Air landscape - needs smaller bubbles to fit
+  if (deviceDetection.isIpadAirLandscape()) {
+    return 70; // Smaller bubbles for iPad Air landscape
   }
   
-  if (deviceDetection.isSurfaceDuo()) {
-    return 68; // Smaller bubbles for Surface Duo
+  // Use the same breakpoints as header sizing for consistency
+  if (windowHeight < 600) {
+    return 50; // XS - Very small screens
+  } else if (windowHeight < 700) {
+    return 60; // SM - Small screens
+  } else if (windowHeight < 800) {
+    return 75; // MD - Medium screens (increased from 70)
+  } else if (windowHeight < 1000) {
+    return 90; // LG - Large screens (increased from 80)
+  } else {
+    return 110; // XL - Extra large screens (increased from 90)
   }
-  
-  if (deviceDetection.isTabletLandscape()) {
-    return 80; // Smaller bubbles for tablet landscape with similar proportions
-  }
-  
-  if (windowWidth < 380) return 65; // Small mobile
-  if (windowWidth < 480) return 70; // Medium mobile
-  if (windowWidth < 640) return 75; // Large mobile
-  if (windowWidth < 768) return 80; // Small tablets
-  if (windowWidth < 1024) return 90; // Larger tablets
-  if (windowWidth < 1280) return 100; // Small desktops
-  return 110; // Large desktops
 }
 
 /**
- * Get gap size between bubbles based on device type and screen dimensions
+ * Get gap size between bubbles based on screen height (XS-XL system)
+ * Unified scaling system for consistent proportions
  */
-export function getGapSize(windowWidth: number): number {
-  if (deviceDetection.isGalaxyS9Plus()) {
-    return 8; // Extra tight gap for Galaxy S9+ xs bubbles in 4x2 grid
+export function getGapSize(windowHeight: number): number {
+  // Special case for Nest Hub Max - needs tighter gaps to fit
+  if (deviceDetection.isNestHubMax()) {
+    return 16; // Tighter gaps for Nest Hub Max
   }
   
-  if (deviceDetection.isSurfaceDuo()) {
-    return 16; // Tighter gap for Surface Duo
+  // Special case for regular Nest Hub - needs appropriate gaps
+  if (deviceDetection.isNestHub()) {
+    return 18; // Appropriate gaps for regular Nest Hub
   }
   
-  if (deviceDetection.isSurfacePro7() || deviceDetection.isTabletLandscape()) {
-    return 20; // Tighter gap for tablets and Surface Pro 7
+  // Special case for iPad Air landscape - needs tighter gaps to fit
+  if (deviceDetection.isIpadAirLandscape()) {
+    return 18; // Tighter gaps for iPad Air landscape
   }
   
-  if (windowWidth < 380) return 16;
-  if (windowWidth < 640) return 20;
-  if (windowWidth < 1024) return 24;
-  return 32;
+  // Use the same breakpoints as header sizing for consistency
+  if (windowHeight < 600) {
+    return 12; // XS - Very small screens
+  } else if (windowHeight < 700) {
+    return 16; // SM - Small screens
+  } else if (windowHeight < 800) {
+    return 20; // MD - Medium screens
+  } else if (windowHeight < 1000) {
+    return 24; // LG - Large screens
+  } else {
+    return 28; // XL - Extra large screens (iPad Pro portrait, etc.)
+  }
 }
 
 /**
- * Get bubble grid configuration based on device type
+ * Get grid configuration based on screen height (unified XS-XL system)
+ * Consistent with our unified scaling approach
  */
-export function getGridConfig(windowWidth: number) {
-  // Special case for Galaxy S9+ - use 4x2 with extra small bubbles
-  if (deviceDetection.isGalaxyS9Plus()) {
+export function getGridConfig(windowHeight: number) {
+  // Use the same breakpoints as our unified system
+  if (windowHeight < 600) {
+    // XS - Very small screens, might need 3x3 grid
     return {
-      cols: 4, // Keep 4 columns for Galaxy S9+ with xs bubbles
-      rows: 2, // Keep 2 rows for Galaxy S9+
+      cols: 3,
+      rows: 3,
+      totalSlots: 9
+    };
+  } else if (windowHeight < 700) {
+    // SM - Small screens, 4x2 should work
+    return {
+      cols: 4,
+      rows: 2,
+      totalSlots: 8
+    };
+  } else {
+    // MD, LG, XL - All larger screens, 4x2 works well
+    return {
+      cols: 4,
+      rows: 2,
       totalSlots: 8
     };
   }
-  
-  // Other very narrow devices that aren't Galaxy S9+
-  if (windowWidth <= 330) {
-    return {
-      cols: 3, // Reduce to 3 columns for other narrow devices
-      rows: 3, // Adjust rows to keep total slots to ~8-9
-      totalSlots: 9
-    };
-  }
-  
-  // Default config
-  return {
-    cols: 4,
-    rows: 2,
-    totalSlots: 8
-  };
 }
 
 /**
- * Get container height for bubble grid based on device type
+ * Get container height for bubble grid based on screen height (XS-XL system)
+ * Unified scaling system for consistent proportions
  */
-export function getContainerHeight(windowWidth: number, gridConfig: { rows: number, cols: number }) {
-  // For Galaxy S9+, compute dynamically using current bubble and gap sizes so
-  // visual adjustments stay in sync when we tweak sizes above
-  if (deviceDetection.isGalaxyS9Plus()) {
-    return gridConfig.rows * getBubbleSize(windowWidth) + getGapSize(windowWidth) * (gridConfig.rows - 1);
-  }
+export function getContainerHeight(windowHeight: number, gridConfig: { rows: number, cols: number }) {
+  // Use the same breakpoints as header sizing for consistency
+  const bubbleSize = getBubbleSize(windowHeight);
+  const gapSize = getGapSize(windowHeight);
   
-  if (deviceDetection.isSurfaceDuo()) {
-    return 155; // Custom height for Surface Duo
-  }
-  
-  if (deviceDetection.isSurfacePro7()) {
-    return 170; // Smaller height for Surface Pro 7
-  }
-  
-  if (deviceDetection.isTabletLandscape()) {
-    return 180; // Adjusted height for tablet landscape
-  }
-  
-  if (windowWidth < 380) return 140; // Small mobile
-  if (windowWidth < 480) return 150; // Medium mobile
-  if (windowWidth < 640) return 160; // Large mobile
-  
-  // For larger screens, dynamically calculate based on bubble and gap
-  return gridConfig.rows * getBubbleSize(windowWidth) + getGapSize(windowWidth) * (gridConfig.rows - 1);
+  // Calculate container height based on bubble size and gaps
+  return gridConfig.rows * bubbleSize + gapSize * (gridConfig.rows - 1);
 }
 
 /**
- * Get scaling factor for device-specific sizing
+ * Get responsive layout mode and smart scaling for no-scroll experience
+ * 
+ * This system ensures the game always fits on screen without scrolling:
+ * 1. First tries responsive layout adjustments (spacing, gaps)
+ * 2. Only applies smart scaling when absolutely necessary
+ * 3. More aggressive scaling for very constrained heights (down to 0.65)
+ * 4. Special handling for known devices (Surface Pro 7, Surface Duo)
+ */
+export function getResponsiveLayoutMode(width: number, height: number, isTablet: boolean): 'compact' | 'normal' | 'spacious' {
+  // Simple breakpoint-based layout - no device detection needed
+  // Just use the screen dimensions to determine appropriate layout
+  
+  if (height < 600) {
+    return 'compact'; // Very small screens
+  } else if (height < 700) {
+    return 'compact'; // Small screens
+  } else if (height < 1000) {
+    return 'normal'; // Medium to large screens
+  } else {
+    return 'spacious'; // Extra large screens (iPad Pro portrait, etc.)
+  }
+}
+
+/**
+ * Get header size mode for synchronized XS → XL system
+ * Ensures header and logo sizes are perfectly synchronized
+ * Now considers both height AND aspect ratio for better fit
+ */
+export function getHeaderSizeMode(width: number, height: number, isTablet: boolean): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
+  // Simple breakpoint-based sizing - no device detection needed
+  // Just use the screen dimensions to determine appropriate header size
+  
+  if (height < 600) {
+    return 'xs'; // Very small screens
+  } else if (height < 700) {
+    return 'sm'; // Small screens
+  } else if (height < 800) {
+    return 'md'; // Medium screens
+  } else if (height < 1000) {
+    return 'lg'; // Large screens
+  } else {
+    return 'xl'; // Extra large screens (iPad Pro portrait, etc.)
+  }
+}
+
+/**
+ * Get smart scaling factor for no-scroll experience
+ * Only scales when absolutely necessary to fit content on screen
  */
 export function getDeviceScaleFactor(width: number, height: number, isTablet: boolean): number {
   if (isTablet) {
-    // For tablet landscape mode
-    let scaleFactor = Math.min(0.7, height / 950);
+    // Calculate aspect ratio and available space
+    const aspectRatio = width / height;
+    const totalPixels = width * height;
     
-    // For very constrained heights
-    if (height < 550) {
-      scaleFactor = Math.min(0.65, height / 1000);
+    // More intelligent scaling based on both dimensions and aspect ratio
+    let minHeightNeeded = 850; // Base height needed
+    
+    // Adjust height needed based on aspect ratio
+    if (aspectRatio > 1.8) {
+      // Very wide aspect ratio (like iPad Air) - needs more height
+      minHeightNeeded = 900;
+    } else if (aspectRatio > 1.6) {
+      // Wide aspect ratio - needs slightly more height
+      minHeightNeeded = 875;
+    } else if (aspectRatio < 1.3) {
+      // Narrow aspect ratio - can work with less height
+      minHeightNeeded = 800;
     }
     
-    // Special case for Surface Pro 7
+    // Adjust for very small total pixel count
+    if (totalPixels < 400000) {
+      minHeightNeeded = 750; // Surface Duo and similar
+    }
+    
+    const minScale = Math.min(1, height / minHeightNeeded);
+    
+    // More aggressive scaling for very constrained heights
+    let safeScale = minScale;
+    
+    // For very constrained heights, allow more aggressive scaling
+    if (height < 600 || totalPixels < 400000) {
+      safeScale = Math.max(0.6, minScale); // More aggressive for very small screens
+    } else if (height < 700 || (height < 800 && aspectRatio > 1.8)) {
+      safeScale = Math.max(0.65, minScale); // iPad Air and similar
+    } else if (height < 850) {
+      safeScale = Math.max(0.75, minScale); // Standard minimum
+    } else {
+      safeScale = Math.max(0.8, minScale); // Less aggressive for larger screens
+    }
+    
+    // Special cases for known devices
     if (deviceDetection.isSurfacePro7()) {
-      scaleFactor = 0.85; // Optimal scaling for Surface Pro 7
+      return Math.max(0.8, safeScale);
     }
     
-    // Special case for Surface Duo
     if (deviceDetection.isSurfaceDuo()) {
-      scaleFactor = 0.75; // Optimal scaling for Surface Duo
+      return Math.max(0.7, safeScale); // More aggressive for Surface Duo
     }
     
-    return scaleFactor;
+    return safeScale;
   } else {
-    // Default scale factor for portrait mode
-    let defaultScale = 1;
-    
-    // Special case for Galaxy S9+
-    if (deviceDetection.isGalaxyS9Plus()) {
-      defaultScale = 0.95; // Slightly smaller scale for Galaxy S9+
-    }
-    
-    // Special case for Surface Duo portrait
-    if (deviceDetection.isSurfaceDuo()) {
-      defaultScale = 0.9; // Slightly smaller scale for Surface Duo
-    }
-    
-    return defaultScale;
+    // For portrait mode - no scaling needed
+    return 1;
   }
 } 

@@ -7,10 +7,10 @@ export enum CategoryType {
   ANIMALS = "Animals",
   MOVIES = "Movies",
   BOOKS = "Books",
-  MUSICAL_ARTISTS = "Musical Artists",
+  MUSICIANS = "Musicians",
   ATHLETES = "Athletes",
-  HISTORICAL_FIGURES = "Historical Figures",
-  FAMOUS_BRANDS = "Famous Brands",
+  HISTORY = "History",
+  COMPANIES = "Companies",
   TV_SHOWS = "TV Shows"
 }
 
@@ -43,10 +43,10 @@ export const CATEGORY_COLOR_MAPPING: Record<CategoryType, { tailwind: string, hi
   [CategoryType.ANIMALS]: { tailwind: 'emerald', highContrast: 'green' },
   [CategoryType.MOVIES]: { tailwind: 'violet', highContrast: 'purple' },
   [CategoryType.BOOKS]: { tailwind: 'orange', highContrast: 'orange' },
-  [CategoryType.MUSICAL_ARTISTS]: { tailwind: 'fuchsia', highContrast: 'pink' },
+  [CategoryType.MUSICIANS]: { tailwind: 'fuchsia', highContrast: 'pink' },
   [CategoryType.ATHLETES]: { tailwind: 'red', highContrast: 'red' },
-  [CategoryType.HISTORICAL_FIGURES]: { tailwind: 'amber', highContrast: 'yellow' },
-  [CategoryType.FAMOUS_BRANDS]: { tailwind: 'teal', highContrast: 'cyan' },
+  [CategoryType.HISTORY]: { tailwind: 'amber', highContrast: 'yellow' },
+  [CategoryType.COMPANIES]: { tailwind: 'teal', highContrast: 'cyan' },
   [CategoryType.TV_SHOWS]: { tailwind: 'indigo', highContrast: 'indigo' }
 };
 
@@ -80,7 +80,7 @@ export const categoryColorMap: Record<CategoryType, ThemeColors> = {
     light: 'orange-100',
     dark: 'orange-800'
   },
-  [CategoryType.MUSICAL_ARTISTS]: {
+  [CategoryType.MUSICIANS]: {
     primary: 'fuchsia-600',
     secondary: 'fuchsia-500',
     accent: 'fuchsia-700',
@@ -94,14 +94,14 @@ export const categoryColorMap: Record<CategoryType, ThemeColors> = {
     light: 'red-100',
     dark: 'red-800'
   },
-  [CategoryType.HISTORICAL_FIGURES]: {
+  [CategoryType.HISTORY]: {
     primary: 'amber-500',
     secondary: 'amber-400',
     accent: 'amber-600',
     light: 'amber-100',
     dark: 'amber-700'
   },
-  [CategoryType.FAMOUS_BRANDS]: {
+  [CategoryType.COMPANIES]: {
     primary: 'teal-500',
     secondary: 'teal-400',
     accent: 'teal-600',
@@ -134,10 +134,10 @@ export type CategoryFactTypeMap = {
   [CategoryType.ANIMALS]: AnimalFactType;
   [CategoryType.MOVIES]: MovieFactType;
   [CategoryType.BOOKS]: BookFactType;
-  [CategoryType.MUSICAL_ARTISTS]: MusicalArtistFactType;
+  [CategoryType.MUSICIANS]: MusicalArtistFactType;
   [CategoryType.ATHLETES]: AthleteFactType;
-  [CategoryType.HISTORICAL_FIGURES]: HistoricalFigureFactType;
-  [CategoryType.FAMOUS_BRANDS]: FamousBrandFactType;
+  [CategoryType.HISTORY]: HistoricalFigureFactType;
+  [CategoryType.COMPANIES]: FamousBrandFactType;
   [CategoryType.TV_SHOWS]: TvShowFactType;
 }
 

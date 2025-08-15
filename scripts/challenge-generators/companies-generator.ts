@@ -1,9 +1,9 @@
-// scripts/challenge-generators/famous-brands-generator.ts
+// scripts/challenge-generators/companies-generator.ts
 import { CategoryType, FamousBrandFactType } from '../../src/types';
 import { BaseChallengeGenerator } from './generator';
 
-// Famous brand fact types
-const famousBrandFactTypes: FamousBrandFactType[] = [
+// Company fact types
+const companyFactTypes: FamousBrandFactType[] = [
   "Industry",
   "Origin", 
   "Logo",
@@ -14,8 +14,8 @@ const famousBrandFactTypes: FamousBrandFactType[] = [
   "Wildcard"
 ];
 
-// Famous brands data with facts for each fact type
-const famousBrandData = [
+// Companies data with facts for each fact type
+const companyData = [
   {
     answer: {
       en: "Apple",
@@ -153,8 +153,8 @@ const famousBrandData = [
   }
 ];
 
-export class FamousBrandsGenerator extends BaseChallengeGenerator {
+export class CompaniesGenerator extends BaseChallengeGenerator {
   constructor() {
-    super(CategoryType.FAMOUS_BRANDS, famousBrandFactTypes, famousBrandData);
+    super(CategoryType.COMPANIES, companyFactTypes, companyData);
   }
 } 

@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
 // Official brand names only - no nicknames or variations
-export const famousBrandsSuggestions = [
-  // Challenge brands (from /challenges/famous-brands/)
+export const companiesSuggestions = [
+  // Challenge companies (from /challenges/companies/)
   "Apple",
   "Coca-Cola",
   "Disney",

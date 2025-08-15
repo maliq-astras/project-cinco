@@ -1,8 +1,8 @@
 import { CSSProperties } from 'react';
 
 export const navDropdownMenuStyles = {
-  // Base dropdown menu styles, using the wrapper from navigationStyles
-  menuContainer: "absolute right-0 sm:right-0 -left-24 sm:left-auto mt-2 w-48 rounded-lg shadow-lg py-1 bg-white dark:bg-black border-2 z-50",
+  // Base dropdown menu styles, using responsive positioning for all screen sizes
+  menuContainer: "absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 bg-white dark:bg-black border-2 z-50",
   
   // Menu container base style (border color will be set with primary color)
   menuContainerStyle: (primaryColor: string): CSSProperties => ({

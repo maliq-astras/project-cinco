@@ -18,16 +18,16 @@ const config: Config = {
     // Orange (Books)
     'text-orange-600', 'bg-orange-600', 'hover:bg-orange-700', 'border-orange-600', 'hover:border-orange-600', 'text-orange-800', 'bg-orange-50', 'bg-orange-500', 'bg-orange-700', 'bg-orange-100', 'bg-orange-800', 'border-orange-600', 'bg-orange-600/30',
     
-    // Fuchsia (Musical Artists)
+    // Fuchsia (Musicians)
     'text-fuchsia-600', 'bg-fuchsia-600', 'hover:bg-fuchsia-700', 'border-fuchsia-600', 'hover:border-fuchsia-600', 'text-fuchsia-800', 'bg-fuchsia-50', 'bg-fuchsia-500', 'bg-fuchsia-700', 'bg-fuchsia-100', 'bg-fuchsia-800', 'border-fuchsia-600', 'bg-fuchsia-600/30',
     
     // Red (Athletes)
     'text-red-600', 'bg-red-600', 'hover:bg-red-700', 'border-red-600', 'hover:border-red-600', 'text-red-800', 'bg-red-50', 'bg-red-500', 'bg-red-700', 'bg-red-100', 'bg-red-800', 'border-red-600', 'bg-red-600/30',
     
-    // Amber (Historical Figures)
+    // Amber (History)
     'text-amber-500', 'bg-amber-500', 'hover:bg-amber-600', 'border-amber-500', 'hover:border-amber-500', 'text-amber-700', 'bg-amber-50', 'bg-amber-400', 'bg-amber-600', 'bg-amber-100', 'bg-amber-700', 'border-amber-500', 'bg-amber-500/30',
     
-    // Teal (Famous Brands)
+    // Teal (Companies)
     'text-teal-500', 'bg-teal-500', 'hover:bg-teal-600', 'border-teal-500', 'hover:border-teal-500', 'text-teal-700', 'bg-teal-50', 'bg-teal-400', 'bg-teal-600', 'bg-teal-100', 'bg-teal-700', 'border-teal-500', 'bg-teal-500/30',
     
     // Indigo (TV Shows)

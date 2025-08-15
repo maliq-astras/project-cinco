@@ -235,7 +235,7 @@ export const getShadowColor = (color: string): string => {
     'orange-500': 'rgba(249, 115, 22, 0.3)',
     'orange-400': 'rgba(251, 146, 60, 0.3)',
     
-    // Fuchsia (Musical Artists)
+    // Fuchsia (Musicians)
     'fuchsia-600': 'rgba(192, 38, 211, 0.3)',
     'fuchsia-500': 'rgba(217, 70, 239, 0.3)',
     'fuchsia-400': 'rgba(232, 121, 249, 0.3)',
@@ -245,12 +245,12 @@ export const getShadowColor = (color: string): string => {
     'red-500': 'rgba(239, 68, 68, 0.3)',
     'red-400': 'rgba(248, 113, 113, 0.3)',
     
-    // Amber (Historical Figures)
+    // Amber (History)
     'amber-600': 'rgba(217, 119, 6, 0.3)',
     'amber-500': 'rgba(245, 158, 11, 0.3)',
     'amber-400': 'rgba(251, 191, 36, 0.3)',
     
-    // Teal (Famous Brands)
+    // Teal (Companies)
     'teal-600': 'rgba(13, 148, 136, 0.3)',
     'teal-500': 'rgba(20, 184, 166, 0.3)',
     'teal-400': 'rgba(45, 212, 191, 0.3)',

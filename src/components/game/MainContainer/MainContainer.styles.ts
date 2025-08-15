@@ -131,5 +131,64 @@ export const mainContainerStyles = {
   // Section spacing
   sectionGap: {
     gap: "1rem"
+  },
+
+  // Responsive layout classes - modern approach instead of scaling
+  responsiveLayout: {
+    // Compact layout for constrained heights
+    compact: `
+      .layout-compact .game-content {
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+      }
+      
+      .layout-compact .top-section {
+        margin-bottom: 0.5rem;
+      }
+      
+      .layout-compact .middle-section {
+        gap: 0.5rem;
+      }
+      
+      .layout-compact .bottom-section {
+        margin-top: 0.5rem;
+      }
+      
+      .layout-compact .fact-bubbles-wrapper {
+        margin: 0.5rem 0;
+      }
+      
+      .layout-compact .context-line {
+        margin-bottom: 0.5rem;
+      }
+    `,
+    
+    // Normal layout (default)
+    normal: `
+      .layout-normal .game-content {
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+    `,
+    
+    // Spacious layout for larger screens
+    spacious: `
+      .layout-spacious .game-content {
+        gap: 1.5rem;
+        padding: 1.5rem 0;
+      }
+      
+      .layout-spacious .top-section {
+        margin-bottom: 1rem;
+      }
+      
+      .layout-spacious .middle-section {
+        gap: 1rem;
+      }
+      
+      .layout-spacious .bottom-section {
+        margin-top: 1rem;
+      }
+    `
   }
 } as const; 

@@ -4,7 +4,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import type { GameControlsHandle } from '../GameControls';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
-import { deviceDetection, getDeviceScaleFactor } from '@/helpers';
+import { deviceDetection, getDeviceScaleFactor, getResponsiveLayoutMode, getHeaderSizeMode } from '@/helpers';
 import { GameOutcome } from '@/types';
 
 export function useMainContainer() {
@@ -41,6 +41,8 @@ export function useMainContainer() {
   const [isTabletLandscape, setIsTabletLandscape] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isCompactHeader, setIsCompactHeader] = useState(false);
+  const [responsiveLayoutMode, setResponsiveLayoutMode] = useState<'compact' | 'normal' | 'spacious'>('normal');
+  const [headerSizeMode, setHeaderSizeMode] = useState<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
   const { language } = useLanguage();
   
   // Ref for game controls
@@ -107,21 +109,52 @@ export function useMainContainer() {
       const isLandscape = width > height;
       
       // Phone in landscape - show warning
-      setIsSmallLandscape(isSmall && isLandscape);
+      // Also include Surface Duo landscape (720x540) which should show rotation warning
+      const isSurfaceDuoLandscape = deviceDetection.isSurfaceDuo() && isLandscape;
+      setIsSmallLandscape((isSmall && isLandscape) || isSurfaceDuoLandscape);
       
       // Tablet detection - both portrait and landscape
       const isTabletDevice = (width >= 768 && width <= 1024) || (isMedium && (isLandscape || width >= 768));
       setIsTablet(isTabletDevice);
       
-      // Tablet in landscape - scale content
-      const isTabletLandscapeMode = isMedium && isLandscape;
-      setIsTabletLandscape(isTabletLandscapeMode);
+      // Tablet detection - both landscape and portrait
+      // Use the deviceDetection helper for more accurate tablet detection
+      const isTabletLandscapeMode = deviceDetection.isTabletLandscape() || deviceDetection.isLargeTabletLandscape();
+      const isTabletPortraitMode = deviceDetection.isTabletPortrait() || deviceDetection.isLargeTabletPortrait();
+      const isTabletMode = isTabletLandscapeMode || isTabletPortraitMode;
+      setIsTabletLandscape(isTabletMode);
       
       // Set compact header for any landscape mode with height below 650px
       setIsCompactHeader(isLandscape && height < 650);
       
-      // Set scale factor using our device helper
-      setScaleFactor(getDeviceScaleFactor(width, height, isTabletLandscapeMode));
+      // Set responsive layout mode for spacing adjustments
+      const layoutMode = getResponsiveLayoutMode(width, height, isTabletLandscapeMode);
+      const scaleFactorValue = getDeviceScaleFactor(width, height, isTabletLandscapeMode);
+      
+      // Set header size mode for synchronized XS → XL system
+      const headerSize = getHeaderSizeMode(width, height, isTabletLandscapeMode);
+      
+      // Debug logging (commented out for production)
+      // console.log('useMainContainer Debug:', {
+      //   width,
+      //   height,
+      //   isTabletLandscapeMode,
+      //   isTabletPortraitMode,
+      //   isTabletMode,
+      //   layoutMode,
+      //   scaleFactorValue,
+      //   headerSize,
+      //   deviceDetection: {
+      //     isTabletLandscape: deviceDetection.isTabletLandscape(),
+      //     isLargeTabletLandscape: deviceDetection.isLargeTabletLandscape(),
+      //     isTabletPortrait: deviceDetection.isTabletPortrait(),
+      //     isLargeTabletPortrait: deviceDetection.isLargeTabletPortrait()
+      //   }
+      // });
+      
+      setResponsiveLayoutMode(layoutMode);
+      setScaleFactor(scaleFactorValue);
+      setHeaderSizeMode(headerSize);
     };
     
     // Initial setup
@@ -219,6 +252,8 @@ export function useMainContainer() {
     isTabletLandscape,
     isTablet,
     isCompactHeader,
+    responsiveLayoutMode,
+    headerSizeMode,
     isTimerActive,
     isFinalFiveActive,
     showFinalFiveTransition,

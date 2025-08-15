@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
 // Official artist/band names only - stage names preferred over real names
-export const musicalArtistsSuggestions = [
-  // Challenge artists (from /challenges/musical-artists/)
+export const musiciansSuggestions = [
+  // Challenge musicians (from /challenges/musicians/)
   "Adele",
   "Alicia Keys",
   "Bob Marley",

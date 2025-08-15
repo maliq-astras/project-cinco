@@ -1,8 +1,8 @@
 // Normalization data (grouped catch-all variations)
 // Maps user input variations to the official Spanish artist/band name
 // IMPORTANT: All accent variations normalized + stage names, real names, nicknames
-export const musicalArtistsNormalization = {
-  // Challenge artists - accent normalization and variations
+export const musiciansNormalization = {
+  // Challenge musicians - accent normalization and variations
   "Adele": [
     "Adele Adkins"
   ],

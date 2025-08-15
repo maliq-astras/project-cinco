@@ -1,9 +1,9 @@
-// scripts/challenge-generators/historical-figures-generator.ts
+// scripts/challenge-generators/history-generator.ts
 import { CategoryType, HistoricalFigureFactType } from '../../src/types';
 import { BaseChallengeGenerator } from './generator';
 
-// Historical figure fact types
-const historicalFigureFactTypes: HistoricalFigureFactType[] = [
+// History fact types
+const historyFactTypes: HistoricalFigureFactType[] = [
   "Occupation",
   "Early Life",
   "Nationality", 
@@ -14,8 +14,8 @@ const historicalFigureFactTypes: HistoricalFigureFactType[] = [
   "Wildcard"
 ];
 
-// Historical figures data with facts for each fact type
-const historicalFigureData = [
+// History data with facts for each fact type
+const historyData = [
   {
     answer: {
       en: "Leonardo da Vinci",
@@ -153,8 +153,8 @@ const historicalFigureData = [
   }
 ];
 
-export class HistoricalFiguresGenerator extends BaseChallengeGenerator {
+export class HistoryGenerator extends BaseChallengeGenerator {
   constructor() {
-    super(CategoryType.HISTORICAL_FIGURES, historicalFigureFactTypes, historicalFigureData);
+    super(CategoryType.HISTORY, historyFactTypes, historyData);
   }
 } 

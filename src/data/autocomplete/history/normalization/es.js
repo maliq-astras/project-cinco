@@ -1,7 +1,7 @@
 // Normalization data (grouped catch-all variations)
 // Maps user input variations to the official Spanish historical figure name
 // IMPORTANT: All accent variations are normalized to prevent wrong answers
-export const historicalFiguresNormalization = {
+export const historyNormalization = {
   // Challenge figures - accent normalization and variations
   "Abraham Lincoln": [
     "Abe Lincoln",

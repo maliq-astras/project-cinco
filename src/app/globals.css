@@ -11,6 +11,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import our professional responsive system */
+@import '../styles/responsive-system.css';
+
 /* Apply smooth transitions for theme changes and improve dark mode flashing */
 :root {
   color-scheme: light;
@@ -38,6 +41,172 @@ html, body {
   overflow-x: hidden;
   height: 100%;
   width: 100%;
+}
+
+/* Disable double-tap to zoom on mobile while preserving pinch-to-zoom */
+/* This prevents accidental zooming when tapping buttons/interactive elements */
+/* Users can still pinch-to-zoom for accessibility if needed */
+html {
+  touch-action: manipulation;
+}
+
+/* Ensure buttons and interactive elements don't trigger zoom */
+button, 
+input, 
+select, 
+textarea,
+[role="button"],
+[tabindex] {
+  touch-action: manipulation;
+}
+
+/* Game-specific areas that should never trigger zoom */
+#game-controls,
+.game-controls,
+.fact-card-stack-container,
+.fact-bubble-grid {
+  touch-action: manipulation;
+}
+
+/* Prevent zoom on draggable elements */
+[draggable="true"] {
+  touch-action: manipulation;
+}
+
+/* Responsive layout classes - modern approach with smart scaling for no-scroll experience */
+
+/* Header responsive adjustments for long category names */
+@media (max-width: 600px) {
+  .header-title {
+    max-width: 150px !important;
+    font-size: clamp(14px, 2vh, 18px) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .header-title {
+    max-width: 200px !important;
+    font-size: clamp(16px, 2.5vh, 22px) !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .header-title {
+    max-width: 250px !important;
+    font-size: clamp(18px, 3vh, 26px) !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .header-title {
+    max-width: 300px !important;
+    font-size: clamp(20px, 3.5vh, 30px) !important;
+  }
+}
+/* Compact layout for constrained heights */
+.layout-compact .game-content {
+  gap: 0.5rem !important;
+  padding: 0.5rem 0 !important;
+}
+
+.layout-compact .top-section {
+  margin-bottom: 0.5rem !important;
+}
+
+.layout-compact .middle-section {
+  gap: 0.5rem !important;
+}
+
+.layout-compact .bottom-section {
+  margin-top: 0.5rem !important;
+}
+
+.layout-compact .fact-bubbles-wrapper {
+  margin: 0.5rem 0 !important;
+}
+
+.layout-compact .context-line {
+  margin-bottom: 0.5rem !important;
+}
+
+/* Normal layout (default) */
+.layout-normal .game-content {
+  gap: 1rem !important;
+  padding: 1rem 0 !important;
+}
+
+/* Spacious layout for larger screens */
+.layout-spacious .game-content {
+  gap: 1.5rem !important;
+  padding: 1.5rem 0 !important;
+}
+
+.layout-spacious .top-section {
+  margin-bottom: 1rem !important;
+}
+
+.layout-spacious .middle-section {
+  gap: 1rem !important;
+}
+
+.layout-spacious .bottom-section {
+  margin-top: 1rem !important;
+}
+
+/* Additional responsive adjustments for very constrained heights */
+@media (max-height: 600px) {
+  .layout-compact .game-content {
+    gap: 0.25rem !important;
+    padding: 0.25rem 0 !important;
+  }
+  
+  .layout-compact .top-section {
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .layout-compact .middle-section {
+    gap: 0.25rem !important;
+  }
+  
+  .layout-compact .bottom-section {
+    margin-top: 0.25rem !important;
+  }
+  
+  .layout-compact .fact-bubbles-wrapper {
+    margin: 0.25rem 0 !important;
+  }
+  
+  .layout-compact .context-line {
+    margin-bottom: 0.25rem !important;
+  }
+}
+
+/* Ultra-compact adjustments for extremely constrained heights */
+@media (max-height: 650px) {
+  .layout-compact .game-content {
+    gap: 0.125rem !important;
+    padding: 0.125rem 0 !important;
+  }
+  
+  .layout-compact .top-section {
+    margin-bottom: 0.125rem !important;
+  }
+  
+  .layout-compact .middle-section {
+    gap: 0.125rem !important;
+  }
+  
+  .layout-compact .bottom-section {
+    margin-top: 0.125rem !important;
+  }
+  
+  .layout-compact .fact-bubbles-wrapper {
+    margin: 0.125rem 0 !important;
+  }
+  
+  .layout-compact .context-line {
+    margin-bottom: 0.125rem !important;
+  }
 }
 
 /* Utility class to hide scrollbars */
@@ -91,10 +260,10 @@ html, body {
   --hc-green-900: 0, 102, 0; /* Animals */
   --hc-purple-900: 102, 0, 102; /* Movies */
   --hc-orange-900: 153, 51, 0; /* Books */
-  --hc-pink-900: 153, 0, 102; /* Musical Artists */
+  --hc-pink-900: 153, 0, 102; /* Musicians */
   --hc-red-900: 153, 0, 0; /* Athletes */
-  --hc-yellow-900: 153, 102, 0; /* Historical Figures */
-  --hc-cyan-900: 0, 102, 102; /* Famous Brands */
+  --hc-yellow-900: 153, 102, 0; /* History */
+  --hc-cyan-900: 0, 102, 102; /* Companies */
   --hc-indigo-900: 51, 0, 153; /* TV Shows */
   
   /* Secondary and accent colors for light mode */
@@ -130,10 +299,10 @@ html, body {
   --hc-green-300: 0, 204, 102; /* Animals */
   --hc-purple-300: 204, 51, 255; /* Movies */
   --hc-orange-300: 255, 153, 51; /* Books */
-  --hc-pink-300: 255, 51, 153; /* Musical Artists */
+  --hc-pink-300: 255, 51, 153; /* Musicians */
   --hc-red-300: 255, 51, 51; /* Athletes */
-  --hc-yellow-300: 255, 255, 51; /* Historical Figures */
-  --hc-cyan-300: 51, 204, 204; /* Famous Brands */
+  --hc-yellow-300: 255, 255, 51; /* History */
+  --hc-cyan-300: 51, 204, 204; /* Companies */
   --hc-indigo-300: 102, 102, 255; /* TV Shows */
   
   /* Secondary and accent colors for dark mode */
@@ -218,20 +387,20 @@ html, body {
 .high-contrast [data-category="ANIMALS"] { color: rgb(var(--hc-green-900)) !important; }
 .high-contrast [data-category="MOVIES"] { color: rgb(var(--hc-purple-900)) !important; }
 .high-contrast [data-category="BOOKS"] { color: rgb(var(--hc-orange-900)) !important; }
-.high-contrast [data-category="MUSIC"], .high-contrast [data-category="MUSICAL ARTISTS"] { color: rgb(var(--hc-pink-900)) !important; }
+.high-contrast [data-category="MUSIC"], .high-contrast [data-category="MUSICIANS"] { color: rgb(var(--hc-pink-900)) !important; }
 .high-contrast [data-category="ATHLETES"] { color: rgb(var(--hc-red-900)) !important; }
-.high-contrast [data-category="HISTORICAL FIGURES"] { color: rgb(var(--hc-yellow-900)) !important; }
-.high-contrast [data-category="FAMOUS BRANDS"] { color: rgb(var(--hc-cyan-900)) !important; }
+.high-contrast [data-category="HISTORY"] { color: rgb(var(--hc-yellow-900)) !important; }
+.high-contrast [data-category="COMPANIES"] { color: rgb(var(--hc-cyan-900)) !important; }
 .high-contrast [data-category="TV SHOWS"] { color: rgb(var(--hc-indigo-900)) !important; }
 
 .dark.high-contrast [data-category="COUNTRIES"] { color: rgb(var(--hc-blue-300)) !important; }
 .dark.high-contrast [data-category="ANIMALS"] { color: rgb(var(--hc-green-300)) !important; }
 .dark.high-contrast [data-category="MOVIES"] { color: rgb(var(--hc-purple-300)) !important; }
 .dark.high-contrast [data-category="BOOKS"] { color: rgb(var(--hc-orange-300)) !important; }
-.dark.high-contrast [data-category="MUSIC"], .dark.high-contrast [data-category="MUSICAL ARTISTS"] { color: rgb(var(--hc-pink-300)) !important; }
+.dark.high-contrast [data-category="MUSIC"], .dark.high-contrast [data-category="MUSICIANS"] { color: rgb(var(--hc-pink-300)) !important; }
 .dark.high-contrast [data-category="ATHLETES"] { color: rgb(var(--hc-red-300)) !important; }
-.dark.high-contrast [data-category="HISTORICAL FIGURES"] { color: rgb(var(--hc-yellow-300)) !important; }
-.dark.high-contrast [data-category="FAMOUS BRANDS"] { color: rgb(var(--hc-cyan-300)) !important; }
+.dark.high-contrast [data-category="HISTORY"] { color: rgb(var(--hc-yellow-300)) !important; }
+.dark.high-contrast [data-category="COMPANIES"] { color: rgb(var(--hc-cyan-300)) !important; }
 .dark.high-contrast [data-category="TV SHOWS"] { color: rgb(var(--hc-indigo-300)) !important; }
 
 /* Background color versions */
@@ -767,7 +936,7 @@ body {
 .dark.high-contrast [data-category="MOVIES"] { color: rgb(var(--hc-purple-300)) !important; }
 .dark.high-contrast [data-category="BOOKS"] { color: rgb(var(--hc-orange-300)) !important; }
 .dark.high-contrast [data-category="MUSIC"], 
-.dark.high-contrast [data-category="MUSICAL ARTISTS"] { color: rgb(var(--hc-pink-300)) !important; }
+.dark.high-contrast [data-category="MUSICIANS"] { color: rgb(var(--hc-pink-300)) !important; }
 
 /* Direct fixes for specific problematic shade/color combinations */
 .dark.high-contrast .text-violet-500, 
@@ -786,18 +955,18 @@ body {
 .dark.high-contrast [data-category="MOVIES"] { color: rgb(var(--hc-purple-300)) !important; }
 .dark.high-contrast [data-category="BOOKS"] { color: rgb(var(--hc-orange-300)) !important; }
 .dark.high-contrast [data-category="MUSIC"], 
-.dark.high-contrast [data-category="MUSICAL ARTISTS"] { color: rgb(var(--hc-pink-300)) !important; }
+.dark.high-contrast [data-category="MUSICIANS"] { color: rgb(var(--hc-pink-300)) !important; }
 
 /* Category-specific overrides for dark mode (no high contrast) */
 .dark:not(.high-contrast) [data-category="MOVIES"] { color: rgb(139, 92, 246) !important; } /* violet-500 */
 .dark:not(.high-contrast) [data-category="BOOKS"] { color: rgb(249, 115, 22) !important; } /* orange-500 */
 .dark:not(.high-contrast) [data-category="ANIMALS"] { color: rgb(16, 185, 129) !important; } /* emerald-500 */
 .dark:not(.high-contrast) [data-category="MUSIC"],
-.dark:not(.high-contrast) [data-category="MUSICAL ARTISTS"] { color: rgb(217, 70, 239) !important; } /* fuchsia-500 */
+.dark:not(.high-contrast) [data-category="MUSICIANS"] { color: rgb(217, 70, 239) !important; } /* fuchsia-500 */
 .dark:not(.high-contrast) [data-category="ATHLETES"] { color: rgb(239, 68, 68) !important; } /* red-500 */
 .dark:not(.high-contrast) [data-category="COUNTRIES"] { color: rgb(59, 130, 246) !important; } /* blue-500 */
-.dark:not(.high-contrast) [data-category="HISTORICAL FIGURES"] { color: rgb(245, 158, 11) !important; } /* amber-500 */
-.dark:not(.high-contrast) [data-category="FAMOUS BRANDS"] { color: rgb(20, 184, 166) !important; } /* teal-500 */
+.dark:not(.high-contrast) [data-category="HISTORY"] { color: rgb(245, 158, 11) !important; } /* amber-500 */
+.dark:not(.high-contrast) [data-category="COMPANIES"] { color: rgb(20, 184, 166) !important; } /* teal-500 */
 .dark:not(.high-contrast) [data-category="TV SHOWS"] { color: rgb(99, 102, 241) !important; } /* indigo-500 */
 
 /* Direct fixes for specific problematic shade/color combinations */

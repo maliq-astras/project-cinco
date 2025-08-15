@@ -1,7 +1,7 @@
 // Clean suggestions array (what users see in dropdown)
 // Official historical figure names only - no nicknames or variations
-export const historicalFiguresSuggestions = [
-  // Challenge figures (from /challenges/historical-figures/)
+export const historySuggestions = [
+  // Challenge figures (from /challenges/history/)
   "Abraham Lincoln",
   "Albert Einstein",
   "Alexander Hamilton",
