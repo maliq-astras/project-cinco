@@ -4,8 +4,9 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useFactBubble } from './useFactBubble';
-import { useDragState } from '@/hooks/useDragState';
-import { factBubbleStyles, getBubbleClassNames } from './FactBubble.styles';
+import { useDragState } from '@/hooks/ui';
+import { factBubbleStyles } from './FactBubble.styles';
+import styles from './FactBubble.module.css';
 import { getFactTypeName } from '@/helpers/i18nHelpers';
 
 interface FactBubbleProps {
@@ -62,10 +63,8 @@ export default function FactBubble({
     category
   });
 
-  // Get appropriate classNames
-  const bubbleClassNames = getBubbleClassNames({
-    isClickable
-  });
+  // Get appropriate classNames using CSS modules
+  const bubbleClassNames = isClickable ? styles.bubbleClickable : styles.bubbleNotClickable;
 
   // Get translated fact type
   const translatedFactType = getFactTypeName(factType, t);
@@ -84,7 +83,7 @@ export default function FactBubble({
       style={style}
       {...mouseHandlers}
     >
-      <div className={factBubbleStyles.container}>
+      <div className={styles.container}>
         <AnimatePresence>
           {!isRevealed && !isPopping && (
             <motion.button
@@ -130,8 +129,13 @@ export default function FactBubble({
               {particles.map((particle, index) => (
                 <motion.div
                   key={`particle-${index}`}
-                  className={`${factBubbleStyles.particle} bg-${colors.primary}`}
-                  style={factBubbleStyles.particleContainer(popPosition.x, popPosition.y)}
+                  className={`${styles.particle} bg-${colors.primary}`}
+                  style={{
+                    position: 'fixed',
+                    left: popPosition.x,
+                    top: popPosition.y,
+                    transform: 'translate(-50%, -50%)'
+                  }}
                   initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                   animate={{ 
                     x: particle.x, 

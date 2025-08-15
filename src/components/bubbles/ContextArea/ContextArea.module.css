@@ -1,0 +1,97 @@
+/**
+ * CSS Modules for ContextArea components
+ * Leverages existing responsive system and provides cleaner text styling
+ */
+
+/* Base text styling - much cleaner than Tailwind soup! */
+.text {
+  font-weight: 500;
+  text-align: center;
+  font-family: var(--font-display);
+}
+
+/* Container variants */
+.bubble {
+  composes: text;
+  white-space: nowrap;
+}
+
+.instructions {
+  composes: text;
+  white-space: normal;
+  max-width: 32rem; /* 512px - equivalent to max-w-lg */
+}
+
+/* Responsive text sizes using your existing system */
+.textXs {
+  composes: text;
+  font-size: var(--font-xs);
+}
+
+.textSm {
+  composes: text;
+  font-size: var(--font-sm);
+}
+
+.textMd {
+  composes: text;
+  font-size: var(--font-base);
+}
+
+.textLg {
+  composes: text;
+  font-size: var(--font-lg);
+}
+
+/* Responsive text sizing using media queries - smaller sizes for instructions */
+.responsiveText {
+  composes: text;
+  font-size: var(--font-xs); /* Start smaller */
+}
+
+@media (min-width: 480px) {
+  .responsiveText {
+    font-size: var(--font-sm); /* Smaller than before */
+  }
+}
+
+@media (min-width: 768px) {
+  .responsiveText {
+    font-size: var(--font-base); /* Smaller than before */
+  }
+}
+
+/* Special handling for very small screens */
+@media (max-width: 330px) {
+  .responsiveText {
+    font-size: var(--font-xs);
+  }
+}
+
+/* Loading spinner - using CSS custom properties for dynamic colors */
+.loadingSpinner {
+  border: 2px solid;
+  border-color: var(--spinner-color, currentColor);
+  border-top-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -2px;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Utility class for visibility */
+.visuallyHidden {
+  visibility: hidden;
+}
+
+/* Combined classes for common use cases - we'll set color dynamically */
+.bubblePrimary {
+  composes: bubble;
+}
+
+.instructionsPrimary {
+  composes: instructions responsiveText;
+}

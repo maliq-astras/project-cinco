@@ -3,7 +3,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCardAnimations } from '@/hooks/animation';
 import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
-import { useDragState } from '@/hooks/useDragState';
+import { useDragState } from '@/hooks/ui';
 
 // Internal custom hook for particle generation
 function useParticles(count = 8) {

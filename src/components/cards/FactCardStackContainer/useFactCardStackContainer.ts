@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useDragState } from '@/hooks/useDragState';
+import { useDragState } from '@/hooks/ui';
 
 /**
  * Hook for managing the container around the fact card stack

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { contextAreaStyles, getContextTextClassNames } from './ContextArea.styles';
+import { contextAreaStyles } from './ContextArea.styles';
+import styles from './ContextArea.module.css';
 
 /**
  * Hook to manage the bubble context area state and logic
@@ -40,7 +41,7 @@ export function useBubbleContext() {
   return {
     message: getMessage(),
     textColor: colors.primary,
-    textClassName: getContextTextClassNames(colors.primary, contextAreaStyles.bubble, windowWidth),
+    textClassName: `${styles.bubblePrimary} text-${colors.primary}`,
     styles: contextAreaStyles
   };
 }
@@ -141,7 +142,7 @@ export function useGameInstructions() {
   return {
     message: getMessage(),
     textColor: colors.primary,
-    textClassName: `${getContextTextClassNames(colors.primary, contextAreaStyles.instructions, windowWidth)} ${hasUserInput ? 'visibility-hidden' : ''}`,
+    textClassName: `${styles.instructionsPrimary} text-${colors.primary} ${hasUserInput ? styles.visuallyHidden : ''}`,
     shouldAnimate: true,
     isHidden: isGameOver,
     animationProps: animation,

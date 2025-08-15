@@ -7,7 +7,7 @@ import { useFactCardStackContainer } from './useFactCardStackContainer';
 import { factCardStackContainerStyles } from './FactCardStackContainer.styles';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
 import DropZoneIndicator from '../../ui/DropZoneIndicator';
-import { useDragState } from '@/hooks/useDragState';
+import { useDragState } from '@/hooks/ui/useDragState';
 
 /**
  * Container component for FactCardStack

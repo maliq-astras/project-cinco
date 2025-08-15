@@ -1,0 +1,71 @@
+/**
+ * CSS Modules for FactBubble component
+ * Leverages existing responsive system from responsive-system.css
+ */
+
+.container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.bubble {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: white;
+  border: 2px solid;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: colors 150ms ease;
+  
+  /* Use your existing responsive bubble size */
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+}
+
+/* Dark mode support */
+:global(.dark) .bubble {
+  background-color: rgb(31 41 55);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.notClickable {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+/* Combine bubble with clickable/non-clickable states */
+.bubbleClickable {
+  composes: bubble clickable;
+}
+
+.bubbleNotClickable {
+  composes: bubble notClickable;
+}
+
+/* Leverage your existing responsive system */
+@media (min-width: 900px) and (max-width: 1400px) and (min-aspect-ratio: 1.3/1) and (max-aspect-ratio: 2.2/1) {
+  .bubble {
+    /* Tablet landscape gets larger bubbles from your system */
+    width: var(--bubble-size);
+    height: var(--bubble-size);
+  }
+}
