@@ -69,3 +69,23 @@
     height: var(--bubble-size);
   }
 }
+
+/* Icon styles - migrated from JavaScript function */
+.icon {
+  filter: var(--icon-filter);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.iconClickable {
+  composes: icon;
+  opacity: 0.7;
+}
+
+.iconNotClickable {
+  composes: icon;
+  opacity: 0.4;
+}

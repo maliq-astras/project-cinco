@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { Fact } from '@/types';
-import { getBubbleSize, getGapSize, getGridConfig, getContainerHeight } from '@/helpers';
+import { getBubbleSize, getGapSize } from '@/helpers';
 
 interface BubbleGridItem {
   key: string;
@@ -21,15 +21,13 @@ export function useFactBubbleGrid() {
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const windowWidth = useGameStore(state => state.windowWidth);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
-  const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
-  // Grid layout configuration using the helper function (unified XS-XL system)
-  const windowHeight = window.innerHeight;
-  const gridConfig = getGridConfig(windowHeight);
+  // Always 8 grid items (4x2 layout)
+  const totalSlots = 8;
 
   // Calculate grid items to display
   const gridItems = useMemo<BubbleGridItem[]>(() => {
-    return Array.from({ length: gridConfig.totalSlots }).map((_, slotIndex) => {
+    return Array.from({ length: totalSlots }).map((_, slotIndex) => {
       // Find the fact that should be in this position
       const factIndex = challenge?.facts.findIndex((_, factIndex) => 
         !revealedFacts.includes(factIndex) && 
@@ -80,45 +78,23 @@ export function useFactBubbleGrid() {
     }
   });
   
-  // Window height already declared above for grid config
+  // Get window height for responsive sizing
+  const windowHeight = window.innerHeight;
   
-  // Calculate container width using unified XS-XL system
+  // Calculate bubble and gap sizes using responsive helpers
   const bubbleSizeValue = getBubbleSize(windowHeight);
   const gapSizeValue = getGapSize(windowHeight);
   
   // Use full available width to ensure proper centering
   const containerWidth = windowWidth - 32; // Account for page padding
   
-  // Calculate maximum bubble size that fits in the container
-  const maxBubbleSize = Math.floor((containerWidth - (gapSizeValue * (gridConfig.cols - 1))) / gridConfig.cols);
-  
-  // Use the smaller of calculated size or maximum fit size
-  const finalBubbleSize = Math.min(bubbleSizeValue, maxBubbleSize);
-  
-  // Debug logging for bubble size constraints
-  if (finalBubbleSize < bubbleSizeValue) {
-    console.log('Bubble size constrained:', {
-      windowWidth,
-      windowHeight,
-      originalBubbleSize: bubbleSizeValue,
-      maxBubbleSize,
-      finalBubbleSize,
-      gridConfig
-    });
-  }
-  
-  // Grid style props
-  const gridStyle = {
-    gridTemplateColumns: `repeat(${gridConfig.cols}, 1fr)`,
-    width: `${containerWidth}px`,
-    gap: `${gapSizeValue}px`,
-    height: `${getContainerHeight(windowHeight, gridConfig)}px`
-  };
+  // Use the calculated bubble size (CSS handles the grid layout)
+  const finalBubbleSize = bubbleSizeValue;
   
   return {
     gridItems,
-    gridStyle,
-    bubbleSize: finalBubbleSize, // Use constrained bubble size
+    bubbleSize: finalBubbleSize,
+    gapSize: gapSizeValue,
     animationProps,
     isVictoryAnimationActive
   };

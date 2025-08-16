@@ -4,7 +4,7 @@ import React from 'react';
 import FactBubble from '../FactBubble';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useFactBubbleGrid } from './useFactBubbleGrid';
-import { factBubbleGridStyles } from './FactBubbleGrid.styles';
+import styles from './FactBubbleGrid.module.css';
 
 /**
  * Grid component that displays interactive fact bubbles
@@ -13,17 +13,20 @@ import { factBubbleGridStyles } from './FactBubbleGrid.styles';
 const FactBubbleGrid: React.FC = () => {
   const {
     gridItems,
-    gridStyle,
     bubbleSize,
+    gapSize,
     animationProps
   } = useFactBubbleGrid();
 
   return (
-    <div className={factBubbleGridStyles.container} style={factBubbleGridStyles.containerSpacing}>
+    <div className={styles.container}>
       <div 
         id="bubble-grid"
-        className={factBubbleGridStyles.grid}
-        style={gridStyle}
+        className={styles.grid}
+        style={{
+          '--bubble-size': `${bubbleSize}px`,
+          '--bubble-gap': `${gapSize}px`
+        } as React.CSSProperties}
       >
         {gridItems.map(item => {
           // For empty slots, render a placeholder
@@ -31,8 +34,8 @@ const FactBubbleGrid: React.FC = () => {
             return (
               <div 
                 key={item.key} 
-                style={factBubbleGridStyles.bubbleSize(bubbleSize)}
-                className={factBubbleGridStyles.emptySlot}
+                style={{ width: `${bubbleSize}px` }}
+                className={styles.emptySlot}
               />
             );
           }
@@ -45,13 +48,13 @@ const FactBubbleGrid: React.FC = () => {
                 id={item.slotIndex === 0 ? 'bubble-0' : undefined}
                 layout
                 {...animationProps(item.slotIndex)}
-                className={factBubbleGridStyles.bubbleContainer}
+                className={styles.bubbleContainer}
               >
                 <FactBubble
                   factType={item.fact?.factType || ''}
                   isRevealed={false}
                   data-fact-index={item.factIndex ?? 0}
-                  style={factBubbleGridStyles.bubbleSize(bubbleSize)}
+                  style={{ width: `${bubbleSize}px` }}
                   className="aspect-square"
                   category={item.category}
                 />

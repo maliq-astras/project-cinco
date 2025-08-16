@@ -1,0 +1,39 @@
+/**
+ * CSS Modules for FactBubbleGrid component
+ * Leverages existing responsive system for fluid grid layout
+ */
+
+/* Container - full width with centered content */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* Grid configuration - always 4x2 layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, var(--bubble-size));
+  gap: var(--bubble-gap);
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  max-width: calc(100vw - 2rem);
+  margin: 0 auto;
+  height: calc(2 * var(--bubble-size) + var(--bubble-gap));
+}
+
+/* Empty slot placeholder */
+.emptySlot {
+  aspect-ratio: 1;
+  opacity: 0;
+}
+
+/* Bubble container for animations */
+.bubbleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

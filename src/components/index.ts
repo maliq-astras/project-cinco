@@ -21,7 +21,7 @@ export { default as FactCardStackContainer } from './cards/FactCardStackContaine
 
 // Bubble Components
 export { default as FactBubbleGrid } from './bubbles/FactBubbleGrid';
-export { BubbleContextArea, GameInstructionsArea } from './bubbles/ContextArea';
+export { BubbleContextArea, GameInstructionsArea } from './ui/ContextArea';
 
 // Final Five Components
 export { default as FinalFiveModal } from './final-five/FinalFiveModal';

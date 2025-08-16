@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { contextAreaStyles } from './ContextArea.styles';
 import styles from './ContextArea.module.css';
 
 /**
@@ -17,10 +16,10 @@ export function useBubbleContext() {
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const windowWidth = useGameStore(state => state.windowWidth);
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   const hasUserInput = useGameStore(state => state.hasUserInput);
 
-  // Determine message to show when hovering over a bubble
+  // Determine message to show when hovering over a bubbleZ
   const getMessage = () => {
     // Don't show bubble context if the game is over, Final Five is active, or transitioning to Final Five
     if (isGameOver || isFinalFiveActive || showFinalFiveTransition) {
@@ -40,9 +39,8 @@ export function useBubbleContext() {
 
   return {
     message: getMessage(),
-    textColor: colors.primary,
-    textClassName: `${styles.bubblePrimary} text-${colors.primary}`,
-    styles: contextAreaStyles
+    textColor: darkMode ? 'white' : colors.primary,
+    textClassName: `${styles.bubblePrimary} ${darkMode ? 'text-white' : `text-${colors.primary}`}`
   };
 }
 
@@ -56,7 +54,7 @@ export function useGameInstructions() {
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const windowWidth = useGameStore(state => state.windowWidth);
-  const { colors } = useTheme();
+  const { colors, darkMode } = useTheme();
   const hasUserInput = useGameStore(state => state.hasUserInput);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -124,7 +122,7 @@ export function useGameInstructions() {
   const animation = {
     initial: { opacity: 1 },
     animate: { opacity: isGameOver ? 0 : 1 },
-    transition: { duration: contextAreaStyles.animation.duration }
+    transition: { duration: 0.8 }
   };
 
   // Get loading animation if processing a guess for more than the threshold
@@ -141,14 +139,13 @@ export function useGameInstructions() {
 
   return {
     message: getMessage(),
-    textColor: colors.primary,
-    textClassName: `${styles.instructionsPrimary} text-${colors.primary} ${hasUserInput ? styles.visuallyHidden : ''}`,
+    textColor: darkMode ? 'white' : colors.primary,
+    textClassName: `${styles.instructionsPrimary} ${darkMode ? 'text-white' : `text-${colors.primary}`} ${hasUserInput ? styles.visuallyHidden : ''}`,
     shouldAnimate: true,
     isHidden: isGameOver,
     animationProps: animation,
     loadingAnimation,
     isProcessingGuess: showLoading, // Use the delayed state instead of immediate state
-    isLongRequest, // Make this available in case we want different styling
-    styles: contextAreaStyles
+    isLongRequest // Make this available in case we want different styling
   };
 } 

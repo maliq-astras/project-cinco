@@ -170,48 +170,7 @@ export function getGapSize(windowHeight: number): number {
   }
 }
 
-/**
- * Get grid configuration based on screen height (unified XS-XL system)
- * Consistent with our unified scaling approach
- */
-export function getGridConfig(windowHeight: number) {
-  // Use the same breakpoints as our unified system
-  if (windowHeight < 600) {
-    // XS - Very small screens, might need 3x3 grid
-    return {
-      cols: 3,
-      rows: 3,
-      totalSlots: 9
-    };
-  } else if (windowHeight < 700) {
-    // SM - Small screens, 4x2 should work
-    return {
-      cols: 4,
-      rows: 2,
-      totalSlots: 8
-    };
-  } else {
-    // MD, LG, XL - All larger screens, 4x2 works well
-    return {
-      cols: 4,
-      rows: 2,
-      totalSlots: 8
-    };
-  }
-}
-
-/**
- * Get container height for bubble grid based on screen height (XS-XL system)
- * Unified scaling system for consistent proportions
- */
-export function getContainerHeight(windowHeight: number, gridConfig: { rows: number, cols: number }) {
-  // Use the same breakpoints as header sizing for consistency
-  const bubbleSize = getBubbleSize(windowHeight);
-  const gapSize = getGapSize(windowHeight);
-  
-  // Calculate container height based on bubble size and gaps
-  return gridConfig.rows * bubbleSize + gapSize * (gridConfig.rows - 1);
-}
+// Grid configuration moved to CSS modules - no longer needed in JavaScript
 
 /**
  * Get responsive layout mode and smart scaling for no-scroll experience

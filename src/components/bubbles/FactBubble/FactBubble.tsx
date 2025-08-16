@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useFactBubble } from './useFactBubble';
 import { useDragState } from '@/hooks/ui';
-import { factBubbleStyles } from './FactBubble.styles';
 import styles from './FactBubble.module.css';
 import { getFactTypeName } from '@/helpers/i18nHelpers';
 
@@ -112,8 +111,8 @@ export default function FactBubble({
                 alt={translatedFactType}
                 width={icon.size}
                 height={icon.size}
+                className={isClickable ? styles.iconClickable : styles.iconNotClickable}
                 style={{
-                  ...factBubbleStyles.icon(isClickable),
                   filter: getIconFilter(icon.category)
                 }}
                 draggable="false"
