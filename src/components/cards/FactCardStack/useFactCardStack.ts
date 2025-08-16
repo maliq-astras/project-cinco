@@ -20,7 +20,7 @@ export function useFactCardStack() {
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
-  const { colors, darkMode } = useTheme();
+  const { darkMode } = useTheme();
   
   // Filter out the currently viewed card from the stack unless it's returning
   const visibleStackFacts = useMemo(() => {

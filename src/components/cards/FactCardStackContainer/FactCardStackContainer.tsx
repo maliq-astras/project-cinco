@@ -4,7 +4,7 @@ import React from 'react';
 import FactCardStack from '../FactCardStack';
 import { AnimatePresence } from 'framer-motion';
 import { useFactCardStackContainer } from './useFactCardStackContainer';
-import { factCardStackContainerStyles } from './FactCardStackContainer.styles';
+import styles from './FactCardStackContainer.module.css';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
 import DropZoneIndicator from '../../ui/DropZoneIndicator';
 import { useDragState } from '@/hooks/ui/useDragState';
@@ -14,7 +14,6 @@ import { useDragState } from '@/hooks/ui/useDragState';
  */
 export const FactCardStackContainer: React.FC = () => {
   const { 
-    isFinalFiveActive,
     shouldShowPlaceholder,
     containerStyles,
     cardStackVisibilityClass,
@@ -23,15 +22,10 @@ export const FactCardStackContainer: React.FC = () => {
 
   const isDragging = useDragState(state => state.isDragging);
 
-  // Don't render if Final Five is active to avoid duplicate stacks
-  if (isFinalFiveActive) {
-    return null;
-  }
-
   return (
-    <div className={`fact-card-stack-container ${factCardStackContainerStyles.container}`}>
+    <div className={`fact-card-stack-container ${styles.container}`}>
       <div 
-        className={factCardStackContainerStyles.innerContainer}
+        className={styles.innerContainer}
         style={containerStyles}
         id="facts-area"
       >
@@ -41,7 +35,7 @@ export const FactCardStackContainer: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <div className={`${cardStackVisibilityClass} ${factCardStackContainerStyles.cardStackWrapper}`}
+        <div className={`${cardStackVisibilityClass} ${styles.cardStackWrapper}`}
              style={{ opacity: isHidden ? 0 : 1 }}>
           <FactCardStack key="main-stack" />
         </div>

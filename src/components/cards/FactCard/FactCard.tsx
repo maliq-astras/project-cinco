@@ -93,27 +93,6 @@ export default function FactCard({
           transition={cardTransition}
           onAnimationComplete={handleAnimationComplete}
         >
-          {/* Close button - only visible when card is flipped to front */}
-          {isFlipped && !isClosing && canClose && (
-            <motion.button
-              onClick={handleClose}
-              className={factCardStyles.closeButton}
-              aria-label="Close fact card"
-              {...closeButtonAnimations}
-            >
-              <motion.svg 
-                viewBox="0 0 100 100" 
-                className={factCardStyles.closeButtonIcon}
-                {...closeButtonIconAnimations}
-              >
-                <g stroke={strokeStyle} strokeWidth="12" strokeLinecap="round">
-                  <path d="M30,30 L70,70" />
-                  <path d="M70,30 L30,70" />
-                </g>
-              </motion.svg>
-            </motion.button>
-          )}
-          
           {/* Card container with 3D transform */}
           <motion.div
             className={factCardStyles.flipCard}
@@ -132,6 +111,27 @@ export default function FactCard({
               className={factCardStyles.cardFront}
               style={cardStyles.hidden}
             >
+              {/* Close button - only visible when card is flipped to front */}
+              {isFlipped && !isClosing && canClose && (
+                <motion.button
+                  onClick={handleClose}
+                  className={factCardStyles.closeButton}
+                  aria-label="Close fact card"
+                  {...closeButtonAnimations}
+                >
+                  <motion.svg 
+                    viewBox="0 0 100 100" 
+                    className={factCardStyles.closeButtonIcon}
+                    {...closeButtonIconAnimations}
+                  >
+                    <g stroke={strokeStyle} strokeWidth="12" strokeLinecap="round">
+                      <path d="M30,30 L70,70" />
+                      <path d="M70,30 L30,70" />
+                    </g>
+                  </motion.svg>
+                </motion.button>
+              )}
+              
               <div className={factCardStyles.cardContent}>
                 {/* Top half - Icon and Fact Type */}
                 <div className={factCardStyles.topHalf}>

@@ -1,36 +1,40 @@
 import { CSSProperties } from 'react';
+import styles from './FactCardStack.module.css';
 
 /**
- * Styles for the FactCardStack component
+ * Hybrid styles for FactCardStack component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from FactCardStack.module.css
+ * - Animation-critical styles remain as Tailwind classes
+ * - Dynamic positioning uses CSS properties for precise control
  */
+
 export const factCardStackStyles = {
-  // Container styles
-  container: "flex justify-center items-end relative card-stack-container",
+  // Static styles from CSS modules
+  container: styles.container,
+  innerContainer: styles.innerContainer,
+  card: styles.card,
+  cardClickable: styles.cardClickable,
+  cardNonClickable: styles.cardNonClickable,
+  cardInStack: styles.cardInStack,
   
-  // Inner container with perspective effect
-  innerContainer: "relative flex items-end justify-center transition-transform duration-300 ease-out",
+  // Animation-critical styles 
+  cardHoverGlow: "card-hover-glow",
   
-  // Card styles
-  card: {
-    base: "absolute p-0 border-0 rounded-lg",
-    clickable: "cursor-pointer card-hover-glow",
-    nonClickable: "cursor-not-allowed opacity-70",
-    stack: "card-in-stack"
-  },
-  
-  // Card shadow classes based on position
+  // Card shadow classes 
   shadows: {
-    first: "card-shadow-strong",
-    middle: "card-shadow-medium",
-    last: "card-shadow-light"
+    default: "shadow-sm",
+    hovered: "shadow-xl", 
+    adjacent: "shadow-md"
   },
   
   // Darkmode specific classes
   darkMode: {
-    clickable: "" // No glow effect in dark mode
+    clickable: "" 
   },
   
-  // Card positioning
+  // Card positioning 
   getCardPosition: (
     cardSize: { width: number; height: number },
     index: number,
@@ -57,11 +61,9 @@ export function getCardClassNames({
   shadowClass: string;
   isDarkMode: boolean;
 }) {
-  const { card } = factCardStackStyles;
-  
-  return `${card.base} ${
+  return `${factCardStackStyles.card} ${
     isClickable ? 
-      `${card.clickable} ${isDarkMode ? factCardStackStyles.darkMode.clickable : ''}` : 
-      card.nonClickable
-  } ${card.stack} ${shadowClass}`;
+      `${factCardStackStyles.cardClickable} ${factCardStackStyles.cardHoverGlow} ${isDarkMode ? factCardStackStyles.darkMode.clickable : ''}` : 
+      factCardStackStyles.cardNonClickable
+  } ${factCardStackStyles.cardInStack} ${shadowClass}`;
 } 

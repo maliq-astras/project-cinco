@@ -184,14 +184,14 @@
 }
 
 /* Ensure minimum touch targets on all devices */
-@media (pointer: coarse) {
+/* @media (pointer: coarse) {
   .fluid-button,
   .fluid-nav-icon,
   button {
     min-height: 44px;
     min-width: 44px;
   }
-}
+} */
 
 /* ===== RESPONSIVE UTILITIES ===== */
 .text-fluid-xs { font-size: var(--font-xs); }

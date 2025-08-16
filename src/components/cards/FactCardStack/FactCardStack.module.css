@@ -1,0 +1,43 @@
+/* Static styles for FactCardStack component */
+
+/* Container styles */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+}
+
+/* Inner container with perspective effect */
+.innerContainer {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: transform 300ms ease-out;
+}
+
+/* Card base styles */
+.card {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+}
+
+/* Card interaction states */
+.cardClickable {
+  cursor: pointer;
+}
+
+.cardNonClickable {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Card in stack styling */
+.cardInStack {
+  /* Additional stack-specific styles can be added here */
+}
+
+/* Shadow classes are handled by Tailwind dynamically */

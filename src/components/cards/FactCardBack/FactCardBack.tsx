@@ -2,13 +2,12 @@
 
 import React from 'react';
 import { Fact } from '@/types';
-import FactCardBackIcon from '../FactCardBackIcon';
 import { useFactCardBack } from './useFactCardBack';
+import styles from './FactCardBack.module.css';
 
 interface FactCardBackProps {
   fact: Fact<any>;
   size?: 'small' | 'large';
-  isFinalFive?: boolean;
   isRevealed?: boolean;
   inStack?: boolean;
 }
@@ -20,23 +19,29 @@ interface FactCardBackProps {
 export default function FactCardBack({ 
   fact, 
   size = 'large', 
-  isFinalFive = false, 
   isRevealed = false,
   inStack = false
 }: FactCardBackProps) {
-  // Use the custom hook for styles and classes
-  const { backgroundStyle, containerClasses } = useFactCardBack({
-    isFinalFive,
+  // Use the consolidated hook for styles, classes, and icon logic
+  const { containerClasses, backgroundStyle, icon, iconStyle } = useFactCardBack({
+    fact,
+    size,
     isRevealed,
     inStack
   });
   
   return (
-    <div 
-      className={containerClasses}
-      style={backgroundStyle}
-    >
-      <FactCardBackIcon fact={fact} size={size} />
+    <div className={containerClasses} style={backgroundStyle}>
+      <div className={styles.iconContainer}>
+        <img 
+          src={`/icons/${icon.iconName}.svg`}
+          alt={fact.factType}
+          width={icon.size}
+          height={icon.size}
+          style={iconStyle}
+          draggable="false"
+        />
+      </div>
     </div>
   );
 } 

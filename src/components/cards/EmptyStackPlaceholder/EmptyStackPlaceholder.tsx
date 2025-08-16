@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { factCardStackContainerStyles } from '../FactCardStackContainer/FactCardStackContainer.styles';
+import styles from './EmptyStackPlaceholder.module.css';
 
 /**
  * Placeholder component displayed when no fact cards are visible
@@ -12,14 +12,14 @@ const EmptyStackPlaceholder: React.FC = () => {
   const { t } = useTranslation('common');
 
   return (
-    <div className={factCardStackContainerStyles.placeholder.container}>
+    <div className={styles.container}>
       <motion.div 
-        className={factCardStackContainerStyles.placeholder.element}
+        className={styles.element}
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className={factCardStackContainerStyles.placeholder.text}>
+        <div className={styles.text}>
           {t('game.facts.placeholder', 'Revealed facts will appear here')}
         </div>
       </motion.div>

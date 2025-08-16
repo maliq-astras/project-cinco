@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useDragState } from '@/hooks/ui';
 
 /**
@@ -13,27 +12,29 @@ export function useFactCardStackContainer() {
   const windowWidth = useGameStore(state => state.windowWidth);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
-  const { colors } = useTheme();
+
   const isDragging = useDragState(state => state.isDragging);
   const wasFactRevealed = useDragState(state => state.wasFactRevealed);
   const [isHidden, setIsHidden] = useState(false);
 
-  // Calculate the appropriate height based on screen size
-  const getResponsiveHeight = () => {
-    // iPhone-specific height
-    if (windowWidth >= 375 && windowWidth <= 430) return 150;
-    
-    if (windowWidth < 360) return 140; // Extra small devices
-    if (windowWidth < 480) return 150; // Small devices
-    if (windowWidth < 640) return 170; // Medium devices
-    if (windowWidth < 768) return 180; // Medium-large devices
-    return 220; // Large devices
-  };
-
   // Calculate container styles
-  const containerStyles = useMemo(() => ({
-    height: `${getResponsiveHeight()}px`
-  }), [windowWidth]);
+  const containerStyles = useMemo(() => {
+    // Calculate the appropriate height based on screen size
+    const getResponsiveHeight = () => {
+      // iPhone-specific height
+      if (windowWidth >= 375 && windowWidth <= 430) return 150;
+      
+      if (windowWidth < 360) return 140; // Extra small devices
+      if (windowWidth < 480) return 150; // Small devices
+      if (windowWidth < 640) return 170; // Medium devices
+      if (windowWidth < 768) return 180; // Medium-large devices
+      return 220; // Large devices
+    };
+
+    return {
+      height: `${getResponsiveHeight()}px`
+    };
+  }, [windowWidth]);
 
   // Handle delayed showing of cards
   useEffect(() => {
@@ -70,8 +71,7 @@ export function useFactCardStackContainer() {
     containerStyles,
     cardStackVisibilityClass,
     
-    // Theme
-    colors,
+    // State
     isHidden
   };
 } 
