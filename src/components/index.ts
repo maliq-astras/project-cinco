@@ -13,7 +13,7 @@ export { default as ToastMessages } from './game/ToastMessages';
 export { default as Autocomplete } from './game/Autocomplete';
 export { default as EndGameMessage } from './game/EndGameMessage';
 export { default as GuessProgressBar } from './game/GuessProgressBar';
-export { default as MainContainer } from './game/MainContainer'; 
+export { default as MainContainer } from './layout/MainContainer'; 
 
 // Card Components
 export { default as FactCard } from './cards/FactCard';

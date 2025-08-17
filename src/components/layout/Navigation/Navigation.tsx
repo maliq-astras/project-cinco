@@ -9,7 +9,7 @@ import FeedbackModal from '@/components/modals/FeedbackModal';
 import BugReportModal from '@/components/modals/BugReportModal';
 import { useNavigation } from './useNavigation';
 import { navigationStyles } from './Navigation.styles';
-import { useMainContainer } from '../../game/MainContainer';
+import { useMainContainer } from '../MainContainer';
 
 const inter = Inter({ subsets: ['latin'] });
 

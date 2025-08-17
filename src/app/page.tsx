@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import MainContainer from '../components/game/MainContainer';
+import MainContainer from '../components/layout/MainContainer';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { QueryClientProvider } from '../contexts/QueryClientProvider';

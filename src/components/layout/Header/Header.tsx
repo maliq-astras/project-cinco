@@ -6,7 +6,7 @@ import Logo from '../Logo';
 import { useHeader } from './useHeader';
 import { headerStyles } from './Header.styles';
 import { getCategoryName } from '@/helpers/i18nHelpers';
-import { useMainContainer } from '../../game/MainContainer';
+import { useMainContainer } from '../MainContainer';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 

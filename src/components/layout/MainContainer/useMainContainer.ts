@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import type { GameControlsHandle } from '../GameControls';
+import type { GameControlsHandle } from '../../game/GameControls';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
 import { deviceDetection, getDeviceScaleFactor, getResponsiveLayoutMode, getHeaderSizeMode } from '@/helpers';
