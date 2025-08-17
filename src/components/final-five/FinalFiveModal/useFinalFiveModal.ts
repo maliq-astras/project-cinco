@@ -404,7 +404,7 @@ export function useFinalFiveModal() {
   const isIncorrectGuess = useCallback((option: string): boolean => {
     // Only mark as incorrect if this was the selected option and it's wrong
     return selectedOption === option && isGameOver && selectedOption !== correctAnswer;
-  }, [guesses, selectedOption, isGameOver, correctAnswer]);
+  }, [selectedOption, isGameOver, correctAnswer]);
   
   // Helper to get the message to display
   const getMessage = useCallback(() => {

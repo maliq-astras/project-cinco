@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { finalFiveStyles } from '../FinalFiveModal/FinalFiveModal.styles';
+import { finalFiveCardStyles } from './FinalFiveCard.styles';
 
 interface UseFinalFiveCardProps {
   isGameOver: boolean;
@@ -82,8 +82,8 @@ export function useFinalFiveCard({
       backgroundColor: backBg,
       color: textColor,
       borderColor: frontBg,
-      backfaceVisibility: "hidden" as "hidden",
-      WebkitBackfaceVisibility: "hidden" as "hidden",
+      backfaceVisibility: "hidden" as const,
+      WebkitBackfaceVisibility: "hidden" as const,
       boxShadow: isGameOver && isCorrect 
         ? `0 0 15px ${frontBg}80`
         : "0 4px 8px rgba(0,0,0,0.1)",
@@ -100,10 +100,10 @@ export function useFinalFiveCard({
       if (isActive) {
         return {
           ...baseStyle,
-          ...finalFiveStyles.card.interactive.active
+          ...finalFiveCardStyles.interactive.active
         };
       } else if (isHovered) {
-        const hoverStyles = finalFiveStyles.card.interactive.hover(frontBg);
+        const hoverStyles = finalFiveCardStyles.interactive.hover(frontBg);
         return {
           ...baseStyle,
           ...hoverStyles

@@ -1,33 +1,32 @@
-/**
- * Styles for the Final Five Modal component
- */
+import styles from './FinalFiveModal.module.css';
 import { deviceDetection } from '@/helpers/deviceHelpers';
 
+/**
+ * Hybrid styles for FinalFiveModal component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from FinalFiveModal.module.css
+ * - Dynamic styles use functions for device detection and responsive behavior
+ */
+
 export const finalFiveStyles = {
-  // Main modal container
-  // On mobile, anchor content at the bottom; on md+ center it vertically
-  modalContainer: "fixed inset-0 z-[999] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-md will-change-[backdrop-filter]",
-  
-  // Modal content panel
-  // Full-width bottom sheet on small screens; centered panel with max width on md+
-  modalContent: "w-screen max-w-none md:w-full md:max-w-[620px] bg-white dark:bg-gray-900 md:rounded-xl rounded-t-xl shadow-2xl p-4 md:p-6 mx-0 md:mx-4 relative dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
-  
-  // Mobile handle
-  mobileHandle: "w-16 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-4 md:hidden",
-  
-  // Warning icon
+  // Static styles from CSS modules
+  modalContainer: styles.modalContainer,
+  modalContent: styles.modalContent,
+  mobileHandle: styles.mobileHandle,
   warningIcon: {
-    container: "text-red-500 mb-4 text-xl",
-    icon: "h-12 w-12 mx-auto mb-2 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
+    container: styles.warningIconContainer,
+    icon: styles.warningIcon
   },
+  header: styles.header,
+  message: styles.message,
+  timerContainer: styles.timerContainer,
+  timerWrapper: styles.timerWrapper,
+  buttonContainer: styles.buttonContainer,
+  continueButton: styles.continueButton,
+  loadingSpinner: styles.loadingSpinner,
   
-  // Header
-  header: "text-4xl font-bold text-center mb-6",
-  
-  // Message (reserve height to prevent layout shift when text/loader changes)
-  message: "text-left mb-6 text-gray-700 dark:text-gray-300 font-display min-h-[60px]",
-  
-  // Card grid
+  // Dynamic styles 
   getCardGrid: () => {
     // Surface Duo specific layouts
     if (typeof window !== 'undefined' && deviceDetection.isSurfaceDuo()) {
@@ -43,7 +42,7 @@ export const finalFiveStyles = {
     return "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto w-full md:max-w-[600px] px-2 md:px-0";
   },
   
-  // Card styles
+  // Card styles 
   card: {
     container: "relative aspect-square w-full perspective-1000",
     wrapper: "w-full h-full relative preserve-3d",
@@ -92,23 +91,10 @@ export const finalFiveStyles = {
     }
   },
   
-  // Timer container
-  timerContainer: "relative aspect-square w-full flex items-center justify-center",
-  timerWrapper: "w-full h-full rounded-xl flex items-center justify-center shadow-md dark:border-2 dark:border-gray-700 dark:high-contrast:border-gray-300",
-  
-  // Button container
-  buttonContainer: "h-14 relative",
-  
-  // Continue button
-  continueButton: "px-8 py-3 rounded-full font-display font-bold text-white transition-all",
-  
-  // Loading spinner
-  loadingSpinner: (color: string) => ({
-    color: color
-  }),
+  // Loading spinner class 
   loadingSpinnerClass: "h-5 w-5 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent",
   
-  // Message formatting
+  // Message formatting 
   correctAnswerText: (color: string) => ({
     color: color,
     fontWeight: 'bold'

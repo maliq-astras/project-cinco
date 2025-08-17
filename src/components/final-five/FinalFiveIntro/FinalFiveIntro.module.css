@@ -1,0 +1,101 @@
+/* Static styles for FinalFiveIntro component */
+
+/* Main container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4rem;
+  padding: 2rem;
+}
+
+/* Message text */
+.message {
+  font-size: 1.25rem;
+  text-align: left;
+  font-family: inherit;
+  line-height: 1.625;
+  max-width: 42rem;
+}
+
+@media (min-width: 640px) {
+  .message {
+    font-size: 1.5rem;
+  }
+}
+
+/* Button container */
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-height: 60px;
+}
+
+/* Start button */
+.button {
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-family: inherit;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  font-size: 1.125rem;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+/* Countdown container */
+.countdownContainer {
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Loading container */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading spinner container */
+.loadingSpinnerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Loading text container */
+.loadingTextContainer {
+  text-align: center;
+}
+
+/* Loading message */
+.loadingMessage {
+  color: rgb(55 65 81);
+  font-size: 0.875rem;
+}
+
+:global(.dark) .loadingMessage {
+  color: rgb(209 213 219);
+}
+
+/* Retry message */
+.retryMessage {
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+  margin-top: 0.25rem;
+}

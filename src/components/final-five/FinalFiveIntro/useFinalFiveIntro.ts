@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { Righteous } from 'next/font/google';
-
-const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
 interface UseFinalFiveIntroProps {
   reason: 'time' | 'guesses';

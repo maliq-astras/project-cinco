@@ -11,7 +11,6 @@ import BaseModal from '@/components/modals/BaseModal/BaseModal';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
-import { createPortal } from 'react-dom';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -34,7 +33,6 @@ export default function FinalFiveModal() {
     selectedOption,
     timerReachedZero,
     correctAnswer,
-    isMobile,
     
     // Styles and helpers
     themeColor,
@@ -105,7 +103,7 @@ export default function FinalFiveModal() {
           </h2>
             
             {/* Message */}
-            <div className={`${finalFiveStyles.message} text-center`}>
+            <div className={finalFiveStyles.message}>
               {(() => {
                 const message = getMessage();
                 
@@ -122,8 +120,8 @@ export default function FinalFiveModal() {
                     <span className="flex flex-col items-center justify-center">
                       <span className="flex items-center justify-center mb-2">
                         <div 
-                          className={finalFiveStyles.loadingSpinnerClass}
-                          style={finalFiveStyles.loadingSpinner(themeColor)}
+                          className={`${finalFiveStyles.loadingSpinnerClass} ${finalFiveStyles.loadingSpinner}`}
+                          style={{ color: themeColor }}
                         />
                         <span>
                           {timerReachedZero ? t('game.finalFive.loadingAnswer') : message}
@@ -151,8 +149,8 @@ export default function FinalFiveModal() {
                     return (
                       <span className="flex items-center justify-center">
                         <div 
-                          className={finalFiveStyles.loadingSpinnerClass}
-                          style={finalFiveStyles.loadingSpinner(themeColor)}
+                          className={`${finalFiveStyles.loadingSpinnerClass} ${finalFiveStyles.loadingSpinner}`}
+                          style={{ color: themeColor }}
                         />
                         <span>{t('game.finalFive.loadingAnswer')}</span>
                       </span>
@@ -204,7 +202,6 @@ export default function FinalFiveModal() {
                     index={index}
                     isFlipped={flippedCards[index]}
                     isGameOver={isGameOver || timerReachedZero}
-                    animationComplete={animationComplete || timerReachedZero}
                     frontBg={frontBg}
                     backBg={backBg}
                     textColor={textColor}

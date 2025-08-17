@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useFinalFiveIntro } from './useFinalFiveIntro';
-import { finalFiveIntroStyles } from './FinalFiveIntro.styles';
+import styles from './FinalFiveIntro.module.css';
 import { useTranslation } from 'react-i18next';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
@@ -13,15 +13,12 @@ interface FinalFiveIntroProps {
   onBackgroundAnimationComplete?: () => void;
 }
 
-export default function FinalFiveIntro({ reason, onStart, onBackgroundAnimationComplete }: FinalFiveIntroProps) {
+export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }: FinalFiveIntroProps) {
   const {
     handleStart,
     isTransitioning,
-    showCountdown,
-    autoStartTimer,
     message,
     colors,
-    hardMode,
     isLoading,
     showStartButton,
     isSlowConnection,
@@ -51,21 +48,25 @@ export default function FinalFiveIntro({ reason, onStart, onBackgroundAnimationC
 
   return (
     <motion.div
-      className={finalFiveIntroStyles.container}
-      {...finalFiveIntroStyles.containerAnimation}
+      className={styles.container}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <motion.p 
-        className={finalFiveIntroStyles.message}
-        {...finalFiveIntroStyles.messageAnimation}
+        className={styles.message}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         {messageJSX}
       </motion.p>
 
-      <div className={finalFiveIntroStyles.buttonContainer}>
+      <div className={styles.buttonContainer}>
         <AnimatePresence>
           {showStartButton && !isLoading && (
             <motion.button
-              className={finalFiveIntroStyles.button}
+              className={styles.button}
               style={{ 
                 backgroundColor: `var(--color-${colors.primary})`,
                 opacity: isTransitioning ? 0.7 : 1,
@@ -86,13 +87,13 @@ export default function FinalFiveIntro({ reason, onStart, onBackgroundAnimationC
           {/* Loading indicator */}
           {isLoading && (
             <motion.div
-              className="flex flex-col items-center justify-center"
+              className={styles.loadingContainer}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex items-center justify-center mb-2">
+              <div className={styles.loadingSpinnerContainer}>
                 <svg 
                   className="animate-spin h-10 w-10"
                   style={{ color: `var(--color-${colors.primary})` }}
@@ -115,14 +116,14 @@ export default function FinalFiveIntro({ reason, onStart, onBackgroundAnimationC
                   ></path>
                 </svg>
               </div>
-              <div className="text-center">
-                <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <div className={styles.loadingTextContainer}>
+                <p className={styles.loadingMessage}>
                   {isSlowConnection 
                     ? t('game.finalFive.slowConnection') 
                     : t('game.finalFive.loading')}
                 </p>
                 {retryCount > 0 && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className={styles.retryMessage}>
                     Retrying... ({retryCount}/3)
                   </p>
                 )}

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Righteous } from 'next/font/google';
-import { finalFiveStyles } from '../FinalFiveModal/FinalFiveModal.styles';
+import { finalFiveCardStyles } from './FinalFiveCard.styles';
 import { useFinalFiveCard } from './useFinalFiveCard';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
@@ -13,7 +13,6 @@ interface FinalFiveCardProps {
   index: number;
   isFlipped: boolean;
   isGameOver: boolean;
-  animationComplete: boolean;
   frontBg: string;
   backBg: string;
   textColor: string;
@@ -32,7 +31,6 @@ export default function FinalFiveCard({
   index,
   isFlipped,
   isGameOver,
-  animationComplete,
   frontBg,
   backBg,
   textColor,
@@ -59,19 +57,18 @@ export default function FinalFiveCard({
   });
 
   // Get dimensions for the card based on device
-  const cardDimensions = finalFiveStyles.card.getDimensions();
+  const cardDimensions = finalFiveCardStyles.getDimensions();
 
   return (
     <motion.div 
       key={`option-${index}`} 
-      className={finalFiveStyles.card.container}
+      className={finalFiveCardStyles.container}
       animate={{ 
         opacity: shouldFadeOut ? 0 : 1,
         scale: shouldFadeOut ? 0.8 : 1
       }}
       transition={{ duration: 0.5 }}
       style={{ 
-        perspective: "1000px",
         minHeight: cardDimensions.minHeight,
         maxWidth: cardDimensions.maxWidth,
         margin: "0 auto",
@@ -79,7 +76,7 @@ export default function FinalFiveCard({
       }}
     >
       <motion.div
-        className={finalFiveStyles.card.wrapper}
+        className={finalFiveCardStyles.wrapper}
         initial={{ rotateY: 0 }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{
@@ -95,7 +92,7 @@ export default function FinalFiveCard({
       >
         {/* Front of card - Number 5 */}
         <div 
-          className={`${finalFiveStyles.card.front} ${righteous.className}`}
+          className={`${finalFiveCardStyles.front} ${righteous.className} ${finalFiveCardStyles.frontNumber}`}
           style={{ 
             backgroundColor: frontBg,
             color: "white",
@@ -111,7 +108,7 @@ export default function FinalFiveCard({
         
         {/* Back of card - Option text */}
         <div 
-          className={finalFiveStyles.card.back}
+          className={finalFiveCardStyles.back}
           style={getBackCardStyle(backBg, textColor)}
           onClick={() => (!isGameOver && allCardsFlipped && !selectedOption) && onCardClick(option)}
           onMouseDown={handleMouseDown}
@@ -119,34 +116,26 @@ export default function FinalFiveCard({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <span className="text-lg md:text-xl text-center">
+          <span className={finalFiveCardStyles.optionText}>
             {option}
           </span>
           
           {/* X overlay for incorrect guesses */}
           {isGameOver && isIncorrectGuess && (
             <div 
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              className={finalFiveCardStyles.xOverlay}
               aria-hidden="true"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 0.9, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
-                style={{ 
-                  width: "70%",
-                  height: "70%",
-                  maxWidth: "60px",
-                  maxHeight: "60px"
-                }}
+                className={finalFiveCardStyles.xOverlayContent}
               >
                 <svg 
                   viewBox="0 0 100 100" 
                   xmlns="http://www.w3.org/2000/svg"
-                  style={{
-                    width: "100%",
-                    height: "100%"
-                  }}
+                  className={finalFiveCardStyles.xSvg}
                 >
                   <g stroke={frontBg} strokeWidth="12" strokeLinecap="round">
                     <path d="M25,25 L75,75" />

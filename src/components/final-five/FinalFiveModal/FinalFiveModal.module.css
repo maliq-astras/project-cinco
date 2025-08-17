@@ -1,0 +1,177 @@
+/* Static styles for FinalFiveModal component */
+
+/* Main modal container */
+.modalContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  will-change: backdrop-filter;
+}
+
+@media (min-width: 768px) {
+  .modalContainer {
+    align-items: center;
+  }
+}
+
+/* Modal content panel */
+.modalContent {
+  width: 100vw;
+  max-width: none;
+  background-color: white;
+  border-radius: 0.75rem 0.75rem 0 0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 1rem;
+  margin: 0;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .modalContent {
+    width: 100%;
+    max-width: 620px;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+}
+
+/* Dark mode support */
+:global(.dark) .modalContent {
+  background-color: rgb(17 24 39);
+  border: 2px solid rgb(55 65 81);
+}
+
+:global(.dark.high-contrast) .modalContent {
+  border-color: rgb(209 213 219);
+}
+
+/* Mobile handle */
+.mobileHandle {
+  width: 4rem;
+  height: 0.25rem;
+  background-color: rgb(209 213 219);
+  border-radius: 9999px;
+  margin: 0 auto 1rem auto;
+}
+
+@media (min-width: 768px) {
+  .mobileHandle {
+    display: none;
+  }
+}
+
+:global(.dark) .mobileHandle {
+  background-color: rgb(55 65 81);
+}
+
+/* Warning icon */
+.warningIconContainer {
+  color: rgb(239 68 68);
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.warningIcon {
+  height: 3rem;
+  width: 3rem;
+  margin: 0 auto 0.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: rgb(254 226 226);
+}
+
+:global(.dark) .warningIcon {
+  background-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Header */
+.header {
+  font-size: 2.25rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Message */
+.message {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: rgb(55 65 81);
+  font-family: var(--font-display);
+  min-height: 60px;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+:global(.dark) .message {
+  color: rgb(209 213 219);
+}
+
+/* Timer container */
+.timerContainer {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timerWrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+:global(.dark) .timerWrapper {
+  border: 2px solid rgb(55 65 81);
+}
+
+:global(.dark.high-contrast) .timerWrapper {
+  border-color: rgb(209 213 219);
+}
+
+/* Button container */
+.buttonContainer {
+  height: 3.5rem;
+  position: relative;
+}
+
+/* Continue button */
+.continueButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-weight: bold;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+/* Loading spinner */
+.loadingSpinner {
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-right: 0.5rem;
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
