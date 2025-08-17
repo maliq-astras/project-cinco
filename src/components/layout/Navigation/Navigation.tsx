@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import GameTutorial from '../../game/GameTutorial';
-import SettingsPanel from '../../ui/SettingsPanel';
+import SettingsPanel from '../../settings/SettingsPanel';
 import NavDropdownMenu from '../NavDropdownMenu';
 import FeedbackModal from '@/components/modals/FeedbackModal';
 import BugReportModal from '@/components/modals/BugReportModal';

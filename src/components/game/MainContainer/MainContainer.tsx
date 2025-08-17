@@ -22,8 +22,8 @@ import {
 } from '@/components';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LandscapeWarning from '../../ui/LandscapeWarning';
-import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
+import LandscapeWarning from '../../layout/LandscapeWarning';
+import { useWrongAnswerOverlay } from '../../game-ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 
 export default function MainContainer() {
   const {
