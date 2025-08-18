@@ -4,7 +4,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useFinalFiveModal } from './useFinalFiveModal';
-import Timer from '../../game-ui/Timer';
+import Timer from '../../ui/Timer';
 import FinalFiveCard from '../FinalFiveCard';
 import { finalFiveStyles } from './FinalFiveModal.styles';
 import BaseModal from '@/components/modals/BaseModal/BaseModal';

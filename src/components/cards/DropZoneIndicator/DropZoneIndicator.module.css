@@ -1,0 +1,36 @@
+/* Container styles */
+.container {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed hsl(var(--primary));
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+  background-color: hsl(var(--muted)); 
+}
+
+/* Dark mode - white dashes for contrast */
+:global(.dark) .container {
+  border-color: white;
+}
+
+/* Text container styles */
+.textContainer {
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+/* Text styles */
+.text {
+  color: hsl(var(--primary));
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+
+/* Dark mode text - white for contrast */
+:global(.dark) .text {
+  color: white;
+}

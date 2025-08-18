@@ -1,9 +1,9 @@
 import React, { forwardRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import Timer from '../../game-ui/Timer';
+import Timer from '../../ui/Timer';
 import InputBar, { InputBarHandle } from '../InputBar';
 import GameButtons from '../GameButtons';
-import ToastMessages from '../ToastMessages';
+import ToastMessages from '../../ui/ToastMessages';
 import { useGameControls, GameControlsHandle } from './useGameControls';
 import { gameControlsStyles } from './GameControls.styles';
 import { useGameStore } from '@/store/gameStore';

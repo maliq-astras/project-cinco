@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useFactCardStackContainer } from './useFactCardStackContainer';
 import styles from './FactCardStackContainer.module.css';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
-import DropZoneIndicator from '../../game-ui/DropZoneIndicator';
+import DropZoneIndicator from '../DropZoneIndicator';
 import { useDragState } from '@/hooks/ui/useDragState';
 
 /**

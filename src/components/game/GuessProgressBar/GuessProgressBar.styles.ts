@@ -10,7 +10,6 @@ export const guessProgressBarStyles = {
   filledSegment: "absolute inset-0",
   shineEffect: "absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-10",
   bottomShadow: "absolute inset-x-0 bottom-0 h-[1px] opacity-20",
-  sparkContainer: "absolute inset-0 pointer-events-none",
   pulseEffect: "absolute inset-0 rounded-full pointer-events-none"
 };
 

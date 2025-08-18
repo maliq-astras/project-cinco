@@ -30,6 +30,68 @@ const ThemeContext = createContext<ThemeContextType>({
   getAdjustedColorClass: (colorClass) => colorClass,
 });
 
+// Helper function to convert tailwind color class to HSL values
+const getColorHSL = (colorClass: string): string => {
+  // HSL mapping for tailwind colors
+  const hslMap: Record<string, string> = {
+    // Blues (Countries)
+    'blue-600': '221.2 83.2% 53.3%',
+    'blue-500': '217.2 91.2% 59.8%',
+    'blue-700': '215.4 16.3% 46.9%',
+    'blue-400': '213.9 93.3% 67.5%',
+    
+    // Emerald (Animals)
+    'emerald-600': '160.1 84.1% 39.4%',
+    'emerald-500': '158.1 64.4% 41.8%',
+    'emerald-700': '161.4 93.9% 30.4%',
+    'emerald-400': '158.9 64.4% 51.8%',
+    
+    // Violet (Movies)
+    'violet-600': '262.1 83.3% 57.8%',
+    'violet-500': '271.5 81.3% 55.9%',
+    'violet-700': '263.4 70% 50.4%',
+    'violet-400': '271.5 81.3% 65.9%',
+    
+    // Orange (Books)
+    'orange-600': '24.6 95% 53.1%',
+    'orange-500': '32.1 94.6% 43.7%',
+    'orange-700': '24.6 95% 43.1%',
+    'orange-400': '32.1 94.6% 53.7%',
+    
+    // Fuchsia (Musical Artists)
+    'fuchsia-600': '291.7 70.7% 58.8%',
+    'fuchsia-500': '292.2 84.1% 67.1%',
+    'fuchsia-700': '291.1 93.2% 47.8%',
+    'fuchsia-400': '292.2 84.1% 77.1%',
+    
+    // Red (Athletes)
+    'red-600': '0 84.2% 60.2%',
+    'red-500': '0 84.2% 70.2%',
+    'red-700': '0 84.2% 50.2%',
+    'red-400': '0 84.2% 80.2%',
+    
+    // Amber (Historical Figures)
+    'amber-500': '43.4 96.4% 56.3%',
+    'amber-400': '43.4 96.4% 66.3%',
+    'amber-600': '43.4 96.4% 46.3%',
+    'amber-300': '43.4 96.4% 76.3%',
+    
+    // Teal (Famous Brands)
+    'teal-500': '173.4 58.3% 39.1%',
+    'teal-400': '173.4 58.3% 49.1%',
+    'teal-600': '173.4 58.3% 29.1%',
+    'teal-300': '173.4 58.3% 59.1%',
+    
+    // Indigo (TV Shows)
+    'indigo-500': '238.7 83.5% 66.7%',
+    'indigo-400': '238.7 83.5% 76.7%',
+    'indigo-600': '238.7 83.5% 56.7%',
+    'indigo-300': '238.7 83.5% 86.7%'
+  };
+
+  return hslMap[colorClass] || '0 0% 50%'; // default to gray
+};
+
 // Helper function to convert tailwind color class to RGB values
 const getColorRGB = (colorClass: string): string => {
   // If we're in high contrast mode, check if this color has a high contrast variable
@@ -273,10 +335,19 @@ export const ThemeProvider: React.FC<{
       dark: isHighContrast ? 'black' : baseColors.dark
     };
     
-    // Set primary color variables
-    root.style.setProperty('--primary-color', updatedColors.primary);
-    root.style.setProperty('--secondary-color', updatedColors.secondary);
-    root.style.setProperty('--accent-color', updatedColors.accent);
+          // Set primary color variables
+      root.style.setProperty('--primary-color', updatedColors.primary);
+      root.style.setProperty('--secondary-color', updatedColors.secondary);
+      root.style.setProperty('--accent-color', updatedColors.accent);
+      
+      // Set HSL variables for CSS usage
+      const primaryHSL = getColorHSL(updatedColors.primary);
+      const secondaryHSL = getColorHSL(updatedColors.secondary);
+      const accentHSL = getColorHSL(updatedColors.accent);
+      
+      root.style.setProperty('--primary', primaryHSL);
+      root.style.setProperty('--secondary', secondaryHSL);
+      root.style.setProperty('--accent', accentHSL);
     
     // Set RGB variants for rgba() usage
     const primaryRGB = getColorRGB(updatedColors.primary);
@@ -409,6 +480,15 @@ export const ThemeProvider: React.FC<{
       root.style.setProperty('--primary-color', colors.primary);
       root.style.setProperty('--secondary-color', colors.secondary);
       root.style.setProperty('--accent-color', colors.accent);
+      
+      // Set HSL variables for CSS usage
+      const primaryHSL = getColorHSL(colors.primary);
+      const secondaryHSL = getColorHSL(colors.secondary);
+      const accentHSL = getColorHSL(colors.accent);
+      
+      root.style.setProperty('--primary', primaryHSL);
+      root.style.setProperty('--secondary', secondaryHSL);
+      root.style.setProperty('--accent', accentHSL);
       
       // Set RGB variants for rgba() usage
       const primaryRGB = getColorRGB(colors.primary);

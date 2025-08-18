@@ -23,7 +23,7 @@ import {
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LandscapeWarning from '../../layout/LandscapeWarning';
-import { useWrongAnswerOverlay } from '../../game-ui/WrongAnswerOverlay/useWrongAnswerOverlay';
+import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 
 export default function MainContainer() {
   const {

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGuessProgress } from './useGuessProgress';
-import { useSparkAnimation } from '@/hooks/animation/useSparkAnimation';
 import { getGradientBackground, getBottomShadowStyle } from '@/helpers/guessProgressBarHelpers';
 import { progressAnimations, segmentTransition, guessProgressBarStyles } from './GuessProgressBar.styles';
 
@@ -24,22 +23,25 @@ export function useGuessProgressBar({
   const { 
     wrongGuessCount,
     animatedCount,
-    isShaking,
-    showSparks
+    isShaking
   } = useGuessProgress({
     guesses,
     maxGuesses
   });
   
-  // Get spark animations
-  const { 
-    sparks,
-    containerAnimation,
-    pulseAnimation
-  } = useSparkAnimation({
-    primaryColor: `var(--color-${colors.primary})`,
-    secondaryColor: `var(--color-${colors.secondary})`
-  });
+  // Pulse animation for when bar is full
+  const pulseAnimation = {
+    initial: { opacity: 0, scale: 0.8 },
+    animate: { 
+      opacity: [0, 1, 0], 
+      scale: [0.8, 1.2, 1] 
+    },
+    transition: { 
+      duration: 2, 
+      repeat: Infinity, 
+      ease: "easeInOut" 
+    }
+  };
   
   // Memoize gradient style
   const gradientStyle = useMemo(() => 
@@ -77,12 +79,9 @@ export function useGuessProgressBar({
     wrongGuessCount,
     animatedCount,
     isShaking,
-    showSparks,
     maxGuesses,
     
     // Animation properties
-    sparks,
-    containerAnimation,
     pulseAnimation,
     
     // Styles

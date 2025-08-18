@@ -1,17 +1,20 @@
 // UI Components
-export { default as Timer } from './game-ui/Timer';
+export { default as Timer } from './ui/Timer';
 export { default as LoadingAnimation } from './ui/LoadingAnimation';
-export { default as WrongAnswerOverlay } from './game-ui/WrongAnswerOverlay';
+export { default as WrongAnswerOverlay } from './ui/WrongAnswerOverlay';
 export { default as IconContainer } from './ui/IconContainer';
-export { LanguageSwitchLoader } from './settings/LanguageSwitchLoader';
+export { LanguageSwitchLoader } from './ui/LanguageSwitchLoader';
+export { default as ToastMessages } from './ui/ToastMessages';
+
+// Post-Game Components
+export { default as StreakDisplay } from './post-game/StreakDisplay';
 
 // Game Components
 export { default as GameControls } from './game/GameControls';
 export { default as InputBar } from './game/InputBar';
 export { default as GameButtons } from './game/GameButtons';
-export { default as ToastMessages } from './game/ToastMessages';
 export { default as Autocomplete } from './game/Autocomplete';
-export { default as EndGameMessage } from './game/EndGameMessage';
+export { default as EndGameMessage } from './post-game/EndGameMessage';
 export { default as GuessProgressBar } from './game/GuessProgressBar';
 export { default as MainContainer } from './layout/MainContainer'; 
 
