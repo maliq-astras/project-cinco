@@ -18,13 +18,14 @@ export const FactCardStackContainer: React.FC = () => {
     containerStyles,
     cardStackVisibilityClass,
     isHidden,
-    factsAreaRef
+    factsAreaRef,
+    containerRef
   } = useFactCardStackContainer();
 
   const isDragging = useDragState(state => state.isDragging);
 
   return (
-    <div className={`fact-card-stack-container ${styles.container}`}>
+    <div ref={containerRef} className={`fact-card-stack-container ${styles.container}`}>
       <div 
         ref={factsAreaRef}
         className={styles.innerContainer}

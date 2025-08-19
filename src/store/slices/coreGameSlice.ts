@@ -7,7 +7,6 @@ import {
   verifyGuess as verifyGuessAPI,
   shouldShowFinalFive
 } from '../../helpers/gameLogic';
-import { getFactBubblePosition } from '../../helpers/uiHelpers';
 
 export interface CoreGameSlice {
   // Core game state
@@ -38,7 +37,7 @@ export interface CoreGameSlice {
   
   // Actions
   fetchChallenge: (language: string) => Promise<void>;
-  revealFact: (factIndex: number) => void;
+  revealFact: (factIndex: number, sourcePosition: { x: number, y: number } | null) => void;
   handleCardClick: (factIndex: number, sourcePosition: { x: number, y: number }) => void;
   closeFactCard: () => void;
   completeCardAnimation: () => void;
@@ -150,7 +149,7 @@ export const createCoreGameSlice: StateCreator<
     }
   },
   
-  revealFact: (factIndex: number) => {
+  revealFact: (factIndex: number, sourcePosition: { x: number, y: number } | null) => {
     const { gameState, canRevealNewClue, lastRevealedFactIndex, isPendingFinalFiveTransition } = get();
     
     // Prevent revealing facts if there's a pending transition to Final Five
@@ -169,11 +168,9 @@ export const createCoreGameSlice: StateCreator<
     }
     
     if (gameState.revealedFacts.includes(factIndex)) {
-      // If revealing from the stack, get the position of the fact bubble
-      const position = getFactBubblePosition(factIndex);
-      
+      // If revealing from the stack, use the rovided source position
       set({
-        cardSourcePosition: position,
+        cardSourcePosition: sourcePosition,
         viewingFact: factIndex,
         isDrawingFromStack: false,
         isReturningToStack: false
@@ -181,12 +178,9 @@ export const createCoreGameSlice: StateCreator<
     } else {
       // Only reveal if not already revealed
       if (!gameState.revealedFacts.includes(factIndex)) {
-        // Get the position of the fact bubble
-        const position = getFactBubblePosition(factIndex);
-        
-        // First set the viewing fact to show the animation
+        // Use the provided source position
         set({
-          cardSourcePosition: position,
+          cardSourcePosition: sourcePosition,
           viewingFact: factIndex,
           isDrawingFromStack: false,
           isReturningToStack: false,

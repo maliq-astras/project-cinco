@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGameStore } from '../../store/gameStore';
-import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPosition } from '../../helpers/factCardHelpers';
+import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPositionFromElements } from '../../helpers/factCardHelpers';
 import { useMemoizedFlipTransition, useCardTransition } from '../animation';
+import { useDOMRefs } from '../../providers/DOMRefsProvider';
 
 interface UseCardFlipProps {
   sourcePosition: { x: number, y: number } | null;
@@ -12,10 +13,11 @@ interface UseCardFlipProps {
 export function useCardFlip({ 
   sourcePosition, 
   visibleStackCount, 
-  onClose 
+  onClose
 }: UseCardFlipProps) {
   const closeFactCard = useGameStore(state => state.closeFactCard);
   const completeCardAnimation = useGameStore(state => state.completeCardAnimation);
+  const { getElement } = useDOMRefs();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDrawn, setIsDrawn] = useState(!sourcePosition);
   const [isClosing, setIsClosing] = useState(false);
@@ -64,8 +66,17 @@ export function useCardFlip({
     
     // After the flip animation, start the return animation
     setTimeout(() => {
-      // Calculate the return position
-      setReturnPosition(calculateCardReturnPosition(visibleStackCount));
+      // Get card stack elements from DOM refs provider
+      const cardStackElement = getElement('card-stack-container');
+      const rightmostCardElement = getElement('rightmost-card');
+      
+      // Calculate the return position using refs
+      const position = calculateCardReturnPositionFromElements(
+        cardStackElement,
+        rightmostCardElement,
+        visibleStackCount
+      );
+      setReturnPosition(position);
       
       // After the return animation completes, call closeFactCard from the store
       setTimeout(() => {
@@ -73,7 +84,7 @@ export function useCardFlip({
         if (onClose) onClose();
       }, 500);
     }, 400);
-  }, [closeFactCard, visibleStackCount, onClose, canClose]);
+  }, [closeFactCard, visibleStackCount, onClose, canClose, getElement]);
 
   // Setup animations and event listeners
   useEffect(() => {

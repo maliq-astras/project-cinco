@@ -22,7 +22,7 @@ interface FactCardProps {
  */
 export default function FactCard({ 
   fact, 
-  visibleStackCount = 0,
+  visibleStackCount = 0
 }: FactCardProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();

@@ -5,6 +5,7 @@ import { useCardAnimations } from '@/hooks/animation';
 import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
 import { useDragState } from '@/hooks/ui';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { getFactBubblePositionFromElement } from '@/helpers/uiHelpers';
 
 // Internal custom hook for particle generation
 function useParticles(count = 8) {
@@ -52,7 +53,7 @@ export function useFactBubble({
   
   // DOM refs for tutorial targeting
   const bubbleRef = useRef<HTMLButtonElement>(null);
-  const { registerElement, unregisterElement } = useDOMRefs();
+  const { registerElement, unregisterElement, getElement } = useDOMRefs();
 
   // Register the bubble-0 element with the DOM refs system if this is at slot 0
   useEffect(() => {
@@ -105,8 +106,8 @@ export function useFactBubble({
     
     if (isRevealed || isPopping || !isClickable) return;
 
-    // Get the card area element
-    const cardArea = document.querySelector('.fact-card-stack-container');
+    // Get the card area element using DOM refs provider
+    const cardArea = getElement('fact-card-stack-container');
     if (!cardArea) return;
 
     const cardRect = cardArea.getBoundingClientRect();
@@ -130,7 +131,8 @@ export function useFactBubble({
       
       // Trigger reveal after animation completes
       setTimeout(() => {
-        revealFact(factIndex);
+        const position = getFactBubblePositionFromElement(bubbleRef.current);
+        revealFact(factIndex, position);
       }, CARD_ANIMATION_DELAY);
     } else {
       // No fact was revealed on this drag

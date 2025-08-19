@@ -69,37 +69,28 @@ export function getCardReturnPosition(returnPosition: { x: number, y: number } |
   };
 }
 
-/**
- * Calculate the return position for a card going back to the stack
- * @param visibleStackCount Number of cards visible in the stack
- * @returns The position to return the card to
- */
-export function calculateCardReturnPosition(visibleStackCount: number): { x: number, y: number } {
-  // Find the card stack element to get its position
-  const cardStackElement = document.querySelector('.card-stack-container');
-  
+export function calculateCardReturnPositionFromElements(
+  cardStackElement: HTMLElement | null,
+  rightmostCardElement: HTMLElement | null,
+  visibleStackCount: number
+): { x: number, y: number } {
   if (cardStackElement) {
     const rect = cardStackElement.getBoundingClientRect();
     
     // Check if there are visible cards in the stack
-    if (visibleStackCount > 0) {
-      // Find the rightmost card in the stack
-      const rightmostCard = document.querySelector('.card-stack-container .card-in-stack:last-child');
-      
-      if (rightmostCard) {
-        // Position to the right of the rightmost card
-        const cardRect = rightmostCard.getBoundingClientRect();
-        return {
-          x: cardRect.right + 20, // Position to the right of the last card with some spacing
-          y: cardRect.top + cardRect.height / 2 // Align with the vertical center of the card
-        };
-      } else {
-        // Fallback: position to the right side of the stack
-        return {
-          x: rect.right - 70, // Position at the right edge of the stack minus half card width
-          y: rect.top + rect.height / 2 // Position at the vertical center of the stack
-        };
-      }
+    if (visibleStackCount > 0 && rightmostCardElement) {
+      // Position to the right of the rightmost card
+      const cardRect = rightmostCardElement.getBoundingClientRect();
+      return {
+        x: cardRect.right + 20, // Position to the right of the last card with some spacing
+        y: cardRect.top + cardRect.height / 2 // Align with the vertical center of the card
+      };
+    } else if (visibleStackCount > 0) {
+      // Fallback: position to the right side of the stack
+      return {
+        x: rect.right - 70, // Position at the right edge of the stack minus half card width
+        y: rect.top + rect.height / 2 // Position at the vertical center of the stack
+      };
     } else {
       // If no cards in the stack, position to the center of the stack
       return {

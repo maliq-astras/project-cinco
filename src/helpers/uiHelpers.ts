@@ -1,5 +1,4 @@
-export function getFactBubblePosition(factIndex: number): { x: number, y: number } | null {
-  const factBubble = document.querySelector(`[data-fact-index="${factIndex}"]`);
+export function getFactBubblePositionFromElement(factBubble: HTMLElement | null): { x: number, y: number } | null {
   if (factBubble) {
     const rect = factBubble.getBoundingClientRect();
     return {
@@ -10,15 +9,14 @@ export function getFactBubblePosition(factIndex: number): { x: number, y: number
   return null;
 }
 
-export function showToastMessage(elementId: string, duration: number = 2000): void {
-  const errorDiv = document.getElementById(elementId);
-  if (errorDiv) {
-    errorDiv.classList.remove('hidden');
+export function showToastMessageFromElement(toastElement: HTMLElement | null, duration: number = 2000): void {
+  if (toastElement) {
+    toastElement.classList.remove('hidden');
     setTimeout(() => {
-      errorDiv.classList.add('animate-fadeOut');
+      toastElement.classList.add('animate-fadeOut');
       setTimeout(() => {
-        errorDiv.classList.remove('animate-fadeIn', 'animate-fadeOut');
-        errorDiv.classList.add('hidden');
+        toastElement.classList.remove('animate-fadeIn', 'animate-fadeOut');
+        toastElement.classList.add('hidden');
       }, 300);
     }, duration);
   }

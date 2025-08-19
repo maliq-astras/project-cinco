@@ -4,6 +4,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useCardStack } from '@/hooks/card';
 import { calculateCardPosition, getCardAnimationVariants } from '@/helpers/uiHelpers';
 import { deviceDetection } from '@/helpers/deviceHelpers';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useEffect } from 'react';
 
 /**
  * Hook for managing FactCardStack logic and interactions
@@ -22,6 +24,9 @@ export function useFactCardStack() {
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const { darkMode } = useTheme();
   
+  // DOM refs for accessing card stack elements
+  const { registerElement, unregisterElement } = useDOMRefs();
+  
   // Filter out the currently viewed card from the stack unless it's returning
   const visibleStackFacts = useMemo(() => {
     return revealedFacts.filter(factIndex => 
@@ -32,6 +37,27 @@ export function useFactCardStack() {
   // Use our custom hook for card stack interactions and animations
   const cardStackHook = useCardStack(visibleStackFacts);
   const centerIndex = Math.floor(visibleStackFacts.length / 2);
+
+  // Register card stack elements with DOM refs provider
+  useEffect(() => {
+    if (cardStackHook.stackRef.current) {
+      registerElement('card-stack-container', cardStackHook.stackRef.current);
+    }
+    
+    // Register the rightmost card if it exists
+    if (cardStackHook.cardRefs.current.length > 0) {
+      const lastIndex = cardStackHook.cardRefs.current.length - 1;
+      const rightmostCard = cardStackHook.cardRefs.current[lastIndex];
+      if (rightmostCard) {
+        registerElement('rightmost-card', rightmostCard);
+      }
+    }
+    
+    return () => {
+      unregisterElement('card-stack-container');
+      unregisterElement('rightmost-card');
+    };
+  }, [cardStackHook.stackRef, cardStackHook.cardRefs, registerElement, unregisterElement]);
 
   // Responsive card sizes based on screen width
   const getCardSize = () => {

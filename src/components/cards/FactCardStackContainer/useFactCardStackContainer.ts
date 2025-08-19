@@ -20,6 +20,7 @@ export function useFactCardStackContainer() {
   
   // DOM refs for tutorial targeting
   const factsAreaRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { registerElement, unregisterElement } = useDOMRefs();
 
   // Register the facts area element with the DOM refs system
@@ -28,8 +29,13 @@ export function useFactCardStackContainer() {
       registerElement('facts-area', factsAreaRef.current);
     }
     
+    if (containerRef.current) {
+      registerElement('fact-card-stack-container', containerRef.current);
+    }
+    
     return () => {
       unregisterElement('facts-area');
+      unregisterElement('fact-card-stack-container');
     };
   }, [registerElement, unregisterElement]);
 
@@ -91,6 +97,7 @@ export function useFactCardStackContainer() {
     isHidden,
     
     // DOM refs
-    factsAreaRef
+    factsAreaRef,
+    containerRef
   };
 } 

@@ -21,7 +21,9 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     inputValue,
     setInputValue,
     isSkipConfirmActive,
-    isTouchDevice
+    isTouchDevice,
+    duplicateErrorRef,
+    skipMessageRef
   } = useGameControls(ref);
 
   const gameState = useGameStore(state => state.gameState);
@@ -38,7 +40,10 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
       >
         <div className="relative">
           {/* Toast messages */}
-          <ToastMessages />
+          <ToastMessages 
+            duplicateErrorRef={duplicateErrorRef}
+            skipMessageRef={skipMessageRef}
+          />
           
           <div className={gameControlsStyles.controlsArea}>
             <div id="facts-area" className={gameControlsStyles.factsArea}>

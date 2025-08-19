@@ -20,25 +20,4 @@ export function getBottomShadowStyle(darkColor: string): CSSProperties {
   return {
     backgroundColor: `var(--color-${darkColor})`
   };
-}
-
-/**
- * Handle showing/hiding the toast notification for wrong guesses
- * @param skipped Whether the guess was skipped
- */
-export function handleToastNotification(skipped: boolean): void {
-  if (skipped) return;
-  
-  const toast = document.getElementById('wrong-guess-toast');
-  if (toast) {
-    toast.classList.remove('hidden');
-    
-    setTimeout(() => {
-      toast.classList.add('animate-fadeOut');
-      setTimeout(() => {
-        toast.classList.remove('animate-fadeIn', 'animate-fadeOut');
-        toast.classList.add('hidden');
-      }, 300);
-    }, 2000);
-  }
 } 

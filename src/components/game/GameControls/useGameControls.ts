@@ -2,7 +2,7 @@ import { FormEvent, useRef, useImperativeHandle, Ref, useState, useEffect } from
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { showToastMessage } from '@/helpers/uiHelpers';
+import { showToastMessageFromElement } from '@/helpers/uiHelpers';
 import { isDuplicateGuess } from '@/helpers/gameLogic';
 import { InputBarHandle } from '../InputBar';
 
@@ -26,6 +26,10 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const { colors } = useTheme();
+  
+  // Create refs for toast elements
+  const duplicateErrorRef = useRef<HTMLDivElement>(null);
+  const skipMessageRef = useRef<HTMLDivElement>(null);
   
   // Create a ref for the InputBar component
   const inputBarRef = useRef<InputBarHandle>(null);
@@ -64,7 +68,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     if (isProcessingGuess) return;
     
     if (isDuplicateGuess(guesses, guess)) {
-      showToastMessage('duplicate-error');
+      showToastMessageFromElement(duplicateErrorRef.current);
       return;
     }
     
@@ -87,7 +91,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     // Second click - actually skip
     setIsSkipConfirmActive(false);
     submitGuess("___SKIPPED___");
-    showToastMessage('skip-message');
+    showToastMessageFromElement(skipMessageRef.current);
   };
 
   // Generate a descriptive message based on the game state
@@ -122,6 +126,8 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     inputValue,
     setInputValue,
     isSkipConfirmActive,
-    isTouchDevice
+    isTouchDevice,
+    duplicateErrorRef,
+    skipMessageRef
   };
 }; 

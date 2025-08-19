@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Fact } from '@/types';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -41,7 +41,7 @@ export function useFactCard({
     flipTransition
   } = useCardFlip({ 
     sourcePosition, 
-    visibleStackCount 
+    visibleStackCount
   });
   
   // Use animation hook for reusable animations
