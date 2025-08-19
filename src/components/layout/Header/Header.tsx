@@ -16,7 +16,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
   const { t } = useTranslation();
-  const { colors, challenge } = useHeader();
+  const { colors, challenge, logoRef, categoryTitleRef } = useHeader();
   const { isCompactHeader, headerSizeMode } = useMainContainer();
 
   // Get header size classes based on headerSizeMode
@@ -80,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
       <header className={headerStyles.header}>
         <div className={headerClasses.content}>
           <motion.div 
+            ref={logoRef}
             id="header-area" 
             className={headerClasses.logoContainer}
             initial={{ opacity: 0, scale: 0.9, y: -10 }}
@@ -91,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
           
           {challenge?.category && (
             <motion.h1 
+              ref={categoryTitleRef}
               id="category-title"
               className={`${headerClasses.title} ${righteous.className} header-title`}
               style={headerClasses.titleText}

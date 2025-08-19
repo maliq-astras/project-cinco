@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useFluidResponsive } from '@/hooks/ui';
 
 interface TutorialStep {
   target: string;
@@ -11,7 +13,7 @@ interface TutorialStep {
 }
 
 // Create the tutorial steps as a function that takes hardMode as a parameter
-const createTutorialSteps = (hardMode: boolean, t: Function): TutorialStep[] => [
+const createTutorialSteps = (hardMode: boolean, t: any): TutorialStep[] => [
   {
     target: 'header-area',
     title: t('tutorial.steps.welcome.title'),
@@ -98,6 +100,14 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
   // Use the dynamic tutorial steps based on game mode
   const tutorialSteps = createTutorialSteps(hardMode, t);
 
+  // Use the centralized DOM refs system
+  const { registerElement, unregisterElement, getElement } = useDOMRefs();
+
+  // Use the existing fluid responsive hook for viewport dimensions
+  const { width, height } = useFluidResponsive();
+
+
+
   // Reset step when tutorial is closed and manage timer pausing
   useEffect(() => {
     // The tutorial is opening or closing
@@ -108,18 +118,17 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     }
   }, [isOpen, setTutorialOpen]);
 
-  const updatePositions = () => {
+  const updatePositions = useCallback(() => {
     if (isOpen) {
       const currentTarget = tutorialSteps[currentStep].target;
-      const element = document.getElementById(currentTarget);
+      const element = getElement(currentTarget);
       
       if (element) {
         const rect = element.getBoundingClientRect();
-        const padding = 16;
         const textPadding = 24;
-        const isMobile = window.innerWidth < 640;
+        const isMobile = width < 640;
         const navigationHeight = 120;
-        const viewportHeight = window.innerHeight;
+        const viewportHeight = height;
         
         // Special handling for the logo area
         if (currentTarget === 'header-area') {
@@ -128,7 +137,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
           const logoHeight = Math.min(150, rect.height * 0.6); // Only constrain height
           
           // Center the spotlight on the logo
-          const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
           
           setSpotlightStyles({
@@ -138,59 +146,45 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
             height: `${logoHeight}px`
           });
         } else {
-          // Standard handling for other elements
-          setSpotlightStyles({
-            top: `${rect.top - padding}px`,
-            left: `${rect.left - padding}px`,
-            width: `${rect.width + padding * 2}px`,
-            height: `${rect.height + padding * 2}px`
-          });
+          // Different spotlight behaviors for different elements
+          if (currentTarget === 'category-title') {
+            // For h1 category title, add more vertical padding and less horizontal
+            setSpotlightStyles({
+              top: `${rect.top - 12}px`,
+              left: `${rect.left - 1}px`,
+              width: `${rect.width + 2}px`,
+              height: `${rect.height + 24}px`
+            });
+          } else {
+            // Standard padding for other elements
+            setSpotlightStyles({
+              top: `${rect.top - 16}px`,
+              left: `${rect.left - 16}px`,
+              width: `${rect.width + 32}px`,
+              height: `${rect.height + 32}px`
+            });
+          }
         }
 
-        // Calculate text box position
-        const textBoxWidth = isMobile ? Math.min(window.innerWidth - 32, 400) : 300;
-        let textTop = rect.top;
-        let textLeft = rect.left;
-
-        if (isMobile) {
-          textLeft = (window.innerWidth - textBoxWidth) / 2;
-          const viewportMiddle = viewportHeight / 2;
-          
-          if (rect.top + rect.height / 2 < viewportMiddle) {
-            textTop = Math.min(
-              rect.bottom + textPadding * 2,
-              viewportHeight - 200 - navigationHeight
-            );
-          } else {
-            textTop = Math.max(80, rect.top - 160 - textPadding);
-          }
+        // Calculate text box position - below for most elements, above for bubble grid
+        const textBoxWidth = isMobile ? Math.min(width - 32, 400) : 300;
+        let textTop;
+        let textLeft = rect.left + (rect.width - textBoxWidth) / 2;
+        
+        if (currentTarget === 'bubble-grid' || currentTarget === 'bubble-0') {
+          // For hidden facts (bubble grid) and reveal facts (first bubble), position text box ABOVE the highlighted area with spacing
+          textTop = Math.max(16, rect.top - 200 - textPadding);
         } else {
-          switch (tutorialSteps[currentStep].textPosition) {
-            case 'right':
-              textLeft = rect.right + textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'left':
-              textLeft = rect.left - textBoxWidth - textPadding * 2;
-              textTop = rect.top + (rect.height - 120) / 2;
-              break;
-            case 'top':
-              textTop = Math.max(16, rect.top - 160 - textPadding);
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-            case 'bottom':
-              textTop = Math.min(
-                rect.bottom + textPadding * 2,
-                viewportHeight - 200 - navigationHeight
-              );
-              textLeft = rect.left + (rect.width - textBoxWidth) / 2;
-              break;
-          }
+          // For all other elements, position text box BELOW the highlighted area
+          textTop = Math.min(
+            rect.bottom + textPadding * 2,
+            viewportHeight - 200 - navigationHeight
+          );
         }
 
         // Ensure text box stays within viewport bounds
-        textLeft = Math.max(16, Math.min(textLeft, window.innerWidth - textBoxWidth - 16));
-        textTop = Math.max(16, Math.min(textTop, window.innerHeight - 200));
+        textLeft = Math.max(16, Math.min(textLeft, width - textBoxWidth - 16));
+        textTop = Math.max(16, Math.min(textTop, height - 200));
 
         setTextBoxStyles({
           top: `${textTop}px`,
@@ -199,14 +193,19 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         });
       }
     }
-  };
+  }, [isOpen, currentStep, tutorialSteps, getElement, width, height]);
 
-  // Update positions when step changes or window resizes
+  // Update positions when step changes or viewport dimensions change
   useEffect(() => {
-    updatePositions();
-    window.addEventListener('resize', updatePositions);
-    return () => window.removeEventListener('resize', updatePositions);
-  }, [currentStep, isOpen]);
+    // Add a small delay to ensure DOM refs are registered
+    const timer = setTimeout(() => {
+      updatePositions();
+    }, 50);
+    
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentStep, isOpen, updatePositions]);
 
   const handleClick = () => {
     if (currentStep < tutorialSteps.length - 1) {
@@ -225,6 +224,8 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     handleClick,
     continueText: currentStep === tutorialSteps.length - 1 
       ? t('tutorial.navigation.finish')
-      : t('tutorial.navigation.continue')
+      : t('tutorial.navigation.continue'),
+    registerElement,
+    unregisterElement
   };
 }; 

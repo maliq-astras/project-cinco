@@ -1,6 +1,8 @@
+import { useRef, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { timerStyles } from './Timer.styles';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
 
 interface UseTimerProps {
   seconds: number;
@@ -23,6 +25,19 @@ export const useTimer = ({
 }: UseTimerProps) => {
   const { colors } = useTheme();
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  const timerRef = useRef<HTMLDivElement>(null);
+  const { registerElement, unregisterElement } = useDOMRefs();
+
+  // Register the timer element with the DOM refs system
+  useEffect(() => {
+    if (timerRef.current) {
+      registerElement('game-timer', timerRef.current);
+    }
+    
+    return () => {
+      unregisterElement('game-timer');
+    };
+  }, [registerElement, unregisterElement]);
 
   // Format the timer as M:SS
   const formatTime = (seconds: number) => {
@@ -53,6 +68,7 @@ export const useTimer = ({
     timerStyle,
     timerAnimation,
     isVictoryAnimationActive,
-    outerContainerClass: timerStyles.outerContainer(isVictoryAnimationActive)
+    outerContainerClass: timerStyles.outerContainer(isVictoryAnimationActive),
+    timerRef
   };
 }; 

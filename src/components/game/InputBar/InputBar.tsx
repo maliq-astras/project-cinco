@@ -41,6 +41,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
   
   const {
     inputRef,
+    progressRef,
     handleSuggestionClick
   } = useInputBar({
     ref,
@@ -117,7 +118,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
       </div>
       
       <div className={inputBarStyles.progressContainer}>
-        <div id="game-progress">
+        <div ref={progressRef} id="game-progress">
           <GuessProgressBar />
         </div>
       </div>

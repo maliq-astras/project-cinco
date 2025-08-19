@@ -5,6 +5,7 @@ import MainContainer from '../components/layout/MainContainer';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { QueryClientProvider } from '../contexts/QueryClientProvider';
+import { DOMRefsProvider } from '../providers/DOMRefsProvider';
 import '../i18n/config'; // Import i18n configuration
 
 export default function Home() {
@@ -13,7 +14,9 @@ export default function Home() {
       <QueryClientProvider>
         <LanguageProvider>
           <ThemeProvider>
-            <MainContainer />
+            <DOMRefsProvider>
+              <MainContainer />
+            </DOMRefsProvider>
           </ThemeProvider>
         </LanguageProvider>
       </QueryClientProvider>

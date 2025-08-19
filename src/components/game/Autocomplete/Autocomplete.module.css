@@ -1,0 +1,53 @@
+/**
+ * CSS Modules for Autocomplete component - Static styles only
+ * Dynamic positioning and theme styles remain in Autocomplete.styles.ts
+ */
+
+/* Container styles */
+.container {
+  background-color: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+/* Dark mode container */
+:global(.dark) .container {
+  background-color: hsl(0 0% 15%); 
+}
+
+/* Suggestion button styles */
+.suggestionButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  transition: all 150ms ease;
+  outline: none;
+  color: rgb(17 24 39); 
+  font-weight: 500;
+}
+
+/* Dark mode suggestion button */
+:global(.dark) .suggestionButton {
+  color: rgb(243 244 246); 
+}
+
+/* Hover state for suggestion button */
+.suggestionButton:hover {
+  background-color: rgb(243 244 246); 
+}
+
+/* Dark mode hover state */
+:global(.dark) .suggestionButton:hover {
+  background-color: rgb(75 85 99); 
+}
+
+/* Suggestion text styles */
+.suggestionText {
+  display: block;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

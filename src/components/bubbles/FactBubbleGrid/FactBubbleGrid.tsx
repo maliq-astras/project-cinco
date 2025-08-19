@@ -15,12 +15,14 @@ const FactBubbleGrid: React.FC = () => {
     gridItems,
     bubbleSize,
     gapSize,
-    animationProps
+    animationProps,
+    bubbleGridRef
   } = useFactBubbleGrid();
 
   return (
     <div className={styles.container}>
       <div 
+        ref={bubbleGridRef}
         id="bubble-grid"
         className={styles.grid}
         style={{
@@ -45,7 +47,6 @@ const FactBubbleGrid: React.FC = () => {
             <AnimatePresence mode="popLayout" key={`slot-${item.slotIndex}`}>
               <motion.div
                 key={item.key}
-                id={item.slotIndex === 0 ? 'bubble-0' : undefined}
                 layout
                 {...animationProps(item.slotIndex)}
                 className={styles.bubbleContainer}
@@ -57,6 +58,7 @@ const FactBubbleGrid: React.FC = () => {
                   style={{ width: `${bubbleSize}px` }}
                   className="aspect-square"
                   category={item.category}
+                  slotIndex={item.slotIndex}
                 />
               </motion.div>
             </AnimatePresence>

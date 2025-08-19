@@ -34,7 +34,8 @@ const Timer: React.FC<TimerProps> = ({
     timerStyle,
     timerAnimation,
     isVictoryAnimationActive,
-    outerContainerClass
+    outerContainerClass,
+    timerRef
   } = useTimer({
     seconds,
     isGameOver,
@@ -56,6 +57,7 @@ const Timer: React.FC<TimerProps> = ({
   
   return (
     <div 
+      ref={timerRef}
       id="game-timer"
       className={timerStyles.outerContainer(isVictoryAnimationActive)}
     >

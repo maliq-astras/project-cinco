@@ -1,6 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useDragState } from '@/hooks/ui';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
 
 /**
  * Hook for managing the container around the fact card stack
@@ -16,6 +17,21 @@ export function useFactCardStackContainer() {
   const isDragging = useDragState(state => state.isDragging);
   const wasFactRevealed = useDragState(state => state.wasFactRevealed);
   const [isHidden, setIsHidden] = useState(false);
+  
+  // DOM refs for tutorial targeting
+  const factsAreaRef = useRef<HTMLDivElement>(null);
+  const { registerElement, unregisterElement } = useDOMRefs();
+
+  // Register the facts area element with the DOM refs system
+  useEffect(() => {
+    if (factsAreaRef.current) {
+      registerElement('facts-area', factsAreaRef.current);
+    }
+    
+    return () => {
+      unregisterElement('facts-area');
+    };
+  }, [registerElement, unregisterElement]);
 
   // Calculate container styles
   const containerStyles = useMemo(() => {
@@ -72,6 +88,9 @@ export function useFactCardStackContainer() {
     cardStackVisibilityClass,
     
     // State
-    isHidden
+    isHidden,
+    
+    // DOM refs
+    factsAreaRef
   };
 } 

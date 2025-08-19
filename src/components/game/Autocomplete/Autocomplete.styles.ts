@@ -1,5 +1,21 @@
+/**
+ * Hybrid styles for Autocomplete component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from Autocomplete.module.css
+ * - Dynamic positioning and theme styles use functions
+ * - Animation styles remain as Framer Motion objects
+ */
+
+import styles from './Autocomplete.module.css';
+
 export const autocompleteStyles = {
-  // Position and layout
+  // Static styles from CSS modules
+  container: styles.container,
+  suggestionButton: styles.suggestionButton,
+  suggestionText: styles.suggestionText,
+  
+  // Dynamic positioning
   getPosition: (inputRect: DOMRect, isSmallPhone: boolean, desktopWidth: number) => ({
     position: 'fixed' as const,
     left: isSmallPhone 
@@ -9,13 +25,6 @@ export const autocompleteStyles = {
     width: isSmallPhone ? window.innerWidth - 32 : desktopWidth,
     zIndex: 58
   }),
-
-  // Container styles
-  container: "bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-hidden",
-  
-  // Suggestion item styles
-  suggestionButton: "w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-150 focus:outline-none text-gray-900 dark:text-gray-100",
-  suggestionText: "block text-sm font-medium truncate",
   
   // Dynamic styles
   getContainerStyle: (primaryColor: string, maxHeight: string = '240px') => ({

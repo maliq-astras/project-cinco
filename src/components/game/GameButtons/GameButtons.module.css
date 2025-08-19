@@ -1,0 +1,111 @@
+/**
+ * CSS Modules for GameButtons component
+ * Migrated from Tailwind classes in GameButtons.styles.ts
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 66px;
+  min-width: 60px;
+}
+
+@media (min-width: 640px) {
+  .container {
+    height: 76px;
+    min-width: 80px;
+  }
+}
+
+.controlButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 9999px;
+  color: var(--button-color, currentColor);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controlButton:not(:disabled) {
+  cursor: pointer;
+}
+
+.controlButton.active {
+  background-color: var(--button-active-bg, transparent);
+}
+
+@media (min-width: 640px) {
+  .controlButton {
+    height: 36px;
+    width: 36px;
+  }
+}
+
+.divider {
+  width: 24px;
+  height: 2px;
+  background-color: var(--divider-color, transparent);
+}
+
+@media (min-width: 640px) {
+  .divider {
+    width: 28px;
+  }
+}
+
+.skipTooltip {
+  position: absolute;
+  right: 8px;
+  top: 0;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  color: white;
+  z-index: 90;
+  background-color: var(--tooltip-color, transparent);
+}
+
+@media (min-width: 640px) {
+  .skipTooltip {
+    right: 0;
+  }
+}
+
+.skipTooltipCaret {
+  position: absolute;
+  right: 28px;
+  bottom: -4px;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  z-index: 90;
+  background-color: var(--tooltip-color, transparent);
+}
+
+@media (min-width: 640px) {
+  .skipTooltipCaret {
+    right: 24px;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+@media (min-width: 640px) {
+  .icon {
+    width: 28px;
+    height: 28px;
+  }
+}

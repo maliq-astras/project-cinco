@@ -1,9 +1,20 @@
 import { CSSProperties } from 'react';
+import styles from './GameTutorial.module.css';
+
+/**
+ * Hybrid styles for GameTutorial component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from GameTutorial.module.css
+ * - Complex dynamic functions remain for DOM queries and calculations
+ * - Animation-critical styles remain as objects
+ */
 
 export const gameTutorialStyles = {
-  container: "fixed inset-0 z-50 cursor-pointer",
-  overlay: "absolute inset-0",
-  overlayMask: (spotlightStyles: { left: string; top: string; width: string; height: string }): CSSProperties => {
+  // Static styles from CSS modules
+  container: styles.container,
+  overlay: styles.overlay,
+  overlayMask: (spotlightStyles: { left: string; top: string; width: string; height: string }, isLogo: boolean = false): CSSProperties => {
     // Calculate the center and radius for the ellipse when highlighting the logo
     const x = parseFloat(spotlightStyles.left);
     const y = parseFloat(spotlightStyles.top);
@@ -14,15 +25,9 @@ export const gameTutorialStyles = {
     const radiusX = width / 2;
     const radiusY = height / 2;
     
-    // The ID of the header area, which contains the logo
-    const logoId = 'header-area';
-    const logoElement = document.getElementById(logoId);
-    const pointElement = document.elementFromPoint(centerX, centerY);
-    const isLogo = logoElement && pointElement && logoElement.contains(pointElement);
-    
-    // Use ellipse for logo, rect for other elements
+    // Use rounded rectangle for logo, standard rect for other elements
     const maskShape = isLogo
-      ? `<ellipse cx='${centerX}' cy='${centerY}' rx='${radiusX}' ry='${radiusY}' fill='black'/>`
+      ? `<rect x='${x}' y='${y}' width='${width}' height='${height}' rx='12' fill='black'/>`
       : `<rect x='${x}' y='${y}' width='${width}' height='${height}' rx='8' fill='black'/>`;
     
     return {
@@ -36,46 +41,45 @@ export const gameTutorialStyles = {
       maskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cmask id='mask'%3E%3Crect width='100%25' height='100%25' fill='white'/%3E${encodeURIComponent(maskShape)}%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' mask='url(%23mask)' fill='black'/%3E%3C/svg%3E")`,
     };
   },
-  spotlight: (spotlightStyles: { top: string; left: string; width: string; height: string }): CSSProperties => {
+  spotlight: (spotlightStyles: { top: string; left: string; width: string; height: string }, isLogo: boolean = false, isDarkMode: boolean = false): CSSProperties => {
     // Match border shape to mask shape (ellipse for logo, rounded rect for others)
-    const x = parseFloat(spotlightStyles.left);
     const y = parseFloat(spotlightStyles.top);
     const width = parseFloat(spotlightStyles.width);
     const height = parseFloat(spotlightStyles.height);
-    const centerX = x + width / 2;
-    const centerY = y + height / 2;
+    const x = parseFloat(spotlightStyles.left);
     
-    // The ID of the header area, which contains the logo
-    const logoId = 'header-area';
-    const logoElement = document.getElementById(logoId);
-    const pointElement = document.elementFromPoint(centerX, centerY);
-    const isLogo = logoElement && pointElement && logoElement.contains(pointElement);
+    // Ensure the spotlight border stays within viewport bounds
+    const borderPadding = 6;
+    const maxWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
+    const maxHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
     
-    // Determine if we're in dark mode
-    const isDarkMode = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const adjustedX = Math.max(borderPadding, Math.min(x - borderPadding, maxWidth - width - borderPadding));
+    const adjustedY = Math.max(borderPadding, Math.min(y - borderPadding, maxHeight - height - borderPadding));
+    const adjustedWidth = Math.min(width + borderPadding * 2, maxWidth - adjustedX - borderPadding);
+    const adjustedHeight = Math.min(height + borderPadding * 2, maxHeight - adjustedY - borderPadding);
     
     return {
-      top: y - 2 + 'px',
-      left: x - 2 + 'px',
-      width: width + 4 + 'px',
-      height: height + 4 + 'px',
-      borderRadius: isLogo ? '50%' : '10px',
+      top: adjustedY + 'px',
+      left: adjustedX + 'px',
+      width: adjustedWidth + 'px',
+      height: adjustedHeight + 'px',
+      borderRadius: isLogo ? '12px' : '10px',
       pointerEvents: 'none' as const,
-      border: isDarkMode ? '2px solid rgba(255, 255, 255, 0.6)' : '2px solid white',
+      border: isDarkMode ? '3px solid rgba(255, 255, 255, 0.8)' : '3px solid white',
       boxShadow: isDarkMode 
-        ? '0 0 15px 3px rgba(255, 255, 255, 0.4)' 
-        : '0 0 15px 3px rgba(255, 255, 255, 0.7)',
+        ? '0 0 20px 5px rgba(255, 255, 255, 0.5)' 
+        : '0 0 20px 5px rgba(255, 255, 255, 0.8)',
       backgroundColor: 'transparent',
     };
   },
-  spotlightWrapper: "absolute transition-all duration-300 ease-in-out z-20",
-  textBox: "fixed bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 sm:p-4 border-2 z-30",
-  textBoxTitle: "text-xl sm:text-lg font-semibold mb-3 sm:mb-2 text-gray-900 dark:text-white",
-  textBoxDescription: "text-gray-600 dark:text-gray-300 text-base sm:text-sm leading-relaxed",
-  progressContainer: "fixed left-0 right-0 flex flex-col items-center pointer-events-none z-30",
-  progressDots: "flex space-x-2 mb-3",
-  progressDot: "w-1.5 h-1.5 rounded-full transition-colors",
-  progressText: "text-white text-sm font-medium opacity-75",
+  spotlightWrapper: styles.spotlightWrapper,
+  textBox: styles.textBox,
+  textBoxTitle: styles.textBoxTitle,
+  textBoxDescription: styles.textBoxDescription,
+  progressContainer: styles.progressContainer,
+  progressDots: styles.progressDots,
+  progressDot: styles.progressDot,
+  progressText: styles.progressText,
 
   // Animations
   textBoxAnimation: {
@@ -98,34 +102,18 @@ export const gameTutorialStyles = {
   },
   progressAnimation: {
     initial: { opacity: 0 },
-    animate: (spotlightStyles: { top: string }, textBoxStyles: { top: string }) => ({ 
+    animate: () => ({ 
       opacity: 1,
-      y: Math.max(
-        16,
-        Math.min(
-          window.innerHeight - 100,
-          Math.min(
-            parseFloat(spotlightStyles.top) - 60,
-            parseFloat(textBoxStyles.top) - 60
-          )
-        )
-      )
+      y: 0
     }),
     transition: { 
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1],
-      layout: {
-        duration: 0.4,
-        ease: [0.4, 0, 0.2, 1]
-      }
+      ease: [0.4, 0, 0.2, 1]
     }
   },
 
   // Text box styles
-  textBoxBorder: (primaryColor: string): CSSProperties => {
-    // Check for dark mode
-    const isDarkMode = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    
+  textBoxBorder: (primaryColor: string, isDarkMode: boolean = false): CSSProperties => {
     return {
       borderColor: `var(--color-${primaryColor})`,
       boxShadow: isDarkMode 

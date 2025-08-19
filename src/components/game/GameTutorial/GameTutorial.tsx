@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { useGameTutorial } from './useGameTutorial';
 import { gameTutorialStyles } from './GameTutorial.styles';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useFluidResponsive } from '@/hooks/ui';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,62 +15,7 @@ interface TutorialStep {
   textPosition: 'left' | 'right' | 'top' | 'bottom';
 }
 
-const tutorialSteps: TutorialStep[] = [
-  {
-    target: 'header-area',
-    title: 'Welcome to Fact 5!',
-    description: 'Discover hidden facts and use your deductive skills to solve the daily puzzle. Each day brings a new challenge to test your knowledge!',
-    textPosition: 'right',
-  },
-  {
-    target: 'category-title',
-    title: 'Daily Category',
-    description: "Today's mystery category is shown here. Your goal is to figure out what connects all the facts you'll discover. What could it be?",
-    textPosition: 'right',
-  },
-  {
-    target: 'facts-area',
-    title: 'Fact Cards',
-    description: 'As you reveal facts, they\'ll appear here. Click any revealed card to review its information.',
-    textPosition: 'right',
-  },
-  {
-    target: 'bubble-grid',
-    title: 'Hidden Facts',
-    description: 'These bubbles contain hidden facts that will help you solve the category.',
-    textPosition: 'left',
-  },
-  {
-    target: 'bubble-0',
-    title: 'Reveal Facts',
-    description: 'Double-click any bubble to reveal its fact! Start with this one to begin your journey.',
-    textPosition: 'right',
-  },
-  {
-    target: 'game-input',
-    title: 'Make Your Guesses',
-    description: 'Type your guesses here. Try to figure out what category matches all the facts you discover!',
-    textPosition: 'top',
-  },
-  {
-    target: 'game-timer',
-    title: 'Time Limit',
-    description: 'You have 5 minutes to solve the puzzle. Keep an eye on the timer to track your remaining time!',
-    textPosition: 'top',
-  },
-  {
-    target: 'game-progress',
-    title: 'Guess Limit',
-    description: 'You have 5 guesses to solve the puzzle. The progress bar shows how many guesses you have left.',
-    textPosition: 'top',
-  },
-  {
-    target: 'game-controls-right',
-    title: 'Helpful Tools',
-    description: 'Use the info button (i) to learn more about fact categories, or the skip button to pass on a guess if you\'re stuck.',
-    textPosition: 'top',
-  }
-];
+
 
 interface GameTutorialProps {
   isOpen: boolean;
@@ -86,31 +33,8 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     continueText
   } = useGameTutorial({ isOpen, onClose });
   
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  
-  // Detect dark mode
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const checkDarkMode = () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        setIsDarkMode(isDark);
-      };
-      
-      checkDarkMode();
-      
-      // Set up a mutation observer to track changes to the dark mode class
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            checkDarkMode();
-          }
-        });
-      });
-      
-      observer.observe(document.documentElement, { attributes: true });
-      return () => observer.disconnect();
-    }
-  }, []);
+  const { darkMode } = useTheme();
+  const { height } = useFluidResponsive();
 
   if (!isOpen) return null;
 
@@ -123,19 +47,19 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     >
       {/* Mask-based overlay */}
       <div className={gameTutorialStyles.overlay} style={{ pointerEvents: 'none' }}>
-        <div style={gameTutorialStyles.overlayMask(spotlightStyles)} />
+        <div style={gameTutorialStyles.overlayMask(spotlightStyles, tutorialSteps[currentStep].target === 'header-area')} />
       </div>
 
       {/* White border around the spotlight (adjusted for dark mode) */}
       <div
         className={gameTutorialStyles.spotlightWrapper}
-        style={gameTutorialStyles.spotlight(spotlightStyles)}
+        style={gameTutorialStyles.spotlight(spotlightStyles, tutorialSteps[currentStep].target === 'header-area', darkMode)}
       />
 
       {/* Tutorial text box */}
       <motion.div 
         className={`${inter.className} ${gameTutorialStyles.textBox}`}
-        style={gameTutorialStyles.textBoxBorder(colors.primary)}
+        style={gameTutorialStyles.textBoxBorder(colors.primary, darkMode)}
         {...gameTutorialStyles.textBoxAnimation}
         animate={gameTutorialStyles.textBoxAnimation.animate(textBoxStyles)}
         layout
@@ -158,35 +82,29 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
         </motion.p>
       </motion.div>
 
-      {/* Progress indicator and continue message */}
+            {/* Progress indicator and continue message */}
       <motion.div 
         className={gameTutorialStyles.progressContainer}
         {...gameTutorialStyles.progressAnimation}
-        animate={gameTutorialStyles.progressAnimation.animate(spotlightStyles, textBoxStyles)}
-        layout
+        animate={gameTutorialStyles.progressAnimation.animate()}
       >
+        <motion.p 
+          className={gameTutorialStyles.progressText}
+          style={gameTutorialStyles.progressTextShadow}
+        >
+          {continueText}
+        </motion.p>
         <motion.div 
           className={gameTutorialStyles.progressDots}
-          layout
-          transition={{ duration: 0.4 }}
         >
           {tutorialSteps.map((_, index) => (
             <motion.div
               key={index}
-              layout
               className={gameTutorialStyles.progressDot}
               style={gameTutorialStyles.progressDotColor(colors.primary, index === currentStep)}
             />
           ))}
         </motion.div>
-        <motion.p 
-          className={gameTutorialStyles.progressText}
-          style={gameTutorialStyles.progressTextShadow}
-          layout
-          transition={{ duration: 0.4 }}
-        >
-          {continueText}
-        </motion.p>
       </motion.div>
     </div>
   );

@@ -1,0 +1,70 @@
+/**
+ * CSS Modules for GameControls component
+ * Migrated from Tailwind classes in GameControls.styles.ts
+ */
+
+.container {
+  width: 100%;
+  max-width: 56rem; /* max-w-4xl */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 32rem; /* max-w-lg */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.controlsArea {
+  width: 100%;
+  border-top: 1px solid rgb(229 231 235); /* border-gray-200 */
+  padding-left: 0.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+  z-index: 10;
+}
+
+@media (min-width: 640px) {
+  .controlsArea {
+    padding-left: 0;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.factsArea {
+  display: flex;
+  width: 100%;
+  max-width: 28rem; /* max-w-md */
+  gap: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .factsArea {
+    max-width: 32rem; /* sm:max-w-lg */
+  }
+}
+
+@media (min-width: 1024px) {
+  .factsArea {
+    max-width: 36rem; /* lg:max-w-xl */
+  }
+}

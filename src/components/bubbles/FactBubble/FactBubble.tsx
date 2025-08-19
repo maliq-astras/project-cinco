@@ -16,6 +16,7 @@ interface FactBubbleProps {
   style?: React.CSSProperties;
   category?: string;
   id?: string;
+  slotIndex?: number;
 }
 
 /**
@@ -29,7 +30,8 @@ export default function FactBubble({
   className = '',
   style = {},
   category = 'countries',
-  id
+  id,
+  slotIndex
 }: FactBubbleProps) {
   const { t } = useTranslation();
   const setIsDragging = useDragState(state => state.setIsDragging);
@@ -54,12 +56,16 @@ export default function FactBubble({
     
     // Styling
     getIconFilter,
-    popPosition
+    popPosition,
+    
+    // DOM refs
+    bubbleRef
   } = useFactBubble({
     factType,
     isRevealed,
     factIndex,
-    category
+    category,
+    slotIndex
   });
 
   // Get appropriate classNames using CSS modules
@@ -86,6 +92,7 @@ export default function FactBubble({
         <AnimatePresence>
           {!isRevealed && !isPopping && (
             <motion.button
+              ref={bubbleRef}
               key={`bubble-${factIndex}`}
               className={bubbleClassNames}
               style={{

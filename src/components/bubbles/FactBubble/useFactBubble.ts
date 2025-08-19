@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCardAnimations } from '@/hooks/animation';
 import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
 import { useDragState } from '@/hooks/ui';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
 
 // Internal custom hook for particle generation
 function useParticles(count = 8) {
@@ -26,6 +27,7 @@ interface UseFactBubbleProps {
   isRevealed: boolean;
   factIndex: number;
   category?: string;
+  slotIndex?: number;
 }
 
 /**
@@ -35,7 +37,8 @@ export function useFactBubble({
   factType, 
   isRevealed, 
   factIndex,
-  category = 'countries'
+  category = 'countries',
+  slotIndex
 }: UseFactBubbleProps) {
   // Store actions and state
   const revealFact = useGameStore(state => state.revealFact);
@@ -46,6 +49,17 @@ export function useFactBubble({
   const { colors } = useTheme();
   const getFilter = useIconFilter();
   const setWasFactRevealed = useDragState(state => state.setWasFactRevealed);
+  
+  // DOM refs for tutorial targeting
+  const bubbleRef = useRef<HTMLButtonElement>(null);
+  const { registerElement, unregisterElement } = useDOMRefs();
+
+  // Register the bubble-0 element with the DOM refs system if this is at slot 0
+  useEffect(() => {
+    if (slotIndex === 0 && bubbleRef.current) {
+      registerElement('bubble-0', bubbleRef.current);
+    }
+  }, [slotIndex, registerElement, factType, isRevealed]);
   
   // Use shared card animations
   const { colorStyle } = useCardAnimations({
@@ -219,6 +233,7 @@ export function useFactBubble({
     handleDragEnd,
     mouseHandlers,
     getIconFilter: getFilter,
-    popPosition
+    popPosition,
+    bubbleRef
   };
 } 

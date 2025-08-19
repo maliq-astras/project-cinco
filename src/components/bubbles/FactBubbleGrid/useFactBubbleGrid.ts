@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { Fact } from '@/types';
 import { getBubbleSize, getGapSize } from '@/helpers';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
 
 interface BubbleGridItem {
   key: string;
@@ -21,6 +22,10 @@ export function useFactBubbleGrid() {
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const windowWidth = useGameStore(state => state.windowWidth);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  
+  // DOM refs for tutorial targeting
+  const bubbleGridRef = useRef<HTMLDivElement>(null);
+  const { registerElement, unregisterElement } = useDOMRefs();
   
   // Always 8 grid items (4x2 layout)
   const totalSlots = 8;
@@ -60,6 +65,18 @@ export function useFactBubbleGrid() {
     });
   }, [challenge, revealedFacts]);
   
+  // Register grid container once
+  useEffect(() => {
+    if (bubbleGridRef.current) {
+      registerElement('bubble-grid', bubbleGridRef.current);
+    }
+    return () => {
+      unregisterElement('bubble-grid');
+    };
+  }, [registerElement, unregisterElement]);
+
+
+  
   // Animation variants for the bubbles
   const animationProps = (slotIndex: number) => ({
     initial: { scale: 0.9, opacity: 0 },
@@ -96,6 +113,7 @@ export function useFactBubbleGrid() {
     bubbleSize: finalBubbleSize,
     gapSize: gapSizeValue,
     animationProps,
-    isVictoryAnimationActive
+    isVictoryAnimationActive,
+    bubbleGridRef
   };
 } 
