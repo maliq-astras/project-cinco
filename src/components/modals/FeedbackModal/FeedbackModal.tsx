@@ -8,6 +8,7 @@ import ModalNavButton from '../ModalNavButton/ModalNavButton';
 import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
 import { useTranslation } from 'react-i18next';
 import { getCategoryName } from '../../../helpers/i18nHelpers';
+import { useThemeDOM } from '@/hooks/useThemeDOM';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -74,6 +75,7 @@ const difficultyOptions = [
 
 const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
   const { colors, darkMode } = useTheme();
+  const { hasClass } = useThemeDOM();
   const { t } = useTranslation();
 
   const steps = [
@@ -141,7 +143,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
           onClick={() => onChange(star)}
           className="transition-transform duration-150 cursor-pointer focus:outline-none"
           style={{
-            color: star <= value ? `var(--color-${colors.primary})` : (document.documentElement.classList.contains('dark') ? '#444' : '#ccc'),
+            color: star <= value ? `var(--color-${colors.primary})` : (hasClass('dark') ? '#444' : '#ccc'),
             fontSize: '2.4rem',
             transform: 'scale(1)',
           }}
@@ -445,7 +447,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                     onClick={handleBack}
                     disabled={false}
                     primaryColor={colors.primary}
-                    textSegmentBg={typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? '#18181b' : 'white'}
+                    textSegmentBg={hasClass('dark') ? '#18181b' : 'white'}
                   />
                 ) : <span />}
                 <ModalNavButton
@@ -454,7 +456,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                   onClick={handleNext}
                   disabled={!isStepValid(step)}
                   primaryColor={colors.primary}
-                  textSegmentBg={typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? '#18181b' : 'white'}
+                  textSegmentBg={hasClass('dark') ? '#18181b' : 'white'}
                 />
               </div>
               <div className={feedbackModalStyles.progressContainer} style={{marginTop: 16}}>

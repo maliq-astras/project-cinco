@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES, COMING_SOON_LANGUAGES, useLanguage, Language } from '@/contexts/LanguageContext';
+import { SUPPORTED_LANGUAGES, useLanguage, Language } from '@/contexts/LanguageContext';
 import { deviceDetection } from '@/helpers/deviceHelpers';
+import { useBodyScrollLock } from '@/hooks/ui/useBodyScrollLock';
 
 // Format languages for display in the dropdown
 export const languages = [
@@ -40,6 +41,9 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const languageSelectRef = useRef<HTMLDivElement>(null);
   
+  // Use the body scroll lock hook
+  useBodyScrollLock(isOpen);
+  
   // Sync selectedLanguage with language from context
   useEffect(() => {
     setSelectedLanguage(language);
@@ -66,33 +70,6 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     
     return () => {
       window.removeEventListener('resize', checkIfMobile);
-    };
-  }, []);
-
-  // Handle body scroll locking when panel is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (languageSelectRef.current && !languageSelectRef.current.contains(event.target as Node)) {
-        setIsLanguageDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 

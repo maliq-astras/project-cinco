@@ -41,7 +41,6 @@ const config: Config = {
         'shorter': {'raw': '(max-height: 600px)'},
       },
       fontFamily: {
-        game: ['var(--font-game)', 'sans-serif'],
         display: ['var(--font-display)', 'sans-serif'],
         iceberg: ['var(--font-iceberg)', 'sans-serif'],
       },

@@ -38,10 +38,15 @@ export const shuffleArray = (array: string[]): string[] => {
 };
 
 // Helper function to convert tailwind color class to RGB values
-export const getColorRGB = (colorClass: string): string => {
+// This version accepts parameters instead of doing direct DOM manipulation
+export const getColorRGBFromParams = (
+  colorClass: string,
+  isHighContrast: boolean = false,
+  isDarkMode: boolean = false,
+  getCSSProperty?: (varName: string) => string
+): string => {
   // Check if high contrast mode is active
-  if (typeof window !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
-    const isDarkMode = document.documentElement.classList.contains('dark');
+  if (isHighContrast && getCSSProperty) {
     const matches = colorClass.match(/([a-z]+)-(\d+)/);
     
     if (matches && matches[1] && matches[2]) {
@@ -62,7 +67,7 @@ export const getColorRGB = (colorClass: string): string => {
       
       // Try to get color from CSS variable
       const varName = `--hc-${highContrastFamily}-${hcShade}`;
-      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      const computed = getCSSProperty(varName);
       
       if (computed) {
         return computed;

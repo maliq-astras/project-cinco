@@ -9,6 +9,7 @@ import { useLoadingAnimation } from './useLoadingAnimation';
 import { loadingAnimationStyles } from './LoadingAnimation.styles';
 import { getCategoryName } from '@/helpers/i18nHelpers';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useThemeDOM } from '@/hooks/useThemeDOM';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -40,6 +41,7 @@ export default function LoadingAnimation({
   });
 
   const { highContrastMode } = useTheme();
+  const { hasClass, getCSSProperty } = useThemeDOM();
 
   // Get the theme-adjusted color information
   const colorInfo = getThemeAdjustedPrimaryColor();
@@ -49,6 +51,9 @@ export default function LoadingAnimation({
 
   // Check if we're showing the "Please wait..." placeholder
   const isPlaceholder = currentCategory === "PLEASE WAIT...";
+
+  // Check if high contrast mode is active
+  const isHighContrast = hasClass('high-contrast');
 
   return (
     <div className={loadingAnimationStyles.container}>
@@ -93,7 +98,9 @@ export default function LoadingAnimation({
                     colorInfo.rgb,
                     colorInfo.colorClass,
                     darkMode,
-                    translatedCategory
+                    translatedCategory,
+                    isHighContrast,
+                    getCSSProperty
                   )}
                   data-category={currentCategory}
                 >

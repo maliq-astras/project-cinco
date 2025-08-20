@@ -34,6 +34,7 @@ export function useFactCard({
     isClosing, 
     canClose,
     handleClose, 
+    handleClickOutside,
     handleAnimationComplete,
     initialAnimation,
     cardAnimation,
@@ -84,6 +85,7 @@ export function useFactCard({
     
     // Event handlers
     handleClose,
+    handleClickOutside,
     handleAnimationComplete,
     
     // Animation properties

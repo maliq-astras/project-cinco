@@ -34,7 +34,9 @@ export const loadingAnimationStyles = {
     rgbColor: string,
     colorClass: string,
     darkMode: boolean,
-    categoryText: string
+    categoryText: string,
+    isHighContrast: boolean = false,
+    getCSSProperty?: (varName: string) => string
   ): CSSProperties => {
     // Check if we're showing the placeholder
     if (categoryText.toUpperCase() === LOADING_PLACEHOLDER) {
@@ -47,13 +49,9 @@ export const loadingAnimationStyles = {
       };
     }
 
-    // Check if high contrast mode is active
-    const isHighContrast = typeof document !== 'undefined' && 
-      document.documentElement.classList.contains('high-contrast');
-    
     // Get color for high contrast mode
     let textColor = `rgb(${rgbColor})`;
-    if (isHighContrast && typeof window !== 'undefined') {
+    if (isHighContrast && getCSSProperty) {
       const matches = colorClass.match(/([a-z]+)-(\d+)/);
       if (matches && matches[1] && matches[2]) {
         const colorFamily = matches[1];
@@ -67,7 +65,7 @@ export const loadingAnimationStyles = {
         
         // Get the color from CSS variable
         const varName = `--hc-${highContrastFamily}-${hcShade}`;
-        const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        const computed = getCSSProperty(varName);
         
         if (computed) {
           textColor = `rgb(${computed})`;
@@ -77,7 +75,7 @@ export const loadingAnimationStyles = {
     
     // Get a different shadow color for high contrast mode
     const shadowColor = isHighContrast
-      ? getShadowColor(colorClass) // Uses our updated function that handles high contrast
+      ? getShadowColor(colorClass, isHighContrast, darkMode, getCSSProperty) // Uses our updated function that handles high contrast
       : (darkMode ? `0 0 8px rgba(${rgbColor}, 0.5)` : 'none');
     
     return {
@@ -87,7 +85,7 @@ export const loadingAnimationStyles = {
       padding: "0 12px",
       whiteSpace: "nowrap",
       textShadow: isShowingFinalCategory 
-        ? `0 0 15px ${getShadowColor(colorClass)}`
+        ? `0 0 15px ${getShadowColor(colorClass, isHighContrast, darkMode, getCSSProperty)}`
         : (typeof shadowColor === 'string' ? shadowColor : 'none')
     };
   },
@@ -187,10 +185,14 @@ export const calculateFontSize = (text: string) => {
 };
 
 // Helper function to get shadow color for a category with high contrast support
-export const getShadowColor = (color: string): string => {
+export const getShadowColor = (
+  color: string, 
+  isHighContrast: boolean = false, 
+  isDarkMode: boolean = false,
+  getCSSProperty?: (varName: string) => string
+): string => {
   // Check if high contrast mode is active
-  if (typeof document !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
-    const isDarkMode = document.documentElement.classList.contains('dark');
+  if (isHighContrast && getCSSProperty) {
     const matches = color.match(/([a-z]+)-(\d+)/);
     
     if (matches && matches[1] && matches[2]) {
@@ -205,7 +207,7 @@ export const getShadowColor = (color: string): string => {
       
       // Get the RGB value from CSS variable
       const varName = `--hc-${highContrastFamily}-${hcShade}`;
-      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      const computed = getCSSProperty(varName);
       
       if (computed) {
         return `rgba(${computed}, 0.3)`;

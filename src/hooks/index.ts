@@ -1,11 +1,14 @@
-// Export animation hooks
+// Animation hooks
 export * from './animation';
 
-// Export card-related hooks
-export * from './card';
-
-// Import and re-export all hooks to make them easier to access
+// API hooks
 export * from './api';
 
-// Export UI hooks
+// Card hooks
+export * from './card';
+
+// UI hooks
 export * from './ui';
+
+// Theme DOM hook
+export { useThemeDOM } from './useThemeDOM';

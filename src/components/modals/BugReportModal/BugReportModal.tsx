@@ -5,6 +5,7 @@ import BaseModal from '../BaseModal/BaseModal';
 import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
+import { useThemeDOM } from '@/hooks/useThemeDOM';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -104,12 +105,13 @@ const deviceOptions = [
 
 const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
   const { colors } = useTheme();
+  const { hasClass } = useThemeDOM();
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   // Fix: Add dark mode detection and text segment background here
-  const isDarkMode = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+  const isDarkMode = hasClass('dark');
   const textSegmentBg = isDarkMode ? '#18181b' : 'white';
 
   const [showAllTags, setShowAllTags] = useState(false);

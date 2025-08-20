@@ -61,6 +61,7 @@ export default function FactCard({
     
     // Event handlers
     handleClose,
+    handleClickOutside,
     handleAnimationComplete,
     
     // Animation properties
@@ -84,7 +85,7 @@ export default function FactCard({
   });
 
   return (
-    <div className={factCardStyles.modalOverlay}>
+    <div className={factCardStyles.modalOverlay} onClick={handleClickOutside}>
       <div className="flip-card-container" ref={cardRef}>
         <motion.div
           className={factCardStyles.cardContainer}

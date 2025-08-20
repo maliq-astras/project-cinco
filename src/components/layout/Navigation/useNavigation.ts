@@ -46,17 +46,12 @@ export const useNavigation = () => {
   // Only show How to Play during active gameplay (not during Final Five or game over)
   const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
+  // Handle click outside dropdown - now returns a handler for the component to use
+  const handleClickOutside = (event: React.MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
     }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  };
 
   // Define all menu items, we'll filter based on game state later
   const allMenuItems: MenuItem[] = [
@@ -131,6 +126,7 @@ export const useNavigation = () => {
     closeSettings,
     closeTutorial,
     setIsFeedbackModalOpen,
-    setIsBugReportModalOpen
+    setIsBugReportModalOpen,
+    handleClickOutside // Now returns the handler for component use
   };
 }; 

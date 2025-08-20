@@ -48,8 +48,8 @@ export function useCardFlip({
 
   const flipTransition = useMemoizedFlipTransition();
 
-  // Handle click outside the card
-  const handleClickOutside = useCallback((e: MouseEvent) => {
+  // Handle click outside the card - now returns a handler for the component to use
+  const handleClickOutside = useCallback((e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.classList.contains('modal-overlay') && canClose) {
       handleClose();
@@ -86,10 +86,8 @@ export function useCardFlip({
     }, 400);
   }, [closeFactCard, visibleStackCount, onClose, canClose, getElement]);
 
-  // Setup animations and event listeners
+  // Setup animations
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-    
     // If we're drawing from the stack, first animate the drawing
     if (sourcePosition && !isClosing) {
       // Start the flip animation after the drawing animation completes
@@ -112,7 +110,6 @@ export function useCardFlip({
       }, 500);
       
       return () => {
-        document.removeEventListener('click', handleClickOutside);
         clearTimeout(timer);
       };
     } else if (!isClosing) {
@@ -129,15 +126,10 @@ export function useCardFlip({
       }, 300);
       
       return () => {
-        document.removeEventListener('click', handleClickOutside);
         clearTimeout(timer);
       };
     }
-    
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [handleClickOutside, sourcePosition, isClosing]);
+  }, [sourcePosition, isClosing]);
 
   // Handle ESC key press
   useEffect(() => {
@@ -167,6 +159,7 @@ export function useCardFlip({
     canClose,
     returnPosition,
     handleClose,
+    handleClickOutside, // Now returns the handler for component use
     handleAnimationComplete,
     // Include animation properties in the hook return
     initialAnimation,

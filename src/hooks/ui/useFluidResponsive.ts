@@ -14,8 +14,10 @@ import {
   getResponsiveBreakpoint,
   generateResponsiveCSS
 } from '@/helpers/responsiveHelpers';
+import { useThemeDOM } from '@/hooks/useThemeDOM';
 
 export function useFluidResponsive() {
+  const { setCSSProperty } = useThemeDOM();
   const [dimensions, setDimensions] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1024,
     height: typeof window !== 'undefined' ? window.innerHeight : 768
@@ -89,11 +91,10 @@ export function useFluidResponsive() {
 
   // Apply CSS custom properties to document root
   useEffect(() => {
-    const root = document.documentElement;
     Object.entries(responsiveValues.cssVars).forEach(([property, value]) => {
-      root.style.setProperty(property, value);
+      setCSSProperty(property, value);
     });
-  }, [responsiveValues.cssVars]);
+  }, [responsiveValues.cssVars, setCSSProperty]);
 
   return responsiveValues;
 }

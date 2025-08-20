@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CategoryType, ThemeColors, categoryColorMap, COLOR_MAPPING, CATEGORY_COLOR_MAPPING } from '../types';
 import { useGameStore } from '../store/gameStore';
+import { useThemeDOM } from '../hooks/useThemeDOM';
 
 // Default theme (Countries - blue)
 const defaultTheme: ThemeColors = categoryColorMap[CategoryType.COUNTRIES];
@@ -95,8 +96,10 @@ const getColorHSL = (colorClass: string): string => {
 // Helper function to convert tailwind color class to RGB values
 const getColorRGB = (colorClass: string): string => {
   // If we're in high contrast mode, check if this color has a high contrast variable
-  if (typeof window !== 'undefined' && document.documentElement.classList.contains('high-contrast')) {
-    const isDarkMode = document.documentElement.classList.contains('dark');
+  const { isBrowser, hasClass, getCSSProperty } = useThemeDOM();
+  
+  if (isBrowser && hasClass('high-contrast')) {
+    const isDarkMode = hasClass('dark');
     const matches = colorClass.match(/([a-z]+)-(\d+)/);
     
     if (matches && matches[1] && matches[2]) {
@@ -105,7 +108,7 @@ const getColorRGB = (colorClass: string): string => {
       
       // Check for high contrast CSS variable
       const varName = `--hc-${colorFamily}-${colorWeight}`;
-      const computed = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      const computed = getCSSProperty(varName);
       
       if (computed) {
         return computed; // Return the RGB value from the CSS variable
@@ -229,7 +232,10 @@ export const ThemeProvider: React.FC<{
   const [darkMode, setDarkMode] = useState(false);
   const [highContrastMode, setHighContrastMode] = useState(false);
   
-  // Only load preferences from localStorage on the client side
+  // Use the theme DOM hook
+  const { isBrowser, addClass, removeClass, setCSSProperty } = useThemeDOM();
+
+  // Load saved preferences from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedDarkMode = localStorage.getItem('darkMode');
@@ -247,16 +253,15 @@ export const ThemeProvider: React.FC<{
   // SSR safe - immediately set the fixed category when one is provided
   // This prevents flashing on initial render in special cases like the support page
   useEffect(() => {
-    if (initialCategory && typeof window !== 'undefined') {
+    if (initialCategory && isBrowser) {
       const baseColors = categoryColorMap[initialCategory];
-      const root = document.documentElement;
       const primaryRGB = getColorRGB(baseColors.primary);
       
-      root.style.setProperty('--primary-color', baseColors.primary);
-      root.style.setProperty('--color-' + baseColors.primary, `rgb(${primaryRGB})`);
-      root.style.setProperty('--color-' + baseColors.primary + '-rgb', primaryRGB);
+      setCSSProperty('--primary-color', baseColors.primary);
+      setCSSProperty('--color-' + baseColors.primary, `rgb(${primaryRGB})`);
+      setCSSProperty('--color-' + baseColors.primary + '-rgb', primaryRGB);
     }
-  }, [initialCategory]);
+  }, [initialCategory, isBrowser, setCSSProperty]);
   
   // Toggle dark mode function
   const toggleDarkMode = () => {
@@ -264,11 +269,11 @@ export const ThemeProvider: React.FC<{
       const newValue = !prev;
       
       // Immediately apply dark mode class for better reactivity
-      if (typeof document !== 'undefined') {
+      if (isBrowser) {
         if (newValue) {
-          document.documentElement.classList.add('dark');
+          addClass('dark');
         } else {
-          document.documentElement.classList.remove('dark');
+          removeClass('dark');
         }
         
         // Immediately update CSS variables
@@ -290,11 +295,11 @@ export const ThemeProvider: React.FC<{
       const newValue = !prev;
       
       // Immediately apply the high contrast class for better reactivity
-      if (typeof document !== 'undefined') {
+      if (isBrowser) {
         if (newValue) {
-          document.documentElement.classList.add('high-contrast');
+          addClass('high-contrast');
         } else {
-          document.documentElement.classList.remove('high-contrast');
+          removeClass('high-contrast');
         }
         
         // Immediately update CSS variables to avoid the gray flash
@@ -312,9 +317,8 @@ export const ThemeProvider: React.FC<{
   
   // Helper function to immediately update CSS variables
   const updateCssVariables = (isHighContrast: boolean, isDarkMode: boolean, categoryType: CategoryType) => {
-    if (typeof document === 'undefined') return;
+    if (!isBrowser) return;
     
-    const root = document.documentElement;
     const baseColors = categoryColorMap[categoryType] || defaultTheme;
     
     // Determine colors based on mode
@@ -335,40 +339,40 @@ export const ThemeProvider: React.FC<{
       dark: isHighContrast ? 'black' : baseColors.dark
     };
     
-          // Set primary color variables
-      root.style.setProperty('--primary-color', updatedColors.primary);
-      root.style.setProperty('--secondary-color', updatedColors.secondary);
-      root.style.setProperty('--accent-color', updatedColors.accent);
-      
-      // Set HSL variables for CSS usage
-      const primaryHSL = getColorHSL(updatedColors.primary);
-      const secondaryHSL = getColorHSL(updatedColors.secondary);
-      const accentHSL = getColorHSL(updatedColors.accent);
-      
-      root.style.setProperty('--primary', primaryHSL);
-      root.style.setProperty('--secondary', secondaryHSL);
-      root.style.setProperty('--accent', accentHSL);
+    // Set primary color variables
+    setCSSProperty('--primary-color', updatedColors.primary);
+    setCSSProperty('--secondary-color', updatedColors.secondary);
+    setCSSProperty('--accent-color', updatedColors.accent);
     
+    // Set HSL variables for CSS usage
+    const primaryHSL = getColorHSL(updatedColors.primary);
+    const secondaryHSL = getColorHSL(updatedColors.secondary);
+    const accentHSL = getColorHSL(updatedColors.accent);
+    
+    setCSSProperty('--primary', primaryHSL);
+    setCSSProperty('--secondary', secondaryHSL);
+    setCSSProperty('--accent', accentHSL);
+
     // Set RGB variants for rgba() usage
     const primaryRGB = getColorRGB(updatedColors.primary);
     const secondaryRGB = getColorRGB(updatedColors.secondary);
     const accentRGB = getColorRGB(updatedColors.accent);
     
-    root.style.setProperty('--primary-rgb', primaryRGB);
-    root.style.setProperty('--secondary-rgb', secondaryRGB);
-    root.style.setProperty('--accent-rgb', accentRGB);
+    setCSSProperty('--primary-rgb', primaryRGB);
+    setCSSProperty('--secondary-rgb', secondaryRGB);
+    setCSSProperty('--accent-rgb', accentRGB);
 
     // For individual color/selector classes
-    root.style.setProperty(`--color-${updatedColors.primary}-rgb`, primaryRGB);
-    root.style.setProperty(`--color-${updatedColors.secondary}-rgb`, secondaryRGB);
-    root.style.setProperty(`--color-${updatedColors.accent}-rgb`, accentRGB);
+    setCSSProperty(`--color-${updatedColors.primary}-rgb`, primaryRGB);
+    setCSSProperty(`--color-${updatedColors.secondary}-rgb`, secondaryRGB);
+    setCSSProperty(`--color-${updatedColors.accent}-rgb`, accentRGB);
     
     // Apply the colors
-    root.style.setProperty('--color-' + updatedColors.primary, `rgb(${primaryRGB})`);
-    root.style.setProperty('--color-' + updatedColors.secondary, `rgb(${secondaryRGB})`);
-    root.style.setProperty('--color-' + updatedColors.accent, `rgb(${accentRGB})`);
-    root.style.setProperty('--color-' + updatedColors.light, `rgb(${getColorRGB(updatedColors.light)})`);
-    root.style.setProperty('--color-' + updatedColors.dark, `rgb(${getColorRGB(updatedColors.dark)})`);
+    setCSSProperty('--color-' + updatedColors.primary, `rgb(${primaryRGB})`);
+    setCSSProperty('--color-' + updatedColors.secondary, `rgb(${secondaryRGB})`);
+    setCSSProperty('--color-' + updatedColors.accent, `rgb(${accentRGB})`);
+    setCSSProperty('--color-' + updatedColors.light, `rgb(${getColorRGB(updatedColors.light)})`);
+    setCSSProperty('--color-' + updatedColors.dark, `rgb(${getColorRGB(updatedColors.dark)})`);
   };
   
   // Determine colors based on the challenge category
@@ -460,64 +464,62 @@ export const ThemeProvider: React.FC<{
   
   // Update CSS variables when colors change
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      
+    if (isBrowser) {
       // Set dark/high contrast classes
       if (darkMode) {
-        document.documentElement.classList.add('dark');
+        addClass('dark');
       } else {
-        document.documentElement.classList.remove('dark');
+        removeClass('dark');
       }
       
       if (highContrastMode) {
-        document.documentElement.classList.add('high-contrast');
+        addClass('high-contrast');
       } else {
-        document.documentElement.classList.remove('high-contrast');
+        removeClass('high-contrast');
       }
       
       // Set primary color variables
-      root.style.setProperty('--primary-color', colors.primary);
-      root.style.setProperty('--secondary-color', colors.secondary);
-      root.style.setProperty('--accent-color', colors.accent);
+      setCSSProperty('--primary-color', colors.primary);
+      setCSSProperty('--secondary-color', colors.secondary);
+      setCSSProperty('--accent-color', colors.accent);
       
       // Set HSL variables for CSS usage
       const primaryHSL = getColorHSL(colors.primary);
       const secondaryHSL = getColorHSL(colors.secondary);
       const accentHSL = getColorHSL(colors.accent);
       
-      root.style.setProperty('--primary', primaryHSL);
-      root.style.setProperty('--secondary', secondaryHSL);
-      root.style.setProperty('--accent', accentHSL);
+      setCSSProperty('--primary', primaryHSL);
+      setCSSProperty('--secondary', secondaryHSL);
+      setCSSProperty('--accent', accentHSL);
       
       // Set RGB variants for rgba() usage
       const primaryRGB = getColorRGB(colors.primary);
       const secondaryRGB = getColorRGB(colors.secondary);
       const accentRGB = getColorRGB(colors.accent);
       
-      root.style.setProperty('--primary-rgb', primaryRGB);
-      root.style.setProperty('--secondary-rgb', secondaryRGB);
-      root.style.setProperty('--accent-rgb', accentRGB);
+      setCSSProperty('--primary-rgb', primaryRGB);
+      setCSSProperty('--secondary-rgb', secondaryRGB);
+      setCSSProperty('--accent-rgb', accentRGB);
 
       // For individual color/selector classes
-      root.style.setProperty(`--color-${colors.primary}-rgb`, primaryRGB);
-      root.style.setProperty(`--color-${colors.secondary}-rgb`, secondaryRGB);
-      root.style.setProperty(`--color-${colors.accent}-rgb`, accentRGB);
+      setCSSProperty(`--color-${colors.primary}-rgb`, primaryRGB);
+      setCSSProperty(`--color-${colors.secondary}-rgb`, secondaryRGB);
+      setCSSProperty(`--color-${colors.accent}-rgb`, accentRGB);
       
       // Apply the colors
-      root.style.setProperty('--color-' + colors.primary, `rgb(${primaryRGB})`);
-      root.style.setProperty('--color-' + colors.secondary, `rgb(${secondaryRGB})`);
-      root.style.setProperty('--color-' + colors.accent, `rgb(${accentRGB})`);
-      root.style.setProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light)})`);
-      root.style.setProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark)})`);
+      setCSSProperty('--color-' + colors.primary, `rgb(${primaryRGB})`);
+      setCSSProperty('--color-' + colors.secondary, `rgb(${secondaryRGB})`);
+      setCSSProperty('--color-' + colors.accent, `rgb(${accentRGB})`);
+      setCSSProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light)})`);
+      setCSSProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark)})`);
       
       // Apply additional CSS variable for dark mode specific styling
       if (darkMode) {
-        root.style.setProperty('--dark-mode-bg', '0, 0, 0'); // Pure black
-        root.style.setProperty('--dark-mode-card-bg', '17, 17, 17'); // Very dark gray
+        setCSSProperty('--dark-mode-bg', '0, 0, 0'); // Pure black
+        setCSSProperty('--dark-mode-card-bg', '17, 17, 17'); // Very dark gray
       }
     }
-  }, [colors, darkMode, highContrastMode]);
+  }, [colors, darkMode, highContrastMode, isBrowser, addClass, removeClass, setCSSProperty]);
   
   const value = {
     colors,

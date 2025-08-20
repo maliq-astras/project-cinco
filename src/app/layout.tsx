@@ -2,8 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Inter, Bangers, Quicksand, Iceberg, Righteous } from 'next/font/google'
-import Script from 'next/script';
+import { Inter, Quicksand, Iceberg, Righteous } from 'next/font/google'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,13 +15,6 @@ const geistMono = Geist_Mono({
 });
 
 const inter = Inter({ subsets: ['latin'] })
-
-// Fun, playful font for the game title
-const bangers = Bangers({ 
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-game'
-})
 
 // Clean, friendly font for display text
 const quicksand = Quicksand({ 
@@ -64,31 +56,41 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+        {/* 
+          Theme initialization script - runs before React hydration to prevent FOUC
+          This is necessary boilerplate code for Next.js theme management
+          The suppressHydrationWarning is required because this script modifies the DOM
+        */}
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
               try {
+                // Initialize theme from localStorage before hydration
                 var darkMode = localStorage.getItem('darkMode');
                 var highContrastMode = localStorage.getItem('highContrastMode');
                 
+                // Apply dark mode if enabled
                 if (darkMode === 'true') {
                   document.documentElement.classList.add('dark');
-                  document.documentElement.style.backgroundColor = '#000';
-                  document.documentElement.style.color = '#fff';
+                  // Set initial background and text colors to prevent FOUC
+                  document.documentElement.style.setProperty('background-color', '#000', 'important');
+                  document.documentElement.style.setProperty('color', '#fff', 'important');
                 }
                 
+                // Apply high contrast mode if enabled
                 if (highContrastMode === 'true') {
                   document.documentElement.classList.add('high-contrast');
                 }
               } catch (e) {
-                // Handle potential localStorage errors
+                // Handle potential localStorage errors silently
+                console.warn('Theme initialization failed:', e);
               }
             })();
           `
         }} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${bangers.variable} ${quicksand.variable} ${iceberg.variable} ${righteous.variable} font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${quicksand.variable} ${iceberg.variable} ${righteous.variable} font-sans`}
       >
         {children}
       </body>
