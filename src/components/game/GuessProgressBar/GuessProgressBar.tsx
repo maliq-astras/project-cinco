@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGuessProgressBar } from './useGuessProgressBar';
+import styles from './GuessProgressBar.module.css';
 
 /**
  * Displays a progress bar for user guesses with animation effects
@@ -23,14 +24,11 @@ export default function GuessProgressBar() {
     barClassName,
     
     // Data
-    segments,
-    
-    // Style constants
-    guessProgressBarStyles
+    segments
   } = useGuessProgressBar();
   
   return (
-    <div className={guessProgressBarStyles.container}>
+    <div className={styles.container}>
       <div className={barClassName}>
         {segments.map(segment => (
           <div 
@@ -40,22 +38,22 @@ export default function GuessProgressBar() {
             {segment.isActive && (
               <AnimatePresence>
                 <motion.div 
-                  className={guessProgressBarStyles.filledSegment}
+                  className={styles.filledSegment}
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={segment.transitionProps}
                 >
                   {/* Premium gradient background */}
                   <div 
-                    className={guessProgressBarStyles.filledSegment} 
+                    className={styles.filledSegment} 
                     style={gradientStyle}
                   />
                   
                   {/* Subtle shine effect */}
-                  <div className={guessProgressBarStyles.shineEffect} />
+                  <div className={styles.shineEffect} />
                   
                   {/* Subtle bottom shadow for depth */}
-                  <div className={guessProgressBarStyles.bottomShadow} 
+                  <div className={styles.bottomShadow} 
                     style={shadowStyle}
                   />
                 </motion.div>
@@ -68,7 +66,7 @@ export default function GuessProgressBar() {
         <AnimatePresence>
           {animatedCount >= 6 && (
             <motion.div 
-              className={guessProgressBarStyles.pulseEffect} 
+              className={styles.pulseEffect} 
               style={gradientStyle}
               {...pulseAnimation}
             />

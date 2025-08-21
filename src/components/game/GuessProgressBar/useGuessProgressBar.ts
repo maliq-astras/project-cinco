@@ -3,7 +3,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGuessProgress } from './useGuessProgress';
 import { getGradientBackground, getBottomShadowStyle } from '@/helpers/guessProgressBarHelpers';
-import { progressAnimations, segmentTransition, guessProgressBarStyles } from './GuessProgressBar.styles';
+import styles from './GuessProgressBar.module.css';
 
 interface UseGuessProgressBarProps {
   maxGuesses?: number;
@@ -57,7 +57,7 @@ export function useGuessProgressBar({
   
   // Memoize bar class
   const barClassName = useMemo(() => {
-    return `${guessProgressBarStyles.progressBar} ${isShaking ? progressAnimations.shake : ''}`;
+    return `${styles.progressBar} ${isShaking ? styles.shake : ''}`;
   }, [isShaking]);
   
   // Create array for segments
@@ -65,11 +65,11 @@ export function useGuessProgressBar({
     return Array.from({ length: maxGuesses }).map((_, index) => ({
       index,
       isActive: index < animatedCount,
-      className: `${guessProgressBarStyles.progressSegment} ${index > 0 ? guessProgressBarStyles.progressSegmentBorder : ''}`,
+      className: `${styles.progressSegment} ${index > 0 ? styles.progressSegmentBorder : ''}`,
       transitionProps: {
-        duration: segmentTransition.duration,
-        ease: segmentTransition.ease,
-        delay: index * segmentTransition.staggerDelay
+        duration: 0.7,
+        ease: [0.34, 1.56, 0.64, 1], // Custom spring-like easing
+        delay: index * 0.1 // Delay between segment animations
       }
     }));
   }, [maxGuesses, animatedCount]);
@@ -90,10 +90,6 @@ export function useGuessProgressBar({
     barClassName,
     
     // Data
-    segments,
-    
-    // Style constants
-    guessProgressBarStyles,
-    segmentTransition
+    segments
   };
 } 

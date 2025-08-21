@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete from '../Autocomplete';
 import GuessProgressBar from '../GuessProgressBar';
@@ -35,18 +35,28 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
   isAutocompleteEnabled,
   setHasUserInput
 }, ref) => {
-  const { t } = useTranslation();
-  const formRef = useRef<HTMLFormElement>(null);
-  const textareaShellRef = useRef<HTMLDivElement>(null);
+  // Translation hook for potential future use
+  useTranslation();
   
   const {
+    // Refs
     inputRef,
     progressRef,
-    handleSuggestionClick
+    formRef,
+    textareaShellRef,
+    
+    // Event handlers
+    handleSuggestionClick,
+    handleFormSubmit,
+    handleInputChange,
+    handleKeyDown
   } = useInputBar({
     ref,
     setInputValue,
-    setHasSuggestionSelected
+    setHasSuggestionSelected,
+    setHasUserInput,
+    hasSuggestionSelected,
+    onSubmit
   });
 
   // Auto-grow textarea functionality
@@ -60,14 +70,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
   return (
     <div className={inputBarStyles.container}>
       <div ref={textareaShellRef} className={inputBarStyles.inputShell}>
-        <form ref={formRef} onSubmit={(e) => {
-          // Prevent submission if a suggestion is selected
-          if (hasSuggestionSelected) {
-            e.preventDefault();
-            return;
-          }
-          onSubmit(e);
-        }}>
+        <form ref={formRef} onSubmit={handleFormSubmit}>
           {/* Autocomplete suggestions */}
           <Autocomplete
             category={gameState.challenge?.category || CategoryType.COUNTRIES}
@@ -82,23 +85,13 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
           <textarea
             id="game-input"
             ref={inputRef}
-            className={`${inputBarStyles.input(isInputDisabled())} ${inputBarStyles.inputPosition} hide-scrollbar`}
+            className={`${inputBarStyles.input(isInputDisabled())} ${inputBarStyles.inputPosition}`}
             style={inputBarStyles.inputWithTheme(colors.primary)}
             disabled={isInputDisabled()}
             autoComplete="off"
             value={inputValue}
-            onChange={(e) => {
-              const val = e.target.value;
-              setInputValue(val);
-              setHasUserInput(val.trim().length > 0);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && !hasSuggestionSelected) {
-                e.preventDefault();
-                // Submit the form programmatically
-                formRef.current?.requestSubmit();
-              }
-            }}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             rows={1}
             maxLength={200}
           />

@@ -1,0 +1,122 @@
+/**
+ * CSS Modules for GuessProgressBar component
+ */
+
+/* Container */
+.container {
+  width: 100%;
+}
+
+/* Progress bar */
+.progressBar {
+  display: flex;
+  width: 100%;
+  height: 1rem; /* h-4 */
+  overflow: hidden;
+  border-radius: 9999px; /* rounded-full */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .progressBar {
+    height: 1.25rem; /* sm:h-5 */
+  }
+}
+
+/* Progress segment */
+.progressSegment {
+  flex: 1;
+  position: relative;
+  background-color: rgb(229 231 235); /* bg-gray-200 */
+  overflow: hidden;
+}
+
+:global(.dark) .progressSegment {
+  background-color: rgb(55 65 81); /* dark:bg-gray-700 */
+}
+
+/* Segment border */
+.progressSegmentBorder {
+  border-left: 2px solid rgb(255 255 255); /* border-l-2 border-white */
+}
+
+:global(.dark) .progressSegmentBorder {
+  border-left-color: rgb(17 24 39); /* dark:border-gray-900 */
+}
+
+/* Filled segment */
+.filledSegment {
+  position: absolute;
+  inset: 0;
+}
+
+/* Shine effect */
+.shineEffect {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(255 255 255), transparent);
+  opacity: 0.1;
+}
+
+/* Bottom shadow */
+.bottomShadow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  opacity: 0.2;
+}
+
+/* Pulse effect */
+.pulseEffect {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Animation classes */
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.fadeOut {
+  animation: fadeOut 0.3s ease-out;
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Keyframe animations */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -9,16 +9,24 @@ interface UseInputBarProps {
   ref: Ref<InputBarHandle>;
   setInputValue: (value: string) => void;
   setHasSuggestionSelected: (selected: boolean) => void;
+  setHasUserInput: (hasInput: boolean) => void;
+  hasSuggestionSelected: boolean;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const useInputBar = ({
   ref,
   setInputValue,
-  setHasSuggestionSelected
+  setHasSuggestionSelected,
+  setHasUserInput,
+  hasSuggestionSelected,
+  onSubmit
 }: UseInputBarProps) => {
-  // Create a ref for the input element
+  // Create refs for the input elements
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const textareaShellRef = useRef<HTMLDivElement>(null);
   const { registerElement, unregisterElement } = useDOMRefs();
   
   // Register elements with the DOM refs system
@@ -65,9 +73,43 @@ export const useInputBar = ({
     }, 0);
   };
 
+  // Handle form submission
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Prevent submission if a suggestion is selected
+    if (hasSuggestionSelected) {
+      e.preventDefault();
+      return;
+    }
+    onSubmit(e);
+  };
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setInputValue(val);
+    setHasUserInput(val.trim().length > 0);
+  };
+
+  // Handle key down events
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && !hasSuggestionSelected) {
+      e.preventDefault();
+      // Submit the form programmatically
+      formRef.current?.requestSubmit();
+    }
+  };
+
   return {
+    // Refs
     inputRef,
     progressRef,
-    handleSuggestionClick
+    formRef,
+    textareaShellRef,
+    
+    // Event handlers
+    handleSuggestionClick,
+    handleFormSubmit,
+    handleInputChange,
+    handleKeyDown
   };
 };
