@@ -25,7 +25,7 @@ const Logo: React.FC<LogoProps> = ({
     <img 
       src={logoSrc}
       alt="Fact 5"
-      className={logoClassName}
+      className={`${logoStyles.logo} ${logoClassName}`}
       style={logoStyles.image(logoWidth, logoHeight)}
       draggable="false"
     />

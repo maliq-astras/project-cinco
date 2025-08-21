@@ -1,41 +1,47 @@
+/**
+ * Hybrid styles for Header component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from Header.module.css
+ * - Dynamic styles remain as functions for theme integration
+ */
+
+import styles from './Header.module.css';
+
 export const headerStyles = {
-  // Container styles
-  container: "w-full py-2 sm:py-2",
-  header: "max-w-6xl mx-auto",
+  // Static styles from CSS modules
+  container: styles.container,
+  header: styles.header,
+  content: styles.content,
+  title: styles.title,
   
-  // XS → XL Container variants
-  containerXs: "w-full py-1",
-  containerSm: "w-full py-1.5",
-  containerMd: "w-full py-2",
-  containerLg: "w-full py-2.5",
-  containerXl: "w-full py-3",
+  // Container size variants
+  containerXs: styles.containerXs,
+  containerSm: styles.containerSm,
+  containerMd: styles.containerMd,
+  containerLg: styles.containerLg,
+  containerXl: styles.containerXl,
   
-  // Content styles
-  content: "flex items-center justify-center gap-3 sm:gap-5",
+  // Content size variants
+  contentXs: styles.contentXs,
+  contentSm: styles.contentSm,
+  contentMd: styles.contentMd,
+  contentLg: styles.contentLg,
+  contentXl: styles.contentXl,
   
-  // XS → XL Content variants
-  contentXs: "flex items-center justify-center gap-1.5",
-  contentSm: "flex items-center justify-center gap-2",
-  contentMd: "flex items-center justify-center gap-3",
-  contentLg: "flex items-center justify-center gap-4",
-  contentXl: "flex items-center justify-center gap-5",
+  // Logo container size variants
+  logoContainerXs: styles.logoContainerXs,
+  logoContainerSm: styles.logoContainerSm,
+  logoContainerMd: styles.logoContainerMd,
+  logoContainerLg: styles.logoContainerLg,
+  logoContainerXl: styles.logoContainerXl,
   
-  // Logo container styles - synchronized XS → XL with VERTICAL breakpoints (INCREASED +5%)
-  logoContainerXs: "h-[74px] max-w-[263px]", // Increased from 70px/250px
-  logoContainerSm: "h-[89px] max-w-[315px]", // Increased from 85px/300px
-  logoContainerMd: "h-[105px] max-w-[368px]", // Increased from 100px/350px
-  logoContainerLg: "h-[126px] max-w-[420px]", // Increased from 120px/400px
-  logoContainerXl: "h-[147px] max-w-[473px]", // Increased from 140px/450px
-  
-  // Title styles
-  title: "m-0",
-  
-  // XS → XL Title variants
-  titleXs: "m-0 text-lg",
-  titleSm: "m-0 text-xl",
-  titleMd: "m-0 text-2xl",
-  titleLg: "m-0 text-3xl",
-  titleXl: "m-0 text-4xl",
+  // Title size variants
+  titleXs: styles.titleXs,
+  titleSm: styles.titleSm,
+  titleMd: styles.titleMd,
+  titleLg: styles.titleLg,
+  titleXl: styles.titleXl,
   
   // Title text styles - synchronized XS → XL with VERTICAL breakpoints (INCREASED +5%)
   titleTextXs: (colors: { primary: string }) => ({
@@ -85,10 +91,10 @@ export const headerStyles = {
   }),
   
   // Legacy support for backward compatibility
-  compactContainer: "w-full py-1",
-  compactContent: "flex items-center justify-center gap-2",
-  compactLogoContainer: "h-[60px]",
-  compactTitle: "m-0 text-2xl",
+  compactContainer: styles.compactContainer,
+  compactContent: styles.compactContent,
+  compactLogoContainer: styles.compactLogoContainer,
+  compactTitle: styles.compactTitle,
   compactTitleText: (colors: { primary: string }) => ({
     fontSize: "clamp(24px, 4vw, 32px)",
     lineHeight: 1,

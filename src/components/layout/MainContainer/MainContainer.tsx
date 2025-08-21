@@ -34,7 +34,6 @@ export default function MainContainer() {
     gameEntranceComplete,
     isSmallLandscape,
     isTabletLandscape,
-    isCompactHeader,
     responsiveLayoutMode,
     isFinalFiveActive,
     showFinalFiveTransition,
@@ -88,7 +87,7 @@ export default function MainContainer() {
       height: '100%',
       width: '100%',
       display: 'flex',
-      flexDirection: 'column' as 'column',
+      flexDirection: 'column' as const,
       alignItems: 'center',
       overflow: 'visible'
     };

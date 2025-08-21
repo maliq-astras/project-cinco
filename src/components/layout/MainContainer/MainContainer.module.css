@@ -1,0 +1,241 @@
+/**
+ * CSS Modules for MainContainer component - Static styles only
+ * Dynamic styles remain in MainContainer.styles.ts
+ */
+
+/* Base container */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  background-color: rgb(255 255 255);
+  color: rgb(31 41 55);
+  overflow: hidden;
+}
+
+:global(.dark) .container {
+  background-color: rgb(0 0 0);
+  color: rgb(243 244 246);
+}
+
+/* Tablet landscape container */
+.tabletLandscapeContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  background-color: rgb(255 255 255);
+  color: rgb(31 41 55);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+:global(.dark) .tabletLandscapeContainer {
+  background-color: rgb(0 0 0);
+  color: rgb(243 244 246);
+}
+
+/* Loading wrapper */
+.loadingWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Main content */
+.main {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Tablet landscape main content */
+.tabletLandscapeMain {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.25rem;
+}
+
+/* Game content */
+.gameContent {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 0.5rem 0;
+  gap: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .gameContent {
+    padding: 0;
+  }
+}
+
+/* Top section */
+.topSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0.25rem 0;
+}
+
+/* Middle section */
+.middleSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Context line */
+.contextLine {
+  width: 100%;
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Context wrapper */
+.contextWrapper {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+}
+
+/* Context container */
+.contextContainer {
+  padding: 0 1rem 0.25rem 1rem;
+  border-radius: 0.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Fact bubbles wrapper */
+.factBubblesWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+/* Fact bubbles container */
+.factBubblesContainer {
+  width: 100%;
+  max-width: 32rem;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Bottom section */
+.bottomSection {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* Instructions wrapper */
+.instructionsWrapper {
+  width: 100%;
+  position: relative;
+  margin: 0.25rem 0;
+  flex-shrink: 0;
+}
+
+/* Instructions container */
+.instructionsContainer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Instructions inner */
+.instructionsInner {
+  padding: 0 1rem 0.25rem 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Controls wrapper */
+.controlsWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Warning overlay */
+.warningOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(255 255 255);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 50;
+}
+
+:global(.dark) .warningOverlay {
+  background-color: rgb(0 0 0);
+}
+
+/* Warning icon */
+.warningIcon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Warning text */
+.warningText {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+:global(.dark) .warningText {
+  color: rgb(229 231 235);
+}
+
+/* Spin icon */
+.spinIcon {
+  width: 3rem;
+  height: 3rem;
+  animation: spin 1s linear infinite;
+}
+
+/* Keyframe animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

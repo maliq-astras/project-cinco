@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { GameState } from '@/helpers/gameLogic';
@@ -23,7 +23,7 @@ interface GameStoreState {
 }
 
 export const useNavigation = () => {
-  const { colors, darkMode } = useTheme();
+  const { colors } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isBugReportModalOpen, setIsBugReportModalOpen] = useState(false);

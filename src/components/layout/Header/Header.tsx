@@ -17,7 +17,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
   const { t } = useTranslation();
   const { colors, challenge, logoRef, categoryTitleRef } = useHeader();
-  const { isCompactHeader, headerSizeMode } = useMainContainer();
+  const { headerSizeMode } = useMainContainer();
 
   // Get header size classes based on headerSizeMode
   const getHeaderSizeClasses = () => {

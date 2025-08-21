@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Inter } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import GameTutorial from '../../game/GameTutorial';
 import SettingsPanel from '../../modals/SettingsPanel';
@@ -11,7 +10,7 @@ import { useNavigation } from './useNavigation';
 import { navigationStyles } from './Navigation.styles';
 import { useMainContainer } from '../MainContainer';
 
-const inter = Inter({ subsets: ['latin'] });
+
 
 interface NavigationProps {
   headerEntranceComplete?: boolean;

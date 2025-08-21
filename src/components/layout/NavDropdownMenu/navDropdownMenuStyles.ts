@@ -1,24 +1,27 @@
+/**
+ * Hybrid styles for NavDropdownMenu component
+ * 
+ * This file acts as a bridge between the component and CSS modules:
+ * - Static styles are imported from NavDropdownMenu.module.css
+ * - Dynamic styles remain as functions for theme integration
+ */
+
 import { CSSProperties } from 'react';
+import styles from './NavDropdownMenu.module.css';
 
 export const navDropdownMenuStyles = {
-  // Base dropdown menu styles, using responsive positioning for all screen sizes
-  menuContainer: "absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 bg-white dark:bg-black border-2 z-50",
+  // Static styles from CSS modules
+  menuContainer: styles.menuContainer,
+  menuItem: styles.menuItem,
+  arrowIcon: styles.arrowIcon,
   
-  // Menu container base style (border color will be set with primary color)
+  // Dynamic styles for theme integration
   menuContainerStyle: (primaryColor: string): CSSProperties => ({
     borderColor: `var(--color-${primaryColor})`
   }),
   
-  // Menu item styles
-  menuItem: "w-full text-left flex items-center justify-between px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors",
-  
-  // Menu item container style (text color will be set with primary color)
   menuItemStyle: (primaryColor: string): CSSProperties => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    color: `var(--color-${primaryColor})`,
-    width: '100%'
+    color: `var(--color-${primaryColor})`
   }),
   
   // Text container to ensure proper spacing with arrow
@@ -35,8 +38,5 @@ export const navDropdownMenuStyles = {
     width: '20px',
     height: '20px',
     flexShrink: 0
-  },
-  
-  // Arrow icon size
-  arrowIcon: "w-4 h-4"
+  }
 } as const; 

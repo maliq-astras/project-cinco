@@ -1,0 +1,177 @@
+/**
+ * CSS Modules for Header component - Static styles only
+ * Dynamic styles remain in Header.styles.ts
+ */
+
+/* Base container */
+.container {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Header element */
+.header {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* Base content layout */
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .content {
+    gap: 1.25rem;
+  }
+}
+
+/* Container size variants */
+.containerXs {
+  width: 100%;
+  padding: 0.25rem 0;
+}
+
+.containerSm {
+  width: 100%;
+  padding: 0.375rem 0;
+}
+
+.containerMd {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.containerLg {
+  width: 100%;
+  padding: 0.625rem 0;
+}
+
+.containerXl {
+  width: 100%;
+  padding: 0.75rem 0;
+}
+
+/* Content size variants */
+.contentXs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.contentSm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.contentMd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.contentLg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.contentXl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+/* Logo container size variants */
+.logoContainerXs {
+  height: 74px;
+  max-width: 263px;
+}
+
+.logoContainerSm {
+  height: 89px;
+  max-width: 315px;
+}
+
+.logoContainerMd {
+  height: 105px;
+  max-width: 368px;
+}
+
+.logoContainerLg {
+  height: 126px;
+  max-width: 420px;
+}
+
+.logoContainerXl {
+  height: 147px;
+  max-width: 473px;
+}
+
+/* Title base styles */
+.title {
+  margin: 0;
+}
+
+/* Title size variants */
+.titleXs {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.titleSm {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.titleMd {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.titleLg {
+  margin: 0;
+  font-size: 1.875rem;
+}
+
+.titleXl {
+  margin: 0;
+  font-size: 2.25rem;
+}
+
+/* Legacy compact styles */
+.compactContainer {
+  width: 100%;
+  padding: 0.25rem 0;
+}
+
+.compactContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.compactLogoContainer {
+  height: 60px;
+}
+
+.compactTitle {
+  margin: 0;
+  font-size: 1.5rem;
+}

@@ -1,0 +1,47 @@
+/**
+ * CSS Modules for NavDropdownMenu component - Static styles only
+ * Dynamic styles remain in navDropdownMenuStyles.ts
+ */
+
+/* Menu container */
+.menuContainer {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 12rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  padding: 0.25rem 0;
+  background-color: rgb(255 255 255);
+  border: 2px solid;
+  z-index: 50;
+}
+
+:global(.dark) .menuContainer {
+  background-color: rgb(0 0 0);
+}
+
+/* Menu item */
+.menuItem {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s;
+}
+
+.menuItem:hover {
+  background-color: rgb(249 250 251);
+}
+
+:global(.dark) .menuItem:hover {
+  background-color: rgb(17 24 39);
+}
+
+/* Arrow icon */
+.arrowIcon {
+  width: 1rem;
+  height: 1rem;
+}
