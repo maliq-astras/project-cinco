@@ -9,6 +9,7 @@ import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../..
 import { useTranslation } from 'react-i18next';
 import { getCategoryName } from '../../../helpers/i18nHelpers';
 import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { feedbackModalStyles } from './FeedbackModal.styles';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -17,51 +18,7 @@ interface FeedbackModalProps {
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-const feedbackModalStyles = {
-  // Content
-  content: "flex flex-col items-center justify-center min-h-[400px]",
-  
-  // Steps
-  stepContainer: "w-full md:max-w-md mx-auto px-4 md:px-0",
-  stepLabel: "text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 text-center",
-  
-  // Star Rating
-  starContainer: "flex justify-center gap-2 mb-6",
-  starButton: "text-3xl transition-colors cursor-pointer",
-  starFilled: "text-yellow-400",
-  starEmpty: "text-gray-300 dark:text-gray-600",
-  
-  // Dropdown
-  dropdownContainer: "relative w-full mb-6",
-  dropdownButton: "w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800/50 dark:text-white cursor-pointer flex items-center justify-between",
-  dropdownList: "absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto",
-  dropdownItem: "px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
-  
-  // Navigation
-  buttonContainer: "flex justify-center gap-4 mt-6",
-  button: "px-6 py-2 rounded-md font-medium transition-colors",
-  primaryButton: (primaryColor: string): React.CSSProperties => ({
-    backgroundColor: `var(--color-${primaryColor})`,
-    color: 'white'
-  }),
-  secondaryButton: "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600",
-  
-  // Progress
-  progressContainer: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-6",
-  progressBar: (primaryColor: string, progress: number): React.CSSProperties => ({
-    width: `${progress}%`,
-    backgroundColor: `var(--color-${primaryColor})`,
-    height: '100%',
-    borderRadius: '9999px',
-    transition: 'width 0.3s ease-in-out'
-  }),
-  
-  // Success
-  successContainer: "flex flex-col items-center justify-center text-center",
-  successIcon: "w-16 h-16 text-green-500 mb-4",
-  successTitle: "text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2",
-  successMessage: "text-gray-600 dark:text-gray-400"
-};
+
 
 const categoryOptions = Object.values(CategoryType);
 

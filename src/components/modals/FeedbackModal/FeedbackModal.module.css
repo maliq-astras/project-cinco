@@ -1,0 +1,207 @@
+/**
+ * CSS Modules for FeedbackModal component - Static styles only
+ * Dynamic styles remain in FeedbackModal.styles.ts
+ */
+
+/* Content */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+/* Steps */
+.stepContainer {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .stepContainer {
+    padding: 0;
+  }
+}
+
+.stepLabel {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: rgb(31 41 55);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+:global(.dark) .stepLabel {
+  color: rgb(229 231 235);
+}
+
+/* Star Rating */
+.starContainer {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.starButton {
+  font-size: 1.875rem;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.starFilled {
+  color: rgb(250 204 21);
+}
+
+.starEmpty {
+  color: rgb(209 213 219);
+}
+
+:global(.dark) .starEmpty {
+  color: rgb(75 85 99);
+}
+
+/* Dropdown */
+.dropdownContainer {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.375rem;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdownButton:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+:global(.dark) .dropdownButton {
+  border-color: rgb(75 85 99);
+  background-color: rgba(31, 41, 55, 0.5);
+  color: white;
+}
+
+.dropdownList {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  margin-top: 0.25rem;
+  background-color: white;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-height: 15rem;
+  overflow: auto;
+}
+
+:global(.dark) .dropdownList {
+  background-color: rgb(31 41 55);
+  border-color: rgb(75 85 99);
+}
+
+.dropdownItem {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background-color: rgb(243 244 246);
+}
+
+:global(.dark) .dropdownItem:hover {
+  background-color: rgb(55 65 81);
+}
+
+/* Navigation */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.secondaryButton {
+  background-color: rgb(229 231 235);
+  color: rgb(31 41 55);
+}
+
+.secondaryButton:hover {
+  background-color: rgb(209 213 219);
+}
+
+:global(.dark) .secondaryButton {
+  background-color: rgb(55 65 81);
+  color: rgb(229 231 235);
+}
+
+:global(.dark) .secondaryButton:hover {
+  background-color: rgb(75 85 99);
+}
+
+/* Progress */
+.progressContainer {
+  width: 100%;
+  height: 0.25rem;
+  background-color: rgb(229 231 235);
+  border-radius: 9999px;
+  margin-top: 1.5rem;
+}
+
+:global(.dark) .progressContainer {
+  background-color: rgb(55 65 81);
+}
+
+/* Success */
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.successIcon {
+  width: 4rem;
+  height: 4rem;
+  color: rgb(34 197 94);
+  margin-bottom: 1rem;
+}
+
+.successTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgb(31 41 55);
+  margin-bottom: 0.5rem;
+}
+
+:global(.dark) .successTitle {
+  color: rgb(229 231 235);
+}
+
+.successMessage {
+  color: rgb(75 85 99);
+}
+
+:global(.dark) .successMessage {
+  color: rgb(156 163 175);
+}

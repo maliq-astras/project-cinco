@@ -6,6 +6,7 @@ import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { bugReportModalStyles } from './BugReportModal.styles';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -14,59 +15,7 @@ interface BugReportModalProps {
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-const bugReportModalStyles = {
-  // Content
-  content: "flex flex-col items-center justify-center min-h-[400px]",
-  
-  // Steps
-  stepContainer: "w-full md:max-w-md mx-auto px-4 md:px-0",
-  stepLabel: "text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 text-center",
-  
-  // Dropdown
-  dropdownContainer: "relative w-full mb-6",
-  dropdownButton: "w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800/50 dark:text-white cursor-pointer flex items-center justify-between",
-  dropdownList: "absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto",
-  dropdownItem: "px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
-  
-  // File Upload
-  fileUploadContainer: "w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer transition-colors",
-  fileUploadContainerDragging: "border-blue-500 bg-blue-50 dark:bg-blue-900/20",
-  fileUploadIcon: "w-12 h-12 mx-auto mb-2 text-gray-400",
-  fileUploadText: "text-gray-600 dark:text-gray-400 mb-1",
-  fileUploadOptional: "text-sm text-gray-500 dark:text-gray-500",
-  filePreviewContainer: "w-full border border-gray-300 dark:border-gray-600 rounded-lg p-4 flex items-center gap-3",
-  filePreviewIcon: "w-8 h-8 text-gray-400",
-  filePreviewText: "flex-1 text-gray-700 dark:text-gray-300 truncate",
-  filePreviewRemoveButton: "p-1 text-gray-500 hover:text-red-500 transition-colors",
-  
-  // Navigation
-  buttonContainer: "flex justify-center gap-4 mt-6",
-  button: "px-6 py-2 rounded-md font-medium transition-colors",
-  primaryButton: (primaryColor: string): React.CSSProperties => ({
-    backgroundColor: `var(--color-${primaryColor})`,
-    color: 'white'
-  }),
-  primaryButtonHover: (primaryColor: string): React.CSSProperties => ({
-    backgroundColor: `var(--color-${primaryColor}-dark)`
-  }),
-  secondaryButton: "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600",
-  
-  // Progress
-  progressContainer: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-6",
-  progressBar: (primaryColor: string, progress: number): React.CSSProperties => ({
-    width: `${progress}%`,
-    backgroundColor: `var(--color-${primaryColor})`,
-    height: '100%',
-    borderRadius: '9999px',
-    transition: 'width 0.3s ease-in-out'
-  }),
-  
-  // Success
-  successContainer: "flex flex-col items-center justify-center text-center",
-  successIcon: "w-16 h-16 text-green-500 mb-4",
-  successTitle: "text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2",
-  successMessage: "text-gray-600 dark:text-gray-400"
-};
+
 
 const ALL_BUG_TAGS = [
   'appCrashed',

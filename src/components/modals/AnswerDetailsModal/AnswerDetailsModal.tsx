@@ -1,119 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
-import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
-import { deviceDetection } from '@/helpers/deviceHelpers';
+import { getFactIcon } from '@/helpers/iconHelpers';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
+import { answerDetailsModalStyles } from './AnswerDetailsModal.styles';
+import { useAnswerDetailsModal } from './useAnswerDetailsModal';
 
 interface AnswerDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   answer: string;
 }
-
-const answerDetailsModalStyles = {
-  // Overlay
-  overlay: "fixed inset-0 bg-black bg-opacity-70 z-[999] backdrop-blur-md flex items-center justify-center p-4",
-  
-  // Close button
-  closeButton: "absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 transition-colors z-10",
-  
-  // Content containers
-  content: (isBigMobileDevice: boolean, isSurfaceDuo: boolean, isMobileDevice: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      return "flex flex-col h-full gap-2 justify-center overflow-hidden max-w-xs mx-auto"; // Minimal spacing for Surface Duo
-    }
-    if (isMobileDevice) {
-      return "flex flex-col h-[92vh] gap-4 justify-start items-stretch overflow-hidden w-full px-4 pt-10"; // Fill viewport height on mobile and avoid X overlap
-    }
-    if (isLandscape) {
-      return "flex flex-row h-full gap-8 items-center justify-center overflow-hidden w-full px-8"; // Side-by-side in landscape
-    }
-    // Stacked tablet/desktop portrait: avoid vertical re-centering shifts
-    return "flex flex-col h-[92vh] gap-6 justify-start items-stretch overflow-hidden w-full max-w-none px-8 pt-8";
-  },
-  
-  // Photo section - larger on mobile to fill space better
-  photoSection: "flex-shrink-0",
-  photoSize: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      // Treat Surface Duo like stacked-tablet portrait to avoid “zoomed” look
-      return 'w-full h-[38vh]';
-    }
-    if (isMobileDevice) {
-      return 'w-full aspect-[3/2]'; // Mobile aspect ratio, full width
-    }
-    if (isLandscape) {
-      return 'w-1/2 aspect-[16/10] max-h-[70vh]'; // Half width in landscape, taller aspect ratio
-    }
-    // Stacked tablet/desktop portrait: fixed height to avoid content shift
-    return 'w-full h-[40vh]';
-  },
-  photoContainer: "relative bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden w-full h-full",
-  placeholderPhoto: "w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600",
-  
-  // Right panel section - larger on mobile 
-  rightPanel: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      return 'flex-1 min-h-0 w-full overflow-hidden';
-    }
-    if (isMobileDevice) {
-      return 'flex-1 min-h-0 w-full overflow-hidden'; // Flexible height panel on mobile; uses remaining space
-    }
-    if (isLandscape) {
-      return 'flex-shrink-0 w-1/2 aspect-[16/10] max-h-[70vh]'; // Match landscape photo dimensions
-    }
-    // Stacked tablet/desktop portrait: let panel take remaining space and scroll internally
-    return 'flex-1 min-h-0 w-full overflow-hidden';
-  },
-  
-  // Grid view - adjusted for mobile
-  gridContainer: (isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    if (isMobileDevice) {
-      return "w-full h-full overflow-y-auto"; // Allow internal scroll on mobile to avoid overlap
-    }
-    if (!isLandscape) {
-      // Stacked tablet/desktop portrait
-      return "w-full h-full overflow-y-auto";
-    }
-    return "w-full h-full flex items-center justify-center"; // Fill the rightPanel container on larger screens
-  },
-  factsGrid: (isMobileDevice: boolean, isSurfaceDuo: boolean, isExtraNarrowPhone?: boolean, isNarrowPhone?: boolean) => {
-    if (isSurfaceDuo) {
-      return "grid grid-cols-4 grid-rows-2 gap-2 w-full h-full max-w-none"; // Duo: tighter spacing
-    }
-    if (isMobileDevice) {
-      const gap = isExtraNarrowPhone ? 'gap-1 px-1' : (isNarrowPhone ? 'gap-1 px-2' : 'gap-2 px-2');
-      return `grid grid-cols-2 grid-rows-4 ${gap} w-full h-full max-w-none justify-center`;
-    }
-    return "grid grid-cols-4 grid-rows-2 gap-3 w-full h-full max-w-none px-4"; // Desktop/tablet: slightly tighter too
-  },
-  factIcon: (isMobileDevice: boolean, isNarrowPhone?: boolean, isExtraNarrowPhone?: boolean) => {
-    const base = "aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 border-2";
-    if (!isMobileDevice) return base;
-    const widthClass = isExtraNarrowPhone ? 'w-[68%]' : (isNarrowPhone ? 'w-[57%]' : 'w-[78%]');
-    return `${base} ${widthClass} mx-auto`;
-  },
-  factIconActive: "border-2",
-  factIconImage: "w-9 h-9", // Slightly smaller to improve fit
-  
-  // Detail view - fills available space on mobile
-  detailContainer: (isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    return "w-full h-full flex flex-col"; // Simply fill the rightPanel container
-  },
-  backButton: "flex items-center gap-2 mb-3 text-sm cursor-pointer hover:opacity-70 transition-opacity",
-  detailTitle: "text-lg font-bold mb-3 text-white",
-  detailContent: (isMobileDevice: boolean) => {
-    if (isMobileDevice) {
-      return "flex-1 text-white leading-relaxed overflow-y-auto text-sm pr-2 scrollbar-always-visible"; // Fill panel and scroll internally
-    }
-    return "flex-1 text-white leading-relaxed overflow-y-auto text-lg pr-2 scrollbar-always-visible"; // Larger text on desktop
-  },
-};
 
 const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({ 
   isOpen, 
@@ -123,38 +24,24 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   const { colors, darkMode } = useTheme();
   const { language } = useLanguage();
   const challenge = useGameStore(state => state.gameState.challenge);
-  const getFilter = useIconFilter();
   
-  // Detect mobile device for special mobile styling
-  const isMobileDevice = typeof window !== 'undefined' ? 
-    window.innerWidth < 480 && Math.max(window.innerWidth, window.innerHeight) < 1000 : false;
-  const isExtraNarrowPhone = typeof window !== 'undefined' ? window.innerWidth <= 330 : false;
-  const isNarrowPhone = typeof window !== 'undefined' ? !isExtraNarrowPhone && window.innerWidth <= 375 : false;
-  
-  // Detect bigger phones that need extra spacing
-  const isBigMobileDevice = typeof window !== 'undefined' ? 
-    isMobileDevice && Math.max(window.innerWidth, window.innerHeight) > 850 : false;
-  
-  // Detect landscape screens with limited height that need smaller content
-  const isLimitedHeightLandscape = typeof window !== 'undefined' ? 
-    window.innerWidth > window.innerHeight && 
-    window.innerHeight < 1000 : false;
-  
-  // Detect regular landscape (tablets)
-  const isLandscape = typeof window !== 'undefined' ? 
-    window.innerWidth > window.innerHeight : false;
-  
-  // Detect Surface Duo for special sizing
-  const isSurfaceDuo = typeof window !== 'undefined' ? deviceDetection.isSurfaceDuo() : false;
-  
-  const [selectedFact, setSelectedFact] = useState<number | null>(null);
+  const {
+    selectedFact,
+    setSelectedFact,
+    isMobileDevice,
+    isExtraNarrowPhone,
+    isNarrowPhone,
+    isBigMobileDevice,
+    isLimitedHeightLandscape,
+    isLandscape,
+    isSurfaceDuo
+  } = useAnswerDetailsModal({ isOpen });
 
   // Get the actual 8 fact types from the current game
   const factTypes = challenge?.facts?.map(fact => fact.factType) || [];
   const category = challenge?.category?.toString().toLowerCase() || 'countries';
 
-  // Get the proper icon filter for this category
-  const iconFilter = getFilter(category);
+
 
   // Placeholder facts
   const placeholderFacts = factTypes.map((factType) => {
@@ -269,7 +156,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
 
   const renderFactDetails = () => (
     <motion.div 
-      className={answerDetailsModalStyles.detailContainer(isMobileDevice, isSurfaceDuo, isLandscape)}
+      className={answerDetailsModalStyles.detailContainer()}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3 }}
@@ -364,4 +251,4 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   return null;
 };
 
-export default AnswerDetailsModal; 
+export default AnswerDetailsModal;

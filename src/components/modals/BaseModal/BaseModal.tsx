@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { createPortal } from 'react-dom';
 import { deviceDetection } from '@/helpers/deviceHelpers';
-import { useTheme } from '@/contexts/ThemeContext';
+import { baseModalStyles } from './BaseModal.styles';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,46 +20,7 @@ interface BaseModalProps {
   mobileHeight?: string; // Allow custom mobile height
 }
 
-const baseModalStyles = {
-  // Main containers
-  mobileContainer: "fixed inset-0 bg-black bg-opacity-70 z-[999] backdrop-blur-md",
-  mobilePanel: (primaryColor: string) => ({
-    borderTop: `4px solid var(--color-${primaryColor})`,
-    borderLeft: `1px solid var(--color-${primaryColor})`,
-    borderRight: `1px solid var(--color-${primaryColor})`,
-    maxHeight: '95vh'
-  }),
-  mobilePanelClass: (height: string) => `absolute bottom-0 left-0 right-0 bg-white dark:bg-black rounded-t-xl shadow-lg h-[${height}]`,
-  mobileDragIndicator: "w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto my-2 max-w-[4rem]",
-  
-  desktopContainer: "fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[999] backdrop-blur-md",
-  desktopPanel: (primaryColor: string) => ({
-    border: `2px solid var(--color-${primaryColor})`,
-    maxHeight: '90vh'
-  }),
-  desktopPanelClass: "bg-white dark:bg-black rounded-xl shadow-lg p-8 w-full mx-4 overflow-hidden",
-  
-  contentContainer: "p-4",
-  
-  // Header
-  header: "flex justify-between items-center mb-6 relative",
-  titleClass: "text-xl font-bold text-gray-800 dark:text-white absolute left-1/2 transform -translate-x-1/2",
-  closeButtonClass: "p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ml-auto text-gray-800 dark:text-white",
-  
-  // Animations
-  overlayAnimation: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 }
-  },
-  
-  mobilePanelAnimation: {
-    initial: { y: '100%' },
-    animate: { y: 0 },
-    exit: { y: '100%' },
-    transition: { type: 'tween', duration: 0.3 }
-  }
-};
+
 
 const BaseModal: React.FC<BaseModalProps> = ({ 
   isOpen, 
@@ -71,8 +32,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   dismissible = true, // Default to true for backwards compatibility
   mobileHeight = '75vh' // Default to 75vh if not provided
 }) => {
-  // Get dark mode state from theme context
-  const { darkMode } = useTheme();
+
   
   // Use more inclusive mobile detection that matches FinalFiveModal behavior
   const isMobile = typeof window !== 'undefined' ? 
