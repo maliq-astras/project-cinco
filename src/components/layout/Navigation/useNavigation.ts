@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { GameState } from '@/helpers/gameLogic';
+import { useDOMRefs } from '@/providers/DOMRefsProvider';
 
 interface MenuItem {
   label: string;
@@ -42,13 +43,53 @@ export const useNavigation = () => {
   const setTutorialOpen = useGameStore((state: GameStoreState) => state.setTutorialOpen);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { registerElement, unregisterElement, getElement } = useDOMRefs();
+
+  // Register body element for global click detection
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.document?.body) {
+      registerElement('body', window.document.body);
+    }
+    return () => {
+      unregisterElement('body');
+    };
+  }, [registerElement, unregisterElement]);
   
   // Only show How to Play during active gameplay (not during Final Five or game over)
   const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
 
-  // Handle click outside dropdown - now returns a handler for the component to use
-  const handleClickOutside = (event: React.MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+  // Add click listener to body when dropdown is open
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+
+    const handleGlobalClick = (event: Event) => {
+      const clickedElement = event.target as Node;
+      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(clickedElement);
+      
+      if (isOutsideDropdown) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    const bodyElement = getElement('body');
+    if (bodyElement) {
+      bodyElement.addEventListener('click', handleGlobalClick);
+    }
+
+    return () => {
+      if (bodyElement) {
+        bodyElement.removeEventListener('click', handleGlobalClick);
+      }
+    };
+  }, [isDropdownOpen, getElement]);
+
+  // Keep the old handler for backwards compatibility (though not used now)
+  const handleClickOutside = (event: React.MouseEvent, menuRef?: React.RefObject<HTMLDivElement>) => {
+    const clickedElement = event.target as Node;
+    const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(clickedElement);
+    const isOutsideMenu = !menuRef?.current || !menuRef.current.contains(clickedElement);
+    
+    if (isOutsideDropdown && isOutsideMenu) {
       setIsDropdownOpen(false);
     }
   };

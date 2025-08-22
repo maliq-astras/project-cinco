@@ -1,12 +1,10 @@
 import { CSSProperties } from 'react';
+import styles from './Timer.module.css';
 
 export const timerStyles = {
-  // Container styles
+  // Static styles from CSS module
   outerContainer: (isVictoryAnimationActive: boolean): string => 
-    `flex items-center justify-center h-[66px] sm:h-[76px] min-w-[60px] sm:min-w-[80px] ${isVictoryAnimationActive ? 'opacity-0' : ''}`,
-  
-  // Base styles shared by all timer variants
-  baseClasses: "font-iceberg flex items-center justify-center",
+    `${styles.outerContainer} ${isVictoryAnimationActive ? styles.outerContainerHidden : ''}`,
   
   // Timer variant classes
   getTimerClasses: (
@@ -14,15 +12,17 @@ export const timerStyles = {
     isSquare: boolean = false, 
     finalFive: boolean = false
   ): string => {
+    const baseClass = `${styles.baseClasses} ${className}`;
+    
     if (finalFive) {
       // Final Five timer - square with border and semi-transparent background
-      return `${timerStyles.baseClasses} ${className} aspect-square w-full h-full text-3xl rounded-lg border-2`;
+      return `${baseClass} ${styles.finalFiveTimer}`;
     } else if (isSquare) {
       // Square timer with border - used in other places
-      return `${timerStyles.baseClasses} ${className} aspect-square w-full h-full max-w-[150px] max-h-[150px] text-3xl rounded-lg border-2`;
+      return `${baseClass} ${styles.squareTimer}`;
     } else {
       // Default timer used in GameControls
-      return `${timerStyles.baseClasses} ${className} text-lg sm:text-xl rounded-lg h-[66px] sm:h-[76px] min-w-[60px] sm:min-w-[80px] border-2`;
+      return `${baseClass} ${styles.defaultTimer}`;
     }
   },
   

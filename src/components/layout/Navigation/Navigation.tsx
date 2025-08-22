@@ -34,8 +34,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
     closeSettings,
     closeTutorial,
     setIsFeedbackModalOpen,
-    setIsBugReportModalOpen,
-    handleClickOutside
+    setIsBugReportModalOpen
   } = useNavigation();
   
   const { isCompactHeader, headerSizeMode } = useMainContainer();
@@ -116,7 +115,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
 
   return (
     <>
-      <div className={navClasses.container} onClick={handleClickOutside}>
+      <div className={navClasses.container}>
         <div className={navClasses.innerContainer}>
           <div className={navClasses.navBar}>
             {/* Hard Mode Badge */}
@@ -159,6 +158,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
                   isOpen={isDropdownOpen}
                   menuItems={menuItems}
                   colors={colors}
+                  onClose={() => setIsDropdownOpen(false)}
                 />
               </div>
               <motion.button 

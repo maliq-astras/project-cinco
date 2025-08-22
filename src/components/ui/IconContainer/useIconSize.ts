@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { iconContainerStyles } from './IconContainer.styles';
 
 interface UseIconSizeProps {
   size: 'small' | 'medium' | 'large';
@@ -17,9 +18,9 @@ export function useIconSize({
   // Calculate size class for the container
   const containerSizeClass = useMemo(() => {
     return {
-      'small': 'w-[40%] max-w-[80px]',
-      'medium': 'w-[28%] max-w-[100px]',
-      'large': 'w-[35%] max-w-[120px]'
+      'small': iconContainerStyles.small,
+      'medium': iconContainerStyles.medium,
+      'large': iconContainerStyles.large
     }[size];
   }, [size]);
   

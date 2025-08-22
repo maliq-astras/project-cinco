@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toastMessagesStyles } from './ToastMessages.styles';
+import styles from './ToastMessages.module.css';
 
 interface ToastMessagesProps {
   duplicateErrorRef?: RefObject<HTMLDivElement>;
@@ -17,12 +17,12 @@ export default function ToastMessages({
   const { t } = useTranslation();
 
   return (
-    <div className={toastMessagesStyles.container}>
+    <div className={styles.container}>
       {/* Duplicate guess toast */}
       <div 
         ref={duplicateErrorRef}
         id="duplicate-error" 
-        className={toastMessagesStyles.duplicateToast}
+        className={styles.duplicateToast}
       >
         {t('game.status.duplicate')}
       </div>
@@ -31,7 +31,7 @@ export default function ToastMessages({
       <div 
         ref={skipMessageRef}
         id="skip-message" 
-        className={toastMessagesStyles.skipToast}
+        className={styles.skipToast}
       >
         {t('game.status.skipped')}
       </div>

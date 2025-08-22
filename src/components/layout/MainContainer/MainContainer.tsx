@@ -40,6 +40,7 @@ export default function MainContainer() {
     finalFiveTransitionReason,
     colors,
     showGameMessage,
+    isVictoryAnimationActive,
     isAlreadyPlayedScenario,
     gameControlsRef,
     handleLoadingComplete,
@@ -154,8 +155,8 @@ export default function MainContainer() {
                       
                       {/* Middle section */}
                       <div className={`${mainContainerStyles.middleSection} ${isTabletLandscape ? 'py-0' : ''}`} style={mainContainerStyles.sectionGap}>
-                        {/* Context line - hide for already-played scenarios */}
-                        {!isAlreadyPlayedScenario && (
+                        {/* Context line - hide for already-played scenarios and during victory animation */}
+                        {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
                           <motion.div 
                             className={mainContainerStyles.contextLine}
                             {...mainContainerStyles.gameEntranceAnimation.topSection}
@@ -196,8 +197,8 @@ export default function MainContainer() {
                         {...mainContainerStyles.gameEntranceAnimation.bottomSection}
                         animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.bottomSection.animate : mainContainerStyles.gameEntranceAnimation.bottomSection.initial}
                       >
-                        {/* Game instructions - hide for already-played scenarios */}
-                        {!isFinalFiveActive && !isAlreadyPlayedScenario && (
+                        {/* Game instructions - hide for already-played scenarios and during victory animation */}
+                        {!isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
                           <div className={mainContainerStyles.instructionsWrapper}>
                             <div className={mainContainerStyles.instructionsContainer}>
                               <div className={mainContainerStyles.instructionsInner}>
@@ -207,8 +208,8 @@ export default function MainContainer() {
                           </div>
                         )}
 
-                        {/* Game Controls - hide for already-played scenarios */}
-                        {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && (
+                        {/* Game Controls - hide for already-played scenarios and during victory animation */}
+                        {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
                           <div className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}>
                             <GameControls ref={gameControlsRef} />
                           </div>

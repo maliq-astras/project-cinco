@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
+import styles from './LanguageSwitchLoader.module.css';
 
 interface LanguageSwitchLoaderProps {
   isVisible: boolean;
@@ -18,13 +18,12 @@ interface LanguageSwitchLoaderProps {
  */
 export default function LanguageSwitchLoader({ isVisible }: LanguageSwitchLoaderProps) {
   const { colors } = useTheme();
-  const { t } = useTranslation();
 
   if (!isVisible) return null;
 
   return (
     <motion.div
-      className="fixed inset-0 bg-white dark:bg-black z-[9999] flex items-center justify-center"
+      className={styles.container}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -32,7 +31,7 @@ export default function LanguageSwitchLoader({ isVisible }: LanguageSwitchLoader
     >
       {/* Loading Circle */}
       <div 
-        className="w-16 h-16 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"
+        className={styles.loadingCircle}
         style={{
           borderTopColor: `var(--color-${colors.primary})`,
           borderRightColor: `var(--color-${colors.primary})`,

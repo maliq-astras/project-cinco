@@ -1,0 +1,71 @@
+/**
+ * CSS Modules for Timer component
+ * Contains static styles converted from Tailwind classes
+ */
+
+/* Outer container */
+.outerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 66px;
+  min-width: 60px;
+}
+
+.outerContainerHidden {
+  opacity: 0;
+}
+
+@media (min-width: 640px) {
+  .outerContainer {
+    height: 76px;
+    min-width: 80px;
+  }
+}
+
+/* Base styles shared by all timer variants */
+.baseClasses {
+  font-family: 'Iceberg', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Default timer variant - used in GameControls */
+.defaultTimer {
+  font-size: 1.125rem;
+  border-radius: 0.5rem;
+  height: 66px;
+  min-width: 60px;
+  border-width: 2px;
+}
+
+@media (min-width: 640px) {
+  .defaultTimer {
+    font-size: 1.25rem;
+    height: 76px;
+    min-width: 80px;
+  }
+}
+
+/* Square timer variant - used in other places */
+.squareTimer {
+  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
+  max-width: 150px;
+  max-height: 150px;
+  font-size: 1.875rem;
+  border-radius: 0.5rem;
+  border-width: 2px;
+}
+
+/* Final Five timer variant - square with border and semi-transparent background */
+.finalFiveTimer {
+  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
+  font-size: 1.875rem;
+  border-radius: 0.5rem;
+  border-width: 2px;
+}

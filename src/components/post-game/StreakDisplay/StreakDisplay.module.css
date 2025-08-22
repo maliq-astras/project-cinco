@@ -1,0 +1,166 @@
+/**
+ * CSS Modules for StreakDisplay component - All static styles
+ */
+
+/* Main container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* Flame and streak count section */
+.flameSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.flameIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.streakText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.streakNumber {
+  font-size: 1.875rem;
+  font-weight: 700;
+  font-family: var(--font-iceberg);
+}
+
+.streakLabel {
+  font-size: 0.875rem;
+  color: rgb(75 85 99);
+  font-weight: 500;
+}
+
+:global(.dark) .streakLabel {
+  color: rgb(156 163 175);
+}
+
+/* Weekly calendar section */
+.calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendarGrid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .calendarGrid {
+    gap: 0.75rem;
+  }
+}
+
+/* Individual day column */
+.dayColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dayLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgb(75 85 99);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+:global(.dark) .dayLabel {
+  color: rgb(156 163 175);
+}
+
+.dayIndicator {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+  position: relative;
+  border: 2px solid;
+}
+
+.checkmark {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  line-height: 1;
+}
+
+.completedSymbol {
+  color: rgb(22 101 52);
+}
+
+:global(.dark) .completedSymbol {
+  color: white;
+}
+
+.failedSymbol {
+  color: rgb(153 27 27);
+}
+
+:global(.dark) .failedSymbol {
+  color: white;
+}
+
+.completedDay {
+  /* Styles for completed days - will be applied via className */
+}
+
+.failedDay {
+  /* Styles for failed days - will be applied via className */
+}
+
+.missedDay {
+  /* Styles for missed days - will be applied via className */
+}
+
+.futureDay {
+  /* Styles for future days - will be applied via className */
+}
+
+.transparentDay {
+  background-color: transparent !important;
+}
+
+/* Explanation text */
+.explanation {
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+  text-align: center;
+  max-width: 20rem;
+  line-height: 1.625;
+}
+
+:global(.dark) .explanation {
+  color: rgb(107 114 128);
+}

@@ -1,13 +1,15 @@
 import { CSSProperties } from 'react';
+import styles from './EndGameMessage.module.css';
 
 export const endGameMessageStyles = {
-  container: "w-full flex justify-center items-center relative",
-  messageWrapper: "relative px-4",
-  messageContent: "text-xl sm:text-2xl font-display text-center flex flex-col items-center gap-4",
-  timeDisplay: "flex items-center gap-3 text-base",
-  shareIcon: "h-5 w-5 cursor-pointer hover:opacity-80 transition-opacity",
-  tomorrowMessage: "text-base font-medium mt-4",
-  confettiPiece: "absolute left-1/2 top-1/2",
+  // Static styles from CSS modules
+  container: styles.container,
+  messageWrapper: styles.messageWrapper,
+  messageContent: styles.messageContent,
+  timeDisplay: styles.timeDisplay,
+  shareIcon: styles.shareIcon,
+  tomorrowMessage: styles.tomorrowMessage,
+  confettiPiece: styles.confettiPiece,
   
   // Animations
   messageWrapperAnimation: {

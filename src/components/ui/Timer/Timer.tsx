@@ -9,7 +9,6 @@ interface TimerProps {
   seconds: number;
   isGameOver?: boolean;
   hasWon?: boolean;
-  isCompact?: boolean;
   isSquare?: boolean; // Square timer used in FinalFiveOptions
   finalFive?: boolean; // Special styling for Final Five screen
   className?: string;
@@ -23,7 +22,6 @@ const Timer: React.FC<TimerProps> = ({
   seconds, 
   isGameOver = false, 
   hasWon = false,
-  isCompact = false,
   isSquare = false,
   finalFive = false,
   className = ''
@@ -34,13 +32,11 @@ const Timer: React.FC<TimerProps> = ({
     timerStyle,
     timerAnimation,
     isVictoryAnimationActive,
-    outerContainerClass,
     timerRef
   } = useTimer({
     seconds,
     isGameOver,
     hasWon, 
-    isCompact,
     isSquare,
     finalFive,
     className

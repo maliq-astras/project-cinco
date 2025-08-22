@@ -1,17 +1,19 @@
+import styles from './IconContainer.module.css';
+
 /**
  * Extracted Tailwind classes for icon components
  */
 
 export const iconContainerStyles = {
-  // Base container styles
-  container: "aspect-square rounded-full flex items-center justify-center",
+  // Static styles from CSS modules
+  container: styles.container,
+  darkBackground: styles.darkBackground,
+  cardBackContainer: styles.cardBackContainer,
   
-  // Background classes
-  lightBackground: "", // Light mode background is handled via inline style
-  darkBackground: "dark:bg-gray-700",
-  
-  // Card back icon styles
-  cardBackContainer: "flex items-center justify-center",
+  // Size classes from CSS modules
+  small: styles.small,
+  medium: styles.medium,
+  large: styles.large,
 };
 
 /**

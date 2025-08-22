@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { iconImageStyles, getIconContainerBgStyle } from './IconContainer.styles';
+import { iconImageStyles, getIconContainerBgStyle, iconContainerStyles } from './IconContainer.styles';
 
 interface UseIconStylesProps {
   isRevealed: boolean;
-  category: string;
   iconFilter: string;
 }
 
@@ -13,7 +12,6 @@ interface UseIconStylesProps {
  */
 export function useIconStyles({
   isRevealed,
-  category,
   iconFilter
 }: UseIconStylesProps) {
   const { colors, darkMode } = useTheme();
@@ -21,11 +19,11 @@ export function useIconStyles({
   // Background style for the container
   const containerStyle = useMemo(() => {
     return getIconContainerBgStyle(isRevealed, colors.light);
-  }, [isRevealed, colors.light]);
+    }, [isRevealed, colors.light]);
   
   // Only add background for unrevealed icons
   const bgClass = useMemo(() => {
-    return isRevealed ? '' : 'dark:bg-gray-700';
+    return isRevealed ? '' : iconContainerStyles.darkBackground;
   }, [isRevealed]);
   
   // Style for the icon image

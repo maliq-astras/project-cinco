@@ -5,7 +5,7 @@ import { useEndGameMessage, GameOutcome } from './useEndGameMessage';
 import { endGameMessageStyles } from './EndGameMessage.styles';
 import { useTranslation } from 'react-i18next';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
-import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal/AnswerDetailsModal';
+import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal';
 import StreakDisplay from '@/components/post-game/StreakDisplay';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });

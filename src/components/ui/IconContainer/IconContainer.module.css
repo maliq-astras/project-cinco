@@ -1,0 +1,45 @@
+/**
+ * CSS Modules for IconContainer component - Static styles only
+ * Dynamic styles remain in IconContainer.styles.ts
+ */
+
+/* Base container styles */
+.container {
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark mode background */
+.darkBackground {
+  /* Dark mode background is handled via inline style */
+}
+
+:global(.dark) .darkBackground {
+  background-color: rgb(55 65 81);
+}
+
+/* Card back icon styles */
+.cardBackContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Size classes */
+.small {
+  width: 40%;
+  max-width: 80px;
+}
+
+.medium {
+  width: 28%;
+  max-width: 100px;
+}
+
+.large {
+  width: 35%;
+  max-width: 120px;
+}

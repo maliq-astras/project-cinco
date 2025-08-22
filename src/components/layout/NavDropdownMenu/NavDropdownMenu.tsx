@@ -20,6 +20,7 @@ interface NavDropdownMenuProps {
     secondary: string;
   };
   menuTitle?: string;
+  onClose: () => void;
 }
 
 /**
@@ -32,18 +33,28 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
   isOpen, 
   menuItems, 
   colors,
-  menuTitle = 'ui.navigation.menu' 
+  menuTitle = 'ui.navigation.menu',
+  onClose
 }) => {
   const { t } = useTranslation();
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  }, [onClose]);
   
   if (!isOpen) return null;
   
   return (
     <div 
+      ref={menuRef}
       className={navDropdownMenuStyles.menuContainer}
       style={navDropdownMenuStyles.menuContainerStyle(colors.primary)}
       role="menu"
       aria-label={t(menuTitle)}
+      onKeyDown={handleKeyDown}
     >
       {menuItems.map((item, index) => (
         <button

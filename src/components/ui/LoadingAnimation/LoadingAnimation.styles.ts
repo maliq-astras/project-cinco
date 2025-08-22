@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 import { COLOR_MAPPING } from '@/types';
 import { LOADING_PLACEHOLDER } from './useLoadingAnimation';
+import styles from './LoadingAnimation.module.css';
 
 // Constants for placeholder text colors
 const PLACEHOLDER_TEXT_COLORS = {
@@ -9,24 +10,24 @@ const PLACEHOLDER_TEXT_COLORS = {
 };
 
 export const loadingAnimationStyles = {
-  container: "fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center",
-  innerContainer: "flex flex-col items-center w-full h-full",
+  // Static styles from CSS module
+  container: styles.container,
+  innerContainer: styles.innerContainer,
+  logoContainer: styles.logoContainer,
+  logoWrapper: styles.logoWrapper,
+  centerLine: styles.centerLine,
+  categoryContainer: styles.categoryContainer,
+  categoryWrapper: styles.categoryWrapper,
+  categoryPlaceholder: styles.categoryPlaceholder,
+  loadingIndicatorContainer: styles.loadingIndicatorContainer,
+  loadingText: styles.loadingText,
+  skipButton: styles.skipButton,
   
-  // Logo area
-  logoContainer: "flex-1 flex items-end justify-center pb-6",
-  logoWrapper: "h-[180px] sm:h-[220px]",
-  
-  // Center line
-  centerLine: "w-full relative my-1",
+  // Dynamic styles
   animatedLine: (rgbColor: string): CSSProperties => ({
     height: "1px",
     backgroundColor: `rgba(${rgbColor}, 0.3)`
   }),
-  
-  // Category area
-  categoryContainer: "flex-1 flex flex-col items-center justify-start pt-6",
-  categoryWrapper: "relative overflow-hidden h-[80px] flex items-center justify-center px-8 w-full max-w-[400px]",
-  categoryPlaceholder: "h-[44px]",
   
   // Category text styling
   getCategoryStyle: (
@@ -55,7 +56,6 @@ export const loadingAnimationStyles = {
       const matches = colorClass.match(/([a-z]+)-(\d+)/);
       if (matches && matches[1] && matches[2]) {
         const colorFamily = matches[1];
-        const colorShade = matches[2];
         
         // Map using the unified color mapping system
         const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
@@ -91,7 +91,6 @@ export const loadingAnimationStyles = {
   },
   
   // Loading indicator
-  loadingIndicatorContainer: "mt-8 flex flex-col items-center",
   loadingSpinner: (rgbColor: string): CSSProperties => ({
     width: "2.5rem",
     height: "2.5rem",
@@ -102,10 +101,6 @@ export const loadingAnimationStyles = {
     marginBottom: "0.75rem",
     animation: "spin 1s linear infinite"
   }),
-  loadingText: "text-gray-600 dark:text-gray-300",
-  
-  // Skip button
-  skipButton: "absolute bottom-4 sm:bottom-8 right-4 sm:right-8 text-black dark:text-white text-xl sm:text-2xl md:text-3xl hover:opacity-70 transition-opacity px-2 py-1",
   
   // Animations
   logoAnimation: {
@@ -197,7 +192,6 @@ export const getShadowColor = (
     
     if (matches && matches[1] && matches[2]) {
       const colorFamily = matches[1];
-      const colorShade = matches[2];
       
       // Map using the unified color mapping system
       const highContrastFamily = COLOR_MAPPING[colorFamily as keyof typeof COLOR_MAPPING] || colorFamily;
@@ -265,7 +259,7 @@ export const getShadowColor = (
   
   // If the color isn't in the map, try to derive it from the base color
   if (!colorMap[color]) {
-    const [colorName, shade] = color.split('-');
+    const [colorName] = color.split('-');
     // Try different shades if the exact one isn't available
     const alternativeShades = ['500', '600', '400'];
     for (const altShade of alternativeShades) {

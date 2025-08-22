@@ -359,7 +359,7 @@ export const createFinalFiveSlice: StateCreator<
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
-          isGameOver: data.isCorrect
+          isGameOver: false // Don't set game over immediately - let bubble animation complete first
         },
         isProcessingGuess: false
       }));
@@ -383,8 +383,14 @@ export const createFinalFiveSlice: StateCreator<
         });
         
         setTimeout(() => {
-          set({ victoryAnimationStep: 'summary' });
-        }, 1500);
+          set({ 
+            victoryAnimationStep: 'summary',
+            gameState: {
+              ...get().gameState,
+              isGameOver: true
+            }
+          });
+        }, 2000); // Increased from 1500ms to 2000ms to allow bubble animation to complete
       }
     } catch (error) {
       console.error('Error verifying Final Five guess:', error);

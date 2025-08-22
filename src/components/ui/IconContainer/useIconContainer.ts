@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useIconSize } from './useIconSize';
 import { useIconStyles } from './useIconStyles';
 
@@ -19,8 +18,7 @@ export const useIconContainer = ({
   iconSize,
   category = 'countries'
 }: UseIconContainerProps) => {
-  // Get theme context
-  const { darkMode } = useTheme();
+
   
   // Get icon filter function
   const getFilter = useIconFilter();
@@ -54,7 +52,6 @@ export const useIconContainer = ({
     iconStyle 
   } = useIconStyles({
     isRevealed,
-    category: normalizedCategory,
     iconFilter
   });
   

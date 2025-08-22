@@ -30,7 +30,8 @@ export const useLoadingAnimation = ({
   onComplete,
   isChallengeFetched
 }: UseLoadingAnimationProps) => {
-  const { darkMode, getAdjustedColorClass, highContrastMode } = useTheme();
+  const { darkMode, highContrastMode, getAdjustedColorClass } = useTheme();
+  const { isBrowser, getCSSProperty } = useThemeDOM();
   const [mounted, setMounted] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -129,17 +130,10 @@ export const useLoadingAnimation = ({
 
   // Get the theme-adjusted primary color with adjustments for dark mode
   const getThemeAdjustedPrimaryColor = () => {
-    const { highContrastMode, getAdjustedColorClass, darkMode } = useTheme();
-    const { isBrowser, getCSSProperty } = useThemeDOM();
-    
     // First get the base color class
     const colorClass = darkMode ? 
       getAdjustedColorClass(currentColor.primary) : 
       currentColor.primary;
-    
-    // Get the category type from the current category
-    const categoryName = categories[currentIndex] || "COUNTRIES";
-    const categoryType = categoryNameToType[categoryName] || categoryNameToType.COUNTRIES;
     
     // Get RGB values from ThemeContext's helper
     let rgb;
@@ -191,8 +185,6 @@ export const useLoadingAnimation = ({
   
   // Helper to get color from document styles
   const getColorFromDocument = (colorClass: string): string => {
-    const { isBrowser, getCSSProperty } = useThemeDOM();
-    
     if (isBrowser) {
       // Try to get the color from CSS variables first
       const varName = `--color-${colorClass}-rgb`;

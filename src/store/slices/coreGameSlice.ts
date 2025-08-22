@@ -380,7 +380,7 @@ export const createCoreGameSlice: StateCreator<
           gameState: {
             ...state.gameState,
             guesses: newGuesses,
-            isGameOver: data.isCorrect
+            isGameOver: false // Don't set game over immediately - let bubble animation complete first
           },
           canRevealNewClue: true,
           canMakeGuess: false,
@@ -432,8 +432,14 @@ export const createCoreGameSlice: StateCreator<
 
       if (data.isCorrect) {
         setTimeout(() => {
-          set({ victoryAnimationStep: 'summary' });
-        }, 1500);
+          set({ 
+            victoryAnimationStep: 'summary',
+            gameState: {
+              ...get().gameState,
+              isGameOver: true
+            }
+          });
+        }, 2000); // Increased from 1500ms to 2000ms to allow bubble animation to complete
       }
     } catch (error) {
       console.error('Error verifying guess:', error);

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import styles from './WrongAnswerOverlay.module.css';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -153,14 +154,14 @@ export default function WrongAnswerOverlay({
     <AnimatePresence onExitComplete={onAnimationComplete}>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-md"
+          className={styles.overlay}
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
         >
           <motion.div
-            className="bg-white dark:bg-black rounded-2xl p-4 sm:p-8 md:p-10 lg:p-12 shadow-2xl border-4 mx-4 text-center w-80 sm:w-96 md:w-[28rem] lg:w-[32rem]"
+            className={styles.modal}
             style={{ 
               borderColor: `var(--color-${colors.primary})`,
               boxShadow: `0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 4px var(--color-${colors.primary})`
@@ -172,14 +173,14 @@ export default function WrongAnswerOverlay({
           >
             {/* X Marks Container */}
             <motion.div 
-              className="flex justify-center items-center mb-6 gap-1 sm:gap-2 md:gap-2.5 lg:gap-3"
+              className={styles.xMarksContainer}
               variants={pulseVariants}
               animate="pulse"
             >
               {xMarkSlots.map((_, index) => (
                 <motion.div
                   key={index}
-                  className="relative"
+                  className={styles.xMarkContainer}
                   variants={xMarkVariants}
                   initial="hidden"
                   animate={index < wrongGuessCount ? "visible" : "hidden"}
@@ -189,7 +190,7 @@ export default function WrongAnswerOverlay({
                   }}
                 >
                   <div
-                    className="rounded-full flex items-center justify-center border-4 shadow-lg w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16"
+                    className={styles.xMarkCircle}
                     style={{
                       backgroundColor: `var(--color-${colors.primary})`,
                       borderColor: `var(--color-${colors.accent})`,
@@ -197,7 +198,7 @@ export default function WrongAnswerOverlay({
                     }}
                   >
                     <motion.span
-                      className={`${righteous.className} text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl`}
+                      className={`${righteous.className} ${styles.xMarkText}`}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{
@@ -214,10 +215,9 @@ export default function WrongAnswerOverlay({
                   
                   {/* Glowing ring effect */}
                   <motion.div
-                    className="absolute inset-0 rounded-full"
+                    className={styles.glowingRing}
                     style={{
-                      backgroundColor: `var(--color-${colors.primary})`,
-                      opacity: 0.3
+                      backgroundColor: `var(--color-${colors.primary})`
                     }}
                     initial={{ scale: 1 }}
                     animate={{ scale: [1, 1.4, 1] }}
@@ -236,10 +236,10 @@ export default function WrongAnswerOverlay({
               variants={textVariants}
               initial="hidden"
               animate="visible"
-              className="space-y-4"
+              className={styles.textContent}
             >
               <motion.h2 
-                className={`${righteous.className} text-2xl sm:text-3xl font-bold uppercase`}
+                className={`${righteous.className} ${styles.title}`}
                 style={{ color: `var(--color-${colors.primary})` }}
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
@@ -255,7 +255,7 @@ export default function WrongAnswerOverlay({
 
               {/* Remaining guesses */}
               <motion.div
-                className="space-y-2"
+                className={styles.remainingGuesses}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -263,7 +263,7 @@ export default function WrongAnswerOverlay({
                   duration: 0.5
                 }}
               >
-                <p className="text-gray-700 dark:text-gray-300 text-lg">
+                <p className={styles.remainingGuessesText}>
                   {remainingGuesses > 0 
                     ? t('game.wrongAnswer.guessesLeft', { count: remainingGuesses, guesses: remainingGuesses })
                     : t('game.wrongAnswer.noGuessesLeft')
@@ -273,7 +273,7 @@ export default function WrongAnswerOverlay({
 
               {/* Progress indicator */}
               <motion.div
-                className="flex justify-center mt-6"
+                className={styles.progressIndicator}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{
@@ -281,11 +281,11 @@ export default function WrongAnswerOverlay({
                   duration: 0.5
                 }}
               >
-                <div className="flex space-x-2">
+                <div className={styles.progressDots}>
                   {Array.from({ length: maxGuesses }, (_, i) => (
                     <motion.div
                       key={i}
-                      className="w-3 h-3 rounded-full border-2"
+                      className={styles.progressDot}
                       style={{
                         backgroundColor: i < wrongGuessCount 
                           ? `var(--color-${colors.primary})` 

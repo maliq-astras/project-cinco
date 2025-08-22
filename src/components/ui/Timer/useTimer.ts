@@ -8,7 +8,6 @@ interface UseTimerProps {
   seconds: number;
   isGameOver?: boolean;
   hasWon?: boolean;
-  isCompact?: boolean;
   isSquare?: boolean;
   finalFive?: boolean;
   className?: string;
@@ -18,7 +17,6 @@ export const useTimer = ({
   seconds,
   isGameOver = false,
   hasWon = false,
-  isCompact = false,
   isSquare = false,
   finalFive = false,
   className = ''
@@ -68,7 +66,6 @@ export const useTimer = ({
     timerStyle,
     timerAnimation,
     isVictoryAnimationActive,
-    outerContainerClass: timerStyles.outerContainer(isVictoryAnimationActive),
     timerRef
   };
 }; 

@@ -17,6 +17,7 @@ export function useMainContainer() {
   const isTimerActive = useGameStore(state => state.isTimerActive);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
+  const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const gameOutcome = useGameStore(state => state.gameOutcome);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
@@ -260,6 +261,7 @@ export function useMainContainer() {
     finalFiveTransitionReason,
     colors,
     showGameMessage,
+    isVictoryAnimationActive,
     isChallengeLoading,
     isAlreadyPlayedScenario: !!todayGameData && gameState.revealedFacts.length === 0, // Flag to indicate we're showing already-played data without cards
     

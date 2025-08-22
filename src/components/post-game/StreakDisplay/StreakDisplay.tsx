@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useStreakDisplay } from './useStreakDisplay';
-import { streakDisplayStyles } from './StreakDisplay.styles';
+import styles from './StreakDisplay.module.css';
 import { useTranslation } from 'react-i18next';
 
 interface StreakDisplayProps {
@@ -71,11 +71,11 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
   
   return (
     <div
-      className={`${streakDisplayStyles.container} ${className}`}
+      className={`${styles.container} ${className}`}
     >
       {/* Flame icon and streak count */}
-      <div className={streakDisplayStyles.flameSection}>
-        <div className={streakDisplayStyles.flameIcon}>
+              <div className={styles.flameSection}>
+          <div className={styles.flameIcon}>
           <div 
             style={{ 
               width: '40px',
@@ -92,36 +92,36 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
             }}
           />
         </div>
-        <div className={streakDisplayStyles.streakText}>
+        <div className={styles.streakText}>
           <motion.span 
-            className={streakDisplayStyles.streakNumber}
+            className={styles.streakNumber}
             style={{ color: `var(--color-${colors.primary})` }}
           >
             {shouldAnimate ? displayValue : currentStreak}
           </motion.span>
-          <span className={streakDisplayStyles.streakLabel}>
+          <span className={styles.streakLabel}>
             {t('game.streak.dayStreak')}
           </span>
         </div>
       </div>
       
       {/* Weekly calendar */}
-      <div className={streakDisplayStyles.calendar}>
-        <div className={streakDisplayStyles.calendarGrid}>
+      <div className={styles.calendar}>
+        <div className={styles.calendarGrid}>
           {dayNames.map((day, index) => (
-            <div key={day} className={streakDisplayStyles.dayColumn}>
-              <div className={streakDisplayStyles.dayLabel}>
+            <div key={day} className={styles.dayColumn}>
+              <div className={styles.dayLabel}>
                 {day}
               </div>
                             <motion.div
-                className={`${streakDisplayStyles.dayIndicator} ${
+                className={`${styles.dayIndicator} ${
                   index < currentDay || (index === currentDay && showCurrentDaySymbol)
-                    ? (weeklyCompletions[index] === 'completed' ? streakDisplayStyles.completedDay :
-                       weeklyCompletions[index] === 'failed' ? streakDisplayStyles.failedDay :
-                       weeklyCompletions[index] === 'missed' ? streakDisplayStyles.missedDay :
-                       streakDisplayStyles.futureDay)
+                    ? (weeklyCompletions[index] === 'completed' ? styles.completedDay :
+                       weeklyCompletions[index] === 'failed' ? styles.failedDay :
+                       weeklyCompletions[index] === 'missed' ? styles.missedDay :
+                       styles.futureDay)
                     : index === currentDay && !showCurrentDaySymbol
-                    ? streakDisplayStyles.transparentDay
+                    ? styles.transparentDay
                     : ''
                 } border-gray-800`}
                 style={{
@@ -170,7 +170,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
               >
                 {weeklyCompletions[index] === 'completed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
                   <motion.div
-                    className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.completedSymbol}`}
+                    className={`${styles.checkmark} ${styles.completedSymbol}`}
                     initial={{ scale: 0, rotate: -90, opacity: 0 }}
                     animate={{ scale: 1, rotate: 0, opacity: 1 }}
                     transition={{ 
@@ -186,7 +186,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
                 )}
                 {weeklyCompletions[index] === 'failed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
                   <motion.div
-                    className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.failedSymbol}`}
+                    className={`${styles.checkmark} ${styles.failedSymbol}`}
                     initial={{ scale: 0, rotate: -90, opacity: 0 }}
                     animate={{ scale: 1, rotate: 0, opacity: 1 }}
                     transition={{ 
@@ -202,7 +202,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
                 )}
                 {weeklyCompletions[index] === 'missed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
                   <motion.div
-                    className={streakDisplayStyles.checkmark}
+                    className={styles.checkmark}
                     style={{ color: `var(--color-${colors.dark})` }}
                     initial={{ scale: 0, rotate: -90, opacity: 0 }}
                     animate={{ scale: 1, rotate: 0, opacity: 1 }}
