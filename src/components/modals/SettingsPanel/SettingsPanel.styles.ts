@@ -55,7 +55,7 @@ export const settingsPanelStyles = {
   }),
   toggleDot: (isOn: boolean): string => isOn ? "inline-block h-4 w-4 rounded-full bg-white transition-transform transform translate-x-5" : "inline-block h-4 w-4 rounded-full bg-white transition-transform transform translate-x-0.5",
   languageSelect: (darkMode: boolean, primaryColor: string): CSSProperties => ({
-    color: darkMode ? 'white' : `var(--color-${primaryColor})`,
+    color: darkMode ? 'white' : 'black',
     backgroundColor: darkMode ? 'transparent' : 'white',
   }),
   languageOption: (isSelected: boolean, primaryColor: string): CSSProperties => ({

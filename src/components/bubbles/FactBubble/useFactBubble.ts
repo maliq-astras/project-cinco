@@ -46,6 +46,10 @@ export function useFactBubble({
   const setHoveredFact = useGameStore(state => state.setHoveredFact);
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  const isGameOver = useGameStore(state => state.gameState.isGameOver);
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+  const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
+  const isPendingFinalFiveTransition = useGameStore(state => state.isPendingFinalFiveTransition);
   const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
   const getFilter = useIconFilter();
@@ -85,8 +89,8 @@ export function useFactBubble({
 
   // Check if bubble is clickable
   const isClickable = useMemo(() => 
-    isRevealed || canRevealNewClue, 
-  [isRevealed, canRevealNewClue]);
+    (isRevealed || canRevealNewClue) && !isGameOver && !isFinalFiveActive && !showFinalFiveTransition && !isPendingFinalFiveTransition, 
+  [isRevealed, canRevealNewClue, isGameOver, isFinalFiveActive, showFinalFiveTransition, isPendingFinalFiveTransition]);
 
   // Create particles for pop animation
   const particles = useParticles(8);

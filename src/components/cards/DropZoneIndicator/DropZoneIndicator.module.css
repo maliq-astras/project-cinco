@@ -9,12 +9,13 @@
   justify-content: center;
   pointer-events: none;
   z-index: 10;
-  background-color: hsl(var(--muted)); 
+  background-color: rgb(243 244 246); 
 }
 
-/* Dark mode - white dashes for contrast */
+/* Dark mode - white dashes for contrast and keep muted background */
 :global(.dark) .container {
   border-color: white;
+  background-color: hsl(var(--muted));
 }
 
 /* Text container styles */

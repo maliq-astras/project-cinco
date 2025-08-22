@@ -42,30 +42,24 @@ export const gameTutorialStyles = {
     };
   },
   spotlight: (spotlightStyles: { top: string; left: string; width: string; height: string }, isLogo: boolean = false, isDarkMode: boolean = false): CSSProperties => {
-    // Match border shape to mask shape (ellipse for logo, rounded rect for others)
+    // Use the same positioning as the mask for perfect alignment
     const y = parseFloat(spotlightStyles.top);
     const width = parseFloat(spotlightStyles.width);
     const height = parseFloat(spotlightStyles.height);
     const x = parseFloat(spotlightStyles.left);
     
-    // Ensure the spotlight border stays within viewport bounds
-    const borderPadding = 6;
-    const maxWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
-    const maxHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
-    
-    const adjustedX = Math.max(borderPadding, Math.min(x - borderPadding, maxWidth - width - borderPadding));
-    const adjustedY = Math.max(borderPadding, Math.min(y - borderPadding, maxHeight - height - borderPadding));
-    const adjustedWidth = Math.min(width + borderPadding * 2, maxWidth - adjustedX - borderPadding);
-    const adjustedHeight = Math.min(height + borderPadding * 2, maxHeight - adjustedY - borderPadding);
-    
     return {
-      top: adjustedY + 'px',
-      left: adjustedX + 'px',
-      width: adjustedWidth + 'px',
-      height: adjustedHeight + 'px',
+      top: y + 'px',
+      left: x + 'px',
+      width: width + 'px',
+      height: height + 'px',
       borderRadius: isLogo ? '12px' : '10px',
       pointerEvents: 'none' as const,
-      border: isDarkMode ? '3px solid rgba(255, 255, 255, 0.8)' : '3px solid white',
+      border: 'none',
+      outline: isDarkMode 
+        ? '3px solid rgba(255, 255, 255, 0.8)' 
+        : '3px solid white',
+      outlineOffset: '0px',
       boxShadow: isDarkMode 
         ? '0 0 20px 5px rgba(255, 255, 255, 0.5)' 
         : '0 0 20px 5px rgba(255, 255, 255, 0.8)',

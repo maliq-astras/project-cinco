@@ -121,12 +121,15 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
             {/* Hard Mode Badge */}
             <div className={navigationStyles.badgeContainer}>
               {(hardMode || isHardModeEnabled) && (
-                <div 
+                <motion.div 
                   className={isCompactHeader ? navigationStyles.compactHardModeBadgeText : navigationStyles.hardModeBadgeText}
                   style={navigationStyles.hardModeBadge(colors.primary)}
+                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                  animate={headerEntranceComplete ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -10 }}
+                  transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
                 >
                   {t('ui.settings.hardMode')}
-                </div>
+                </motion.div>
               )}
             </div>
             

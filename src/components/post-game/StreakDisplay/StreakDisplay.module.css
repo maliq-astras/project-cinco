@@ -117,18 +117,10 @@
 }
 
 .completedSymbol {
-  color: rgb(22 101 52);
-}
-
-:global(.dark) .completedSymbol {
   color: white;
 }
 
 .failedSymbol {
-  color: rgb(153 27 27);
-}
-
-:global(.dark) .failedSymbol {
   color: white;
 }
 

@@ -90,7 +90,7 @@
 }
 
 :global(.dark) .inputEnabled {
-  background-color: rgb(17 24 39);
+  background-color: hsl(var(--muted));
   color: rgb(243 244 246);
   border-color: rgb(55 65 81);
 }
@@ -101,7 +101,7 @@
 }
 
 :global(.dark) .inputDisabled {
-  background-color: rgb(31 41 55);
+  background-color: hsl(var(--muted));
 }
 
 /* Focus ring */
