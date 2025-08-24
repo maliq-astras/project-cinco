@@ -19,13 +19,28 @@ export const FactCardStackContainer: React.FC = () => {
     cardStackVisibilityClass,
     isHidden,
     factsAreaRef,
-    containerRef
+    containerRef,
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   } = useFactCardStackContainer();
 
   const isDragging = useDragState(state => state.isDragging);
 
+  // Create responsive container style
+  const responsiveContainerStyle = {
+    padding: `${responsiveValues.spacing}px`,
+    marginBottom: `${responsiveValues.spacing}px`
+  };
+
   return (
-    <div ref={containerRef} className={`fact-card-stack-container ${styles.container}`}>
+    <div 
+      ref={containerRef} 
+      className={`fact-card-stack-container ${styles.container}`}
+      style={responsiveContainerStyle}
+    >
       <div 
         ref={factsAreaRef}
         className={styles.innerContainer}
@@ -38,13 +53,16 @@ export const FactCardStackContainer: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <div className={`${cardStackVisibilityClass} ${styles.cardStackWrapper}`}
-             style={{ opacity: isHidden ? 0 : 1 }}>
-          <FactCardStack key="main-stack" />
+        {/* Conditionally render either FactCardStack OR DropZoneIndicator in the same spot */}
+        <div className={styles.cardStackWrapper}>
+          {isDragging ? (
+            <DropZoneIndicator isVisible={true} />
+          ) : (
+            <div className={cardStackVisibilityClass} style={{ opacity: isHidden ? 0 : 1 }}>
+              <FactCardStack key="main-stack" />
+            </div>
+          )}
         </div>
-
-        {/* Drop zone indicator */}
-        <DropZoneIndicator isVisible={isDragging} />
       </div>
     </div>
   );

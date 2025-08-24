@@ -49,7 +49,14 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
     handleSuggestionClick,
     handleFormSubmit,
     handleInputChange,
-    handleKeyDown
+    handleKeyDown,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   } = useInputBar({
     ref,
     setInputValue,
@@ -59,16 +66,22 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
     onSubmit
   });
 
-  // Auto-grow textarea functionality
+  // Auto-grow textarea functionality with responsive max height
+  const maxHeight = responsiveValues.inputBarHeight * 2; // Allow input to grow to 2x the base height
   useAutoGrowTextarea(
     inputRef as unknown as React.RefObject<HTMLTextAreaElement>,
     textareaShellRef as unknown as React.RefObject<HTMLDivElement>,
     inputValue,
-    { maxHeightPx: 120 }
+    { maxHeightPx: maxHeight }
   );
 
+  // Create responsive container style
+  const responsiveContainerStyle = {
+    gap: `${responsiveValues.spacing * 0.5}px`
+  };
+
   return (
-    <div className={inputBarStyles.container}>
+    <div className={inputBarStyles.container} style={responsiveContainerStyle}>
       <div ref={textareaShellRef} className={inputBarStyles.inputShell}>
         <form ref={formRef} onSubmit={handleFormSubmit}>
           {/* Autocomplete suggestions */}
@@ -79,7 +92,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
             primaryColor={colors.primary}
             isVisible={isAutocompleteEnabled && !isInputDisabled() && inputValue.length >= 2}
             inputRef={inputRef}
-                                  previousGuesses={gameState.guesses?.map((g: any) => g.guess) || []}
+            previousGuesses={gameState.guesses?.map((g: any) => g.guess) || []}
             onSelectionChange={setHasSuggestionSelected}
           />
           <textarea

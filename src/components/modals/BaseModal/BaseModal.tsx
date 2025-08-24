@@ -2,8 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { createPortal } from 'react-dom';
-import { deviceDetection } from '@/helpers/deviceHelpers';
 import { baseModalStyles } from './BaseModal.styles';
+import { useResponsive } from '@/hooks/responsive';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,10 +33,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
   mobileHeight = '75vh' // Default to 75vh if not provided
 }) => {
 
+  // Use our new responsive system
+  const { breakpoint, width } = useResponsive();
   
   // Use more inclusive mobile detection that matches FinalFiveModal behavior
-  const isMobile = typeof window !== 'undefined' ? 
-    (window.innerWidth < 768 || deviceDetection.isMobilePhone()) : false;
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm' || width < 768;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && !isMobile && dismissible) {

@@ -44,6 +44,56 @@
   }
 }
 
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .textBox {
+    padding: 1rem;
+  }
+  
+  .textBoxTitle {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .textBoxDescription {
+    font-size: 0.875rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .textBox {
+    padding: 0.75rem;
+  }
+  
+  .textBoxTitle {
+    font-size: 1rem;
+    margin-bottom: 0.375rem;
+  }
+  
+  .textBoxDescription {
+    font-size: 0.8rem;
+  }
+  
+  .progressContainer {
+    top: 2px;
+  }
+  
+  .progressDots {
+    gap: 0.375rem;
+    margin-top: 2px;
+  }
+  
+  .progressDot {
+    width: 0.25rem;
+    height: 0.25rem;
+  }
+  
+  .progressText {
+    font-size: 0.75rem;
+  }
+}
+
 .textBoxTitle {
   font-size: 1.125rem;
   font-weight: 600;

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CategoryType, ThemeColors, categoryColorMap, COLOR_MAPPING, CATEGORY_COLOR_MAPPING } from '../types';
 import { useGameStore } from '../store/gameStore';
-import { useThemeDOM } from '../hooks/useThemeDOM';
+import { useThemeDOM } from '../hooks/theme';
 
 // Default theme (Countries - blue)
 const defaultTheme: ThemeColors = categoryColorMap[CategoryType.COUNTRIES];

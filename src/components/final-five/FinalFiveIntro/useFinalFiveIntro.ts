@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useResponsive } from '@/hooks/responsive';
 
 interface UseFinalFiveIntroProps {
   reason: 'time' | 'guesses';
@@ -20,6 +21,12 @@ interface UseFinalFiveIntroReturn {
   isSlowConnection: boolean;
   showStartButton: boolean;
   retryCount: number;
+  // Responsive utilities
+  breakpoint: string;
+  heightBreakpoint: string;
+  isLandscape: boolean;
+  isPortrait: boolean;
+  responsiveValues: any;
 }
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {
@@ -28,6 +35,16 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   const hardMode = useGameStore(state => state.hardMode);
   const finalFiveOptions = useGameStore(state => state.gameState.finalFiveOptions);
+  
+  // Use our new responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
+  
   const autoStartTimer = null;
   const showCountdown = false;
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -145,6 +162,12 @@ export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): 
     isLoading,
     isSlowConnection,
     showStartButton,
-    retryCount
+    retryCount,
+    // Export responsive utilities
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues
   };
 }; 

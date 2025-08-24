@@ -11,9 +11,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import our professional responsive system */
-@import '../styles/responsive-system.css';
-
 /* Apply smooth transitions for theme changes and improve dark mode flashing */
 :root {
   color-scheme: light;

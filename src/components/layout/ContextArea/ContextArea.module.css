@@ -1,6 +1,6 @@
 /**
  * CSS Modules for ContextArea components
- * Leverages existing responsive system and provides cleaner text styling
+ * Uses standard CSS values - responsive sizing handled by JavaScript
  */
 
 /* Base text styling - much cleaner than Tailwind soup! */
@@ -22,49 +22,49 @@
   max-width: 32rem; /* 512px - equivalent to max-w-lg */
 }
 
-/* Responsive text sizes using your existing system */
+/* Base text sizes - will be overridden by JavaScript responsive system */
 .textXs {
   composes: text;
-  font-size: var(--font-xs);
+  font-size: 0.75rem; /* 12px */
 }
 
 .textSm {
   composes: text;
-  font-size: var(--font-sm);
+  font-size: 0.875rem; /* 14px */
 }
 
 .textMd {
   composes: text;
-  font-size: var(--font-base);
+  font-size: 1rem; /* 16px */
 }
 
 .textLg {
   composes: text;
-  font-size: var(--font-lg);
+  font-size: 1.125rem; /* 18px */
 }
 
 /* Responsive text sizing using media queries - smaller sizes for instructions */
 .responsiveText {
   composes: text;
-  font-size: var(--font-xs); /* Start smaller */
+  font-size: 0.75rem; /* Start smaller */
 }
 
 @media (min-width: 480px) {
   .responsiveText {
-    font-size: var(--font-sm); /* Smaller than before */
+    font-size: 0.875rem; /* Smaller than before */
   }
 }
 
 @media (min-width: 768px) {
   .responsiveText {
-    font-size: var(--font-base); /* Smaller than before */
+    font-size: 1rem; /* Smaller than before */
   }
 }
 
 /* Special handling for very small screens */
 @media (max-width: 330px) {
   .responsiveText {
-    font-size: var(--font-xs);
+    font-size: 0.75rem;
   }
 }
 

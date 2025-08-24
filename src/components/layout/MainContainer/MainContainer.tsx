@@ -20,6 +20,7 @@ import {
   WrongAnswerOverlay,
   LanguageSwitchLoader
 } from '@/components';
+import CompactHeader from '../CompactHeader';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LandscapeWarning from '../../layout/LandscapeWarning';
@@ -45,7 +46,8 @@ export default function MainContainer() {
     gameControlsRef,
     handleLoadingComplete,
     getGameMessageProps,
-    startFinalFive
+    startFinalFive,
+    heightBreakpoint
   } = useMainContainer();
   
   // Get responsive layout mode from the store
@@ -106,8 +108,15 @@ export default function MainContainer() {
         </div>
       ) : (
         <>
-          <Navigation headerEntranceComplete={headerEntranceComplete} />
-          <Header headerEntranceComplete={headerEntranceComplete} />
+          {/* Use CompactHeader for limited vertical space, regular Header+Navigation otherwise */}
+          {isTabletLandscape || heightBreakpoint === 'short' ? (
+            <CompactHeader headerEntranceComplete={headerEntranceComplete} />
+          ) : (
+            <>
+              <Navigation headerEntranceComplete={headerEntranceComplete} />
+              <Header headerEntranceComplete={headerEntranceComplete} />
+            </>
+          )}
 
           <main 
             className={`${isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} ${getResponsiveLayoutClasses()}`}

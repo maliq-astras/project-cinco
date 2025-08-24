@@ -66,6 +66,24 @@
   width: 100%;
   height: 100%;
   font-size: 1.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   border-width: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive adjustments for FinalFive timer to match card dimensions */
+@media (max-width: 480px) {
+  .finalFiveTimer {
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .finalFiveTimer {
+    font-size: 1.25rem;
+    border-radius: 0.5rem;
+  }
 }

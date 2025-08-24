@@ -7,7 +7,7 @@ import {
   shuffleArray
 } from '@/utils/loadingAnimationUtils';
 import { categoryColorMap } from '@/types';
-import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { useThemeDOM } from '@/hooks/theme';
 
 // Constants
 export const LOADING_PLACEHOLDER = "PLEASE WAIT...";

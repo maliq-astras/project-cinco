@@ -100,3 +100,40 @@
   width: 100%;
   height: 100%;
 }
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .optionText {
+    font-size: 1rem;
+  }
+  
+  .front {
+    border-radius: 0.5rem;
+  }
+  
+  .back {
+    border-radius: 0.5rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .optionText {
+    font-size: 0.875rem;
+  }
+  
+  .front {
+    border-radius: 0.5rem;
+  }
+  
+  .back {
+    border-radius: 0.5rem;
+  }
+  
+  .xOverlayContent {
+    width: 60%;
+    height: 60%;
+    max-width: 50px;
+    max-height: 50px;
+  }
+}

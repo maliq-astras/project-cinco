@@ -23,7 +23,12 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     isSkipConfirmActive,
     isTouchDevice,
     duplicateErrorRef,
-    skipMessageRef
+    skipMessageRef,
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   } = useGameControls(ref);
 
   const gameState = useGameStore(state => state.gameState);
@@ -31,8 +36,15 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const [hasSuggestionSelected, setHasSuggestionSelected] = useState(false);
 
+  // Create responsive container style
+  const responsiveContainerStyle = {
+    padding: `0 ${responsiveValues.spacing}px`,
+    paddingTop: `${responsiveValues.spacing}px`,
+    paddingBottom: `${responsiveValues.spacing}px`
+  };
+
   return (
-    <div id="game-controls" className={gameControlsStyles.container}>
+    <div id="game-controls" className={gameControlsStyles.container} style={responsiveContainerStyle}>
       <motion.div
         className={gameControlsStyles.wrapper}
         {...gameControlsStyles.wrapperAnimation}

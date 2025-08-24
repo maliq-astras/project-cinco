@@ -9,7 +9,6 @@ export interface UISlice {
   isReturningToStack: boolean;
   isCardAnimatingOut: boolean;
   shouldFocusInput: boolean;
-  windowWidth: number;
   scaleFactor: number;
   // Input presence flag (do not store the actual text)
   hasUserInput: boolean;
@@ -22,7 +21,6 @@ export interface UISlice {
   isAutocompleteEnabled: boolean;
   
   // Actions
-  setWindowWidth: (width: number) => void;
   setHoveredFact: (factIndex: number | null) => void;
   setShouldFocusInput: (shouldFocus: boolean) => void;
   setScaleFactor: (factor: number) => void;
@@ -46,7 +44,6 @@ export const createUISlice: StateCreator<
   isReturningToStack: false,
   isCardAnimatingOut: false,
   shouldFocusInput: false,
-  windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
   scaleFactor: 1, // Default scale factor (1 = 100%)
   hasUserInput: false,
   
@@ -58,7 +55,6 @@ export const createUISlice: StateCreator<
   isAutocompleteEnabled: false, // Default to disabled, like dark mode
   
   // Actions
-  setWindowWidth: (width: number) => set({ windowWidth: width }),
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
   setScaleFactor: (factor: number) => set({ scaleFactor: factor }),

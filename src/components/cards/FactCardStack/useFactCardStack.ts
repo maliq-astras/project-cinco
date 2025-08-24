@@ -3,9 +3,9 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCardStack } from '@/hooks/card';
 import { calculateCardPosition, getCardAnimationVariants } from '@/helpers/uiHelpers';
-import { deviceDetection } from '@/helpers/deviceHelpers';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useEffect } from 'react';
+import { useResponsive } from '@/hooks/responsive';
 
 /**
  * Hook for managing FactCardStack logic and interactions
@@ -18,11 +18,21 @@ export function useFactCardStack() {
   const viewingFact = useGameStore(state => state.viewingFact);
   const isReturningToStack = useGameStore(state => state.isReturningToStack);
   const isCardAnimatingOut = useGameStore(state => state.isCardAnimatingOut);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const { darkMode } = useTheme();
+  
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
+  } = useResponsive();
   
   // DOM refs for accessing card stack elements
   const { registerElement, unregisterElement } = useDOMRefs();
@@ -59,37 +69,35 @@ export function useFactCardStack() {
     };
   }, [cardStackHook.stackRef, cardStackHook.cardRefs, registerElement, unregisterElement]);
 
-  // Responsive card sizes based on screen width
-  const getCardSize = () => {
-    // Special case for iPad Air landscape - needs smaller cards to fit
-    if (deviceDetection.isIpadAirLandscape()) {
-      return { width: 100, height: 150 }; // Smaller cards for iPad Air landscape
+  // Responsive card sizes using our new system - sized to fit within drop zone
+  const cardSize = useMemo(() => {
+    // Use responsive values for card sizing
+    const baseSize = responsiveValues.cardSize;
+    
+    // Adjust for different breakpoints while maintaining aspect ratio
+    const aspectRatio = baseSize.height / baseSize.width;
+    
+    // Increased sizes since drop zone now has proper height
+    if (breakpoint === 'xs') {
+      return { width: Math.round(80 * 1.15), height: Math.round(80 * aspectRatio * 1.1) };
+    } else if (breakpoint === 'sm') {
+      return { width: Math.round(90 * 1.15), height: Math.round(90 * aspectRatio * 1.1) };
+    } else if (breakpoint === 'md') {
+      return { width: Math.round(100 * 1.15), height: Math.round(100 * aspectRatio * 1.1) };
+    } else if (breakpoint === 'lg') {
+      return { width: Math.round(110 * 1.15), height: Math.round(110 * aspectRatio * 1.1) };
+    } else {
+      return { width: Math.round(120 * 1.15), height: Math.round(120 * aspectRatio * 1.1) };
     }
-    
-    // iPhone-specific sizes (around 390-430px width)
-    if (windowWidth >= 375 && windowWidth <= 430) return { width: 90, height: 135 }; 
-    
-    // General sizes
-    if (windowWidth < 360) return { width: 85, height: 128 }; // Extra small mobile
-    if (windowWidth < 480) return { width: 90, height: 135 }; // Small mobile
-    if (windowWidth < 640) return { width: 100, height: 150 }; // Mobile
-    if (windowWidth < 768) return { width: 110, height: 165 }; // Small tablets
-    if (windowWidth < 1024) return { width: 120, height: 180 }; // Tablets
-    return { width: 140, height: 200 }; // Desktop
-  };
-
-  const cardSize = getCardSize();
+  }, [responsiveValues.cardSize, breakpoint]);
   
-  // Height of the container
+  // Height of the container using responsive values
   const getContainerHeight = () => {
-    // iPhone-specific height
-    if (windowWidth >= 375 && windowWidth <= 430) return 150;
+    // Use responsive spacing for container height
+    const baseHeight = responsiveValues.cardSize.height;
+    const spacing = responsiveValues.spacing;
     
-    if (windowWidth < 360) return 145; // Extra small devices
-    if (windowWidth < 480) return 155; // Small devices
-    if (windowWidth < 640) return 170; // Medium-small devices
-    if (windowWidth < 768) return 180; // Medium devices
-    return 220; // Large devices
+    return baseHeight + (spacing * 2);
   };
 
   // Handle card click event to open a card
@@ -150,13 +158,16 @@ export function useFactCardStack() {
       index, 
       visibleStackFacts.length, 
       isHovered, 
-      cardStackHook.hoveredCardIndex
+      cardStackHook.hoveredCardIndex,
+      breakpoint
     );
     
-    // Scale hover effect based on screen size
+    // Scale hover effect based on responsive breakpoint
     const getHoverTranslateY = () => {
-      if (windowWidth < 480) return -15; // Less dramatic on small screens
-      if (windowWidth < 768) return -20;
+      if (breakpoint === 'xs') return -15; // Less dramatic on small screens
+      if (breakpoint === 'sm') return -18;
+      if (breakpoint === 'md') return -20;
+      if (breakpoint === 'lg') return -25;
       return -30; // Full effect on larger screens
     };
     
@@ -220,14 +231,14 @@ export function useFactCardStack() {
   const containerStyles = {
     main: {
       minHeight: `${getContainerHeight()}px`, 
-      paddingTop: '1rem', 
-      paddingBottom: '1rem'
+      paddingTop: `${responsiveValues.spacing}px`, 
+      paddingBottom: `${responsiveValues.spacing}px`
     },
     inner: {
       perspective: '1000px',
       transform: `rotateX(${cardStackHook.handPosition.y * -3}deg) rotateY(${cardStackHook.handPosition.x * 5}deg)`,
       width: '100%',
-      height: `${getContainerHeight() - 20}px`
+      height: `${getContainerHeight() - (responsiveValues.spacing * 2)}px`
     }
   };
 
@@ -251,6 +262,15 @@ export function useFactCardStack() {
     
     // Animation helpers
     getCardVariants,
-    victoryVariants
+    victoryVariants,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   };
 } 

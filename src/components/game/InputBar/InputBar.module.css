@@ -118,3 +118,39 @@
 .hideScrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .inputShell {
+    height: 60px;
+  }
+  
+  .inputBase {
+    min-height: 40px;
+    padding: 0.375rem;
+    padding-right: 3.5rem;
+  }
+  
+  .submitButton {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.3rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .inputShell {
+    height: 56px;
+  }
+  
+  .inputBase {
+    min-height: 36px;
+    padding: 0.25rem;
+    padding-right: 3rem;
+  }
+  
+  .submitButton {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.25rem;
+  }
+}

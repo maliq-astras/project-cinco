@@ -15,7 +15,6 @@ export function useBubbleContext() {
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const { colors, darkMode } = useTheme();
   const hasUserInput = useGameStore(state => state.hasUserInput);
 
@@ -53,7 +52,6 @@ export function useGameInstructions() {
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const isGameOver = useGameStore(state => state.gameState.isGameOver);
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const { colors, darkMode } = useTheme();
   const hasUserInput = useGameStore(state => state.hasUserInput);
   const [isTouchDevice, setIsTouchDevice] = useState(false);

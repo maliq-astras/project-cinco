@@ -46,7 +46,11 @@ export default function FinalFiveCard({
     handleMouseUp,
     handleMouseEnter,
     handleMouseLeave,
-    getBackCardStyle
+    getBackCardStyle,
+    width,
+    height,
+    isLandscape,
+    responsiveValues
   } = useFinalFiveCard({
     isGameOver,
     allCardsFlipped,
@@ -56,8 +60,8 @@ export default function FinalFiveCard({
     isCorrect
   });
 
-  // Get dimensions for the card based on device
-  const cardDimensions = finalFiveCardStyles.getDimensions();
+  // Get dimensions for the card based on responsive values
+  const cardDimensions = finalFiveCardStyles.getDimensions(width, height, isLandscape);
 
   return (
     <motion.div 

@@ -3,6 +3,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { GameState } from '@/helpers/gameLogic';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 
 interface MenuItem {
   label: string;
@@ -28,6 +29,17 @@ export const useNavigation = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isBugReportModalOpen, setIsBugReportModalOpen] = useState(false);
+  
+  // Use our new unified responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
+  } = useResponsive();
   
   // Use state from gameStore instead of local state
   const isGameOver = useGameStore((state: GameStoreState) => state.gameState.isGameOver);
@@ -168,6 +180,15 @@ export const useNavigation = () => {
     closeTutorial,
     setIsFeedbackModalOpen,
     setIsBugReportModalOpen,
-    handleClickOutside // Now returns the handler for component use
+    handleClickOutside, // Now returns the handler for component use
+    
+    // Responsive values from our new system
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
   };
 }; 

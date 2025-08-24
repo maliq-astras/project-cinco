@@ -41,3 +41,18 @@
 }
 
 /* Shadow classes are handled by Tailwind dynamically */
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .container {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+}

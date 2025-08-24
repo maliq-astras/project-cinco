@@ -1,8 +1,8 @@
 import { useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { Fact } from '@/types';
-import { getBubbleSize, getGapSize } from '@/helpers';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 
 interface BubbleGridItem {
   key: string;
@@ -20,8 +20,20 @@ export function useFactBubbleGrid() {
   // Access state from the store
   const challenge = useGameStore(state => state.gameState.challenge);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+  
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    willFit,
+    availableContentHeight
+  } = useResponsive();
   
   // DOM refs for tutorial targeting
   const bubbleGridRef = useRef<HTMLDivElement>(null);
@@ -75,8 +87,6 @@ export function useFactBubbleGrid() {
     };
   }, [registerElement, unregisterElement]);
 
-
-  
   // Animation variants for the bubbles
   const animationProps = (slotIndex: number) => ({
     initial: { scale: 0.9, opacity: 0 },
@@ -95,25 +105,23 @@ export function useFactBubbleGrid() {
     }
   });
   
-  // Get window height for responsive sizing
-  const windowHeight = window.innerHeight;
-  
-  // Calculate bubble and gap sizes using responsive helpers
-  const bubbleSizeValue = getBubbleSize(windowHeight);
-  const gapSizeValue = getGapSize(windowHeight);
-  
-  // Use full available width to ensure proper centering
-  const containerWidth = windowWidth - 32; // Account for page padding
-  
-  // Use the calculated bubble size (CSS handles the grid layout)
-  const finalBubbleSize = bubbleSizeValue;
-  
   return {
     gridItems,
-    bubbleSize: finalBubbleSize,
-    gapSize: gapSizeValue,
+    bubbleSize: responsiveValues.bubbleSize,
+    gapSize: responsiveValues.bubbleSpacing,
     animationProps,
     isVictoryAnimationActive,
-    bubbleGridRef
+    bubbleGridRef,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    willFit,
+    availableContentHeight
   };
 } 

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
-import { useFluidResponsive } from '@/hooks/ui';
+import { useResponsive } from '@/hooks/responsive';
 
 interface TutorialStep {
   target: string;
@@ -103,9 +103,16 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
   // Use the centralized DOM refs system
   const { registerElement, unregisterElement, getElement } = useDOMRefs();
 
-  // Use the existing fluid responsive hook for viewport dimensions
-  const { width, height } = useFluidResponsive();
-
+  // Use the new responsive hook for viewport dimensions and responsive values
+  const { 
+    width, 
+    height, 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
 
 
   // Reset step when tutorial is closed and manage timer pausing
@@ -226,6 +233,14 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
       ? t('tutorial.navigation.finish')
       : t('tutorial.navigation.continue'),
     registerElement,
-    unregisterElement
+    unregisterElement,
+    // Export responsive utilities
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues
   };
 }; 

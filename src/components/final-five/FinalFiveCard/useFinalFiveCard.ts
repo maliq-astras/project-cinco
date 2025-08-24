@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { finalFiveCardStyles } from './FinalFiveCard.styles';
+import { useResponsive } from '@/hooks/responsive';
 
 interface UseFinalFiveCardProps {
   isGameOver: boolean;
@@ -22,6 +23,14 @@ interface UseFinalFiveCardReturn {
   handleMouseEnter: () => void;
   handleMouseLeave: () => void;
   getBackCardStyle: (backBg: string, textColor: string) => React.CSSProperties;
+  // Responsive utilities
+  width: number;
+  height: number;
+  breakpoint: string;
+  heightBreakpoint: string;
+  isLandscape: boolean;
+  isPortrait: boolean;
+  responsiveValues: any;
 }
 
 export function useFinalFiveCard({
@@ -35,6 +44,17 @@ export function useFinalFiveCard({
   // Local state for interaction
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  
+  // Use our new responsive system
+  const { 
+    width,
+    height,
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
   
   // Check if time ran out - happens when game is over but no option was selected
   const timeRanOut = isGameOver && !selectedOption;
@@ -125,6 +145,14 @@ export function useFinalFiveCard({
     handleMouseUp,
     handleMouseEnter,
     handleMouseLeave,
-    getBackCardStyle
+    getBackCardStyle,
+    // Export responsive utilities
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues
   };
 } 
