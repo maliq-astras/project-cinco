@@ -1,12 +1,11 @@
 import styles from './FinalFiveModal.module.css';
-import { deviceDetection } from '@/helpers/deviceHelpers';
 
 /**
  * Hybrid styles for FinalFiveModal component
  * 
  * This file acts as a bridge between the component and CSS modules:
  * - Static styles are imported from FinalFiveModal.module.css
- * - Dynamic styles use functions for device detection and responsive behavior
+ * - Dynamic styles use functions for responsive behavior
  */
 
 export const finalFiveStyles = {
@@ -27,19 +26,21 @@ export const finalFiveStyles = {
   loadingSpinner: styles.loadingSpinner,
   
   // Dynamic styles 
-  getCardGrid: () => {
-    // Surface Duo specific layouts
-    if (typeof window !== 'undefined' && deviceDetection.isSurfaceDuo()) {
-      // Check if we're in landscape mode (wider than tall)
-      if (window.innerWidth > window.innerHeight) {
-        return "grid grid-cols-3 grid-rows-2 gap-3 mb-6 mx-auto max-w-[650px]";
-      }
-      // Portrait mode layout
-      return "grid grid-cols-2 gap-4 mb-6 mx-auto max-w-[420px]";
+  getCardGrid: (width: number, height: number, isLandscape: boolean) => {
+    // Responsive grid layout
+    if (width <= 480) {
+      // Extra small screens - 2x3 grid
+      return "grid grid-cols-2 gap-3 mb-4 mx-auto max-w-[320px] px-2";
+    } else if (width <= 768) {
+      // Small screens - 2x3 grid
+      return "grid grid-cols-2 gap-4 mb-6 mx-auto max-w-[420px] px-2";
+    } else if (isLandscape && height <= 600) {
+      // Landscape with low height - 3x2 grid
+      return "grid grid-cols-3 grid-rows-2 gap-3 mb-4 mx-auto max-w-[650px]";
+    } else {
+      // Medium+ screens - 3x2 grid
+      return "grid grid-cols-3 grid-rows-2 gap-4 mb-6 mx-auto max-w-[600px]";
     }
-    
-    // Default layout: full width on mobile, constrained center on md+
-    return "grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mx-auto w-full md:max-w-[600px] px-2 md:px-0";
   },
   
   // Card styles 
@@ -67,27 +68,34 @@ export const finalFiveStyles = {
       }
     },
     
-    // Get card dimensions adjusted for Surface Duo
-    getDimensions: () => {
-      if (typeof window !== 'undefined' && deviceDetection.isSurfaceDuo()) {
-        // Special dimensions for Surface Duo in landscape mode
-        if (window.innerWidth > window.innerHeight) {
-          return {
-            minHeight: "120px",
-            maxWidth: "150px"
-          };
-        }
-        // Surface Duo portrait dimensions
+    // Get card dimensions - use same responsive logic as FinalFiveCard
+    getDimensions: (width: number, height: number, isLandscape: boolean) => {
+      // Responsive dimensions based on breakpoints - same as FinalFiveCard
+      if (width <= 480) {
+        // Extra small screens
         return {
-          minHeight: "90px",
-          maxWidth: "140px"
+          minHeight: isLandscape ? "80px" : "90px",
+          maxWidth: isLandscape ? "120px" : "140px"
+        };
+      } else if (width <= 768) {
+        // Small screens
+        return {
+          minHeight: isLandscape ? "90px" : "100px",
+          maxWidth: isLandscape ? "130px" : "150px"
+        };
+      } else if (width <= 1024) {
+        // Medium screens
+        return {
+          minHeight: "100px",
+          maxWidth: "160px"
+        };
+      } else {
+        // Large screens
+        return {
+          minHeight: "110px",
+          maxWidth: "170px"
         };
       }
-      
-      return {
-        minHeight: "100px",
-        maxWidth: "160px"
-      };
     }
   },
   

@@ -1,15 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
-import Logo from '../../layout/Logo';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGameStore } from '@/store/gameStore';
 import { useLoadingAnimation } from './useLoadingAnimation';
 import { loadingAnimationStyles } from './LoadingAnimation.styles';
-import { getCategoryName } from '@/helpers/i18nHelpers';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { useThemeDOM } from '@/hooks/theme';
+import Logo from '../../layout/Logo';
+import { Righteous } from 'next/font/google';
+import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
+import { getCategoryName } from '../../../helpers/i18nHelpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 

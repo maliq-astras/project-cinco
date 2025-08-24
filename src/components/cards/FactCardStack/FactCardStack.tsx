@@ -33,7 +33,14 @@ export default function FactCardStack() {
     isCardClickable,
     
     // Animation helpers
-    getCardVariants
+    getCardVariants,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   } = useFactCardStack();
 
   return (

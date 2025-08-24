@@ -36,7 +36,12 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     containerRef,
     setSelectedIndex,
     setSuggestions,
-    getPosition
+    getPosition,
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   } = useAutocomplete({
     category,
     query,

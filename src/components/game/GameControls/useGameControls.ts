@@ -5,6 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { showToastMessageFromElement } from '@/helpers/uiHelpers';
 import { isDuplicateGuess } from '@/helpers/gameLogic';
 import { InputBarHandle } from '../InputBar';
+import { useResponsive } from '@/hooks/responsive';
 
 export interface GameControlsHandle {
   focusInput: () => void;
@@ -26,6 +27,17 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const { colors } = useTheme();
+  
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
+  } = useResponsive();
   
   // Create refs for toast elements
   const duplicateErrorRef = useRef<HTMLDivElement>(null);
@@ -128,6 +140,15 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     isSkipConfirmActive,
     isTouchDevice,
     duplicateErrorRef,
-    skipMessageRef
+    skipMessageRef,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   };
 }; 

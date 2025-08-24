@@ -34,6 +34,11 @@ export default function FinalFiveModal() {
     timerReachedZero,
     correctAnswer,
     
+    // Responsive values
+    width,
+    height,
+    isLandscape,
+    
     // Styles and helpers
     themeColor,
     primaryColorClass,
@@ -191,7 +196,7 @@ export default function FinalFiveModal() {
             </div>
             
             {/* Grid of cards - 3-2 layout with timer in the bottom center */}
-            <div className={finalFiveStyles.getCardGrid()}>
+            <div className={finalFiveStyles.getCardGrid(width, height, isLandscape)}>
               {options.map((option: string, index: number) => {
                 const { frontBg, backBg, textColor } = getCardStyles(option);
                 
@@ -226,8 +231,8 @@ export default function FinalFiveModal() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.5 }}
                   style={{ 
-                    minHeight: finalFiveStyles.card.getDimensions().minHeight,
-                    maxWidth: finalFiveStyles.card.getDimensions().maxWidth,
+                    minHeight: finalFiveStyles.card.getDimensions(width, height, isLandscape).minHeight,
+                    maxWidth: finalFiveStyles.card.getDimensions(width, height, isLandscape).maxWidth,
                     margin: "0 auto"
                   }}
                 >

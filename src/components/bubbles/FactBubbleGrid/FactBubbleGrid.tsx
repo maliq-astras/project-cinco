@@ -16,19 +16,41 @@ const FactBubbleGrid: React.FC = () => {
     bubbleSize,
     gapSize,
     animationProps,
-    bubbleGridRef
+    bubbleGridRef,
+    responsiveValues,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    willFit,
+    availableContentHeight
   } = useFactBubbleGrid();
 
+  // Create responsive container style
+  const containerStyle = {
+    '--bubble-size': `${bubbleSize}px`,
+    '--bubble-spacing': `${gapSize}px`,
+    '--grid-margin-top': `${responsiveValues.spacing}px`
+  } as React.CSSProperties;
+
+  // Check if grid will fit in available height
+  const gridHeight = (2 * bubbleSize) + gapSize;
+  const willGridFit = willFit.bubbleGrid(gridHeight);
+
+  // Calculate responsive scale if grid doesn't fit
+  const gridScale = willGridFit ? 1 : Math.min(0.9, availableContentHeight / gridHeight);
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={containerStyle}>
       <div 
         ref={bubbleGridRef}
         id="bubble-grid"
         className={styles.grid}
         style={{
-          '--bubble-size': `${bubbleSize}px`,
-          '--bubble-gap': `${gapSize}px`
-        } as React.CSSProperties}
+          // Add responsive adjustments if grid doesn't fit
+          transform: gridScale !== 1 ? `scale(${gridScale})` : undefined,
+          transformOrigin: 'center'
+        }}
       >
         {gridItems.map(item => {
           // For empty slots, render a placeholder

@@ -34,19 +34,21 @@ export const factCardStackStyles = {
     clickable: "" 
   },
   
-  // Card positioning 
+  // Card positioning - now simplified since cards are in the same container as drop zone
   getCardPosition: (
     cardSize: { width: number; height: number },
     index: number,
     totalCards: number
-  ): CSSProperties => ({
-    transformOrigin: 'bottom center',
-    left: `calc(50% - ${cardSize.width / 2}px)`,
-    bottom: '0px',
-    width: `${cardSize.width}px`,
-    height: `${cardSize.height}px`,
-    zIndex: totalCards - index
-  }),
+  ): CSSProperties => {
+    return {
+      transformOrigin: 'bottom center',
+      left: `calc(50% - ${cardSize.width / 2}px)`,
+      bottom: '0px', // Cards sit at the bottom of the drop zone
+      width: `${cardSize.width}px`,
+      height: `${cardSize.height}px`,
+      zIndex: totalCards - index
+    };
+  },
 } as const;
 
 /**

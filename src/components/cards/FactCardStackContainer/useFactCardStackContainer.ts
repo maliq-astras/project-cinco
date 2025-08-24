@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useDragState } from '@/hooks/ui';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 
 /**
  * Hook for managing the container around the fact card stack
@@ -10,9 +11,20 @@ export function useFactCardStackContainer() {
   // Access state from the store
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const challenge = useGameStore(state => state.gameState.challenge);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
+
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    availableContentHeight
+  } = useResponsive();
 
   const isDragging = useDragState(state => state.isDragging);
   const wasFactRevealed = useDragState(state => state.wasFactRevealed);
@@ -39,24 +51,33 @@ export function useFactCardStackContainer() {
     };
   }, [registerElement, unregisterElement]);
 
-  // Calculate container styles
+  // Calculate container styles using our responsive system
   const containerStyles = useMemo(() => {
-    // Calculate the appropriate height based on screen size
-    const getResponsiveHeight = () => {
-      // iPhone-specific height
-      if (windowWidth >= 375 && windowWidth <= 430) return 150;
+    // Calculate optimal container height based on available space
+    const calculateOptimalHeight = () => {
+      // Reserve more space for other UI elements (header, bubbles, controls)
+      const reservedSpace = isLandscape ? 450 : 400; // More space reserved in landscape
+      const availableSpace = Math.max(0, height - reservedSpace);
       
-      if (windowWidth < 360) return 140; // Extra small devices
-      if (windowWidth < 480) return 150; // Small devices
-      if (windowWidth < 640) return 170; // Medium devices
-      if (windowWidth < 768) return 180; // Medium-large devices
-      return 220; // Large devices
+      // Use a smaller percentage of available space for the card stack
+      const heightPercentage = isLandscape ? 0.2 : 0.25; // Less space in landscape
+      const calculatedHeight = Math.max(availableSpace * heightPercentage, 150);
+      
+      // Set more conservative bounds
+      const minHeight = 120;
+      const maxHeight = isLandscape ? 200 : 250;
+      
+      return Math.max(minHeight, Math.min(maxHeight, calculatedHeight));
     };
 
+    const optimalHeight = calculateOptimalHeight();
+
     return {
-      height: `${getResponsiveHeight()}px`
+      height: `${optimalHeight}px`,
+      minHeight: `${optimalHeight}px`,
+      marginTop: `${responsiveValues.spacing * 1.5}px` // Reduced spacing
     };
-  }, [windowWidth]);
+  }, [height, isLandscape, responsiveValues]);
 
   // Handle delayed showing of cards
   useEffect(() => {
@@ -98,6 +119,16 @@ export function useFactCardStackContainer() {
     
     // DOM refs
     factsAreaRef,
-    containerRef
+    containerRef,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    availableContentHeight
   };
 } 

@@ -51,3 +51,25 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .suggestionButton {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .suggestionText {
+    font-size: 0.8rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .suggestionButton {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .suggestionText {
+    font-size: 0.8rem;
+  }
+}

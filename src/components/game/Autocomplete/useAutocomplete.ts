@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { CategoryType } from '@/types';
 import { getAutocompleteSuggestions, Language } from '@/helpers/autocompleteHelper';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useResponsive } from '@/hooks/responsive';
 
 interface AutocompleteSuggestion {
   text: string;
@@ -28,6 +29,18 @@ export const useAutocomplete = ({
   onSelectionChange
 }: UseAutocompleteProps) => {
   const { language } = useLanguage();
+  
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
+  } = useResponsive();
+  
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputFocused, setInputFocused] = useState(false);
@@ -166,23 +179,26 @@ export const useAutocomplete = ({
     return () => inputElement.removeEventListener('keydown', handleKeyDown as EventListener);
   }, [isVisible, suggestions, selectedIndex, onSuggestionClick, inputRef]);
 
-  // Position the autocomplete above the input
+  // Position the autocomplete above the input using responsive values
   const getPosition = () => {
     if (!inputRef.current) return {};
     
     const inputRect = inputRef.current.getBoundingClientRect();
-    const isSmallPhone = window.innerWidth <= 375;
+    const isSmallScreen = breakpoint === 'xs' || breakpoint === 'sm';
     
+    // Calculate responsive width based on breakpoint
     const desktopWidth = Math.max(inputRect.width, 320);
-    const leftPosition = isSmallPhone 
-      ? 16 
+    const mobileWidth = width - (responsiveValues.spacing * 2); // Account for margins
+    
+    const leftPosition = isSmallScreen 
+      ? responsiveValues.spacing 
       : inputRect.left - (desktopWidth - inputRect.width) / 2; // Center the wider box above the input
     
     return {
       position: 'fixed' as const,
       left: leftPosition,
-      bottom: window.innerHeight - inputRect.top + 6, // attach to the top of the textarea since it will translateY upwards
-      width: isSmallPhone ? window.innerWidth - 32 : desktopWidth,
+      bottom: height - inputRect.top + 6, // attach to the top of the textarea since it will translateY upwards
+      width: isSmallScreen ? mobileWidth : desktopWidth,
       zIndex: 58
     };
   };
@@ -194,6 +210,15 @@ export const useAutocomplete = ({
     containerRef,
     setSelectedIndex,
     setSuggestions,
-    getPosition
+    getPosition,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   };
 };

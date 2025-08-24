@@ -3,8 +3,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES, useLanguage, Language } from '@/contexts/LanguageContext';
-import { deviceDetection } from '@/helpers/deviceHelpers';
 import { useBodyScrollLock } from '@/hooks/ui/useBodyScrollLock';
+import { useResponsive } from '@/hooks/responsive';
 
 // Format languages for display in the dropdown
 export const languages = [
@@ -23,6 +23,15 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   const { t } = useTranslation();
   const { language, changeLanguage, isLanguageLocked } = useLanguage();
   
+  // Use our new responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
+  
   // Use separate selectors for each state value to avoid the infinite loop
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
   const setHardModeEnabled = useGameStore(state => state.setHardModeEnabled);
@@ -34,7 +43,9 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   // These would be hooked up to actual state management in a real implementation
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
-  const [isMobile, setIsMobile] = useState(false);
+  
+  // Use responsive breakpoint for mobile detection
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
   
   // Language dropdown state
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
@@ -48,30 +59,6 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   useEffect(() => {
     setSelectedLanguage(language);
   }, [language]);
-  
-  // Detect if we're on a mobile device
-  useEffect(() => {
-    const checkIfMobile = () => {
-      if (typeof window === 'undefined') {
-        setIsMobile(false);
-        return;
-      }
-      
-      // Use more inclusive mobile detection for consistent modal behavior
-      const isMobileWidth = window.innerWidth < 768;
-      const isActualMobile = deviceDetection.isMobilePhone();
-      
-      // Use mobile animations for both actual mobile phones and smaller tablet screens
-      setIsMobile(isMobileWidth || isActualMobile);
-    };
-    
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkIfMobile);
-    };
-  }, []);
 
   const toggleLanguageDropdown = () => {  
     // Remove the language lock restriction - users can always change language
@@ -151,6 +138,12 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     dropdownPosition,
     languageSelectRef,
     toggleLanguageDropdown,
-    selectLanguage
+    selectLanguage,
+    // Responsive utilities
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues
   };
 }; 

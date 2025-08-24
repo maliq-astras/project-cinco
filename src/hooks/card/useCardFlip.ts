@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { getCardInitialPosition, getCardReturnPosition, calculateCardReturnPositionFromElements } from '../../helpers/factCardHelpers';
 import { useMemoizedFlipTransition, useCardTransition } from '../animation';
 import { useDOMRefs } from '../../providers/DOMRefsProvider';
+import { useResponsive } from '../responsive';
 
 interface UseCardFlipProps {
   sourcePosition: { x: number, y: number } | null;
@@ -18,6 +19,18 @@ export function useCardFlip({
   const closeFactCard = useGameStore(state => state.closeFactCard);
   const completeCardAnimation = useGameStore(state => state.completeCardAnimation);
   const { getElement } = useDOMRefs();
+  
+  // Use our new responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues,
+    width,
+    height
+  } = useResponsive();
+  
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDrawn, setIsDrawn] = useState(!sourcePosition);
   const [isClosing, setIsClosing] = useState(false);
@@ -25,20 +38,29 @@ export function useCardFlip({
   const [returnPosition, setReturnPosition] = useState<{ x: number, y: number } | null>(null);
 
   // Memoize animation settings to prevent unnecessary re-renders
-  const initialAnimation = useMemo(() => 
-    getCardInitialPosition(sourcePosition), 
-    [sourcePosition]
-  );
+  const initialAnimation = useMemo(() => {
+    // Use fallback values if responsive dimensions aren't ready yet
+    const currentWidth = width || window.innerWidth;
+    const currentHeight = height || window.innerHeight;
+    const currentBreakpoint = breakpoint || 'md';
+    
+    return getCardInitialPosition(sourcePosition, currentWidth, currentHeight, currentBreakpoint);
+  }, [sourcePosition, width, height, breakpoint]);
   
   const cardAnimation = useMemo(() => {
+    // Use fallback values if responsive dimensions aren't ready yet
+    const currentWidth = width || window.innerWidth;
+    const currentHeight = height || window.innerHeight;
+    const currentBreakpoint = breakpoint || 'md';
+    
     return !isClosing ? { 
       opacity: 1, 
       scale: 1,
       x: 0,
       y: 0,
       rotate: 0
-    } : getCardReturnPosition(returnPosition);
-  }, [isClosing, returnPosition]);
+    } : getCardReturnPosition(returnPosition, currentWidth, currentHeight, currentBreakpoint);
+  }, [isClosing, returnPosition, width, height, breakpoint]);
   
   // Use custom animation hooks for transitions
   const cardTransition = useCardTransition({
@@ -71,10 +93,15 @@ export function useCardFlip({
       const rightmostCardElement = getElement('rightmost-card');
       
       // Calculate the return position using refs
+      const currentWidth = width || window.innerWidth;
+      const currentHeight = height || window.innerHeight;
+      
       const position = calculateCardReturnPositionFromElements(
         cardStackElement,
         rightmostCardElement,
-        visibleStackCount
+        visibleStackCount,
+        currentWidth,
+        currentHeight
       );
       setReturnPosition(position);
       
@@ -84,7 +111,7 @@ export function useCardFlip({
         if (onClose) onClose();
       }, 500);
     }, 400);
-  }, [closeFactCard, visibleStackCount, onClose, canClose, getElement]);
+  }, [closeFactCard, visibleStackCount, onClose, canClose, getElement, width, height]);
 
   // Setup animations
   useEffect(() => {

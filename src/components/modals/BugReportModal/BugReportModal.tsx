@@ -5,8 +5,9 @@ import BaseModal from '../BaseModal/BaseModal';
 import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
-import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { useThemeDOM } from '@/hooks/theme';
 import { bugReportModalStyles } from './BugReportModal.styles';
+import { useResponsive } from '@/hooks/responsive';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -52,12 +53,24 @@ const deviceOptions = [
   'other',
 ];
 
-const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
-  const { colors } = useTheme();
-  const { hasClass } = useThemeDOM();
+export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
   const { t } = useTranslation();
+  const { colors, darkMode } = useTheme();
+  const { hasClass } = useThemeDOM();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Use our new responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
+  
+  // Use responsive breakpoint for mobile detection
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
 
   // Fix: Add dark mode detection and text segment background here
   const isDarkMode = hasClass('dark');
@@ -363,8 +376,6 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
     );
   };
 
-  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-
   return (
     <BaseModal
       isOpen={isOpen}
@@ -389,21 +400,16 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
           {submitted ? renderStepContent() : (
             <>
               <div style={{marginBottom: '2rem', marginTop: '1rem'}}>
-                {(() => {
-                  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-                  return (
-                    <h3
-                      className={
-                        righteous.className +
-                        ' text-center mb-6 text-gray-800 dark:text-white' +
-                        (isMobile ? ' text-base' : ' text-2xl')
-                      }
-                      style={{ letterSpacing: 1 }}
-                    >
-                      {steps[step].label.toUpperCase()}
-                    </h3>
-                  );
-                })()}
+                <h3
+                  className={
+                    righteous.className +
+                    ' text-center mb-6 text-gray-800 dark:text-white' +
+                    (isMobile ? ' text-base' : ' text-2xl')
+                  }
+                  style={{ letterSpacing: 1 }}
+                >
+                  {steps[step].label.toUpperCase()}
+                </h3>
               </div>
               <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0}}>
                 {renderStepContent()}
@@ -556,6 +562,4 @@ const BugReportModal: React.FC<BugReportModalProps> = ({ isOpen, onClose }) => {
       `}</style>
     </BaseModal>
   );
-};
-
-export default BugReportModal; 
+}; 

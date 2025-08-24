@@ -59,7 +59,10 @@ export default function FactBubble({
     popPosition,
     
     // DOM refs
-    bubbleRef
+    bubbleRef,
+    
+    // Responsive values from our new system
+    responsiveValues
   } = useFactBubble({
     factType,
     isRevealed,
@@ -82,10 +85,17 @@ export default function FactBubble({
     }
   };
 
+  // Create responsive style with bubble size from our new system
+  const responsiveStyle = {
+    ...style,
+    '--bubble-size': `${responsiveValues.bubbleSize}px`,
+    '--bubble-spacing': `${responsiveValues.bubbleSpacing}px`
+  } as React.CSSProperties;
+
   return (
     <div 
       className={`relative ${className}`}
-      style={style}
+      style={responsiveStyle}
       {...mouseHandlers}
     >
       <div className={styles.container}>

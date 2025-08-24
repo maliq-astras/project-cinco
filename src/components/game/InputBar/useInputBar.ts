@@ -1,5 +1,6 @@
 import { useRef, useImperativeHandle, Ref, useEffect } from 'react';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 
 export interface InputBarHandle {
   focusInput: () => void;
@@ -22,6 +23,17 @@ export const useInputBar = ({
   hasSuggestionSelected,
   onSubmit
 }: UseInputBarProps) => {
+  // Use our new unified responsive system
+  const { 
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
+  } = useResponsive();
+
   // Create refs for the input elements
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -110,6 +122,15 @@ export const useInputBar = ({
     handleSuggestionClick,
     handleFormSubmit,
     handleInputChange,
-    handleKeyDown
+    handleKeyDown,
+    
+    // Responsive values from our new system
+    responsiveValues,
+    width,
+    height,
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait
   };
 };

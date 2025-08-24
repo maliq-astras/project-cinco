@@ -6,6 +6,7 @@ import { getFactIcon, useIconFilter } from '@/helpers/iconHelpers';
 import { useDragState } from '@/hooks/ui';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { getFactBubblePositionFromElement } from '@/helpers/uiHelpers';
+import { useResponsive } from '@/hooks/responsive';
 
 // Internal custom hook for particle generation
 function useParticles(count = 8) {
@@ -50,10 +51,20 @@ export function useFactBubble({
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const isPendingFinalFiveTransition = useGameStore(state => state.isPendingFinalFiveTransition);
-  const windowWidth = useGameStore(state => state.windowWidth);
   const { colors } = useTheme();
   const getFilter = useIconFilter();
   const setWasFactRevealed = useDragState(state => state.setWasFactRevealed);
+  
+  // Use our new unified responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
+  } = useResponsive();
   
   // DOM refs for tutorial targeting
   const bubbleRef = useRef<HTMLButtonElement>(null);
@@ -183,14 +194,21 @@ export function useFactBubble({
     };
   }, [tooltipTimeout]);
 
-  // Calculate responsive icon size
+  // Calculate responsive icon size using our new responsive system
   const icon = useMemo(() => {
-    const sizeMultiplier = windowWidth < 480 ? 0.5 : windowWidth < 768 ? 0.55 : 0.6;
-    const containerSize = windowWidth < 640 ? 65 : 80;
-    const iconSize = Math.max(28, Math.round(containerSize * sizeMultiplier));
+    // Use responsive values for bubble size and calculate icon size
+    const bubbleSize = responsiveValues.bubbleSize;
+    const sizeMultiplier = breakpoint === 'xs' ? 0.5 : breakpoint === 'sm' ? 0.55 : 0.6;
+    
+    // Scale down by 5% on largest screens
+    const finalMultiplier = (breakpoint === 'lg' || breakpoint === 'xl') 
+      ? sizeMultiplier * 0.95 
+      : sizeMultiplier;
+    
+    const iconSize = Math.max(28, Math.round(bubbleSize * finalMultiplier));
     
     return getFactIcon(factType, false, iconSize, category);
-  }, [factType, category, windowWidth]);
+  }, [factType, category, responsiveValues.bubbleSize, breakpoint]);
 
   // Get contextual tooltip text
   const tooltipText = useMemo(() => {
@@ -240,6 +258,15 @@ export function useFactBubble({
     mouseHandlers,
     getIconFilter: getFilter,
     popPosition,
-    bubbleRef
+    bubbleRef,
+    
+    // Responsive values from our new system
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
   };
 } 

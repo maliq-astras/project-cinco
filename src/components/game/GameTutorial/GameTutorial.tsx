@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { useGameTutorial } from './useGameTutorial';
 import { gameTutorialStyles } from './GameTutorial.styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useFluidResponsive } from '@/hooks/ui';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,11 +29,11 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     colors,
     tutorialSteps,
     handleClick,
-    continueText
+    continueText,
+    responsiveValues
   } = useGameTutorial({ isOpen, onClose });
   
   const { darkMode } = useTheme();
-  const { height } = useFluidResponsive();
 
   if (!isOpen) return null;
 

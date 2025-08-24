@@ -31,20 +31,18 @@ export function formatTime(seconds: number): string {
 /**
  * Calculate fan angle for a card stack, adjusted for screen size
  * @param cardCount Number of cards in the stack
+ * @param breakpoint Current responsive breakpoint
  * @returns Optimal fan angle
  */
-export function calculateFanAngle(cardCount: number): number {
-  // Get the current window width
-  const windowWidth = window.innerWidth;
-  
+export function calculateFanAngle(cardCount: number, breakpoint: string): number {
   // Base angle calculation
   let baseAngle = Math.min(4, 12 / Math.max(1, cardCount));
   
-  // Adjust for screen size
-  if (windowWidth < 480) {
+  // Adjust for screen size based on breakpoint
+  if (breakpoint === 'xs') {
     // Smaller angles on mobile
     return baseAngle * 0.7;
-  } else if (windowWidth < 768) {
+  } else if (breakpoint === 'sm') {
     // Slightly reduced angles on tablets
     return baseAngle * 0.85;
   }
@@ -56,23 +54,21 @@ export function calculateFanAngle(cardCount: number): number {
 /**
  * Calculate spread factor for card positioning, adjusted for screen size
  * @param cardCount Number of cards in the stack
+ * @param breakpoint Current responsive breakpoint
  * @returns Spread factor for horizontal positioning
  */
-export function calculateSpreadFactor(cardCount: number): number {
-  // Get the current window width
-  const windowWidth = window.innerWidth;
-  
-  // Adjust spread based on screen size
-  if (windowWidth < 360) {
+export function calculateSpreadFactor(cardCount: number, breakpoint: string): number {
+  // Adjust spread based on breakpoint
+  if (breakpoint === 'xs') {
     // Very small mobile
     return Math.max(20, 15 + (cardCount * 7)); 
-  } else if (windowWidth < 480) {
+  } else if (breakpoint === 'sm') {
     // Small mobile
     return Math.max(25, 20 + (cardCount * 8));
-  } else if (windowWidth < 640) {
+  } else if (breakpoint === 'md') {
     // Mobile
     return Math.max(30, 25 + (cardCount * 10));
-  } else if (windowWidth < 768) {
+  } else if (breakpoint === 'lg') {
     // Small tablets
     return Math.max(35, 28 + (cardCount * 12));
   }
@@ -87,18 +83,19 @@ export function calculateSpreadFactor(cardCount: number): number {
  * @param cardCount Total number of cards
  * @param isHovered Whether this card is hovered
  * @param hoveredIndex Index of the currently hovered card
+ * @param breakpoint Current responsive breakpoint
  * @returns Position, rotation, scale and other styling properties
  */
 export function calculateCardPosition(
   index: number, 
   cardCount: number, 
   isHovered: boolean, 
-  hoveredIndex: number | null
+  hoveredIndex: number | null,
+  breakpoint: string
 ) {
   const centerIndex = Math.floor(cardCount / 2);
-  const fanAngle = calculateFanAngle(cardCount);
-  const spreadFactor = calculateSpreadFactor(cardCount);
-  const windowWidth = window.innerWidth;
+  const fanAngle = calculateFanAngle(cardCount, breakpoint);
+  const spreadFactor = calculateSpreadFactor(cardCount, breakpoint);
   
   // Base rotation and position
   const baseRotation = (index - centerIndex) * fanAngle;
@@ -119,21 +116,21 @@ export function calculateCardPosition(
     if (isHovered) {
       // Lift the hovered card up and forward
       // translateY is now handled in the component based on screen size
-      scale = windowWidth < 480 ? 1.05 : windowWidth < 768 ? 1.08 : 1.1;
+      scale = breakpoint === 'xs' ? 1.05 : breakpoint === 'sm' ? 1.06 : breakpoint === 'md' ? 1.08 : breakpoint === 'lg' ? 1.09 : 1.1;
       zIndex = 100; // Ensure it's on top
       rotation = 0; // Straighten the card
       shadowClass = "shadow-xl"; // Stronger shadow for lifted card
     } else if (isAdjacent) {
-      // Adjacent cards move slightly away - scale movement based on screen size
-      const moveAmount = windowWidth < 480 ? 8 : windowWidth < 768 ? 12 : 15;
+      // Adjacent cards move slightly away - scale movement based on breakpoint
+      const moveAmount = breakpoint === 'xs' ? 8 : breakpoint === 'sm' ? 10 : breakpoint === 'md' ? 12 : breakpoint === 'lg' ? 14 : 15;
       translateX = index < hoveredIndex ? translateX - moveAmount : translateX + moveAmount;
       zIndex = 50 + index; // Higher than non-adjacent but lower than hovered
       shadowClass = "shadow-md"; // Medium shadow for adjacent cards
     } else {
-      // Non-adjacent cards move slightly away - scale movement based on screen size
-      const moveAmount = windowWidth < 480 ? 5 : windowWidth < 768 ? 8 : 10;
+      // Non-adjacent cards move slightly away - scale movement based on breakpoint
+      const moveAmount = breakpoint === 'xs' ? 5 : breakpoint === 'sm' ? 6 : breakpoint === 'md' ? 8 : breakpoint === 'lg' ? 9 : 10;
       translateX = index < hoveredIndex ? translateX - moveAmount : translateX + moveAmount;
-      translateY = windowWidth < 480 ? -2 : -5; // Slight lift to create depth
+      translateY = breakpoint === 'xs' ? -2 : breakpoint === 'sm' ? -3 : breakpoint === 'md' ? -4 : -5; // Slight lift to create depth
     }
   }
   

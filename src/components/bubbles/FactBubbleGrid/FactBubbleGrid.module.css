@@ -8,21 +8,21 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin-top: var(--grid-margin-top, 0.5rem);
+  padding: 0 1rem;
 }
 
 /* Grid configuration - always 4x2 layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, var(--bubble-size));
   grid-template-rows: repeat(2, var(--bubble-size));
-  gap: var(--bubble-gap);
-  justify-items: center;
+  gap: var(--bubble-spacing);
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: calc(100vw - 2rem);
+  width: fit-content;
   margin: 0 auto;
-  height: calc(2 * var(--bubble-size) + var(--bubble-gap));
+  height: calc(2 * var(--bubble-size) + var(--bubble-spacing));
 }
 
 /* Empty slot placeholder */
@@ -36,4 +36,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Responsive adjustments for landscape orientation */
+@media (orientation: landscape) and (max-height: 600px) {
+  .container {
+    margin-top: calc(var(--grid-margin-top, 0.5rem) * 0.5);
+  }
 }

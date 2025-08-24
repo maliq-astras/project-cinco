@@ -42,30 +42,32 @@ export const finalFiveCardStyles = {
   },
   
   // Get card dimensions 
-  getDimensions: () => {
-    if (typeof window !== 'undefined') {
-      // Check if we're on Surface Duo
-      const isSurfaceDuo = window.navigator.userAgent.includes('Surface Duo');
-      
-      if (isSurfaceDuo) {
-        // Special dimensions for Surface Duo in landscape mode
-        if (window.innerWidth > window.innerHeight) {
-          return {
-            minHeight: "120px",
-            maxWidth: "150px"
-          };
-        }
-        // Surface Duo portrait dimensions
-        return {
-          minHeight: "90px",
-          maxWidth: "140px"
-        };
-      }
+  getDimensions: (width: number, height: number, isLandscape: boolean) => {
+    // Responsive dimensions based on breakpoints
+    if (width <= 480) {
+      // Extra small screens
+      return {
+        minHeight: isLandscape ? "80px" : "90px",
+        maxWidth: isLandscape ? "120px" : "140px"
+      };
+    } else if (width <= 768) {
+      // Small screens
+      return {
+        minHeight: isLandscape ? "90px" : "100px",
+        maxWidth: isLandscape ? "130px" : "150px"
+      };
+    } else if (width <= 1024) {
+      // Medium screens
+      return {
+        minHeight: "100px",
+        maxWidth: "160px"
+      };
+    } else {
+      // Large screens
+      return {
+        minHeight: "110px",
+        maxWidth: "170px"
+      };
     }
-    
-    return {
-      minHeight: "100px",
-      maxWidth: "160px"
-    };
   }
 } as const;

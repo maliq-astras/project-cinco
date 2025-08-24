@@ -4,19 +4,28 @@
 
 import { CSSProperties } from 'react';
 
+// Import our responsive utilities
+import { getResponsiveValue } from './breakpoints';
+
 /**
  * Calculate the initial position for a card being drawn from a source position
  * @param sourcePosition The source position of the card
+ * @param width Current viewport width
+ * @param height Current viewport height
+ * @param breakpoint Current responsive breakpoint
  * @returns Animation properties for the initial position
  */
-export function getCardInitialPosition(sourcePosition: { x: number, y: number } | null) {
+export function getCardInitialPosition(
+  sourcePosition: { x: number, y: number } | null,
+  width: number,
+  height: number,
+  breakpoint: string
+) {
   if (!sourcePosition) return { opacity: 0, scale: 0.8 };
   
   // Get the center of the viewport
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  const centerX = viewportWidth / 2;
-  const centerY = viewportHeight / 2;
+  const centerX = width / 2;
+  const centerY = height / 2;
   
   // Calculate the offset from center
   const offsetX = sourcePosition.x - centerX;
@@ -26,7 +35,7 @@ export function getCardInitialPosition(sourcePosition: { x: number, y: number } 
   const rotation = offsetX > 0 ? Math.min(5, offsetX / 50) : Math.max(-5, offsetX / 50);
   
   // Calculate the scale ratio between stack card and open card
-  const isSmallScreen = window.innerWidth < 640; // sm breakpoint in Tailwind
+  const isSmallScreen = breakpoint === 'xs' || breakpoint === 'sm';
   const scaleRatio = isSmallScreen ? 0.429 : 0.4167;
   
   return {
@@ -41,23 +50,29 @@ export function getCardInitialPosition(sourcePosition: { x: number, y: number } 
 /**
  * Calculate the final position for a card returning to the stack
  * @param returnPosition The position to return the card to
+ * @param width Current viewport width
+ * @param height Current viewport height
+ * @param breakpoint Current responsive breakpoint
  * @returns Animation properties for the final position
  */
-export function getCardReturnPosition(returnPosition: { x: number, y: number } | null) {
+export function getCardReturnPosition(
+  returnPosition: { x: number, y: number } | null,
+  width: number,
+  height: number,
+  breakpoint: string
+) {
   if (!returnPosition) return { opacity: 0 };
   
   // Get the center of the viewport
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  const centerX = viewportWidth / 2;
-  const centerY = viewportHeight / 2;
+  const centerX = width / 2;
+  const centerY = height / 2;
   
   // Calculate the offset from center
   const offsetX = returnPosition.x - centerX;
   const offsetY = returnPosition.y - centerY;
   
   // Calculate the scale ratio between stack card and open card
-  const isSmallScreen = window.innerWidth < 640;
+  const isSmallScreen = breakpoint === 'xs' || breakpoint === 'sm';
   const scaleRatio = isSmallScreen ? 0.429 : 0.4167;
   
   return {
@@ -72,7 +87,9 @@ export function getCardReturnPosition(returnPosition: { x: number, y: number } |
 export function calculateCardReturnPositionFromElements(
   cardStackElement: HTMLElement | null,
   rightmostCardElement: HTMLElement | null,
-  visibleStackCount: number
+  visibleStackCount: number,
+  width: number,
+  height: number
 ): { x: number, y: number } {
   if (cardStackElement) {
     const rect = cardStackElement.getBoundingClientRect();
@@ -100,20 +117,18 @@ export function calculateCardReturnPositionFromElements(
     }
   } else {
     // Fallback if we can't find the card stack element
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const centerX = viewportWidth / 2;
+    const centerX = width / 2;
     
     // Position based on whether there are cards in the stack
     if (visibleStackCount > 0) {
       return {
         x: centerX + 150, // Move to the right side
-        y: viewportHeight / 2 - 50 // Adjust to match the card stack's vertical position
+        y: height / 2 - 50 // Adjust to match the card stack's vertical position
       };
     } else {
       return {
         x: centerX, // Center horizontally
-        y: viewportHeight / 2 - 50 // Adjust to match the card stack's vertical position
+        y: height / 2 - 50 // Adjust to match the card stack's vertical position
       };
     }
   }

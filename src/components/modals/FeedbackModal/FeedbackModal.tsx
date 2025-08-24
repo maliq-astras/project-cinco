@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../../contexts/ThemeContext';
-import BaseModal from '../BaseModal/BaseModal';
-import { useModalForm } from '../BugReportModal/useModalForm';
 import { Righteous } from 'next/font/google';
-import ModalNavButton from '../ModalNavButton/ModalNavButton';
-import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
 import { useTranslation } from 'react-i18next';
-import { getCategoryName } from '../../../helpers/i18nHelpers';
-import { useThemeDOM } from '@/hooks/useThemeDOM';
+import { useTheme } from '@/contexts/ThemeContext';
 import { feedbackModalStyles } from './FeedbackModal.styles';
+import BaseModal from '@/components/modals/BaseModal/BaseModal';
+import ModalNavButton from '@/components/modals/ModalNavButton/ModalNavButton';
+import { useResponsive } from '@/hooks/responsive';
+import { useThemeDOM } from '@/hooks/theme';
+import { useModalForm } from '../BugReportModal/useModalForm';
+import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
+import { getCategoryName } from '../../../helpers/i18nHelpers';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -30,10 +31,22 @@ const difficultyOptions = [
   'tooChallenging',
 ];
 
-const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
+export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+  const { t } = useTranslation();
   const { colors, darkMode } = useTheme();
   const { hasClass } = useThemeDOM();
-  const { t } = useTranslation();
+  
+  // Use our new responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues 
+  } = useResponsive();
+  
+  // Use responsive breakpoint for mobile detection
+  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
 
   const steps = [
     {
@@ -117,7 +130,6 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     // Bubble sizes: [large, medium, small, medium, large]
     const sizes = [48, 40, 32, 40, 48];
     const labelColor = darkMode ? '#fff' : '#111';
-    const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
     return (
       <div className="flex flex-col items-center mb-6 w-full">
         {isMobile ? (
@@ -351,8 +363,6 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     );
   };
 
-  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-
   return (
     <BaseModal
       isOpen={isOpen}
@@ -377,21 +387,16 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
           {submitted ? renderStepContent() : (
             <>
               <div style={{marginBottom: '2rem', marginTop: '1rem'}}>
-                {(() => {
-                  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-                  return (
-                    <h3
-                      className={
-                        righteous.className +
-                        ' text-center mb-6 text-gray-800 dark:text-white' +
-                        (isMobile ? ' text-base' : ' text-2xl')
-                      }
-                      style={{ letterSpacing: 1 }}
-                    >
-                      {steps[step].label.toUpperCase()}
-                    </h3>
-                  );
-                })()}
+                <h3
+                  className={
+                    righteous.className +
+                    ' text-center mb-6 text-gray-800 dark:text-white' +
+                    (isMobile ? ' text-base' : ' text-2xl')
+                  }
+                  style={{ letterSpacing: 1 }}
+                >
+                  {steps[step].label.toUpperCase()}
+                </h3>
               </div>
               <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 {renderStepContent()}
@@ -425,6 +430,4 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
       </div>
     </BaseModal>
   );
-};
-
-export default FeedbackModal; 
+}; 

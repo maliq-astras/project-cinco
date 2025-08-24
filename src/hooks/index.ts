@@ -10,5 +10,8 @@ export * from './card';
 // UI hooks
 export * from './ui';
 
-// Theme DOM hook
-export { useThemeDOM } from './useThemeDOM';
+// Responsive hooks
+export * from './responsive';
+
+// Theme hooks
+export * from './theme';

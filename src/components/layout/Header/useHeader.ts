@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 
 export const useHeader = () => {
   const { colors } = useTheme();
@@ -9,6 +10,17 @@ export const useHeader = () => {
   const logoRef = useRef<HTMLDivElement>(null);
   const categoryTitleRef = useRef<HTMLHeadingElement>(null);
   const { registerElement, unregisterElement } = useDOMRefs();
+  
+  // Use our new unified responsive system
+  const { 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
+  } = useResponsive();
 
   // Register the header area element with the DOM refs system
   useEffect(() => {
@@ -36,6 +48,14 @@ export const useHeader = () => {
     colors,
     challenge,
     logoRef,
-    categoryTitleRef
+    categoryTitleRef,
+    // Responsive values from our new system
+    breakpoint,
+    heightBreakpoint,
+    isLandscape,
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
   };
 }; 

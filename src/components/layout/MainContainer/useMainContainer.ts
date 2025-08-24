@@ -4,7 +4,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import type { GameControlsHandle } from '../../game/GameControls';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
-import { deviceDetection, getDeviceScaleFactor, getResponsiveLayoutMode, getHeaderSizeMode } from '@/helpers';
+import { useResponsive } from '@/hooks/responsive';
 import { GameOutcome } from '@/types';
 
 export function useMainContainer() {
@@ -13,7 +13,6 @@ export function useMainContainer() {
   const viewingFact = useGameStore(state => state.viewingFact);
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
   const decrementTimer = useGameStore(state => state.decrementTimer);
-  const setWindowWidth = useGameStore(state => state.setWindowWidth);
   const isTimerActive = useGameStore(state => state.isTimerActive);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
@@ -34,20 +33,37 @@ export function useMainContainer() {
   // Theme access
   const { colors } = useTheme();
 
+  // Use our new unified responsive hook
+  const { 
+    width, 
+    height, 
+    mounted, 
+    breakpoint, 
+    heightBreakpoint, 
+    isLandscape, 
+    isPortrait,
+    responsiveValues,
+    willFit,
+    availableContentHeight
+  } = useResponsive();
+
   // Component state
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [headerEntranceComplete, setHeaderEntranceComplete] = useState(false);
   const [gameEntranceComplete, setGameEntranceComplete] = useState(false);
-  const [isSmallLandscape, setIsSmallLandscape] = useState(false);
-  const [isTabletLandscape, setIsTabletLandscape] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  const [isCompactHeader, setIsCompactHeader] = useState(false);
-  const [responsiveLayoutMode, setResponsiveLayoutMode] = useState<'compact' | 'normal' | 'spacious'>('normal');
-  const [headerSizeMode, setHeaderSizeMode] = useState<'xs' | 'sm' | 'md' | 'lg' | 'xl'>('md');
   const { language } = useLanguage();
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
+
+  // Set scale factor based on responsive values
+  useEffect(() => {
+    if (mounted) {
+      // Use responsive values to determine scale factor
+      const scaleFactor = responsiveValues.bubbleSize / 60; // Base size is 60px
+      setScaleFactor(scaleFactor);
+    }
+  }, [mounted, responsiveValues.bubbleSize, setScaleFactor]);
 
   // Focus the input after card closes
   useEffect(() => {
@@ -96,82 +112,6 @@ export function useMainContainer() {
     }
   }, [isTimerActive, timeRemaining, decrementTimer, gameState.isGameOver]);
 
-  // Handle window resize and orientation changes
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      
-      setWindowWidth(width);
-      
-      // Check if we're in landscape on a small screen (phone)
-      const isSmall = height < 450;
-      const isMedium = height >= 450 && height < 900;
-      const isLandscape = width > height;
-      
-      // Phone in landscape - show warning
-      // Also include Surface Duo landscape (720x540) which should show rotation warning
-      const isSurfaceDuoLandscape = deviceDetection.isSurfaceDuo() && isLandscape;
-      setIsSmallLandscape((isSmall && isLandscape) || isSurfaceDuoLandscape);
-      
-      // Tablet detection - both portrait and landscape
-      const isTabletDevice = (width >= 768 && width <= 1024) || (isMedium && (isLandscape || width >= 768));
-      setIsTablet(isTabletDevice);
-      
-      // Tablet detection - both landscape and portrait
-      // Use the deviceDetection helper for more accurate tablet detection
-      const isTabletLandscapeMode = deviceDetection.isTabletLandscape() || deviceDetection.isLargeTabletLandscape();
-      const isTabletPortraitMode = deviceDetection.isTabletPortrait() || deviceDetection.isLargeTabletPortrait();
-      const isTabletMode = isTabletLandscapeMode || isTabletPortraitMode;
-      setIsTabletLandscape(isTabletMode);
-      
-      // Set compact header for any landscape mode with height below 650px
-      setIsCompactHeader(isLandscape && height < 650);
-      
-      // Set responsive layout mode for spacing adjustments
-      const layoutMode = getResponsiveLayoutMode(width, height, isTabletLandscapeMode);
-      const scaleFactorValue = getDeviceScaleFactor(width, height, isTabletLandscapeMode);
-      
-      // Set header size mode for synchronized XS → XL system
-      const headerSize = getHeaderSizeMode(width, height, isTabletLandscapeMode);
-      
-      // Debug logging (commented out for production)
-      // console.log('useMainContainer Debug:', {
-      //   width,
-      //   height,
-      //   isTabletLandscapeMode,
-      //   isTabletPortraitMode,
-      //   isTabletMode,
-      //   layoutMode,
-      //   scaleFactorValue,
-      //   headerSize,
-      //   deviceDetection: {
-      //     isTabletLandscape: deviceDetection.isTabletLandscape(),
-      //     isLargeTabletLandscape: deviceDetection.isLargeTabletLandscape(),
-      //     isTabletPortrait: deviceDetection.isTabletPortrait(),
-      //     isLargeTabletPortrait: deviceDetection.isLargeTabletPortrait()
-      //   }
-      // });
-      
-      setResponsiveLayoutMode(layoutMode);
-      setScaleFactor(scaleFactorValue);
-      setHeaderSizeMode(headerSize);
-    };
-    
-    // Initial setup
-    handleResize();
-    
-    // Add event listeners
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
-    
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
-    };
-  }, [setWindowWidth, setScaleFactor]);
-
   // Handle loading complete
   const handleLoadingComplete = () => {
     setLoadingComplete(true);
@@ -193,11 +133,6 @@ export function useMainContainer() {
                           gameOutcome === 'loss-final-five-wrong' || 
                           gameOutcome === 'loss-final-five-time' ||
                           (gameState.isGameOver && gameOutcome !== null); // Show end game message for already-played scenarios
-  
-  // Debug logging for already-played scenarios
-  if (gameState.isGameOver && gameOutcome !== null && victoryAnimationStep !== 'summary') {
-  // Silence verbose logging in production
-  }
   
   const getGameMessageProps = () => {
     // If we have saved game data from today, use it for accurate stats
@@ -242,6 +177,14 @@ export function useMainContainer() {
     };
   };
 
+  // Simplified responsive values based on our new system
+  const responsiveLayoutMode = breakpoint === 'xs' || breakpoint === 'sm' ? 'compact' : 'normal';
+  const headerSizeMode = breakpoint;
+  const isCompactHeader = isLandscape && height < 650;
+  const isSmallLandscape = isLandscape && height < 450;
+  const isTablet = breakpoint === 'md' || breakpoint === 'lg';
+  const isTabletLandscape = isTablet && isLandscape;
+
   return {
     // State
     gameState,
@@ -265,12 +208,18 @@ export function useMainContainer() {
     isChallengeLoading,
     isAlreadyPlayedScenario: !!todayGameData && gameState.revealedFacts.length === 0, // Flag to indicate we're showing already-played data without cards
     
+    // Responsive values from our new system
+    responsiveValues,
+    willFit,
+    availableContentHeight,
+    
     // Refs
     gameControlsRef,
     
     // Functions
     handleLoadingComplete,
     getGameMessageProps,
-    startFinalFive
+    startFinalFive,
+    heightBreakpoint
   };
 } 
