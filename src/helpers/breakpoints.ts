@@ -1,78 +1,53 @@
 /**
  * Unified Breakpoint System
  * 
- * Replaces the complex device detection system with a simple, standard breakpoint approach.
- * Based on common device sizes and responsive design best practices.
- * PRIORITIZES HEIGHT over width for no-scroll pages with vertically stacked elements.
+ * Combined width and height breakpoints for no-scroll pages.
+ * Each breakpoint considers both dimensions to ensure proper fit.
  */
 
 export const BREAKPOINTS = {
-  xs: 0,    // 0-479px (Small phones)
-  sm: 480,  // 480-767px (Large phones, small tablets)
-  md: 768,  // 768-1023px (Tablets, small laptops)
-  lg: 1024, // 1024-1279px (Laptops, desktops)
-  xl: 1280  // 1280px+ (Large desktops, 4K)
-} as const;
-
-export const HEIGHT_BREAKPOINTS = {
-  short: 600,   // Short screens (landscape phones, small tablets)
-  medium: 800,  // Medium screens (portrait phones, tablets)
-  tall: 1000    // Tall screens (desktops, large tablets)
+  xxs: { minWidth: 320, minHeight: 580 },  // Very small phones 
+  xs: { minWidth: 375, minHeight: 600 },   // Small phones
+  sm: { minWidth: 480, minHeight: 700 },   // Large phones 
+  md: { minWidth: 768, minHeight: 800 },   // Tablets, small laptops
+  lg: { minWidth: 1024, minHeight: 900 },  // Laptops, desktops
+  xl: { minWidth: 1280, minHeight: 1000 }, // Large desktops
+  xxl: { minWidth: 1440, minHeight: 1000 } // 4K, ultrawide
 } as const;
 
 export type Breakpoint = keyof typeof BREAKPOINTS;
 export type BreakpointValue = typeof BREAKPOINTS[Breakpoint];
-export type HeightBreakpoint = keyof typeof HEIGHT_BREAKPOINTS;
 
 /**
- * Get the current breakpoint based on window width
+ * Get the current breakpoint based on both width and height
+ * Prioritizes the more constrained dimension for no-scroll pages
  */
-export const getBreakpoint = (width: number): Breakpoint => {
-  if (width >= BREAKPOINTS.xl) return 'xl';
-  if (width >= BREAKPOINTS.lg) return 'lg';
-  if (width >= BREAKPOINTS.md) return 'md';
-  if (width >= BREAKPOINTS.sm) return 'sm';
+export const getBreakpoint = (width: number, height: number): Breakpoint => {
+  // Check from largest to smallest breakpoint
+  if (width >= BREAKPOINTS.xxl.minWidth && height >= BREAKPOINTS.xxl.minHeight) return 'xxl';
+  if (width >= BREAKPOINTS.xl.minWidth && height >= BREAKPOINTS.xl.minHeight) return 'xl';
+  if (width >= BREAKPOINTS.lg.minWidth && height >= BREAKPOINTS.lg.minHeight) return 'lg';
+  if (width >= BREAKPOINTS.md.minWidth && height >= BREAKPOINTS.md.minHeight) return 'md';
+  if (width >= BREAKPOINTS.sm.minWidth && height >= BREAKPOINTS.sm.minHeight) return 'sm';
   return 'xs';
 };
 
 /**
- * Get the current height breakpoint based on window height
- * This is MORE important than width for no-scroll pages
+ * Check if current dimensions are at or above a specific breakpoint
  */
-export const getHeightBreakpoint = (height: number): HeightBreakpoint => {
-  if (height >= HEIGHT_BREAKPOINTS.tall) return 'tall';
-  if (height >= HEIGHT_BREAKPOINTS.medium) return 'medium';
-  return 'short';
+export const isBreakpointOrAbove = (width: number, height: number, breakpoint: Breakpoint): boolean => {
+  const currentBreakpoint = getBreakpoint(width, height);
+  const breakpointOrder: Breakpoint[] = ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+  const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
+  const targetIndex = breakpointOrder.indexOf(breakpoint);
+  return currentIndex >= targetIndex;
 };
 
 /**
- * Check if current width is at or above a specific breakpoint
+ * Check if current dimensions are below a specific breakpoint
  */
-export const isBreakpointOrAbove = (width: number, breakpoint: Breakpoint): boolean => {
-  return width >= BREAKPOINTS[breakpoint];
-};
-
-/**
- * Check if current width is below a specific breakpoint
- */
-export const isBreakpointBelow = (width: number, breakpoint: Breakpoint): boolean => {
-  return width < BREAKPOINTS[breakpoint];
-};
-
-/**
- * Check if current height is at or above a specific height breakpoint
- * This is MORE important than width checks for no-scroll pages
- */
-export const isHeightBreakpointOrAbove = (height: number, breakpoint: HeightBreakpoint): boolean => {
-  return height >= HEIGHT_BREAKPOINTS[breakpoint];
-};
-
-/**
- * Check if current height is below a specific height breakpoint
- * This is MORE important than width checks for no-scroll pages
- */
-export const isHeightBreakpointBelow = (height: number, breakpoint: HeightBreakpoint): boolean => {
-  return height < HEIGHT_BREAKPOINTS[breakpoint];
+export const isBreakpointBelow = (width: number, height: number, breakpoint: Breakpoint): boolean => {
+  return !isBreakpointOrAbove(width, height, breakpoint);
 };
 
 /**
@@ -92,7 +67,7 @@ export const getResponsiveValueWithFallback = <T>(
   values: Partial<Record<Breakpoint, T>>,
   currentBreakpoint: Breakpoint
 ): T | undefined => {
-  const breakpointOrder: Breakpoint[] = ['xl', 'lg', 'md', 'sm', 'xs'];
+  const breakpointOrder: Breakpoint[] = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs'];
   const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
   
   // Check current breakpoint and all smaller ones
@@ -104,23 +79,6 @@ export const getResponsiveValueWithFallback = <T>(
   }
   
   return undefined;
-};
-
-/**
- * Get responsive value based on both width and height breakpoints
- * PRIORITIZES HEIGHT for no-scroll pages with vertically stacked elements
- */
-export const getResponsiveValueWithHeight = <T>(
-  widthValues: Record<Breakpoint, T>,
-  heightValues: Record<HeightBreakpoint, T>,
-  currentWidthBreakpoint: Breakpoint,
-  currentHeightBreakpoint: HeightBreakpoint,
-  priority: 'width' | 'height' = 'height' // Default to height priority
-): T => {
-  if (priority === 'height') {
-    return heightValues[currentHeightBreakpoint];
-  }
-  return widthValues[currentWidthBreakpoint];
 };
 
 /**
@@ -139,7 +97,6 @@ export const isPortrait = (width: number, height: number): boolean => {
 
 /**
  * Get orientation-aware responsive value
- * PRIORITIZES HEIGHT for no-scroll pages
  */
 export const getOrientationResponsiveValue = <T>(
   landscapeValues: Record<Breakpoint, T>,
@@ -147,27 +104,8 @@ export const getOrientationResponsiveValue = <T>(
   width: number,
   height: number
 ): T => {
-  const breakpoint = getBreakpoint(width);
+  const breakpoint = getBreakpoint(width, height);
   return isLandscape(width, height) ? landscapeValues[breakpoint] : portraitValues[breakpoint];
-};
-
-/**
- * Get PRIMARY responsive value for no-scroll pages
- * This should be used for most responsive decisions in this app
- * PRIORITIZES HEIGHT over width
- */
-export const getPrimaryResponsiveValue = <T>(
-  heightValues: Record<HeightBreakpoint, T>,
-  widthValues: Record<Breakpoint, T>,
-  width: number,
-  height: number
-): T => {
-  const heightBreakpoint = getHeightBreakpoint(height);
-  const widthBreakpoint = getBreakpoint(width);
-  
-  // For no-scroll pages, height is more critical
-  // Use height values when available, fall back to width
-  return heightValues[heightBreakpoint] ?? widthValues[widthBreakpoint];
 };
 
 /**

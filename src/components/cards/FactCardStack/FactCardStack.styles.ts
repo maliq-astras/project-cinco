@@ -41,9 +41,9 @@ export const factCardStackStyles = {
     totalCards: number
   ): CSSProperties => {
     return {
-      transformOrigin: 'bottom center',
+      transformOrigin: 'center center',
       left: `calc(50% - ${cardSize.width / 2}px)`,
-      bottom: '0px', // Cards sit at the bottom of the drop zone
+      top: `calc(50% - ${cardSize.height / 2}px)`, // Center vertically like drop zone
       width: `${cardSize.width}px`,
       height: `${cardSize.height}px`,
       zIndex: totalCards - index

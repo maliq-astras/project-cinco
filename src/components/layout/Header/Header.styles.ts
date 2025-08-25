@@ -45,7 +45,7 @@ export const headerStyles = {
   
   // Title text styles - synchronized XS → XL with VERTICAL breakpoints (INCREASED +5%)
   titleTextXs: (colors: { primary: string }) => ({
-    fontSize: "clamp(21px, 3.15vh, 27px)", // Increased from 20px/3vh/26px
+    fontSize: "clamp(25px, 3.5vh, 32px)", // Increased from 21px/3.15vh/27px
     lineHeight: 1,
     color: `var(--color-${colors.primary})`,
     maxWidth: "263px", // Increased from 250px
@@ -54,7 +54,7 @@ export const headerStyles = {
     whiteSpace: "nowrap"
   }),
   titleTextSm: (colors: { primary: string }) => ({
-    fontSize: "clamp(25px, 3.68vh, 32px)", // Increased from 24px/3.5vh/30px
+    fontSize: "clamp(30px, 4vh, 38px)", // Increased from 25px/3.68vh/32px
     lineHeight: 1,
     color: `var(--color-${colors.primary})`,
     maxWidth: "315px", // Increased from 300px
@@ -63,7 +63,7 @@ export const headerStyles = {
     whiteSpace: "nowrap"
   }),
   titleTextMd: (colors: { primary: string }) => ({
-    fontSize: "clamp(29px, 4.2vh, 38px)", // Increased from 28px/4vh/36px
+    fontSize: "clamp(35px, 4.5vh, 44px)", // Increased from 29px/4.2vh/38px
     lineHeight: 1,
     color: `var(--color-${colors.primary})`,
     maxWidth: "368px", // Increased from 350px
@@ -72,7 +72,7 @@ export const headerStyles = {
     whiteSpace: "nowrap"
   }),
   titleTextLg: (colors: { primary: string }) => ({
-    fontSize: "clamp(34px, 4.73vh, 44px)", // Increased from 32px/4.5vh/42px
+    fontSize: "clamp(40px, 5vh, 50px)", // Increased from 34px/4.73vh/44px
     lineHeight: 1,
     color: `var(--color-${colors.primary})`,
     maxWidth: "420px", // Increased from 400px
@@ -81,7 +81,7 @@ export const headerStyles = {
     whiteSpace: "nowrap"
   }),
   titleTextXl: (colors: { primary: string }) => ({
-    fontSize: "clamp(38px, 5.25vh, 50px)", // Increased from 36px/5vh/48px
+    fontSize: "clamp(45px, 5.5vh, 56px)", // Increased from 38px/5.25vh/50px
     lineHeight: 1,
     color: `var(--color-${colors.primary})`,
     maxWidth: "473px", // Increased from 450px

@@ -19,9 +19,6 @@ const FactBubbleGrid: React.FC = () => {
     bubbleGridRef,
     responsiveValues,
     breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait,
     willFit,
     availableContentHeight
   } = useFactBubbleGrid();

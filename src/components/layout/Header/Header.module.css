@@ -99,27 +99,27 @@
 
 /* Logo container size variants */
 .logoContainerXs {
-  height: 74px;
+  height: 120px;
   max-width: 263px;
 }
 
 .logoContainerSm {
-  height: 89px;
+  height: 140px;
   max-width: 315px;
 }
 
 .logoContainerMd {
-  height: 105px;
+  height: 160px;
   max-width: 368px;
 }
 
 .logoContainerLg {
-  height: 126px;
+  height: 180px;
   max-width: 420px;
 }
 
 .logoContainerXl {
-  height: 147px;
+  height: 200px;
   max-width: 473px;
 }
 

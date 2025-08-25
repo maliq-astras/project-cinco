@@ -34,7 +34,6 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   } = useResponsive();
@@ -147,7 +146,6 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   };

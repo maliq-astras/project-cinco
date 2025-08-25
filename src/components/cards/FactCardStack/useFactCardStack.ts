@@ -29,7 +29,6 @@ export function useFactCardStack() {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   } = useResponsive();
@@ -269,7 +268,6 @@ export function useFactCardStack() {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   };

@@ -23,7 +23,7 @@
 }
 
 .categoryTitle {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -45,8 +45,8 @@
 }
 
 .hamburgerIcon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   transition: transform 0.3s ease;
 }
 

@@ -31,10 +31,7 @@ export function useFinalFiveModal() {
     width,
     height,
     breakpoint, 
-    heightBreakpoint, 
     isLandscape, 
-    isPortrait,
-    responsiveValues 
   } = useResponsive();
   
   // Local state
