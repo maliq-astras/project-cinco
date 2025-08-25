@@ -112,28 +112,6 @@ const GameContent: React.FC<GameContentProps> = ({
 
       {/* Bubbles Panel - Right side */}
       <div className={styles.bubblesPanel}>
-        {/* Context line - hide for already-played scenarios and during victory animation */}
-        {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
-          <motion.div 
-            className={styles.contextLine}
-            {...gameContentStyles.gameEntranceAnimation.topSection}
-            animate={gameEntranceComplete ? 
-              gameContentStyles.gameEntranceAnimation.topSection.animate : 
-              gameContentStyles.gameEntranceAnimation.topSection.initial
-            }
-          >
-            <div 
-              style={gameContentStyles.contextLineBackground(colors.primary)} 
-              className="absolute inset-x-0 h-1"
-            />
-            <div className={styles.contextWrapper}>
-              <div className={styles.contextContainer}>
-                <BubbleContextArea />
-              </div>
-            </div>
-          </motion.div>
-        )}
-
         {/* Fact Bubbles Area */}
         <motion.div 
           className={styles.factBubblesWrapper}
@@ -149,7 +127,15 @@ const GameContent: React.FC<GameContentProps> = ({
                 {showGameMessage ? (
                   <EndGameMessage {...getGameMessageProps()} />
                 ) : (
-                  <FactBubbleGrid />
+                  <>
+                    <FactBubbleGrid />
+                    {/* Bubble Context Area - moved inside bubble container */}
+                    {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+                      <div className={styles.bubbleContextArea}>
+                        <BubbleContextArea />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}

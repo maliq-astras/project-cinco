@@ -189,3 +189,14 @@ export interface UserProgress {
   usedFinal5: boolean;
   timeSpent?: number; // in seconds
 }
+
+// Re-export GameState from gameLogic for convenience
+export interface GameState {
+  loading: boolean;
+  error: string | null;
+  challenge: Challenge | null;
+  revealedFacts: number[];
+  guesses: UserGuess[];
+  isGameOver: boolean;
+  finalFiveOptions: string[] | null;
+}

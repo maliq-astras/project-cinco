@@ -39,6 +39,13 @@ export const useResponsive = () => {
 
   // Calculate breakpoints
   const breakpoint = useMemo(() => getBreakpoint(width, height), [width, height]);
+  
+  // Height breakpoint for vertical constraints
+  const heightBreakpoint = useMemo(() => {
+    if (height < 600) return 'short';
+    if (height < 800) return 'medium';
+    return 'tall';
+  }, [height]);
 
   // Orientation detection
   const isLandscapeMode = useMemo(() => isLandscape(width, height), [width, height]);
@@ -226,6 +233,7 @@ export const useResponsive = () => {
     
     // Breakpoints
     breakpoint,
+    heightBreakpoint,
     
     // Orientation
     isLandscape: isLandscapeMode,

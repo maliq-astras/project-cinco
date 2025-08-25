@@ -12,6 +12,13 @@
   padding: 0 1rem;
 }
 
+/* Desktop layout - remove top margin to bring bubbles closer to context */
+@media (min-width: 1024px) {
+  .container {
+    margin-top: 0;
+  }
+}
+
 /* Grid configuration - always 4x2 layout */
 .grid {
   display: grid;

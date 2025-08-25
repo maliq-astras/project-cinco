@@ -14,7 +14,6 @@ export const useHeader = () => {
   // Use our new unified responsive system
   const { 
     breakpoint, 
-    heightBreakpoint, 
     isLandscape, 
     isPortrait,
     responsiveValues,
@@ -51,7 +50,6 @@ export const useHeader = () => {
     categoryTitleRef,
     // Responsive values from our new system
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait,
     responsiveValues,

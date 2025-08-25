@@ -24,18 +24,19 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
     colors,
     challenge,
     logoRef,
+    categoryTitleRef,
     isMenuOpen,
     toggleMenu,
     menuItems,
     isSettingsOpen,
-    openSettings,
     closeSettings,
     isTutorialOpen,
     closeTutorial,
     isFeedbackModalOpen,
     setIsFeedbackModalOpen,
     isBugReportModalOpen,
-    setIsBugReportModalOpen
+    setIsBugReportModalOpen,
+    compactSizes
   } = useCompactHeader();
 
   return (
@@ -47,6 +48,7 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
             <div className={styles.leftSection}>
               <motion.div 
                 ref={logoRef}
+                id="header-area"
                 className={styles.logoContainer}
                 initial={{ opacity: 0, scale: 0.8, x: -20 }}
                 animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: -20 }}
@@ -58,7 +60,13 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
               {/* Category title */}
               {challenge?.category && (
                 <motion.h1 
+                  ref={categoryTitleRef}
+                  id="category-title"
                   className={`${styles.categoryTitle} ${righteous.className}`}
+                  style={{
+                    fontSize: compactSizes.titleFontSize,
+                    maxWidth: compactSizes.titleMaxWidth
+                  }}
                   initial={{ opacity: 0, x: 20 }}
                   animate={headerEntranceComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                   transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -80,6 +88,10 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
               >
                 <motion.svg
                   className={styles.hamburgerIcon}
+                  style={{
+                    width: compactSizes.iconSize,
+                    height: compactSizes.iconSize
+                  }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

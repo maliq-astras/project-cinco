@@ -7,12 +7,12 @@
 .container {
   width: 100%;
   background-color: rgb(255 255 255);
-  border-bottom: 1px solid rgb(243 244 246);
+  /* Removed border-bottom for cleaner look */
 }
 
 :global(.dark) .container {
   background-color: rgb(0 0 0);
-  border-bottom-color: rgb(31 41 55);
+  /* Removed border-bottom for cleaner look */
 }
 
 /* Inner container */
@@ -38,7 +38,7 @@
 .containerXs, .containerSm, .containerMd, .containerLg, .containerXl {
   width: 100%;
   background-color: rgb(255 255 255);
-  border-bottom: 1px solid rgb(243 244 246);
+  /* Removed border-bottom for cleaner look */
 }
 
 :global(.dark) .containerXs,
@@ -47,7 +47,7 @@
 :global(.dark) .containerLg,
 :global(.dark) .containerXl {
   background-color: rgb(0 0 0);
-  border-bottom-color: rgb(31 41 55);
+  /* Removed border-bottom for cleaner look */
 }
 
 /* Inner container size variants */
@@ -106,40 +106,40 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 1.5rem;
-  padding-top: 10px;
+  height: 3rem; /* Increased to accommodate icons */
+  padding: 0.5rem 0;
 }
 
 .navBarSm {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 1.75rem;
-  padding-top: 10px;
+  height: 3.5rem; /* Increased to accommodate icons */
+  padding: 0.75rem 0;
 }
 
 .navBarMd {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 2rem;
-  padding-top: 10px;
+  height: 4rem; /* Increased to accommodate icons */
+  padding: 1rem 0;
 }
 
 .navBarLg {
   display: flex;  
   justify-content: space-between;
   align-items: center;
-  height: 2.5rem;
-  padding-top: 10px;
+  height: 4.5rem; /* Increased to accommodate icons */
+  padding: 1.25rem 0;
 }
 
 .navBarXl {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3rem;
-  padding-top: 10px;
+  height: 5rem; /* Increased to accommodate icons */
+  padding: 1.5rem 0;
 }
 
 /* Badge container */

@@ -41,10 +41,7 @@ export function useMainContainer() {
     mounted, 
     breakpoint, 
     isLandscape, 
-    isPortrait,
     responsiveValues,
-    willFit,
-    availableContentHeight
   } = useResponsive();
 
   // Component state
@@ -211,6 +208,9 @@ export function useMainContainer() {
     startFinalFive,
     breakpoint,
     layoutMode,
-    isNarrow
+    isNarrow,
+    headerSizeMode,
+    isCompactHeader,
+    isLandscape
   };
 } 

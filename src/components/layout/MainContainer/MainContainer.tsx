@@ -53,7 +53,8 @@ export default function MainContainer() {
     startFinalFive,
     breakpoint,
     layoutMode,
-    isNarrow
+    isNarrow,
+    isLandscape
   } = useMainContainer();
   
   // Get responsive layout mode from the store
@@ -143,7 +144,7 @@ export default function MainContainer() {
       ) : (
         <>
           {/* Use CompactHeader for limited vertical space, regular Header+Navigation otherwise */}
-          {isTabletLandscape || breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md' ? (
+          {breakpoint === 'xs' || breakpoint === 'sm' || (breakpoint === 'md' && isLandscape) ? (
             <CompactHeader headerEntranceComplete={headerEntranceComplete} />
           ) : (
             <>

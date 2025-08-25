@@ -180,6 +180,7 @@ export const useNavigation = () => {
     closeTutorial,
     setIsFeedbackModalOpen,
     setIsBugReportModalOpen,
+    setIsDropdownOpen, // Add missing function
     handleClickOutside, // Now returns the handler for component use
     
     // Responsive values from our new system

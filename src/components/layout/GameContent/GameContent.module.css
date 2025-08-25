@@ -115,7 +115,7 @@
   width: 100%;
   position: relative;
   flex-shrink: 0;
-  margin-bottom: 1rem;
+  margin-top: 0.25rem; /* 4px spacing below bubbles - much closer */
 }
 
 /* Context Wrapper */
@@ -144,6 +144,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-bottom: 0; /* Remove bottom margin since context is now below */
+  padding-bottom: 0; /* Remove any bottom padding */
 }
 
 /* Fact Bubbles Container */
@@ -152,6 +154,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  position: relative; /* For absolute positioning of bubble context */
+}
+
+/* Bubble Context Area - positioned directly below bubbles */
+.bubbleContextArea {
+  position: absolute;
+  bottom: -1.5rem; /* Position below the bubble grid */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+  z-index: 10;
+}
+
+/* Desktop-specific positioning for bubble context area */
+@media (min-width: 1024px) {
+  .bubbleContextArea {
+    bottom: -60px; 
+  }
 }
 
 /* Responsive adjustments for smaller wide screens */

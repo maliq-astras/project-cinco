@@ -86,7 +86,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
           {/* Always show the FactCardStackContainer */}
           <FactCardStackContainer />
           
-          {/* DropZone Indicator overlay for mobile - constrained to card area only */}
+          {/* DropZone Indicator overlay for mobile - covers full card area like desktop */}
           {isDragging && (
             <div 
               ref={dropZoneRef}
@@ -96,8 +96,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '200px', // Fixed height to not overflow into other sections
-                maxHeight: '100%', // Don't exceed the top section height
+                bottom: 0, // Cover full height like desktop
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

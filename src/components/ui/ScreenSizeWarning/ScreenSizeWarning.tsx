@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Monitor, Smartphone } from 'lucide-react';
 
 interface ScreenSizeWarningProps {
@@ -12,12 +12,22 @@ interface ScreenSizeWarningProps {
  * Different from landscape warning - this is for genuinely tiny screens
  */
 const ScreenSizeWarning: React.FC<ScreenSizeWarningProps> = ({ isMobile }) => {
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only showing conditional icon after client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-white dark:bg-black flex flex-col items-center justify-center p-6 z-50">
       <div className="text-center max-w-md">
         {/* Icon */}
         <div className="mb-6 flex justify-center">
-          {isMobile ? (
+          {!mounted ? (
+            // Use Monitor icon during SSR to prevent hydration mismatch
+            <Monitor className="w-16 h-16 text-gray-400 dark:text-gray-500" />
+          ) : isMobile ? (
             <Smartphone className="w-16 h-16 text-gray-400 dark:text-gray-500" />
           ) : (
             <Monitor className="w-16 h-16 text-gray-400 dark:text-gray-500" />

@@ -174,7 +174,7 @@ export const factMetadata = {
     }
   },
 
-  [CategoryType.MUSICAL_ARTISTS]: {
+  [CategoryType.MUSICIANS]: {
     "Genre": {
       description: "The type or style of music this artist creates.",
       icon: "music-genre",
@@ -260,7 +260,7 @@ export const factMetadata = {
     }
   },
 
-  [CategoryType.HISTORICAL_FIGURES]: {  
+  [CategoryType.HISTORY]: {  
     "Occupation": {
       description: "Their occupation, role, or field of expertise.",
       icon: "occupation",
@@ -303,7 +303,7 @@ export const factMetadata = {
     }
   },
 
-  [CategoryType.FAMOUS_BRANDS]: {
+  [CategoryType.COMPANIES]: {
     "Industry": {
       description: "The industry the brand is in.",
       icon: "industry",
