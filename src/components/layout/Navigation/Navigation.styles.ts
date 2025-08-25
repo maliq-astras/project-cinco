@@ -138,8 +138,6 @@ export const navigationStyles = {
   // Legacy nav icon styles
   navIconClass: styles.navIconClass,
   compactNavIconClass: styles.compactNavIconClass,
-  iconSize: styles.iconSize,
-  compactIconSize: styles.compactIconSize,
   
   // Dynamic nav icon styles
   navIcon: (primaryColor: string): CSSProperties => ({

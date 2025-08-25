@@ -39,9 +39,6 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   // Use our new responsive system
   const { 
     breakpoint, 
-    heightBreakpoint, 
-    isLandscape, 
-    isPortrait,
     responsiveValues 
   } = useResponsive();
   

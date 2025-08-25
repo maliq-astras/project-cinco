@@ -52,7 +52,7 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
                 animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: -20 }}
                 transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
-                <Logo height="64px" />
+                <Logo height="128px" />
               </motion.div>
               
               {/* Category title */}

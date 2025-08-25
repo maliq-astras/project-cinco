@@ -20,7 +20,6 @@ export function useFactCardStackContainer() {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait,
     availableContentHeight
@@ -59,8 +58,8 @@ export function useFactCardStackContainer() {
       const reservedSpace = isLandscape ? 450 : 400; // More space reserved in landscape
       const availableSpace = Math.max(0, height - reservedSpace);
       
-      // Use a smaller percentage of available space for the card stack
-      const heightPercentage = isLandscape ? 0.2 : 0.25; // Less space in landscape
+      // Use a larger percentage of available space for the card stack
+      const heightPercentage = isLandscape ? 0.3 : 0.35; // More space for cards
       const calculatedHeight = Math.max(availableSpace * heightPercentage, 150);
       
       // Set more conservative bounds
@@ -75,7 +74,7 @@ export function useFactCardStackContainer() {
     return {
       height: `${optimalHeight}px`,
       minHeight: `${optimalHeight}px`,
-      marginTop: `${responsiveValues.spacing * 1.5}px` // Reduced spacing
+      marginTop: `${responsiveValues.spacing * 5}px` // Increased spacing to push cards down
     };
   }, [height, isLandscape, responsiveValues]);
 
@@ -126,7 +125,6 @@ export function useFactCardStackContainer() {
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait,
     availableContentHeight

@@ -39,7 +39,6 @@ export function useMainContainer() {
     height, 
     mounted, 
     breakpoint, 
-    heightBreakpoint, 
     isLandscape, 
     isPortrait,
     responsiveValues,
@@ -186,7 +185,6 @@ export function useMainContainer() {
   const isTabletLandscape = isTablet && isLandscape;
 
   return {
-    // State
     gameState,
     viewingFact,
     loadingComplete,
@@ -194,32 +192,18 @@ export function useMainContainer() {
     gameEntranceComplete,
     isSmallLandscape,
     isTabletLandscape,
-    isTablet,
-    isCompactHeader,
     responsiveLayoutMode,
-    headerSizeMode,
-    isTimerActive,
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
     colors,
     showGameMessage,
     isVictoryAnimationActive,
-    isChallengeLoading,
     isAlreadyPlayedScenario: !!todayGameData && gameState.revealedFacts.length === 0, // Flag to indicate we're showing already-played data without cards
-    
-    // Responsive values from our new system
-    responsiveValues,
-    willFit,
-    availableContentHeight,
-    
-    // Refs
     gameControlsRef,
-    
-    // Functions
     handleLoadingComplete,
     getGameMessageProps,
     startFinalFive,
-    heightBreakpoint
+    breakpoint
   };
 } 

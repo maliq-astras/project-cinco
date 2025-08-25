@@ -1,15 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { 
   getBreakpoint, 
-  getHeightBreakpoint,
-  getPrimaryResponsiveValue,
   getResponsiveValue,
   isLandscape,
   isPortrait,
   willContentFitInHeight,
   getAvailableContentHeight,
-  type Breakpoint,
-  type HeightBreakpoint
+  type Breakpoint
 } from '@/helpers/breakpoints';
 
 /**
@@ -40,8 +37,7 @@ export const useResponsive = () => {
   }, []);
 
   // Calculate breakpoints
-  const breakpoint = useMemo(() => getBreakpoint(width), [width]);
-  const heightBreakpoint = useMemo(() => getHeightBreakpoint(height), [height]);
+  const breakpoint = useMemo(() => getBreakpoint(width, height), [width, height]);
 
   // Orientation detection
   const isLandscapeMode = useMemo(() => isLandscape(width, height), [width, height]);
@@ -49,137 +45,116 @@ export const useResponsive = () => {
 
   // Responsive values for different components
   const responsiveValues = useMemo(() => {
-    // Calculate optimal bubble size based on available grid space
-    const calculateOptimalBubbleSize = () => {
-      // Grid layout: 2 rows, 4 columns = 8 bubbles total
-      const gridColumns = 4;
-      const gridRows = 2;
-      
-      // Available space (accounting for margins and other UI elements)
-      const availableWidth = width - 40; // 20px margin on each side
-      
-      // Much more aggressive height calculation for no-scroll constraint
-      // Reserve more space for header, fact area, controls, and margins
-      const reservedHeight = isLandscapeMode ? 400 : 350; // More space reserved in landscape
-      const availableHeight = Math.max(0, height - reservedHeight);
-      
-      // Minimum spacing between bubbles
-      const minSpacing = 12;
-      
-      // Calculate max possible bubble size based on width
-      const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
-      
-      // Calculate max possible bubble size based on height
-      const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
-      
-      // Use the smaller of the two to ensure bubbles fit
-      const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
-      
-      // Set reasonable bounds (not too small, not too large)
-      const minSize = 50; // Lower minimum for very constrained spaces
-      const maxSize = 100; // Lower maximum to prevent overflow
-      
-      return Math.max(minSize, Math.min(maxSize, optimalSize));
+    // Hybrid bubble sizing: dynamic above 750px, aggressive breakpoint below
+    const getBubbleSize = () => {
+      if (height >= 750) {
+        // Dynamic sizing for taller screens
+        const gridColumns = 4;
+        const gridRows = 2;
+        const availableWidth = width - 40;
+        const reservedHeight = isLandscapeMode ? 400 : 350;
+        const availableHeight = Math.max(0, height - reservedHeight);
+        const minSpacing = 12;
+        
+        const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
+        const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
+        const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
+        
+        return Math.max(60, Math.min(120, optimalSize));
+      } else {
+        // Aggressive breakpoint-based sizing for shorter screens
+        return getResponsiveValue(
+          { xxs: 65, xs: 70, sm: 80, md: 75, lg: 85, xl: 95, xxl: 105 },
+          breakpoint
+        );
+      }
     };
 
-    const optimalBubbleSize = calculateOptimalBubbleSize();
+    const bubbleSize = getBubbleSize();
 
     return {
-      // Bubble sizes - calculated dynamically based on available space
-      bubbleSize: optimalBubbleSize,
+      // Bubble sizes - hybrid approach
+      bubbleSize: bubbleSize,
       
-      // Bubble spacing - proportional to bubble size
-      bubbleSpacing: Math.max(8, Math.min(20, optimalBubbleSize * 0.15)),
+      // Bubble spacing - proportional to bubble size for dynamic, fixed for breakpoint
+      bubbleSpacing: height >= 750 
+        ? Math.max(8, Math.min(20, bubbleSize * 0.15))
+        : getResponsiveValue(
+            { xxs: 6, xs: 8, sm: 10, md: 12, lg: 15, xl: 18, xxl: 20 },
+            breakpoint
+          ),
 
-      // Card sizes (prioritize height for no-scroll) - more aggressive sizing
-      cardSize: getPrimaryResponsiveValue(
+      // Card sizes - smaller cards to fit better
+      cardSize: getResponsiveValue(
         { 
-          short: { width: 70, height: 105 }, 
-          medium: { width: 80, height: 120 }, 
-          tall: { width: 90, height: 135 } 
+          xxs: { width: 50, height: 75 }, 
+          xs: { width: 60, height: 90 }, 
+          sm: { width: 65, height: 98 }, 
+          md: { width: 70, height: 105 }, 
+          lg: { width: 75, height: 113 }, 
+          xl: { width: 80, height: 120 },
+          xxl: { width: 85, height: 128 }
         },
-        { 
-          xs: { width: 70, height: 105 }, 
-          sm: { width: 75, height: 113 }, 
-          md: { width: 80, height: 120 }, 
-          lg: { width: 85, height: 128 }, 
-          xl: { width: 90, height: 135 } 
-        },
-        width,
-        height
+        breakpoint
       ),
 
       // Grid columns (use width for layout)
       gridColumns: getResponsiveValue(
-        { xs: 3, sm: 4, md: 5, lg: 6, xl: 7 },
+        { xxs: 3, xs: 3, sm: 4, md: 5, lg: 6, xl: 7, xxl: 8 },
         breakpoint
       ),
 
-      // Container heights (prioritize height) - more aggressive for limited space
-      containerHeight: getPrimaryResponsiveValue(
-        { short: 120, medium: 140, tall: 160 },
-        { xs: 120, sm: 130, md: 140, lg: 150, xl: 160 },
-        width,
-        height
+      // Container heights - more aggressive for limited space
+      containerHeight: getResponsiveValue(
+        { xxs: 100, xs: 120, sm: 130, md: 140, lg: 150, xl: 160, xxl: 170 },
+        breakpoint
       ),
 
       // Font sizes (use width for readability)
       fontSize: getResponsiveValue(
-        { xs: 14, sm: 15, md: 16, lg: 17, xl: 18 },
+        { xxs: 12, xs: 14, sm: 15, md: 16, lg: 17, xl: 18, xxl: 19 },
         breakpoint
       ),
 
-      // Spacing (prioritize height for no-scroll) - more aggressive for limited space
-      spacing: getPrimaryResponsiveValue(
-        { short: 6, medium: 8, tall: 12 },
-        { xs: 6, sm: 7, md: 8, lg: 10, xl: 12 },
-        width,
-        height
+      // Spacing - more aggressive for limited space
+      spacing: getResponsiveValue(
+        { xxs: 4, xs: 6, sm: 7, md: 8, lg: 10, xl: 12, xxl: 14 },
+        breakpoint
       ),
 
-      // Modal sizes (prioritize height)
-      modalSize: getPrimaryResponsiveValue(
+      // Modal sizes
+      modalSize: getResponsiveValue(
         { 
-          short: { width: 300, height: 400 }, 
-          medium: { width: 350, height: 450 }, 
-          tall: { width: 400, height: 500 } 
-        },
-        { 
+          xxs: { width: 280, height: 380 }, 
           xs: { width: 300, height: 400 }, 
           sm: { width: 320, height: 420 }, 
           md: { width: 350, height: 450 }, 
           lg: { width: 380, height: 480 }, 
-          xl: { width: 400, height: 500 } 
+          xl: { width: 400, height: 500 },
+          xxl: { width: 420, height: 520 }
         },
-        width,
-        height
+        breakpoint
       ),
 
-      // Input bar height (prioritize height)
-      inputBarHeight: getPrimaryResponsiveValue(
-        { short: 44, medium: 48, tall: 52 },
-        { xs: 44, sm: 46, md: 48, lg: 50, xl: 52 },
-        width,
-        height
+      // Input bar height
+      inputBarHeight: getResponsiveValue(
+        { xxs: 40, xs: 44, sm: 46, md: 48, lg: 50, xl: 52, xxl: 54 },
+        breakpoint
       ),
 
-      // Timer size (prioritize height)
-      timerSize: getPrimaryResponsiveValue(
-        { short: 50, medium: 60, tall: 70 },
-        { xs: 50, sm: 55, md: 60, lg: 65, xl: 70 },
-        width,
-        height
+      // Timer size
+      timerSize: getResponsiveValue(
+        { xxs: 45, xs: 50, sm: 55, md: 60, lg: 65, xl: 70, xxl: 75 },
+        breakpoint
       ),
 
-      // Progress bar height (prioritize height)
-      progressBarHeight: getPrimaryResponsiveValue(
-        { short: 6, medium: 8, tall: 10 },
-        { xs: 6, sm: 7, md: 8, lg: 9, xl: 10 },
-        width,
-        height
+      // Progress bar height
+      progressBarHeight: getResponsiveValue(
+        { xxs: 5, xs: 6, sm: 7, md: 8, lg: 9, xl: 10, xxl: 11 },
+        breakpoint
       )
     };
-  }, [width, height, breakpoint, heightBreakpoint]);
+  }, [width, height, breakpoint, isLandscapeMode]);
 
   // Utility functions
   const willFit = useMemo(() => ({
@@ -210,7 +185,6 @@ export const useResponsive = () => {
     
     // Breakpoints
     breakpoint,
-    heightBreakpoint,
     
     // Orientation
     isLandscape: isLandscapeMode,
@@ -219,16 +193,11 @@ export const useResponsive = () => {
     // Responsive values
     responsiveValues,
     
-    // Utility functions
+    // Content fitting utilities
     willFit,
     availableContentHeight,
     
     // Helper functions for components
-    getResponsiveValue: <T>(values: Record<Breakpoint, T>) => getResponsiveValue(values, breakpoint),
-    getHeightResponsiveValue: <T>(values: Record<HeightBreakpoint, T>) => values[heightBreakpoint],
-    getPrimaryResponsiveValue: <T>(
-      heightValues: Record<HeightBreakpoint, T>,
-      widthValues: Record<Breakpoint, T>
-    ) => getPrimaryResponsiveValue(heightValues, widthValues, width, height)
+    getResponsiveValue: <T>(values: Record<Breakpoint, T>) => getResponsiveValue(values, breakpoint)
   };
 };

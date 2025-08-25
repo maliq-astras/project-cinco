@@ -47,7 +47,7 @@ export default function MainContainer() {
     handleLoadingComplete,
     getGameMessageProps,
     startFinalFive,
-    heightBreakpoint
+    breakpoint
   } = useMainContainer();
   
   // Get responsive layout mode from the store
@@ -109,7 +109,7 @@ export default function MainContainer() {
       ) : (
         <>
           {/* Use CompactHeader for limited vertical space, regular Header+Navigation otherwise */}
-          {isTabletLandscape || heightBreakpoint === 'short' ? (
+          {isTabletLandscape || breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md' ? (
             <CompactHeader headerEntranceComplete={headerEntranceComplete} />
           ) : (
             <>

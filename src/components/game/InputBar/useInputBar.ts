@@ -29,7 +29,6 @@ export const useInputBar = ({
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   } = useResponsive();
@@ -129,7 +128,6 @@ export const useInputBar = ({
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   };

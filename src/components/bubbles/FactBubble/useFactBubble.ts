@@ -58,7 +58,6 @@ export function useFactBubble({
   // Use our new unified responsive system
   const { 
     breakpoint, 
-    heightBreakpoint, 
     isLandscape, 
     isPortrait,
     responsiveValues,
@@ -262,7 +261,6 @@ export function useFactBubble({
     
     // Responsive values from our new system
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait,
     responsiveValues,

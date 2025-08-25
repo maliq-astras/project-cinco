@@ -36,7 +36,6 @@ export const useAutocomplete = ({
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   } = useResponsive();
@@ -217,7 +216,6 @@ export const useAutocomplete = ({
     width,
     height,
     breakpoint,
-    heightBreakpoint,
     isLandscape,
     isPortrait
   };
