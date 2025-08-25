@@ -128,7 +128,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
               className="absolute inset-x-0 h-1"
             />
             <div className={styles.contextWrapper}>
-              <div className={styles.contextContainer}>
+              <div className={styles.bubbleContextContainer}>
                 <BubbleContextArea />
               </div>
             </div>

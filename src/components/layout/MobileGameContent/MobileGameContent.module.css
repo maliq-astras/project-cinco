@@ -64,6 +64,14 @@
   z-index: 10;
 }
 
+/* Bubble context container (specific to bubble context area) */
+.bubbleContextContainer {
+  padding: 0 1rem 0.25rem 1rem;
+  border-radius: 0.5rem;
+  position: relative;
+  z-index: 10;
+}
+
 /* Fact bubbles wrapper */
 .factBubblesWrapper {
   width: 100%;
@@ -129,9 +137,13 @@
 
 /* Move card area up on short mobile screens to avoid drop zone overlap */
 /* Note: screens below 650px now show size warning instead */
-@media (max-height: 700px) and (min-height: 650px) {
+@media (max-height: 725px) and (min-height: 650px) {
   .topSection {
-    margin-top: -15px;
+    margin-top: -40px;
+  }
+  
+  .bubbleContextContainer {
+    margin-top: 25px;
   }
 }
 

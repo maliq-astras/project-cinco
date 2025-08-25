@@ -83,8 +83,9 @@ export default function MainContainer() {
   const isActualMobileDevice = isActualMobile();
   const needsNarrowLayout = isNarrow;
   
-  // Check if screen is too small
-  const screenTooSmall = isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice);
+  // Check if screen is too small (only after dimensions are initialized)
+  const screenTooSmall = screenDimensions.width > 0 && screenDimensions.height > 0 && 
+    isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice);
   
   // Check if we should show landscape warning (only on actual mobile devices)
   const shouldShowLandscapeWarning = isSmallLandscape && isActualMobileDevice;

@@ -183,6 +183,7 @@
   .container {
     grid-template-columns: 1fr 1fr; /* Equal columns for smaller wide screens */
     gap: 1.5rem;
+    padding: 0 0 1rem 0; /* Remove left and right padding to use full width */
   }
   
   .leftPanel {
