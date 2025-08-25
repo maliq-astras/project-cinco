@@ -96,6 +96,27 @@ export const isPortrait = (width: number, height: number): boolean => {
 };
 
 /**
+ * Check if dimensions require narrow layout (narrow/cramped)
+ * Narrow layout is used when:
+ * - Width is less than 800px (too narrow for side-by-side)
+ * - OR in portrait orientation on smaller screens
+ */
+export const isNarrowLayout = (width: number, height: number): boolean => {
+  return (
+    width < 800 ||
+    (isPortrait(width, height) && width < 1000)
+  );
+};
+
+/**
+ * Determine optimal layout mode based on dimensions
+ * Default to desktop layout unless screen is too constrained
+ */
+export const getLayoutMode = (width: number, height: number): 'mobile' | 'desktop' => {
+  return isNarrowLayout(width, height) ? 'mobile' : 'desktop';
+};
+
+/**
  * Get orientation-aware responsive value
  */
 export const getOrientationResponsiveValue = <T>(

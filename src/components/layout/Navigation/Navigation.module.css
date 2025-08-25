@@ -107,7 +107,7 @@
   justify-content: space-between;
   align-items: center;
   height: 1.5rem;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .navBarSm {
@@ -115,7 +115,7 @@
   justify-content: space-between;
   align-items: center;
   height: 1.75rem;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .navBarMd {
@@ -123,15 +123,15 @@
   justify-content: space-between;
   align-items: center;
   height: 2rem;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .navBarLg {
-  display: flex;
+  display: flex;  
   justify-content: space-between;
   align-items: center;
   height: 2.5rem;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .navBarXl {
@@ -139,7 +139,7 @@
   justify-content: space-between;
   align-items: center;
   height: 3rem;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 /* Badge container */

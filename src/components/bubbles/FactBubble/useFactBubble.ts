@@ -196,15 +196,9 @@ export function useFactBubble({
   // Calculate responsive icon size using our new responsive system
   const icon = useMemo(() => {
     // Use responsive values for bubble size and calculate icon size
-    const bubbleSize = responsiveValues.bubbleSize;
-    const sizeMultiplier = breakpoint === 'xs' ? 0.5 : breakpoint === 'sm' ? 0.55 : 0.6;
+    const bubbleSize = responsiveValues.bubbleSize;    
     
-    // Scale down by 5% on largest screens
-    const finalMultiplier = (breakpoint === 'lg' || breakpoint === 'xl') 
-      ? sizeMultiplier * 0.95 
-      : sizeMultiplier;
-    
-    const iconSize = Math.max(28, Math.round(bubbleSize * finalMultiplier));
+    const iconSize = Math.max(28, Math.round(bubbleSize));
     
     return getFactIcon(factType, false, iconSize, category);
   }, [factType, category, responsiveValues.bubbleSize, breakpoint]);

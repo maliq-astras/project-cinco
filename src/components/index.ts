@@ -34,4 +34,6 @@ export { default as FinalFiveIntro } from './final-five/FinalFiveIntro';
 export { default as Header } from './layout/Header';
 export { default as Navigation } from './layout/Navigation';
 export { default as NavDropdownMenu } from './layout/NavDropdownMenu'; 
-export { default as Logo } from './layout/Logo'; 
+export { default as Logo } from './layout/Logo';
+export { default as GameContent } from './layout/GameContent';
+export { default as MobileGameContent } from './layout/MobileGameContent'; 

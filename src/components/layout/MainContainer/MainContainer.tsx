@@ -1,6 +1,6 @@
 'use client';
 
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMainContainer } from './useMainContainer';
 import { mainContainerStyles } from './MainContainer.styles';
@@ -21,10 +21,14 @@ import {
   LanguageSwitchLoader
 } from '@/components';
 import CompactHeader from '../CompactHeader';
+import GameContent from '../GameContent';
+import MobileGameContent from '../MobileGameContent';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LandscapeWarning from '../../layout/LandscapeWarning';
 import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
+import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
+import { isMobile as isActualMobile, isScreenTooSmall } from '@/helpers/deviceDetection';
 
 export default function MainContainer() {
   const {
@@ -47,7 +51,9 @@ export default function MainContainer() {
     handleLoadingComplete,
     getGameMessageProps,
     startFinalFive,
-    breakpoint
+    breakpoint,
+    layoutMode,
+    isNarrow
   } = useMainContainer();
   
   // Get responsive layout mode from the store
@@ -59,8 +65,36 @@ export default function MainContainer() {
   // Wrong answer overlay hook
   const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
   
-  // If in small landscape mode (phone), show a warning overlay
-  if (isSmallLandscape) {
+  // Get current screen dimensions for size checks
+  const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
+  
+  useEffect(() => {
+    const updateDimensions = () => {
+      setScreenDimensions({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+  
+  // Determine actual device type and layout needs
+  const isActualMobileDevice = isActualMobile();
+  const needsNarrowLayout = isNarrow;
+  
+  // Check if screen is too small
+  const screenTooSmall = isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice);
+  
+  // Check if we should show landscape warning (only on actual mobile devices)
+  const shouldShowLandscapeWarning = isSmallLandscape && isActualMobileDevice;
+  
+  // Screen size warning takes priority
+  if (screenTooSmall) {
+    return <ScreenSizeWarning isMobile={isActualMobileDevice} />;
+  }
+  
+  // If in small landscape mode on actual mobile device, show landscape warning overlay
+  if (shouldShowLandscapeWarning) {
     return <LandscapeWarning context="game" />;
   }
 
@@ -140,91 +174,37 @@ export default function MainContainer() {
                   )}
                 </AnimatePresence>
 
-                {/* Main game content */}
+                {/* Main game content - conditional layout */}
                 <AnimatePresence>
                   {!showFinalFiveTransition && (
-                    <motion.div
-                      key="game-content"
-                      className={`${mainContainerStyles.gameContent} ${isTabletLandscape ? 'py-0 gap-0' : ''}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: gameEntranceComplete ? 1 : 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {/* Top section - hide for already-played scenarios */}
-                      {!isAlreadyPlayedScenario && (
-                        <motion.div 
-                          className={mainContainerStyles.topSection}
-                          {...mainContainerStyles.gameEntranceAnimation.cardStack}
-                          animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.cardStack.animate : mainContainerStyles.gameEntranceAnimation.cardStack.initial}
-                        >
-                          <FactCardStackContainer />
-                        </motion.div>
+                    <>
+                      {!needsNarrowLayout ? (
+                        // Desktop layout
+                        <GameContent
+                          gameState={gameState}
+                          gameEntranceComplete={gameEntranceComplete}
+                          showGameMessage={showGameMessage}
+                          getGameMessageProps={getGameMessageProps}
+                          isFinalFiveActive={isFinalFiveActive}
+                          isAlreadyPlayedScenario={isAlreadyPlayedScenario}
+                          isVictoryAnimationActive={isVictoryAnimationActive}
+                          gameControlsRef={gameControlsRef}
+                        />
+                      ) : (
+                        // Mobile layout
+                        <MobileGameContent
+                          gameState={gameState}
+                          gameEntranceComplete={gameEntranceComplete}
+                          showGameMessage={showGameMessage}
+                          getGameMessageProps={getGameMessageProps}
+                          isFinalFiveActive={isFinalFiveActive}
+                          isAlreadyPlayedScenario={isAlreadyPlayedScenario}
+                          isVictoryAnimationActive={isVictoryAnimationActive}
+                          isTabletLandscape={isTabletLandscape}
+                          gameControlsRef={gameControlsRef}
+                        />
                       )}
-                      
-                      {/* Middle section */}
-                      <div className={`${mainContainerStyles.middleSection} ${isTabletLandscape ? 'py-0' : ''}`} style={mainContainerStyles.sectionGap}>
-                        {/* Context line - hide for already-played scenarios and during victory animation */}
-                        {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
-                          <motion.div 
-                            className={mainContainerStyles.contextLine}
-                            {...mainContainerStyles.gameEntranceAnimation.topSection}
-                            animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.topSection.animate : mainContainerStyles.gameEntranceAnimation.topSection.initial}
-                          >
-                            <div style={mainContainerStyles.contextLineBackground(colors.primary)} className="absolute inset-x-0 h-1"></div>
-                            <div className={mainContainerStyles.contextWrapper}>
-                              <div className={mainContainerStyles.contextContainer}>
-                                <BubbleContextArea />
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-
-                        {/* Fact Bubbles Area */}
-                        <motion.div 
-                          className={mainContainerStyles.factBubblesWrapper}
-                          {...mainContainerStyles.gameEntranceAnimation.middleSection}
-                          animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.middleSection.animate : mainContainerStyles.gameEntranceAnimation.middleSection.initial}
-                        >
-                          <div className={mainContainerStyles.factBubblesContainer}>
-                            {!isFinalFiveActive && (
-                              <div className="relative">
-                                {showGameMessage ? (
-                                  <EndGameMessage {...getGameMessageProps()} />
-                                ) : (
-                                  <FactBubbleGrid />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      </div>
-                      
-                      {/* Bottom section */}
-                      <motion.div 
-                        className={`${mainContainerStyles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}
-                        {...mainContainerStyles.gameEntranceAnimation.bottomSection}
-                        animate={gameEntranceComplete ? mainContainerStyles.gameEntranceAnimation.bottomSection.animate : mainContainerStyles.gameEntranceAnimation.bottomSection.initial}
-                      >
-                        {/* Game instructions - hide for already-played scenarios and during victory animation */}
-                        {!isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
-                          <div className={mainContainerStyles.instructionsWrapper}>
-                            <div className={mainContainerStyles.instructionsContainer}>
-                              <div className={mainContainerStyles.instructionsInner}>
-                                <GameInstructionsArea />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Game Controls - hide for already-played scenarios and during victory animation */}
-                        {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
-                          <div className={`${mainContainerStyles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}>
-                            <GameControls ref={gameControlsRef} />
-                          </div>
-                        )}
-                      </motion.div>
-                    </motion.div>
+                    </>
                   )}
                 </AnimatePresence>
                 

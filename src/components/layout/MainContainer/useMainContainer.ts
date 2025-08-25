@@ -5,6 +5,7 @@ import type { GameControlsHandle } from '../../game/GameControls';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
 import { useResponsive } from '@/hooks/responsive';
+import { getLayoutMode, isNarrowLayout } from '@/helpers/breakpoints';
 import { GameOutcome } from '@/types';
 
 export function useMainContainer() {
@@ -183,6 +184,10 @@ export function useMainContainer() {
   const isSmallLandscape = isLandscape && height < 450;
   const isTablet = breakpoint === 'md' || breakpoint === 'lg';
   const isTabletLandscape = isTablet && isLandscape;
+  
+  // Layout mode determination
+  const layoutMode = mounted ? getLayoutMode(width, height) : 'mobile';
+  const isNarrow = mounted ? isNarrowLayout(width, height) : true;
 
   return {
     gameState,
@@ -204,6 +209,8 @@ export function useMainContainer() {
     handleLoadingComplete,
     getGameMessageProps,
     startFinalFive,
-    breakpoint
+    breakpoint,
+    layoutMode,
+    isNarrow
   };
 } 

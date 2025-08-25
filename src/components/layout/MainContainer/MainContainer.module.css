@@ -192,6 +192,8 @@
   z-index: 50;
 }
 
+/* These thresholds are now handled by screen size warning component */
+
 :global(.dark) .warningOverlay {
   background-color: rgb(0 0 0);
 }

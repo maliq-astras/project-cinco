@@ -6,8 +6,6 @@ import { AnimatePresence } from 'framer-motion';
 import { useFactCardStackContainer } from './useFactCardStackContainer';
 import styles from './FactCardStackContainer.module.css';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
-import DropZoneIndicator from '../DropZoneIndicator';
-import { useDragState } from '@/hooks/ui/useDragState';
 
 /**
  * Container component for FactCardStack
@@ -21,13 +19,9 @@ export const FactCardStackContainer: React.FC = () => {
     factsAreaRef,
     containerRef,
     responsiveValues,
-    breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait
   } = useFactCardStackContainer();
 
-  const isDragging = useDragState(state => state.isDragging);
+
 
   // Create responsive container style
   const responsiveContainerStyle = {
@@ -53,15 +47,11 @@ export const FactCardStackContainer: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Conditionally render either FactCardStack OR DropZoneIndicator in the same spot */}
+        {/* FactCardStack - clean component, no drop zone logic */}
         <div className={styles.cardStackWrapper}>
-          {isDragging ? (
-            <DropZoneIndicator isVisible={true} />
-          ) : (
-            <div className={cardStackVisibilityClass} style={{ opacity: isHidden ? 0 : 1 }}>
-              <FactCardStack key="main-stack" />
-            </div>
-          )}
+          <div className={cardStackVisibilityClass} style={{ opacity: isHidden ? 0 : 1 }}>
+            <FactCardStack key="main-stack" />
+          </div>
         </div>
       </div>
     </div>

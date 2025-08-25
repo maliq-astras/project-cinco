@@ -23,13 +23,15 @@
   border: 2px dashed;
   border-color: hsl(var(--border));
   border-radius: 0.5rem; /* rounded-lg */
-  width: 80%;
+  width: 90%;
   max-width: 350px;
+  min-width: 200px; /* Prevent squishing in narrow containers */
   height: 120px;
   background-color: hsl(var(--muted));
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* Prevent flex shrinking */
 }
 
 /* Dark mode support */
@@ -64,5 +66,21 @@
 @media (min-width: 768px) {
   .element {
     height: 160px; /* md:h-[160px] */
+  }
+}
+
+/* Wide screen layout adjustments */
+@media (min-width: 1000px) {
+  .element {
+    width: 95%;
+    max-width: 300px; /* Slightly smaller max-width for wide layout */
+    min-width: 180px;
+    height: 140px; /* Adjust height for wide layout proportions */
+  }
+  
+  .text {
+    font-size: 0.875rem; /* Maintain readable but compact text */
+    text-align: center;
+    padding: 0 1rem; /* Add some horizontal padding */
   }
 }

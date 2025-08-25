@@ -1,10 +1,12 @@
-/* Container styles - matches FactCardStackContainer dimensions */
+/* Container styles - fills the actual card container space */
 .container {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  max-width: 56rem; /* max-w-4xl - same as FactCardStackContainer */
-  min-height: 120px; /* Shorter min height */
-  height: clamp(120px, 25vh, 250px); /* Shorter responsive height */
+  height: 100%;
   border: 2px dashed hsl(var(--primary));
   border-radius: 0.5rem;
   display: flex;

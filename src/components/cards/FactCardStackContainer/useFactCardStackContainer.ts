@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef, type CSSProperties } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useDragState } from '@/hooks/ui';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
@@ -24,6 +24,9 @@ export function useFactCardStackContainer() {
     isPortrait,
     availableContentHeight
   } = useResponsive();
+  
+  const { isNarrowLayout } = require('@/helpers/breakpoints');
+  const isDesktopLayout = !isNarrowLayout(width, height);
 
   const isDragging = useDragState(state => state.isDragging);
   const wasFactRevealed = useDragState(state => state.wasFactRevealed);
@@ -51,7 +54,7 @@ export function useFactCardStackContainer() {
   }, [registerElement, unregisterElement]);
 
   // Calculate container styles using our responsive system
-  const containerStyles = useMemo(() => {
+  const containerStyles = useMemo<CSSProperties>(() => {
     // Calculate optimal container height based on available space
     const calculateOptimalHeight = () => {
       // Reserve more space for other UI elements (header, bubbles, controls)
@@ -71,12 +74,23 @@ export function useFactCardStackContainer() {
 
     const optimalHeight = calculateOptimalHeight();
 
+    // In desktop layout, fill the available space to match tutorial spotlight
+    if (isDesktopLayout) {
+      return {
+        height: '100%',
+        minHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+      };
+    }
+    
     return {
       height: `${optimalHeight}px`,
       minHeight: `${optimalHeight}px`,
       marginTop: `${responsiveValues.spacing * 5}px` // Increased spacing to push cards down
     };
-  }, [height, isLandscape, responsiveValues]);
+  }, [height, isLandscape, responsiveValues, isDesktopLayout]);
 
   // Handle delayed showing of cards
   useEffect(() => {

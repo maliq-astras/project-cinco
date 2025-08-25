@@ -4,6 +4,7 @@ import {
   getResponsiveValue,
   isLandscape,
   isPortrait,
+  isNarrowLayout,
   willContentFitInHeight,
   getAvailableContentHeight,
   type Breakpoint
@@ -42,61 +43,101 @@ export const useResponsive = () => {
   // Orientation detection
   const isLandscapeMode = useMemo(() => isLandscape(width, height), [width, height]);
   const isPortraitMode = useMemo(() => isPortrait(width, height), [width, height]);
+  
+  // Layout mode detection - inverted logic (wide is default)
+  const isNarrow = useMemo(() => isNarrowLayout(width, height), [width, height]);
 
   // Responsive values for different components
   const responsiveValues = useMemo(() => {
-    // Hybrid bubble sizing: dynamic above 750px, aggressive breakpoint below
+    // Height cutoff - below this, show screen size warning instead of trying to fit
+    const minimumHeight = isNarrow ? 650 : 600;
+    
+    // Smart dynamic bubble sizing - layout aware, works for all heights
     const getBubbleSize = () => {
-      if (height >= 750) {
-        // Dynamic sizing for taller screens
-        const gridColumns = 4;
-        const gridRows = 2;
-        const availableWidth = width - 40;
-        const reservedHeight = isLandscapeMode ? 400 : 350;
-        const availableHeight = Math.max(0, height - reservedHeight);
-        const minSpacing = 12;
-        
-        const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
-        const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
-        const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
-        
-        return Math.max(60, Math.min(120, optimalSize));
-      } else {
-        // Aggressive breakpoint-based sizing for shorter screens
-        return getResponsiveValue(
-          { xxs: 65, xs: 70, sm: 80, md: 75, lg: 85, xl: 95, xxl: 105 },
-          breakpoint
-        );
+      // If height is too small, use reasonable fixed sizes instead of shrinking
+      if (height < minimumHeight) {
+        return isNarrow ? 85 : 95; // Fixed reasonable sizes
       }
+      const gridColumns = 4;
+      const gridRows = 2;
+      
+      // Calculate available width based on layout mode
+      let availableWidth;
+      if (isNarrow) {
+        // Vertical layout: bubbles get full width minus container padding
+        availableWidth = width - 40;
+      } else {
+        // Wide layout: bubbles only get their panel width
+        // Account for: half screen - horizontal gap (1.5rem) - container padding (1rem each side)
+        availableWidth = (width / 2) - 24 - 16; // 24px = 1.5rem gap, 16px = 1rem padding each side
+      }
+      
+      const reservedHeight = isLandscapeMode ? 400 : 350;
+      const availableHeight = Math.max(0, height - reservedHeight);
+      const minSpacing = 12;
+      
+      const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
+      const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
+      const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
+    
+      return Math.max(60, Math.min(120, optimalSize));
     };
 
     const bubbleSize = getBubbleSize();
 
+    // Smart dynamic card sizing - layout aware
+    const getCardSize = () => {
+      // If height is too small, use reasonable fixed sizes instead of shrinking
+      if (height < minimumHeight) {
+        return { width: 100, height: 150 }; // Fixed reasonable card size
+      }
+      
+      // Calculate available space for cards based on layout mode
+      let availableWidth;
+      let availableHeight;
+      
+      if (isNarrow) {
+        // Vertical layout: cards get full width for the stack area
+        availableWidth = Math.min(400, width - 40); // Max 400px width, minus padding
+        availableHeight = Math.max(250, height * 0.35); // 35% of screen height, min 250px
+      } else {
+        // Wide layout: cards get their panel width
+        availableWidth = (width / 2) - 24 - 16; // Half width minus gap and padding
+        availableHeight = Math.max(350, height * 0.7); // 70% of screen height, min 350px
+      }
+      
+      // Calculate optimal card dimensions (maintaining 2:3 aspect ratio)
+      const aspectRatio = 1.5; // height / width = 3/2
+      
+      // Start with width-based sizing (cards are typically width-constrained)
+      const maxCardWidth = Math.min(availableWidth * 0.6, 140); // 60% of available width, max 140px
+      let cardWidth = Math.max(55, maxCardWidth);
+      let cardHeight = cardWidth * aspectRatio;
+      
+      // Check if height fits, if not, constrain by height
+      const maxCardHeight = Math.min(availableHeight * 0.5, 210); // 50% of available height, max 210px
+      if (cardHeight > maxCardHeight) {
+        cardHeight = Math.max(83, maxCardHeight); // Min 83px height
+        cardWidth = Math.max(55, cardHeight / aspectRatio);
+      }
+      
+      return {
+        width: Math.round(cardWidth),
+        height: Math.round(cardHeight)
+      };
+    };
+
+    const cardSize = getCardSize();
+
     return {
-      // Bubble sizes - hybrid approach
+      // Bubble sizes - dynamic and layout-aware
       bubbleSize: bubbleSize,
       
-      // Bubble spacing - proportional to bubble size for dynamic, fixed for breakpoint
-      bubbleSpacing: height >= 750 
-        ? Math.max(8, Math.min(20, bubbleSize * 0.15))
-        : getResponsiveValue(
-            { xxs: 6, xs: 8, sm: 10, md: 12, lg: 15, xl: 18, xxl: 20 },
-            breakpoint
-          ),
+      // Bubble spacing - always dynamic and proportional to bubble size
+      bubbleSpacing: Math.max(8, Math.min(20, bubbleSize * 0.15)),
 
-      // Card sizes - smaller cards to fit better
-      cardSize: getResponsiveValue(
-        { 
-          xxs: { width: 50, height: 75 }, 
-          xs: { width: 60, height: 90 }, 
-          sm: { width: 65, height: 98 }, 
-          md: { width: 70, height: 105 }, 
-          lg: { width: 75, height: 113 }, 
-          xl: { width: 80, height: 120 },
-          xxl: { width: 85, height: 128 }
-        },
-        breakpoint
-      ),
+      // Card sizes - dynamic and layout-aware
+      cardSize: cardSize,
 
       // Grid columns (use width for layout)
       gridColumns: getResponsiveValue(
@@ -154,7 +195,7 @@ export const useResponsive = () => {
         breakpoint
       )
     };
-  }, [width, height, breakpoint, isLandscapeMode]);
+  }, [width, height, breakpoint, isLandscapeMode, isNarrow]);
 
   // Utility functions
   const willFit = useMemo(() => ({
