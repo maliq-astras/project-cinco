@@ -7,7 +7,7 @@ import GameTutorial from '../../game/GameTutorial';
 import SettingsPanel from '../../modals/SettingsPanel';
 import FeedbackModal from '../../modals/FeedbackModal';
 import BugReportModal from '../../modals/BugReportModal';
-import NavDropdownMenu from '../NavDropdownMenu';
+import SlideOutMenu from '../SlideOutMenu';
 import { useCompactHeader, type MenuItem } from './useCompactHeader';
 import { getCategoryName } from '@/helpers/i18nHelpers';
 import styles from './CompactHeader.module.css';
@@ -105,14 +105,15 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
           </div>
         </header>
         
-        {/* Dropdown menu */}
-        <NavDropdownMenu 
-          isOpen={isMenuOpen}
-          menuItems={menuItems}
-          colors={colors}
-          onClose={toggleMenu}
-        />
       </div>
+      
+      {/* Slide-out menu */}
+      <SlideOutMenu 
+        isOpen={isMenuOpen}
+        onClose={toggleMenu}
+        menuItems={menuItems}
+        colors={colors}
+      />
       
       {/* Modals */}
       <SettingsPanel 

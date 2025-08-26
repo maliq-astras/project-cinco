@@ -110,12 +110,25 @@ export const isMobileLayout = (width: number, height: number): boolean => {
 };
 
 /**
- * Check if dimensions require compact layout (smaller mobile elements)
- * Compact layout uses mobile layout structure but with smaller elements
- * Width between 390px (minimum before screen warning) and 800px (desktop cutoff)
+ * Check if dimensions require compact layout (smaller elements)
+ * Compact layout uses smaller elements for cramped spaces
+ * Applied to:
+ * - Mobile layout: Width 390-800px 
+ * - Desktop layout: Width 390-900px
  */
 export const isCompactLayout = (width: number, height: number): boolean => {
-  return width >= 390 && width < 800 && isMobileLayout(width, height);
+  const usesDesktopLayout = !isMobileLayout(width, height);
+  const usesMobileLayout = isMobileLayout(width, height);
+  
+  if (usesDesktopLayout) {
+    // Desktop layout: compact from 390px to 900px width
+    return width >= 390 && width < 900;
+  } else if (usesMobileLayout) {
+    // Mobile layout: compact from 390px to 800px width  
+    return width >= 390 && width < 800;
+  }
+  
+  return false;
 };
 
 /**

@@ -53,7 +53,7 @@ const ScreenSizeWarning: React.FC<ScreenSizeWarningProps> = ({ isMobile }) => {
           {isMobile ? (
             <p>650px height × 320px width</p>
           ) : (
-            <p>600px height</p>
+            <p>580px height</p>
           )}
         </div>
       </div>

@@ -96,8 +96,8 @@ export const useResponsive = () => {
 
     const baseBubbleSize = getBubbleSize();
     
-    // Apply compact scaling (45% smaller) if in compact layout
-    const bubbleSize = isCompact ? Math.round(baseBubbleSize * 0.55) : baseBubbleSize;
+    // Apply compact scaling (35% smaller) if in compact layout
+    const bubbleSize = isCompact ? Math.round(baseBubbleSize * 0.65) : baseBubbleSize;
 
     // Smart dynamic card sizing - layout aware
     const getCardSize = () => {
@@ -143,10 +143,10 @@ export const useResponsive = () => {
 
     const baseCardSize = getCardSize();
     
-    // Apply compact scaling (45% smaller) if in compact layout
+    // Apply compact scaling (35% smaller) if in compact layout
     const cardSize = isCompact ? {
-      width: Math.round(baseCardSize.width * 0.55),
-      height: Math.round(baseCardSize.height * 0.55)
+      width: Math.round(baseCardSize.width * 0.65),
+      height: Math.round(baseCardSize.height * 0.65)
     } : baseCardSize;
 
     return {

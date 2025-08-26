@@ -22,13 +22,16 @@ export const isMobileDevice = (): boolean => {
 /**
  * Check if current screen size is below minimum thresholds
  */
-export const isScreenTooSmall = (width: number, height: number, isActualMobile: boolean): boolean => {
-  if (isActualMobile) {
-    // Mobile device: 650px height, 320px width minimum
+export const isScreenTooSmall = (width: number, height: number, isActualMobile: boolean, usesMobileLayout?: boolean): boolean => {
+  // Use mobile layout detection if provided, otherwise fall back to device detection
+  const shouldUseMobileThresholds = usesMobileLayout !== undefined ? usesMobileLayout : isActualMobile;
+  
+  if (shouldUseMobileThresholds) {
+    // Mobile layout: 650px height, 320px width minimum
     return height < 650 || width < 320;
   } else {
-    // Desktop/laptop: 600px height minimum
-    return height < 600;
+    // Desktop layout: 580px height minimum
+    return height < 580;
   }
 };
 
@@ -37,8 +40,8 @@ export const isScreenTooSmall = (width: number, height: number, isActualMobile: 
  */
 export const getScreenSizeMessage = (isActualMobile: boolean): string => {
   if (isActualMobile) {
-    return "Please increase your screen size to play the game.";
+    return "Please increase your screen size or rotate your device to play the game.";
   } else {
-    return "Please increase your screen height to continue.";
+    return "Please increase your browser window height to continue.";
   }
 };

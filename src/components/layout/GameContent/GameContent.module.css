@@ -162,7 +162,7 @@
 /* Bubble Context Area - positioned directly below bubbles */
 .bubbleContextArea {
   position: absolute;
-  bottom: -1.5rem; /* Position below the bubble grid */
+  /* bottom is set dynamically via inline style based on bubble size */
   left: 0;
   right: 0;
   display: flex;
@@ -171,19 +171,16 @@
   z-index: 10;
 }
 
-/* Desktop-specific positioning for bubble context area */
-@media (min-width: 1024px) {
-  .bubbleContextArea {
-    bottom: -60px; 
-  }
-}
-
 /* Responsive adjustments for smaller wide screens */
 @media (max-width: 1200px) {
   .container {
     grid-template-columns: 1fr 1fr; /* Equal columns for smaller wide screens */
     gap: 1.5rem;
     padding: 0 0 1rem 0; /* Remove left and right padding to use full width */
+  }
+  
+  .cardsPanel {
+    padding-left: 1rem; /* Add some breathing room from left edge */
   }
   
   .leftPanel {

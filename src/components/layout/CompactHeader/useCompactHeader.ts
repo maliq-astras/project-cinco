@@ -140,25 +140,25 @@ export const useCompactHeader = () => {
 
   const menuItems: MenuItem[] = [
     {
-      label: t('ui.buttons.tutorial'),
+      label: 'ui.buttons.settings',
+      onClick: openSettings
+    },
+    {
+      label: 'ui.buttons.tutorial',
       onClick: () => {
         setTutorialOpen(true);
         setIsMenuOpen(false);
       }
     },
     {
-      label: t('ui.buttons.settings'),
-      onClick: openSettings
-    },
-    {
-      label: t('ui.buttons.feedback'),
+      label: 'ui.buttons.feedback',
       onClick: () => {
         setIsFeedbackModalOpen(true);
         setIsMenuOpen(false);
       }
     },
     {
-      label: t('ui.buttons.bugReport'),
+      label: 'ui.buttons.bugReport',
       onClick: () => {
         setIsBugReportModalOpen(true);
         setIsMenuOpen(false);

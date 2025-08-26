@@ -13,6 +13,7 @@ import {
 import DropZoneIndicator from '../../cards/DropZoneIndicator';
 import { useDragState } from '@/hooks/ui/useDragState';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
+import { useResponsive } from '@/hooks/responsive';
 import { GameState, GameOutcome } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
@@ -49,7 +50,11 @@ const GameContent: React.FC<GameContentProps> = ({
   const isDragging = useDragState(state => state.isDragging);
   const isTutorialOpen = useGameStore(state => state.isTutorialOpen);
   const { registerElement, unregisterElement } = useDOMRefs();
+  const { responsiveValues } = useResponsive();
   const dropZoneRef = useRef<HTMLDivElement>(null);
+
+  // Calculate dynamic spacing for bubble context area based on bubble size
+  const bubbleContextSpacing = responsiveValues.bubbleSize * 0.5; // 50% of bubble size for appropriate spacing
   
   // Register the drop zone as the drop target when dragging (but not during tutorial)
   useEffect(() => {
@@ -131,7 +136,12 @@ const GameContent: React.FC<GameContentProps> = ({
                     <FactBubbleGrid />
                     {/* Bubble Context Area - moved inside bubble container */}
                     {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
-                      <div className={styles.bubbleContextArea}>
+                      <div 
+                        className={styles.bubbleContextArea}
+                        style={{
+                          bottom: `-${bubbleContextSpacing}px`
+                        }}
+                      >
                         <BubbleContextArea />
                       </div>
                     )}

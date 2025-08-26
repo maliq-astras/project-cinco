@@ -83,7 +83,7 @@ export default function MainContainer() {
   
   // Check if screen is too small (only after dimensions are initialized)
   const screenTooSmall = screenDimensions.width > 0 && screenDimensions.height > 0 && 
-    isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice);
+    isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice, needsMobileLayout);
   
   // Screen size warning takes priority
   if (screenTooSmall) {
