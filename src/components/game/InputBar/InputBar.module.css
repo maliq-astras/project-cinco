@@ -19,11 +19,6 @@
   overflow: visible;
 }
 
-@media (min-width: 640px) {
-  .inputShell {
-    height: 76px;
-  }
-}
 
 /* Input positioning - no bottom:0. We keep the baseline visually fixed using a translateY in the hook */
 .inputPosition {
@@ -48,12 +43,6 @@
   pointer-events: auto;
 }
 
-@media (min-width: 640px) {
-  .submitButton {
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-  }
-}
 
 /* Progress container */
 .progressContainer {
@@ -75,12 +64,6 @@
   overflow: hidden;
 }
 
-@media (min-width: 640px) {
-  .inputBase {
-    padding: 0.75rem;
-    padding-right: 5rem;
-  }
-}
 
 /* Input states */
 .inputEnabled {

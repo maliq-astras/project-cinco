@@ -25,8 +25,8 @@ export function useFactCardStackContainer() {
     availableContentHeight
   } = useResponsive();
   
-  const { isNarrowLayout } = require('@/helpers/breakpoints');
-  const isDesktopLayout = !isNarrowLayout(width, height);
+  const { isMobileLayout } = require('@/helpers/breakpoints');
+  const isDesktopLayout = !isMobileLayout(width, height);
 
   const isDragging = useDragState(state => state.isDragging);
   const wasFactRevealed = useDragState(state => state.wasFactRevealed);

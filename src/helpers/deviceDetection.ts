@@ -7,7 +7,7 @@
  * Hybrid approach to detect if user is on an actual mobile device (phone)
  * Combines touch capability, user agent, and screen size checks
  */
-export const isMobile = (): boolean => {
+export const isMobileDevice = (): boolean => {
   // Check if we're in a browser environment
   if (typeof window === 'undefined') return false;
   

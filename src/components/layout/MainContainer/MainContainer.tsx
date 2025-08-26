@@ -25,10 +25,9 @@ import GameContent from '../GameContent';
 import MobileGameContent from '../MobileGameContent';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LandscapeWarning from '../../layout/LandscapeWarning';
 import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
-import { isMobile as isActualMobile, isScreenTooSmall } from '@/helpers/deviceDetection';
+import { isMobileDevice, isScreenTooSmall } from '@/helpers/deviceDetection';
 
 export default function MainContainer() {
   const {
@@ -37,7 +36,6 @@ export default function MainContainer() {
     loadingComplete,
     headerEntranceComplete,
     gameEntranceComplete,
-    isSmallLandscape,
     isTabletLandscape,
     responsiveLayoutMode,
     isFinalFiveActive,
@@ -80,24 +78,16 @@ export default function MainContainer() {
   }, []);
   
   // Determine actual device type and layout needs
-  const isActualMobileDevice = isActualMobile();
-  const needsNarrowLayout = isNarrow;
+  const isActualMobileDevice = isMobileDevice();
+  const needsMobileLayout = isNarrow;
   
   // Check if screen is too small (only after dimensions are initialized)
   const screenTooSmall = screenDimensions.width > 0 && screenDimensions.height > 0 && 
     isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice);
   
-  // Check if we should show landscape warning (only on actual mobile devices)
-  const shouldShowLandscapeWarning = isSmallLandscape && isActualMobileDevice;
-  
   // Screen size warning takes priority
   if (screenTooSmall) {
     return <ScreenSizeWarning isMobile={isActualMobileDevice} />;
-  }
-  
-  // If in small landscape mode on actual mobile device, show landscape warning overlay
-  if (shouldShowLandscapeWarning) {
-    return <LandscapeWarning context="game" />;
   }
 
   // Create responsive layout classes and smart scaling for no-scroll experience
@@ -180,7 +170,7 @@ export default function MainContainer() {
                 <AnimatePresence>
                   {!showFinalFiveTransition && (
                     <>
-                      {!needsNarrowLayout ? (
+                      {!needsMobileLayout ? (
                         // Desktop layout
                         <GameContent
                           gameState={gameState}

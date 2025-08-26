@@ -24,15 +24,6 @@
   z-index: 10;
 }
 
-@media (min-width: 640px) {
-  .controlsArea {
-    padding-left: 0;
-    border: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-}
 
 .factsArea {
   display: flex;
@@ -43,11 +34,6 @@
   margin-right: auto;
 }
 
-@media (min-width: 640px) {
-  .factsArea {
-    max-width: 32rem; /* sm:max-w-lg */
-  }
-}
 
 @media (min-width: 1024px) {
   .factsArea {

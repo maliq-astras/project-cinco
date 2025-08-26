@@ -4,7 +4,9 @@ import {
   getResponsiveValue,
   isLandscape,
   isPortrait,
-  isNarrowLayout,
+  isMobileLayout,
+  isCompactLayout,
+  getLayoutMode,
   willContentFitInHeight,
   getAvailableContentHeight,
   type Breakpoint
@@ -51,8 +53,10 @@ export const useResponsive = () => {
   const isLandscapeMode = useMemo(() => isLandscape(width, height), [width, height]);
   const isPortraitMode = useMemo(() => isPortrait(width, height), [width, height]);
   
-  // Layout mode detection - inverted logic (wide is default)
-  const isNarrow = useMemo(() => isNarrowLayout(width, height), [width, height]);
+  // Layout mode detection
+  const isNarrow = useMemo(() => isMobileLayout(width, height), [width, height]);
+  const isCompact = useMemo(() => isCompactLayout(width, height), [width, height]);
+  const layoutMode = useMemo(() => getLayoutMode(width, height), [width, height]);
 
   // Responsive values for different components
   const responsiveValues = useMemo(() => {
@@ -90,7 +94,10 @@ export const useResponsive = () => {
       return Math.max(60, Math.min(120, optimalSize));
     };
 
-    const bubbleSize = getBubbleSize();
+    const baseBubbleSize = getBubbleSize();
+    
+    // Apply compact scaling (45% smaller) if in compact layout
+    const bubbleSize = isCompact ? Math.round(baseBubbleSize * 0.55) : baseBubbleSize;
 
     // Smart dynamic card sizing - layout aware
     const getCardSize = () => {
@@ -134,7 +141,13 @@ export const useResponsive = () => {
       };
     };
 
-    const cardSize = getCardSize();
+    const baseCardSize = getCardSize();
+    
+    // Apply compact scaling (45% smaller) if in compact layout
+    const cardSize = isCompact ? {
+      width: Math.round(baseCardSize.width * 0.55),
+      height: Math.round(baseCardSize.height * 0.55)
+    } : baseCardSize;
 
     return {
       // Bubble sizes - dynamic and layout-aware
@@ -202,7 +215,7 @@ export const useResponsive = () => {
         breakpoint
       )
     };
-  }, [width, height, breakpoint, isLandscapeMode, isNarrow]);
+  }, [width, height, breakpoint, isLandscapeMode, isNarrow, isCompact]);
 
   // Utility functions
   const willFit = useMemo(() => ({
@@ -238,6 +251,11 @@ export const useResponsive = () => {
     // Orientation
     isLandscape: isLandscapeMode,
     isPortrait: isPortraitMode,
+    
+    // Layout modes
+    isNarrow,
+    isCompact,
+    layoutMode,
     
     // Responsive values
     responsiveValues,

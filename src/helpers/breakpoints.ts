@@ -96,24 +96,36 @@ export const isPortrait = (width: number, height: number): boolean => {
 };
 
 /**
- * Check if dimensions require narrow layout (narrow/cramped)
- * Narrow layout is used when:
+ * Check if dimensions require mobile layout (narrow/cramped)
+ * Mobile layout is used when:
  * - Width is less than 800px (too narrow for side-by-side)
- * - OR in portrait orientation on smaller screens
+ * - OR when screen is taller than wide with sufficient height (narrow tall windows)
  */
-export const isNarrowLayout = (width: number, height: number): boolean => {
-  return (
-    width < 800 ||
-    (isPortrait(width, height) && width < 1000)
-  );
+export const isMobileLayout = (width: number, height: number): boolean => {
+  // Simple width cutoff for desktop
+  if (width >= 800 && height <= width) return false;
+  
+  // Use mobile layout if width < 800 OR if it's a tall narrow window
+  return width < 800 || (height > width && height > 1000);
+};
+
+/**
+ * Check if dimensions require compact layout (smaller mobile elements)
+ * Compact layout uses mobile layout structure but with smaller elements
+ * Width between 390px (minimum before screen warning) and 800px (desktop cutoff)
+ */
+export const isCompactLayout = (width: number, height: number): boolean => {
+  return width >= 390 && width < 800 && isMobileLayout(width, height);
 };
 
 /**
  * Determine optimal layout mode based on dimensions
  * Default to desktop layout unless screen is too constrained
  */
-export const getLayoutMode = (width: number, height: number): 'mobile' | 'desktop' => {
-  return isNarrowLayout(width, height) ? 'mobile' : 'desktop';
+export const getLayoutMode = (width: number, height: number): 'mobile' | 'desktop' | 'compact' => {
+  if (isMobileLayout(width, height)) return 'mobile';
+  if (isCompactLayout(width, height)) return 'compact';
+  return 'desktop';
 };
 
 /**
