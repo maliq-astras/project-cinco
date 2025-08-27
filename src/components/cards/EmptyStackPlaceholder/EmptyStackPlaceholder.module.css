@@ -25,13 +25,17 @@
   border-radius: 0.5rem; /* rounded-lg */
   width: 90%;
   max-width: 350px;
-  min-width: 200px; /* Prevent squishing in narrow containers */
-  height: 120px;
+  min-width: 200px;
+  height: 150px;
   background-color: hsl(var(--muted));
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* Prevent flex shrinking */
+  flex-shrink: 0;
+  text-align: center;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
 }
 
 /* Dark mode support */
@@ -52,35 +56,4 @@
   color: hsl(var(--muted-foreground));
 }
 
-/* Responsive sizing */
-@media (min-width: 640px) {
-  .element {
-    height: 140px; /* sm:h-[140px] */
-  }
-  
-  .text {
-    font-size: 1rem; /* sm:text-base */
-  }
-}
 
-@media (min-width: 768px) {
-  .element {
-    height: 160px; /* md:h-[160px] */
-  }
-}
-
-/* Wide screen layout adjustments */
-@media (min-width: 1000px) {
-  .element {
-    width: 95%;
-    max-width: 300px; /* Slightly smaller max-width for wide layout */
-    min-width: 180px;
-    height: 140px; /* Adjust height for wide layout proportions */
-  }
-  
-  .text {
-    font-size: 0.875rem; /* Maintain readable but compact text */
-    text-align: center;
-    padding: 0 1rem; /* Add some horizontal padding */
-  }
-}

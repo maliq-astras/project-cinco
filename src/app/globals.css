@@ -74,34 +74,7 @@ textarea,
 
 /* Responsive layout classes - modern approach with smart scaling for no-scroll experience */
 
-/* Header responsive adjustments for long category names */
-@media (max-width: 600px) {
-  .header-title {
-    max-width: 150px !important;
-    font-size: clamp(14px, 2vh, 18px) !important;
-  }
-}
 
-@media (max-width: 800px) {
-  .header-title {
-    max-width: 200px !important;
-    font-size: clamp(16px, 2.5vh, 22px) !important;
-  }
-}
-
-@media (max-width: 1000px) {
-  .header-title {
-    max-width: 250px !important;
-    font-size: clamp(18px, 3vh, 26px) !important;
-  }
-}
-
-@media (max-width: 1200px) {
-  .header-title {
-    max-width: 300px !important;
-    font-size: clamp(20px, 3.5vh, 30px) !important;
-  }
-}
 /* Compact layout for constrained heights */
 .layout-compact .game-content {
   gap: 0.5rem !important;

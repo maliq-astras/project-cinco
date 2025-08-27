@@ -177,7 +177,6 @@ export function useMainContainer() {
   // Simplified responsive values based on our new system
   const responsiveLayoutMode = breakpoint === 'xs' || breakpoint === 'sm' ? 'compact' : 'normal';
   const headerSizeMode = breakpoint;
-  const isCompactHeader = isLandscape && height < 650;
   const isTablet = breakpoint === 'md' || breakpoint === 'lg';
   const isTabletLandscape = isTablet && isLandscape;
   
@@ -208,7 +207,6 @@ export function useMainContainer() {
     layoutMode,
     isNarrow,
     headerSizeMode,
-    isCompactHeader,
     isLandscape
   };
 } 

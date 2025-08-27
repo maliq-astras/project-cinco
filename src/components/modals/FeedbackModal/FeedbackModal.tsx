@@ -367,14 +367,14 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       title={<span className={righteous.className + ' uppercase'}>FEEDBACK</span>}
       colors={colors}
       className={isMobile ? undefined : "max-w-2xl"}
-      mobileHeight={"auto"}
+      mobileHeight={"90vh"}
     >
       <div
         className={feedbackModalStyles.content}
         style={{
-          height: isMobile ? 'auto' : 540,
-          minHeight: isMobile ? undefined : 540,
-          maxHeight: isMobile ? '85vh' : 540,
+          height: isMobile ? '70vh' : 540,
+          minHeight: isMobile ? '70vh' : 540,
+          maxHeight: isMobile ? '70vh' : 540,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',

@@ -135,7 +135,7 @@ export default function MainContainer() {
       ) : (
         <>
           {/* Use CompactHeader for limited vertical space, regular Header+Navigation otherwise */}
-          {breakpoint === 'xs' || breakpoint === 'sm' || (breakpoint === 'md' && isLandscape) ? (
+          {breakpoint === 'xs' || breakpoint === 'sm' || (breakpoint === 'md' && isLandscape) || (screenDimensions.width < 900 && screenDimensions.height < 1051) ? (
             <CompactHeader headerEntranceComplete={headerEntranceComplete} />
           ) : (
             <>

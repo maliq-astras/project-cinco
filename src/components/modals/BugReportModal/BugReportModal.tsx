@@ -228,7 +228,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
         {/* No visible label here, only at the top of the modal */}
         {currentStep.type === 'bugType' && (
           <div className="flex flex-col items-center mb-6 mx-auto bug-tag-scrollbar searchbar-fixed"
-             style={{ height: 320, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}
+             style={{ height: 350, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}
           >
             {/* Search bar */}
             <input
@@ -242,7 +242,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
             {/* Tag list */}
             <div
               className="flex flex-wrap gap-3 justify-center w-full bug-tag-scrollbar searchbar-fixed"
-              style={{ height: 220, overflowY: 'auto', alignContent: 'flex-start' }}
+              style={{ height: 300, overflowY: 'auto', alignContent: 'flex-start' }}
             >
               {filteredTags.length === 0 && (
                 <span
@@ -383,14 +383,14 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
       title={<span className={righteous.className + ' uppercase'}>BUG REPORT</span>}
       colors={colors}
       className={isMobile ? undefined : "max-w-2xl"}
-      mobileHeight={"auto"}
+      mobileHeight={"90vh"}
     >
       <div
         className={bugReportModalStyles.content}
         style={{
-          height: isMobile ? 'auto' : 540,
-          minHeight: isMobile ? undefined : 540,
-          maxHeight: isMobile ? '85vh' : 540,
+          height: isMobile ? '70vh' : 540,
+          minHeight: isMobile ? '70vh' : 540,
+          maxHeight: isMobile ? '70vh' : 540,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',

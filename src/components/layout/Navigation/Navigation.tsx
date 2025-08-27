@@ -37,7 +37,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
     setIsBugReportModalOpen
   } = useNavigation();
   
-  const { isCompactHeader, headerSizeMode } = useMainContainer();
+  const { headerSizeMode } = useMainContainer();
 
   // Get navigation size classes based on headerSizeMode
   const getNavigationSizeClasses = () => {
@@ -122,7 +122,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
             <div className={navigationStyles.badgeContainer}>
               {(hardMode || isHardModeEnabled) && (
                 <motion.div 
-                  className={isCompactHeader ? navigationStyles.compactHardModeBadgeText : navigationStyles.hardModeBadgeText}
+                  className={navigationStyles.hardModeBadgeText}
                   style={navigationStyles.hardModeBadge(colors.primary)}
                   initial={{ opacity: 0, scale: 0.8, y: -10 }}
                   animate={headerEntranceComplete ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -10 }}

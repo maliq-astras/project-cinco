@@ -16,7 +16,10 @@ export const useCompactHeader = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
-  const { breakpoint, mounted } = useResponsive();
+  const hardMode = useGameStore(state => state.hardMode);
+  const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
+  const gameState = useGameStore(state => state.gameState);
+  const { breakpoint, mounted, getResponsiveValue } = useResponsive();
   const { registerElement, unregisterElement } = useDOMRefs();
   
   // UI state from gameStore
@@ -55,71 +58,29 @@ export const useCompactHeader = () => {
 
   // Dynamic sizing based on breakpoint - similar to regular Header
   // Use state to prevent hydration mismatch
-  const [compactSizes, setCompactSizes] = useState({
-    iconSize: "1.5rem", // Default size
-    titleFontSize: "1.375rem", // Default size
-    titleMaxWidth: "240px" // Default size
-  });
-
-  // Update sizes only after client-side hydration
-  useEffect(() => {
-    if (!mounted) return;
-
-    const getCompactHeaderSizes = () => {
-      switch (breakpoint) {
-        case 'xxs':
-          return {
-            iconSize: "clamp(1.25rem, 2.5vw, 1.5rem)", // 20px to 24px
-            titleFontSize: "clamp(1.125rem, 3vw, 1.375rem)", // 18px to 22px
-            titleMaxWidth: "200px"
-          };
-        case 'xs':
-          return {
-            iconSize: "clamp(1.375rem, 2.75vw, 1.625rem)", // 22px to 26px
-            titleFontSize: "clamp(1.25rem, 3.25vw, 1.5rem)", // 20px to 24px
-            titleMaxWidth: "220px"
-          };
-        case 'sm':
-          return {
-            iconSize: "clamp(1.5rem, 3vw, 1.75rem)", // 24px to 28px
-            titleFontSize: "clamp(1.375rem, 3.5vw, 1.625rem)", // 22px to 26px
-            titleMaxWidth: "240px"
-          };
-        case 'md':
-          return {
-            iconSize: "clamp(1.625rem, 3.25vw, 1.875rem)", // 26px to 30px
-            titleFontSize: "clamp(1.5rem, 3.75vw, 1.75rem)", // 24px to 28px
-            titleMaxWidth: "260px"
-          };
-        case 'lg':
-          return {
-            iconSize: "clamp(1.75rem, 3.5vw, 2rem)", // 28px to 32px
-            titleFontSize: "clamp(1.625rem, 4vw, 1.875rem)", // 26px to 30px
-            titleMaxWidth: "280px"
-          };
-        case 'xl':
-          return {
-            iconSize: "clamp(1.875rem, 3.75vw, 2.125rem)", // 30px to 34px
-            titleFontSize: "clamp(1.75rem, 4.25vw, 2rem)", // 28px to 32px
-            titleMaxWidth: "300px"
-          };
-        case 'xxl':
-          return {
-            iconSize: "clamp(2rem, 4vw, 2.25rem)", // 32px to 36px
-            titleFontSize: "clamp(1.875rem, 4.5vw, 2.125rem)", // 30px to 34px
-            titleMaxWidth: "320px"
-          };
-        default:
-          return {
-            iconSize: "clamp(1.5rem, 3vw, 1.75rem)", // 24px to 28px
-            titleFontSize: "clamp(1.375rem, 3.5vw, 1.625rem)", // 22px to 26px
-            titleMaxWidth: "240px"
-          };
-      }
-    };
-
-    setCompactSizes(getCompactHeaderSizes());
-  }, [mounted, breakpoint]);
+  const compactSizes = {
+    iconSize: getResponsiveValue({
+      xs: "1.9rem", 
+      sm: "1.95rem",
+      md: "2rem",
+      lg: "2.15rem",
+      xl: "2.25rem",
+    }),
+    titleFontSize: getResponsiveValue({
+      xs: "2rem",
+      sm: "2.25rem", 
+      md: "2.25rem",
+      lg: "2.5rem",
+      xl: "2.75rem",
+    }),
+    titleMaxWidth: getResponsiveValue({
+      xs: "220px", 
+      sm: "240px",
+      md: "260px",
+      lg: "280px",
+      xl: "300px",
+    })
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -143,22 +104,23 @@ export const useCompactHeader = () => {
       label: 'ui.buttons.settings',
       onClick: openSettings
     },
-    {
-      label: 'ui.buttons.tutorial',
+    // Only show "How to Play" if game is not over
+    ...(gameState.isGameOver ? [] : [{
+      label: 'ui.navigation.howToPlay',
       onClick: () => {
         setTutorialOpen(true);
         setIsMenuOpen(false);
       }
-    },
+    }]),
     {
-      label: 'ui.buttons.feedback',
+      label: 'ui.navigation.feedback',
       onClick: () => {
         setIsFeedbackModalOpen(true);
         setIsMenuOpen(false);
       }
     },
     {
-      label: 'ui.buttons.bugReport',
+      label: 'ui.navigation.reportBug',
       onClick: () => {
         setIsBugReportModalOpen(true);
         setIsMenuOpen(false);
@@ -187,6 +149,9 @@ export const useCompactHeader = () => {
     isBugReportModalOpen,
     setIsBugReportModalOpen,
     // Add responsive sizes
-    compactSizes
+    compactSizes,
+    // Hard mode state
+    hardMode,
+    isHardModeEnabled
   };
 };

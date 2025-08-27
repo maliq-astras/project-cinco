@@ -67,6 +67,8 @@
   height: 100%;
   gap: 0.5rem;
   min-width: 0; /* Prevent flex overflow */
+  justify-content: center; /* Match left panel centering */
+  align-items: center; /* Match left panel centering */
 }
 
 /* Card Stack Section */
@@ -146,6 +148,8 @@
   width: 100%;
   margin-bottom: 0; /* Remove bottom margin since context is now below */
   padding-bottom: 0; /* Remove any bottom padding */
+  /* Force perfect vertical centering */
+  min-height: 0;
 }
 
 /* Fact Bubbles Container */

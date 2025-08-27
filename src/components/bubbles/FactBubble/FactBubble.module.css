@@ -11,8 +11,6 @@
 
 .bubble {
   position: relative;
-  width: 100%;
-  height: 100%;
   border-radius: 50%;
   overflow: hidden;
   background-color: hsl(var(--card));
@@ -23,7 +21,7 @@
   justify-content: center;
   transition: colors 150ms ease;
   
-  /* Use your existing responsive bubble size */
+  /* Use consistent bubble size from responsive system */
   width: var(--bubble-size);
   height: var(--bubble-size);
 }
@@ -61,14 +59,7 @@
   composes: bubble notClickable;
 }
 
-/* Leverage your existing responsive system */
-@media (min-width: 900px) and (max-width: 1400px) and (min-aspect-ratio: 1.3/1) and (max-aspect-ratio: 2.2/1) {
-  .bubble {
-    /* Tablet landscape gets larger bubbles from your system */
-    width: var(--bubble-size);
-    height: var(--bubble-size);
-  }
-}
+/* Responsive sizing is handled by the --bubble-size CSS custom property */
 
 /* Icon styles - migrated from JavaScript function */
 .icon {

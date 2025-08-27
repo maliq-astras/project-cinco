@@ -36,7 +36,9 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
     setIsFeedbackModalOpen,
     isBugReportModalOpen,
     setIsBugReportModalOpen,
-    compactSizes
+    compactSizes,
+    hardMode,
+    isHardModeEnabled
   } = useCompactHeader();
 
   return (
@@ -76,8 +78,23 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
               )}
             </div>
             
-            {/* Right side - Hamburger menu */}
+            {/* Right side - Hard Mode Badge + Hamburger menu */}
             <div className={styles.rightSection}>
+              {/* Hard Mode Badge */}
+              {(hardMode || isHardModeEnabled) && (
+                <motion.div 
+                  className={styles.hardModeBadge}
+                  style={{
+                    backgroundColor: `var(--color-${colors.primary})`
+                  }}
+                  initial={{ opacity: 0, scale: 0.8, x: 10 }}
+                  animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: 10 }}
+                  transition={{ duration: 0.4, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  {t('ui.settings.hard')}
+                </motion.div>
+              )}
+              
               <motion.button
                 className={`${styles.hamburgerButton} ${isMenuOpen ? styles.active : ''}`}
                 onClick={toggleMenu}

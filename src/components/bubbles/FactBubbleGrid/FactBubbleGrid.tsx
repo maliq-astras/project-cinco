@@ -20,18 +20,25 @@ const FactBubbleGrid: React.FC = () => {
     responsiveValues,
     breakpoint,
     willFit,
-    availableContentHeight
+    availableContentHeight,
+    remainingFactsCount,
+    layoutMode,
+    isNarrow
   } = useFactBubbleGrid();
 
   // Create responsive container style
   const containerStyle = {
     '--bubble-size': `${bubbleSize}px`,
     '--bubble-spacing': `${gapSize}px`,
-    '--grid-margin-top': `${responsiveValues.spacing}px`
+    '--grid-margin-top': `${responsiveValues.spacing}px`,
+    '--remaining-count': remainingFactsCount
   } as React.CSSProperties;
 
+  // Determine if we should use single row layout (4 or fewer bubbles, and only in desktop mode)
+  const isSingleRow = remainingFactsCount <= 4 && remainingFactsCount > 0 && layoutMode === 'desktop';
+  
   // Check if grid will fit in available height
-  const gridHeight = (2 * bubbleSize) + gapSize;
+  const gridHeight = isSingleRow ? bubbleSize : (2 * bubbleSize) + gapSize;
   const willGridFit = willFit.bubbleGrid(gridHeight);
 
   // Calculate responsive scale if grid doesn't fit
@@ -42,15 +49,15 @@ const FactBubbleGrid: React.FC = () => {
       <div 
         ref={bubbleGridRef}
         id="bubble-grid"
-        className={styles.grid}
+        className={`${styles.grid} ${isSingleRow ? styles.singleRow : styles.doubleRow}`}
         style={{
           // Add responsive adjustments if grid doesn't fit
           transform: gridScale !== 1 ? `scale(${gridScale})` : undefined,
           transformOrigin: 'center'
         }}
       >
-        {gridItems.map(item => {
-          // For empty slots, render a placeholder
+        {(isSingleRow ? gridItems.filter(item => !item.isEmpty) : gridItems).map(item => {
+          // For empty slots, render a placeholder (only in double row mode)
           if (item.isEmpty) {
             return (
               <div 

@@ -299,40 +299,17 @@
   transition: background-color 0.2s;
 }
 
-.navIconClassXs:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClassXs:hover {
-  background-color: rgb(17 24 39);
-}
-
 .navIconClassSm {
   padding: 0.375rem;
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
 
-.navIconClassSm:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClassSm:hover {
-  background-color: rgb(17 24 39);
-}
 
 .navIconClassMd {
   padding: 0.4375rem;
   border-radius: 9999px;
   transition: background-color 0.2s;
-}
-
-.navIconClassMd:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClassMd:hover {
-  background-color: rgb(17 24 39);
 }
 
 .navIconClassLg {
@@ -341,26 +318,11 @@
   transition: background-color 0.2s;
 }
 
-.navIconClassLg:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClassLg:hover {
-  background-color: rgb(17 24 39);
-}
 
 .navIconClassXl {
   padding: 0.625rem;
   border-radius: 9999px;
   transition: background-color 0.2s;
-}
-
-.navIconClassXl:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClassXl:hover {
-  background-color: rgb(17 24 39);
 }
 
 /* Icon size variants */
@@ -385,8 +347,8 @@
 }
 
 .iconSizeXl {
-  width: 2.925rem;
-  height: 2.925rem;
+  width: 2.7rem;
+  height: 2.7rem;
 }
 
 /* Legacy nav icon class */
@@ -396,24 +358,9 @@
   transition: background-color 0.2s;
 }
 
-.navIconClass:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .navIconClass:hover {
-  background-color: rgb(17 24 39);
-}
-
 .compactNavIconClass {
   padding: 0.25rem;
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
 
-.compactNavIconClass:hover {
-  background-color: rgb(243 244 246);
-}
-
-:global(.dark) .compactNavIconClass:hover {
-  background-color: rgb(17 24 39);
-}

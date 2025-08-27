@@ -19,17 +19,30 @@
   }
 }
 
-/* Grid configuration - always 4x2 layout */
+/* Grid configuration - base grid layout */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, var(--bubble-size));
-  grid-template-rows: repeat(2, var(--bubble-size));
   gap: var(--bubble-spacing);
   justify-content: center;
   align-items: center;
   width: fit-content;
   margin: 0 auto;
+}
+
+/* Double row layout - default 4x2 grid */
+.doubleRow {
+  grid-template-rows: repeat(2, var(--bubble-size));
   height: calc(2 * var(--bubble-size) + var(--bubble-spacing));
+}
+
+/* Single row layout - dynamic columns based on remaining bubbles */
+.singleRow {
+  grid-template-columns: repeat(var(--remaining-count, 4), var(--bubble-size));
+  grid-template-rows: var(--bubble-size);
+  height: var(--bubble-size);
+  align-content: center;
+  justify-content: center;
 }
 
 /* Empty slot placeholder */

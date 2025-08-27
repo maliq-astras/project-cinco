@@ -92,7 +92,7 @@ const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
                 className={`${righteous.className} text-xl font-normal`}
                 style={{ color: `var(--color-${colors.primary})` }}
               >
-                Menu
+                MENU
               </h2>
               <motion.button
                 onClick={onClose}
@@ -123,7 +123,7 @@ const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
                         item.onClick();
                         onClose();
                       }}
-                      className={`${inter.className} w-full text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white font-medium`}
+                      className={`${righteous.className} w-full text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white font-normal uppercase tracking-wide`}
                       aria-label={item.ariaLabel ? t(item.ariaLabel) : t(item.label)}
                     >
                       {t(item.label)}

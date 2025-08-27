@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFinalFiveOptions } from '@/hooks/api';
 import { UserGuess } from '@/types';
 import { useResponsive } from '@/hooks/responsive';
+import { isMobileDevice } from '@/helpers/deviceDetection';
 
 /**
  * Hook for managing Final Five modal logic
@@ -51,8 +52,8 @@ export function useFinalFiveModal() {
   // Get current language from localStorage
   const language = typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en';
   
-  // Use responsive breakpoint for mobile detection
-  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
+  // Only use mobile interface for actual mobile phones (not tablets)
+  const isMobile = isMobileDevice() && width <= 430;
   
   // Use React Query to fetch Final Five options if needed
   const { data: fetchedOptions, isLoading: optionsLoading } = useFinalFiveOptions({

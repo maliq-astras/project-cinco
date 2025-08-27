@@ -31,7 +31,9 @@ export function useFactBubbleGrid() {
     isLandscape,
     isPortrait,
     willFit,
-    availableContentHeight
+    availableContentHeight,
+    layoutMode,
+    isNarrow
   } = useResponsive();
   
   // DOM refs for tutorial targeting
@@ -40,6 +42,12 @@ export function useFactBubbleGrid() {
   
   // Always 8 grid items (4x2 layout)
   const totalSlots = 8;
+
+  // Calculate remaining facts count
+  const remainingFactsCount = useMemo(() => {
+    if (!challenge) return 0;
+    return challenge.facts.length - revealedFacts.length;
+  }, [challenge, revealedFacts]);
 
   // Calculate grid items to display
   const gridItems = useMemo<BubbleGridItem[]>(() => {
@@ -111,6 +119,7 @@ export function useFactBubbleGrid() {
     animationProps,
     isVictoryAnimationActive,
     bubbleGridRef,
+    remainingFactsCount,
     
     // Responsive values from our new system
     responsiveValues,
@@ -120,6 +129,8 @@ export function useFactBubbleGrid() {
     isLandscape,
     isPortrait,
     willFit,
-    availableContentHeight
+    availableContentHeight,
+    layoutMode,
+    isNarrow
   };
 } 

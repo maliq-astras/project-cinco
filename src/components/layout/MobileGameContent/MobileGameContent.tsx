@@ -86,7 +86,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
           {/* Always show the FactCardStackContainer */}
           <FactCardStackContainer />
           
-          {/* DropZone Indicator overlay for mobile - covers full card area like desktop */}
+          {/* DropZone Indicator overlay for mobile - covers full card area */}
           {isDragging && (
             <div 
               ref={dropZoneRef}
@@ -96,11 +96,11 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
                 top: 0,
                 left: 0,
                 right: 0,
-                bottom: 0, // Cover full height like desktop
+                bottom: 0, // Cover full height for good UX
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                zIndex: 20,
+                zIndex: 15, // Below bubble context area
                 backgroundColor: 'rgba(0,0,0,0.05)',
                 borderRadius: '0.5rem'
               }}

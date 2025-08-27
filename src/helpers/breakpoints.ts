@@ -6,13 +6,11 @@
  */
 
 export const BREAKPOINTS = {
-  xxs: { minWidth: 320, minHeight: 580 },  // Very small phones 
   xs: { minWidth: 375, minHeight: 600 },   // Small phones
   sm: { minWidth: 480, minHeight: 700 },   // Large phones 
   md: { minWidth: 768, minHeight: 800 },   // Tablets, small laptops
   lg: { minWidth: 1024, minHeight: 900 },  // Laptops, desktops
-  xl: { minWidth: 1280, minHeight: 1000 }, // Large desktops
-  xxl: { minWidth: 1440, minHeight: 1000 } // 4K, ultrawide
+  xl: { minWidth: 1280, minHeight: 1000 }, // Large desktops and above
 } as const;
 
 export type Breakpoint = keyof typeof BREAKPOINTS;
@@ -24,7 +22,6 @@ export type BreakpointValue = typeof BREAKPOINTS[Breakpoint];
  */
 export const getBreakpoint = (width: number, height: number): Breakpoint => {
   // Check from largest to smallest breakpoint
-  if (width >= BREAKPOINTS.xxl.minWidth && height >= BREAKPOINTS.xxl.minHeight) return 'xxl';
   if (width >= BREAKPOINTS.xl.minWidth && height >= BREAKPOINTS.xl.minHeight) return 'xl';
   if (width >= BREAKPOINTS.lg.minWidth && height >= BREAKPOINTS.lg.minHeight) return 'lg';
   if (width >= BREAKPOINTS.md.minWidth && height >= BREAKPOINTS.md.minHeight) return 'md';
@@ -37,7 +34,7 @@ export const getBreakpoint = (width: number, height: number): Breakpoint => {
  */
 export const isBreakpointOrAbove = (width: number, height: number, breakpoint: Breakpoint): boolean => {
   const currentBreakpoint = getBreakpoint(width, height);
-  const breakpointOrder: Breakpoint[] = ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+  const breakpointOrder: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl'];
   const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
   const targetIndex = breakpointOrder.indexOf(breakpoint);
   return currentIndex >= targetIndex;
@@ -67,7 +64,7 @@ export const getResponsiveValueWithFallback = <T>(
   values: Partial<Record<Breakpoint, T>>,
   currentBreakpoint: Breakpoint
 ): T | undefined => {
-  const breakpointOrder: Breakpoint[] = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs'];
+  const breakpointOrder: Breakpoint[] = ['xl', 'lg', 'md', 'sm', 'xs'];
   const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
   
   // Check current breakpoint and all smaller ones
@@ -109,35 +106,13 @@ export const isMobileLayout = (width: number, height: number): boolean => {
   return width < 800 || (height > width && height > 1000);
 };
 
-/**
- * Check if dimensions require compact layout (smaller elements)
- * Compact layout uses smaller elements for cramped spaces
- * Applied to:
- * - Mobile layout: Width 390-800px 
- * - Desktop layout: Width 390-900px
- */
-export const isCompactLayout = (width: number, height: number): boolean => {
-  const usesDesktopLayout = !isMobileLayout(width, height);
-  const usesMobileLayout = isMobileLayout(width, height);
-  
-  if (usesDesktopLayout) {
-    // Desktop layout: compact from 390px to 900px width
-    return width >= 390 && width < 900;
-  } else if (usesMobileLayout) {
-    // Mobile layout: compact from 390px to 800px width  
-    return width >= 390 && width < 800;
-  }
-  
-  return false;
-};
 
 /**
  * Determine optimal layout mode based on dimensions
  * Default to desktop layout unless screen is too constrained
  */
-export const getLayoutMode = (width: number, height: number): 'mobile' | 'desktop' | 'compact' => {
+export const getLayoutMode = (width: number, height: number): 'mobile' | 'desktop' => {
   if (isMobileLayout(width, height)) return 'mobile';
-  if (isCompactLayout(width, height)) return 'compact';
   return 'desktop';
 };
 

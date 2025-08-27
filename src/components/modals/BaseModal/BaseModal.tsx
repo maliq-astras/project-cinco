@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { createPortal } from 'react-dom';
 import { baseModalStyles } from './BaseModal.styles';
 import { useResponsive } from '@/hooks/responsive';
+import { isMobileDevice } from '@/helpers/deviceDetection';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,10 +35,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
 }) => {
 
   // Use our new responsive system
-  const { breakpoint, width } = useResponsive();
+  const { width } = useResponsive();
   
-  // Use more inclusive mobile detection that matches FinalFiveModal behavior
-  const isMobile = breakpoint === 'xs' || breakpoint === 'sm' || width < 768;
+  // Only use slide-up modals for actual mobile phones (not tablets)
+  // Tablets in landscape should use regular modals like desktop
+  const isMobile = isMobileDevice() && width <= 430;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && !isMobile && dismissible) {

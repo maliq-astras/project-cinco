@@ -27,11 +27,11 @@ export const isScreenTooSmall = (width: number, height: number, isActualMobile: 
   const shouldUseMobileThresholds = usesMobileLayout !== undefined ? usesMobileLayout : isActualMobile;
   
   if (shouldUseMobileThresholds) {
-    // Mobile layout: 650px height, 320px width minimum
-    return height < 650 || width < 320;
+    // Mobile layout: 665px height, 320px width minimum
+    return height < 665 || width < 320;
   } else {
-    // Desktop layout: 580px height minimum
-    return height < 580;
+    // Desktop layout: 600px height minimum  
+    return height < 600;
   }
 };
 

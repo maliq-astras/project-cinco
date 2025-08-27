@@ -21,6 +21,7 @@
   display: flex;
   justify-content: center;
   padding: 0 0 0.25rem 0;
+  margin-top: -2rem; /* Pull card section up closer to header, creates more space below */
 }
 
 /* Middle section */
@@ -56,15 +57,13 @@
   padding: 0 1rem 0.25rem 1rem;
   border-radius: 0.5rem;
   position: relative;
-  z-index: 10;
 }
 
 /* Bubble context container (specific to bubble context area) */
 .bubbleContextContainer {
-  padding: 0 1rem 0.25rem 1rem;
+  padding: 2rem 1rem 2rem 1rem;
   border-radius: 0.5rem;
   position: relative;
-  z-index: 10;
 }
 
 /* Fact bubbles wrapper */
@@ -72,7 +71,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
 }
 
 /* Fact bubbles container */
