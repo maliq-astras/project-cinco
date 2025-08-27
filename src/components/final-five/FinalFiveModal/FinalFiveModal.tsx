@@ -117,6 +117,7 @@ export default function FinalFiveModal() {
                 if (typeof message === 'string' && 
                     (message === t('game.finalFive.checkingAnswer') || 
                      message === t('game.finalFive.verifyingGuess') ||
+                     message === t('game.finalFive.determiningAnswer') ||
                      message === t('game.finalFive.slowConnection') ||
                      message.includes(t('game.finalFive.retrying')) ||
                      (timerReachedZero && loading && !correctAnswer))) {
