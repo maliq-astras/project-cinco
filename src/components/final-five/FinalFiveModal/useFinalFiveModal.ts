@@ -16,6 +16,7 @@ export function useFinalFiveModal() {
     gameState: { finalFiveOptions, isGameOver, guesses, challenge },
     finalFiveTimeRemaining,
     isFinalFiveActive,
+    isFinalFiveCompleted,
     gameOutcome,
     decrementFinalFiveTimer,
     selectFinalFiveOption,
@@ -175,7 +176,7 @@ export function useFinalFiveModal() {
   
   // Start animation sequence after finding correct answer
   useEffect(() => {
-    if (isGameOver && correctAnswer) {
+    if (isFinalFiveCompleted && correctAnswer) {
       // First delay to allow the correct answer styling to be visible
       const timer = setTimeout(() => {
         // Fade out non-relevant cards
@@ -186,11 +187,11 @@ export function useFinalFiveModal() {
       
       return () => clearTimeout(timer);
     }
-  }, [isGameOver, correctAnswer]);
+  }, [isFinalFiveCompleted, correctAnswer]);
   
   // Use timer to track game state
   useEffect(() => {    
-    if (startTimer && !isGameOver && allCardsFlipped) {
+    if (startTimer && !isFinalFiveCompleted && allCardsFlipped) {
       const interval = setInterval(() => {        
         if (finalFiveTimeRemaining <= 1) {
           clearInterval(interval);
@@ -249,6 +250,7 @@ export function useFinalFiveModal() {
                           ...state.gameState,
                           isGameOver: true
                         },
+                        isFinalFiveCompleted: true, // Mark Final Five completed for proper message timing
                         gameOutcome: 'loss-final-five-time'
                       }));
                       
@@ -295,11 +297,11 @@ export function useFinalFiveModal() {
       
       return () => clearInterval(interval);
     }
-  }, [startTimer, isGameOver, allCardsFlipped, finalFiveTimeRemaining, decrementFinalFiveTimer, correctAnswer, challenge, language]);
+  }, [startTimer, isFinalFiveCompleted, allCardsFlipped, finalFiveTimeRemaining, decrementFinalFiveTimer, correctAnswer, challenge, language]);
   
   // Show continue button after animations
   useEffect(() => {
-    if (animationComplete && isGameOver) {
+    if (animationComplete && isFinalFiveCompleted) {
       // Delay showing the continue button until after fade animations
       const timer = setTimeout(() => {
         setShowContinueButton(true);
@@ -309,7 +311,7 @@ export function useFinalFiveModal() {
       
       return () => clearTimeout(timer);
     }
-  }, [animationComplete, isGameOver]);
+  }, [animationComplete, isFinalFiveCompleted]);
   
   // Show slow connection message if loading takes too long
   useEffect(() => {
@@ -392,16 +394,16 @@ export function useFinalFiveModal() {
   
   // Helper to check if an option is correct
   const isCorrectOption = useCallback((option: string): boolean => {
-    if (!isGameOver) return false;
+    if (!isFinalFiveCompleted) return false;
     // Only highlight the correct option if this was the user's selection
     return option === correctAnswer && option === selectedOption;
-  }, [isGameOver, correctAnswer, selectedOption]);
+  }, [isFinalFiveCompleted, correctAnswer, selectedOption]);
   
   // Helper to check if user guessed an option incorrectly
   const isIncorrectGuess = useCallback((option: string): boolean => {
     // Only mark as incorrect if this was the selected option and it's wrong
-    return selectedOption === option && isGameOver && selectedOption !== correctAnswer;
-  }, [selectedOption, isGameOver, correctAnswer]);
+    return selectedOption === option && isFinalFiveCompleted && selectedOption !== correctAnswer;
+  }, [selectedOption, isFinalFiveCompleted, correctAnswer]);
   
   // Helper to get the message to display
   const getMessage = useCallback(() => {
@@ -440,7 +442,15 @@ export function useFinalFiveModal() {
       }
     }
     
-    if (!isGameOver) {
+    if (!isFinalFiveCompleted) {
+      // If user has selected an option and we have the correct answer, 
+      // but Final Five isn't completed yet, check if they got it right
+      if (selectedOption && correctAnswer) {
+        if (selectedOption === correctAnswer) {
+          return t('game.finalFive.correctAnswer');
+        }
+      }
+      
       return hardMode 
         ? t('game.finalFive.selectAnswerHard')
         : t('game.finalFive.selectAnswer');
@@ -573,6 +583,7 @@ export function useFinalFiveModal() {
     showContinueButton,
     isFinalFiveActive,
     isGameOver,
+    isFinalFiveCompleted,
     finalFiveTimeRemaining,
     gameOutcome,
     animationComplete,
@@ -597,18 +608,18 @@ export function useFinalFiveModal() {
     
     // Back of card background based on game state - using rgba with the color's RGB values
     let backBg = `rgba(var(--color-${colors.primary}-rgb), 0.15)`; // 15% opacity
-    if (isGameOver && isCorrectOption(option)) backBg = frontBg; // Full color for correct answer
+    if (isFinalFiveCompleted && isCorrectOption(option)) backBg = frontBg; // Full theme color for correct answer
     
     // Text color based on game state and dark mode
     let textColor = darkMode ? "white" : "black";
-    if (isGameOver && isCorrectOption(option)) textColor = "white";
+    if (isFinalFiveCompleted && isCorrectOption(option)) textColor = "white";
     
     return {
       frontBg,
       backBg,
       textColor
     };
-    }, [colors.primary, darkMode, isGameOver, isCorrectOption]),
+    }, [colors.primary, darkMode, isFinalFiveCompleted, isCorrectOption]),
     isCorrectOption,
     isIncorrectGuess,
     

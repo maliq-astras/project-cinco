@@ -6,6 +6,7 @@ export interface FinalFiveSlice {
   // Final Five specific state
   finalFiveTimeRemaining: number;
   isFinalFiveActive: boolean;
+  isFinalFiveCompleted: boolean;
   showFinalFiveTransition: boolean;
   finalFiveTransitionReason: 'time' | 'guesses' | null;
   finalFiveError: string | null;
@@ -31,6 +32,7 @@ export const createFinalFiveSlice: StateCreator<
   // Initial state
   finalFiveTimeRemaining: 55, // Will be set to 5 in hard mode when game starts
   isFinalFiveActive: false,
+  isFinalFiveCompleted: false,
   showFinalFiveTransition: false,
   finalFiveTransitionReason: null,
   finalFiveError: null,
@@ -154,6 +156,7 @@ export const createFinalFiveSlice: StateCreator<
     set({ 
       showFinalFiveTransition: true,
       isFinalFiveActive: false,
+      isFinalFiveCompleted: false, // Reset completion state when starting
       isPendingFinalFiveTransition: false,
       finalFiveTimeRemaining: hardMode ? 5 : 55,
       finalFiveError: null // Reset error state
@@ -314,13 +317,14 @@ export const createFinalFiveSlice: StateCreator<
             const timeSpent = initialTime - currentState.timeRemaining;
             get().saveTodayGameData('loss-final-five-wrong', correctAnswer, numberOfTries, timeSpent, currentState.gameState.challenge);
             
-            // Add both guesses to the state and set game over
+            // Add both guesses to the state and set Final Five completed
             set((state: any) => ({
               gameState: {
                 ...state.gameState,
                 guesses: [...state.gameState.guesses, newGuess, correctGuess],
-                isGameOver: true
+                isGameOver: true // For wrong answers, set main game over immediately
               },
+              isFinalFiveCompleted: true, // Mark Final Five completed for proper message timing
               isProcessingGuess: false,
               gameOutcome: 'loss-final-five-wrong' // Set the correct outcome for Final Five wrong guess
             }));
@@ -345,6 +349,7 @@ export const createFinalFiveSlice: StateCreator<
                 guesses: [...state.gameState.guesses, newGuess],
                 isGameOver: true
               },
+              isFinalFiveCompleted: true, // Mark Final Five completed for proper message timing
               isProcessingGuess: false,
               gameOutcome: 'loss-final-five-wrong' // Set the correct outcome for Final Five wrong guess
             }));
@@ -354,13 +359,14 @@ export const createFinalFiveSlice: StateCreator<
         }
       }
       
-      // If we have a correct guess, just add it to the state
+      // If we have a correct guess, just add it to the state and mark Final Five as completed
       set((state: any) => ({
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
-          isGameOver: false // Don't set game over immediately - let bubble animation complete first
+          isGameOver: false // Don't set main game over - Final Five has its own completion state
         },
+        isFinalFiveCompleted: true, // Set Final Five completed immediately for proper message timing
         isProcessingGuess: false
       }));
       
@@ -384,11 +390,7 @@ export const createFinalFiveSlice: StateCreator<
         
         setTimeout(() => {
           set({ 
-            victoryAnimationStep: 'summary',
-            gameState: {
-              ...get().gameState,
-              isGameOver: true
-            }
+            victoryAnimationStep: 'summary'
           });
         }, 2000); // Increased from 1500ms to 2000ms to allow bubble animation to complete
       }
@@ -403,6 +405,7 @@ export const createFinalFiveSlice: StateCreator<
   closeFinalFive: () => {
     set((state: any) => ({
       isFinalFiveActive: false,
+      isFinalFiveCompleted: false, // Reset completion state when closing
       victoryAnimationStep: state.gameOutcome !== null ? 'summary' : null,
       isVictoryAnimationActive: state.gameOutcome === 'final-five-win'
     }));

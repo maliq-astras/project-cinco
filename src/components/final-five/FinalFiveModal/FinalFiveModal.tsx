@@ -26,6 +26,7 @@ export default function FinalFiveModal() {
     showContinueButton,
     isFinalFiveActive,
     isGameOver,
+    isFinalFiveCompleted,
     finalFiveTimeRemaining,
     gameOutcome,
     animationComplete,
@@ -206,7 +207,7 @@ export default function FinalFiveModal() {
                     option={option}
                     index={index}
                     isFlipped={flippedCards[index]}
-                    isGameOver={isGameOver || timerReachedZero}
+                    isGameOver={isFinalFiveCompleted || timerReachedZero}
                     frontBg={frontBg}
                     backBg={backBg}
                     textColor={textColor}
@@ -252,7 +253,7 @@ export default function FinalFiveModal() {
             <div className={finalFiveStyles.buttonContainer}>
               {/* Continue button - only visible after animations complete */}
               <AnimatePresence>
-                {isGameOver && showContinueButton && (
+                {showContinueButton && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
