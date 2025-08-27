@@ -67,7 +67,7 @@ export const useCompactHeader = () => {
       xl: "2.25rem",
     }),
     titleFontSize: getResponsiveValue({
-      xs: "2rem",
+      xs: "1.60rem",
       sm: "2.25rem", 
       md: "2.25rem",
       lg: "2.5rem",

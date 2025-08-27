@@ -6,7 +6,7 @@
  */
 
 export const BREAKPOINTS = {
-  xs: { minWidth: 375, minHeight: 600 },   // Small phones
+  xs: { minWidth: 400, minHeight: 640 },   // Small phones
   sm: { minWidth: 480, minHeight: 700 },   // Large phones 
   md: { minWidth: 768, minHeight: 800 },   // Tablets, small laptops
   lg: { minWidth: 1024, minHeight: 900 },  // Laptops, desktops

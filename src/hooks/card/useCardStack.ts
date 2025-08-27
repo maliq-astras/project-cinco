@@ -1,15 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { calculate3DTiltEffect } from '../../helpers/uiHelpers';
+import { useDOMRefs } from '../../providers/DOMRefsProvider';
 
 /**
  * Custom hook for managing card stack interactions and animations
  * @param visibleCards Array of visible card indices
  * @returns State and handlers for card stack
  */
-export function useCardStack(visibleCards: number[]) {
+export function useCardStack(visibleCards: number[], onCardClicked?: (factIndex: number, cardIndex: number) => void) {
   // UI interaction state
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
   const [handPosition, setHandPosition] = useState({ x: 0, y: 0 });
+  const [isTouching, setIsTouching] = useState(false);
   
   // Animation state
   const [isInitialRender, setIsInitialRender] = useState(true);
@@ -19,6 +21,9 @@ export function useCardStack(visibleCards: number[]) {
   // References
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const stackRef = useRef<HTMLDivElement>(null);
+  
+  // DOM refs provider for accessing registered elements
+  const { getElement } = useDOMRefs();
 
   // Handle new card appearance and card return animations
   useEffect(() => {
@@ -60,6 +65,67 @@ export function useCardStack(visibleCards: number[]) {
 
   const handleMouseLeave = () => {
     setHandPosition({ x: 0, y: 0 }); // Reset to neutral position
+    if (!isTouching) {
+      setHoveredCardIndex(null); // Clear hover state if not touching
+    }
+  };
+
+  // Touch interaction handlers for mobile hover effect
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsTouching(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isTouching) return;
+    
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Use document.elementFromPoint to find the element under touch
+    const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // Find which card index this element belongs to
+    let foundCardIndex: number | null = null;
+    
+    if (elementUnderTouch) {
+      // Check if it's a card element or contained within one
+      const cardElement = elementUnderTouch.closest('[data-card-index]');
+      if (cardElement) {
+        const cardIndexStr = cardElement.getAttribute('data-card-index');
+        if (cardIndexStr) {
+          foundCardIndex = parseInt(cardIndexStr, 10);
+        }
+      }
+    }
+
+    // Update hover state based on found card
+    setHoveredCardIndex(foundCardIndex);
+
+    // Update hand position for 3D effect
+    if (stackRef.current) {
+      const rect = stackRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const x = (touch.clientX - rect.left - centerX) / centerX;
+      const y = (touch.clientY - rect.top - centerY) / centerY;
+      setHandPosition({ x, y });
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const wasHoveringCard = hoveredCardIndex !== null;
+    const hoveredCard = hoveredCardIndex;
+    
+    // Reset touch state first
+    setIsTouching(false);
+    setHoveredCardIndex(null);
+    setHandPosition({ x: 0, y: 0 });
+    
+    // If user was hovering a card when they released, open it
+    if (wasHoveringCard && hoveredCard !== null && onCardClicked) {
+      const factIndex = visibleCards[hoveredCard];
+      onCardClicked(factIndex, hoveredCard);
+    }
   };
 
   return {
@@ -68,6 +134,7 @@ export function useCardStack(visibleCards: number[]) {
     isInitialRender,
     isCardReturning,
     handPosition,
+    isTouching,
     
     // Refs
     cardRefs,
@@ -77,5 +144,8 @@ export function useCardStack(visibleCards: number[]) {
     setHoveredCardIndex,
     handleMouseMove,
     handleMouseLeave,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
   };
 } 

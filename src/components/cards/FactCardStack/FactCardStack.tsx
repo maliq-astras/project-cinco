@@ -20,6 +20,9 @@ export default function FactCardStack() {
     // Card interaction handlers
     handleMouseMove,
     handleMouseLeave,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     stackRef,
     cardRefs,
     setHoveredCardIndex,
@@ -49,6 +52,9 @@ export default function FactCardStack() {
       style={containerStyles.main}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       ref={stackRef}
     >
       <motion.div 
@@ -62,6 +68,7 @@ export default function FactCardStack() {
             return (
               <motion.div
                 key={`card-${factIndex}`}
+                data-card-index={i}
                 ref={el => {
                   cardRefs.current[i] = el;
                   return undefined;

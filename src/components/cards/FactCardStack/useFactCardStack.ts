@@ -43,8 +43,41 @@ export function useFactCardStack() {
     );
   }, [revealedFacts, viewingFact, isReturningToStack, isCardAnimatingOut]);
   
+  // Card click handler that connects to game store
+  const onCardClicked = (factIndex: number, cardIndex: number, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    
+    // Don't allow clicking if we can't reveal a new clue
+    if (!canRevealNewClue && !revealedFacts.includes(factIndex)) return;
+    
+    // Get the exact position of the card element for touch or mouse
+    const cardElement = cardStackHook.cardRefs.current[cardIndex];
+    
+    if (cardElement) {
+      // Get the bounding rectangle of the card
+      const rect = cardElement.getBoundingClientRect();
+      
+      // Calculate the center of the card
+      const sourcePosition = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+      
+      // Pass the fact index and source position to the store action
+      handleCardClick(factIndex, sourcePosition);
+    } else {
+      // Fallback - use center of screen if no card element
+      handleCardClick(factIndex, { 
+        x: window.innerWidth / 2, 
+        y: window.innerHeight / 2 
+      });
+    }
+  };
+
   // Use our custom hook for card stack interactions and animations
-  const cardStackHook = useCardStack(visibleStackFacts);
+  const cardStackHook = useCardStack(visibleStackFacts, onCardClicked);
   const centerIndex = Math.floor(visibleStackFacts.length / 2);
 
   // Register card stack elements with DOM refs provider
@@ -99,34 +132,6 @@ export function useFactCardStack() {
     return baseHeight + (spacing * 2);
   };
 
-  // Handle card click event to open a card
-  const onCardClicked = (factIndex: number, index: number, e: React.MouseEvent) => {
-    // Don't allow clicking if we can't reveal a new clue
-    if (!canRevealNewClue && !revealedFacts.includes(factIndex)) return;
-    
-    // Get the exact position of the card element
-    const cardElement = cardStackHook.cardRefs.current[index];
-    
-    if (cardElement) {
-      // Get the bounding rectangle of the card
-      const rect = cardElement.getBoundingClientRect();
-      
-      // Calculate the center of the card
-      const sourcePosition = {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      };
-      
-      // Pass the fact index and source position to the store action
-      handleCardClick(factIndex, sourcePosition);
-    } else {
-      // Fallback to using the click position if the card element isn't available
-      handleCardClick(factIndex, { 
-        x: e.clientX, 
-        y: e.clientY 
-      });
-    }
-  };
   
   // Determines if a card is clickable
   const isCardClickable = (factIndex: number) => {

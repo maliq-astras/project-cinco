@@ -51,7 +51,7 @@ const ScreenSizeWarning: React.FC<ScreenSizeWarningProps> = ({ isMobile }) => {
         <div className="text-sm text-gray-500 dark:text-gray-400">
           <p className="font-medium mb-2">Minimum requirements:</p>
           {isMobile ? (
-            <p>665px height × 320px width</p>
+            <p>640px height × 320px width</p>
           ) : (
             <p>600px height</p>
           )}

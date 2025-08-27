@@ -58,23 +58,32 @@ export function calculateFanAngle(cardCount: number, breakpoint: string): number
  * @returns Spread factor for horizontal positioning
  */
 export function calculateSpreadFactor(cardCount: number, breakpoint: string): number {
-  // Adjust spread based on breakpoint
+  // Ensure minimum spread even with few cards to avoid overlap
+  let baseSpread, minSpread;
+  
   if (breakpoint === 'xs') {
-    // Very small mobile
-    return Math.max(20, 15 + (cardCount * 7)); 
+    // Very small mobile - ensure good spread even with 1-3 cards
+    minSpread = cardCount <= 3 ? 55 : 18;
+    baseSpread = Math.max(minSpread, 4.7 + (cardCount * 10));
   } else if (breakpoint === 'sm') {
-    // Small mobile
-    return Math.max(25, 20 + (cardCount * 8));
+    // Small mobile - ensure good spread even with 1-3 cards
+    minSpread = cardCount <= 3 ? 35 : 32;
+    baseSpread = Math.max(minSpread, 25 + (cardCount * 11));
   } else if (breakpoint === 'md') {
-    // Mobile
-    return Math.max(30, 25 + (cardCount * 10));
+    // Mobile - ensure good spread even with 1-3 cards
+    minSpread = cardCount <= 3 ? 40 : 38;
+    baseSpread = Math.max(minSpread, 30 + (cardCount * 13));
   } else if (breakpoint === 'lg') {
-    // Small tablets
-    return Math.max(35, 28 + (cardCount * 12));
+    // Small tablets - ensure good spread even with 1-3 cards
+    minSpread = cardCount <= 3 ? 40 : 38;
+    baseSpread = Math.max(minSpread, 30 + (cardCount * 13));
+  } else {
+    // Default for larger screens - ensure good spread even with 1-3 cards
+    minSpread = cardCount <= 3 ? 45 : 42;
+    baseSpread = Math.max(minSpread, 32 + (cardCount * 16));
   }
   
-  // Default for larger screens
-  return Math.max(40, 30 + (cardCount * 15));
+  return baseSpread;
 }
 
 /**
