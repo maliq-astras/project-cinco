@@ -174,7 +174,7 @@ export const useResponsive = () => {
       bubbleSize: bubbleSize,
       
       // Bubble spacing - always dynamic and proportional to bubble size
-      bubbleSpacing: Math.max(8, Math.min(20, bubbleSize * 0.09)),
+      bubbleSpacing: Math.max(16, Math.min(26, bubbleSize * 0.16)),
 
       // Card sizes - dynamic and layout-aware
       cardSize: cardSize,

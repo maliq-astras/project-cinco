@@ -28,7 +28,7 @@ export const isScreenTooSmall = (width: number, height: number, isActualMobile: 
   
   if (shouldUseMobileThresholds) {
     // Mobile layout: 640px height, 320px width minimum
-    return height < 640 || width < 320;
+    return height < 650 || width < 320;
   } else {
     // Desktop layout: 600px height minimum  
     return height < 600;

@@ -31,15 +31,15 @@ export const FactCardStackContainer: React.FC = () => {
 
   return (
     <div 
-      ref={containerRef} 
+      ref={factsAreaRef} 
       className={`fact-card-stack-container ${styles.container}`}
       style={responsiveContainerStyle}
+      id="facts-area"
     >
       <div 
-        ref={factsAreaRef}
+        ref={containerRef}
         className={styles.innerContainer}
         style={containerStyles}
-        id="facts-area"
       >
         <AnimatePresence>
           {shouldShowPlaceholder && !isHidden && (

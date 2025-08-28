@@ -133,7 +133,8 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
       if (element) {
         const rect = element.getBoundingClientRect();
         const textPadding = 24;
-        const isMobile = width < 640;
+        const { isMobileLayout } = require('@/helpers/breakpoints');
+        const isMobile = isMobileLayout(width, height);
         const navigationHeight = 120;
         const viewportHeight = height;
         
@@ -162,8 +163,72 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
               width: `${rect.width + 2}px`,
               height: `${rect.height + 24}px`
             });
+          } else if (currentTarget === 'facts-area') {
+            // For facts area, match DropZoneIndicator behavior - use exact element boundaries
+            if (isMobile) {
+              // On mobile, use full viewport width but match element height exactly
+              setSpotlightStyles({
+                top: `${rect.top}px`,
+                left: '2.5px',
+                width: `${width - 5}px`,
+                height: `${rect.height}px`
+              });
+            } else {
+              // On desktop, match element boundaries exactly like DropZoneIndicator
+              setSpotlightStyles({
+                top: `${rect.top}px`,
+                left: `${rect.left}px`,
+                width: `${rect.width}px`,
+                height: `${rect.height}px`
+              });
+            }
+          } else if (currentTarget === 'bubble-0') {
+            // For first bubble (Reveal Facts), slightly smaller square highlight
+            const padding = 12; // Reduced from 16 to bring it in a smidge
+            setSpotlightStyles({
+              top: `${rect.top - padding}px`,
+              left: `${rect.left - padding + 1}px`,
+              width: `${rect.width + (padding * 2)}px`,
+              height: `${rect.height + (padding * 2)}px`
+            });
+          } else if (currentTarget === 'game-input') {
+            // For game input, use smart clamping like category-title
+            setSpotlightStyles({
+              top: `${rect.top - 2.5}px`,
+              left: `${rect.left - 1.3}px`,
+              width: `${rect.width + 3}px`,
+              height: `${rect.height + 5}px`
+            });
+          } else if (currentTarget === 'bubble-grid') {
+            setSpotlightStyles({
+              top: `${rect.top - 10}px`,
+              left: `${rect.left - 4}px`,
+              width: `${rect.width + 12}px`,
+              height: `${rect.height + 22}px`
+            });
+          } else if (currentTarget === 'game-timer') {
+            setSpotlightStyles({
+              top: `${rect.top - 5}px`,
+              left: `${rect.left - 4}px`,
+              width: `${rect.width + 8}px`,
+              height: `${rect.height + 10}px`
+            });
+          } else if (currentTarget === 'game-progress') {
+            setSpotlightStyles({
+              top: `${rect.top - 4.6}px`,
+              left: `${rect.left - .8}px`,
+              width: `${rect.width + 2}px`,
+              height: `${rect.height + 10}px`
+            });
+          } else if (currentTarget === 'game-controls-right') {
+            setSpotlightStyles({
+              top: `${rect.top - 4.6}px`,
+              left: `${rect.left - .8}px`,
+              width: `${rect.width + 1}px`,
+              height: `${rect.height + 10}px`
+            });
           } else {
-            // Standard padding for other elements
+            // fallback
             setSpotlightStyles({
               top: `${rect.top - 16}px`,
               left: `${rect.left - 16}px`,
@@ -181,6 +246,12 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         if (currentTarget === 'bubble-grid' || currentTarget === 'bubble-0') {
           // For hidden facts (bubble grid) and reveal facts (first bubble), position text box ABOVE the highlighted area with spacing
           textTop = Math.max(16, rect.top - 200 - textPadding);
+        } else if (currentTarget === 'facts-area') {
+          // For facts area, use fixed spacing like bubble-grid for consistency
+          textTop = Math.max(
+            rect.bottom + 100, // Fixed 100px spacing below facts area
+            16 // Minimum distance from top
+          );
         } else {
           // For all other elements, position text box BELOW the highlighted area
           textTop = Math.min(
