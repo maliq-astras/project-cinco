@@ -38,12 +38,11 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   
   // Use our new responsive system
   const { 
-    breakpoint, 
-    responsiveValues 
+    isMobileMenu
   } = useResponsive();
   
   // Use responsive breakpoint for mobile detection
-  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
+  const isMobile = isMobileMenu;
 
   const steps = [
     {
@@ -83,11 +82,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     step,
     formData,
     submitted,
-    isDropdownOpen,
-    isSecondDropdownOpen,
     progress,
-    setIsDropdownOpen,
-    setIsSecondDropdownOpen,
     handleNext,
     handleBack,
     handleSelect,

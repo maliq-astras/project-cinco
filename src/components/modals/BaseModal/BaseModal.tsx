@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { createPortal } from 'react-dom';
 import { baseModalStyles } from './BaseModal.styles';
 import { useResponsive } from '@/hooks/responsive';
-import { isMobileDevice } from '@/helpers/deviceDetection';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,7 +17,7 @@ interface BaseModalProps {
   };
   className?: string;
   dismissible?: boolean;
-  mobileHeight?: string; // Allow custom mobile height
+  mobileHeight?: string; 
 }
 
 
@@ -35,11 +34,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
 }) => {
 
   // Use our new responsive system
-  const { width } = useResponsive();
+  const { isMobileMenu } = useResponsive();
   
   // Only use slide-up modals for actual mobile phones (not tablets)
   // Tablets in landscape should use regular modals like desktop
-  const isMobile = isMobileDevice() && width <= 430;
+  const isMobile = isMobileMenu;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && !isMobile && dismissible) {

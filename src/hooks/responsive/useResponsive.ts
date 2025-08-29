@@ -5,6 +5,7 @@ import {
   isLandscape,
   isPortrait,
   isMobileLayout,
+  isMobileMenu,
   getLayoutMode,
   willContentFitInHeight,
   getAvailableContentHeight,
@@ -53,7 +54,8 @@ export const useResponsive = () => {
   const isPortraitMode = useMemo(() => isPortrait(width, height), [width, height]);
   
   // Layout mode detection
-  const isNarrow = useMemo(() => isMobileLayout(width, height), [width, height]);
+  const isMobileLayoutDetected = useMemo(() => isMobileLayout(width, height), [width, height]);
+  const isMobileMenuDetected = useMemo(() => isMobileMenu(width), [width]);
   const layoutMode = useMemo(() => getLayoutMode(width, height), [width, height]);
 
   // Responsive values for different components
@@ -65,7 +67,7 @@ export const useResponsive = () => {
       
       // Calculate available width based on layout mode
       let availableWidth;
-      if (isNarrow) {
+      if (isMobileLayoutDetected) {
         // Vertical layout: bubbles get full width minus container padding
         availableWidth = width - 40;
       } else {
@@ -77,7 +79,7 @@ export const useResponsive = () => {
       // Calculate actual reserved height based on layout and UI components
       let calculatedReservedHeight;
       
-      if (isNarrow) {
+      if (isMobileLayoutDetected) {
         // Mobile layout: header + card stack area + controls + padding
         const headerHeight = getResponsiveValue(
           { xs: 120, sm: 140, md: 160, lg: 180, xl: 200 }, 
@@ -119,8 +121,13 @@ export const useResponsive = () => {
       const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
       const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
       const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
+      
+      // Apply 5% scaling for ultrawide screens with cutoff issues (940-1140px width)
+      const scaledSize = (width < 1140 && width > 940) 
+        ? optimalSize * 0.95 
+        : optimalSize;
     
-      return Math.max(60, Math.min(120, optimalSize));
+      return Math.max(60, Math.min(120, scaledSize));
     };
 
     // Get bubble size directly from available space calculation
@@ -133,7 +140,7 @@ export const useResponsive = () => {
       let availableWidth;
       let availableHeight;
       
-      if (isNarrow) {
+      if (isMobileLayoutDetected) {
         // Vertical layout: cards get full width for the stack area
         availableWidth = Math.min(400, width - 40); // Max 400px width, minus padding
         availableHeight = Math.max(250, height * 0.35); // 35% of screen height, min 250px
@@ -233,7 +240,7 @@ export const useResponsive = () => {
         breakpoint
       )
     };
-  }, [width, height, breakpoint, isLandscapeMode, isNarrow]);
+  }, [width, height, breakpoint, isLandscapeMode, isMobileLayoutDetected]);
 
   // Utility functions
   const willFit = useMemo(() => ({
@@ -271,7 +278,7 @@ export const useResponsive = () => {
     isPortrait: isPortraitMode,
     
     // Layout modes
-    isNarrow,
+    isMobileLayout: isMobileLayoutDetected,
     layoutMode,
     
     // Responsive values
@@ -280,6 +287,9 @@ export const useResponsive = () => {
     // Content fitting utilities
     willFit,
     availableContentHeight,
+
+    // Mobile menu detection
+    isMobileMenu: isMobileMenuDetected,
     
     // Helper functions for components
     getResponsiveValue: <T>(values: Record<Breakpoint, T>) => getResponsiveValue(values, breakpoint)

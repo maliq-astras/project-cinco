@@ -106,6 +106,9 @@ export const isMobileLayout = (width: number, height: number): boolean => {
   return width < 800 || (height > width && height > 1000);
 };
 
+export const isMobileMenu = (width: number): boolean => {
+  return width < 800;
+};
 
 /**
  * Determine optimal layout mode based on dimensions

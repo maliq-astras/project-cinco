@@ -33,8 +33,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
     isNarrowPhone,
     isBigMobileDevice,
     isLimitedHeightLandscape,
-    isLandscape,
-    isSurfaceDuo
+    isLandscape
   } = useAnswerDetailsModal({ isOpen });
 
   // Get the actual 8 fact types from the current game
@@ -66,7 +65,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   };
 
   const renderPhotoSection = () => (
-    <div className={`${answerDetailsModalStyles.photoSection} ${answerDetailsModalStyles.photoSize(isLimitedHeightLandscape, isMobileDevice, isSurfaceDuo, isLandscape)}`}>
+    <div className={`${answerDetailsModalStyles.photoSection} ${answerDetailsModalStyles.photoSize(isLimitedHeightLandscape, isMobileDevice, isLandscape)}`}>
       <div className={answerDetailsModalStyles.photoContainer}>
         {challenge?.youtubeUrl ? (
           // YouTube video embed
@@ -116,8 +115,8 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   );
 
   const renderFactsGrid = () => (
-    <div className={answerDetailsModalStyles.gridContainer(isMobileDevice, isSurfaceDuo, isLandscape)}>
-      <div className={answerDetailsModalStyles.factsGrid(isMobileDevice, isSurfaceDuo, isExtraNarrowPhone, isNarrowPhone)}>
+    <div className={answerDetailsModalStyles.gridContainer(isMobileDevice, isLandscape)}>
+      <div className={answerDetailsModalStyles.factsGrid(isMobileDevice, isExtraNarrowPhone, isNarrowPhone)}>
         {factTypes.map((factType, index) => {
           const icon = getFactIcon(factType, false, 32, category);
           
@@ -197,7 +196,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
   );
 
   const renderRightPanel = () => (
-    <div className={answerDetailsModalStyles.rightPanel(isLimitedHeightLandscape, isMobileDevice, isSurfaceDuo, isLandscape)}>
+    <div className={answerDetailsModalStyles.rightPanel(isLimitedHeightLandscape, isMobileDevice, isLandscape)}>
       {selectedFact === null ? renderFactsGrid() : renderFactDetails()}
     </div>
   );
@@ -227,7 +226,7 @@ const AnswerDetailsModal: React.FC<AnswerDetailsModalProps> = ({
 
           {/* Content */}
           <motion.div 
-            className={answerDetailsModalStyles.content(isBigMobileDevice, isSurfaceDuo, isMobileDevice, isLandscape)}
+            className={answerDetailsModalStyles.content(isBigMobileDevice, isMobileDevice, isLandscape)}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}

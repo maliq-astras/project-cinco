@@ -18,12 +18,10 @@ const FactBubbleGrid: React.FC = () => {
     animationProps,
     bubbleGridRef,
     responsiveValues,
-    breakpoint,
     willFit,
     availableContentHeight,
     remainingFactsCount,
-    layoutMode,
-    isNarrow
+    layoutMode
   } = useFactBubbleGrid();
 
   // Create responsive container style

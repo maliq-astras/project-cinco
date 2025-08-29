@@ -29,7 +29,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
     heightBreakpoint, 
     isLandscape, 
     isPortrait,
-    responsiveValues 
+    responsiveValues,
+    isMobileMenu
   } = useResponsive();
   
   // Use separate selectors for each state value to avoid the infinite loop
@@ -44,8 +45,8 @@ export const useSettingsPanel = ({ isOpen, onClose }: UseSettingsPanelProps) => 
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   
-  // Use responsive breakpoint for mobile detection
-  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
+  // Use simple width check for modal mobile detection
+  const isMobile = isMobileMenu;
   
   // Language dropdown state
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);

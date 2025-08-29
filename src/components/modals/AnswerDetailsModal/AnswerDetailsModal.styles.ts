@@ -13,10 +13,7 @@ export const answerDetailsModalStyles = {
   detailTitle: styles.detailTitle,
   
   // Dynamic content container styles
-  content: (isBigMobileDevice: boolean, isSurfaceDuo: boolean, isMobileDevice: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      return "flex flex-col h-full gap-2 justify-center overflow-hidden max-w-xs mx-auto"; // Minimal spacing for Surface Duo
-    }
+  content: (isBigMobileDevice: boolean, isMobileDevice: boolean, isLandscape: boolean) => {
     if (isMobileDevice) {
       return "flex flex-col h-[92vh] gap-4 justify-start items-stretch overflow-hidden w-full px-4 pt-10"; // Fill viewport height on mobile and avoid X overlap
     }
@@ -28,11 +25,7 @@ export const answerDetailsModalStyles = {
   },
   
   // Dynamic photo size styles
-  photoSize: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      // Treat Surface Duo like stacked-tablet portrait to avoid "zoomed" look
-      return 'w-full h-[38vh]';
-    }
+  photoSize: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isLandscape: boolean) => {
     if (isMobileDevice) {
       return 'w-full aspect-[3/2]'; // Mobile aspect ratio, full width
     }
@@ -44,10 +37,7 @@ export const answerDetailsModalStyles = {
   },
   
   // Dynamic right panel styles
-  rightPanel: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
-    if (isSurfaceDuo) {
-      return 'flex-1 min-h-0 w-full overflow-hidden';
-    }
+  rightPanel: (isLimitedHeightLandscape: boolean, isMobileDevice: boolean, isLandscape: boolean) => {
     if (isMobileDevice) {
       return 'flex-1 min-h-0 w-full overflow-hidden'; // Flexible height panel on mobile; uses remaining space
     }
@@ -59,7 +49,7 @@ export const answerDetailsModalStyles = {
   },
   
   // Dynamic grid container styles
-  gridContainer: (isMobileDevice: boolean, isSurfaceDuo: boolean, isLandscape: boolean) => {
+  gridContainer: (isMobileDevice: boolean, isLandscape: boolean) => {
     if (isMobileDevice) {
       return "w-full h-full overflow-y-auto"; // Allow internal scroll on mobile to avoid overlap
     }

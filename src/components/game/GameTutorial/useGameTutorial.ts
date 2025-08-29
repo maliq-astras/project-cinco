@@ -184,10 +184,10 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
             }
           } else if (currentTarget === 'bubble-0') {
             // For first bubble (Reveal Facts), slightly smaller square highlight
-            const padding = 12; // Reduced from 16 to bring it in a smidge
+            const padding = 10; // Reduced from 16 to bring it in a smidge
             setSpotlightStyles({
               top: `${rect.top - padding}px`,
-              left: `${rect.left - padding + 1}px`,
+              left: `${rect.left - padding}px`,
               width: `${rect.width + (padding * 2)}px`,
               height: `${rect.height + (padding * 2)}px`
             });
@@ -202,7 +202,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
           } else if (currentTarget === 'bubble-grid') {
             setSpotlightStyles({
               top: `${rect.top - 10}px`,
-              left: `${rect.left - 4}px`,
+              left: `${rect.left - 7}px`,
               width: `${rect.width + 12}px`,
               height: `${rect.height + 22}px`
             });
@@ -262,7 +262,13 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
 
         // Ensure text box stays within viewport bounds
         textLeft = Math.max(16, Math.min(textLeft, width - textBoxWidth - 16));
-        textTop = Math.max(16, Math.min(textTop, height - 200));
+        
+        // For facts-area, be less restrictive with bottom constraint to maintain spacing
+        if (currentTarget === 'facts-area') {
+          textTop = Math.max(16, Math.min(textTop, height - 190)); // More lenient bottom constraint
+        } else {
+          textTop = Math.max(16, Math.min(textTop, height - 200));
+        }
 
         setTextBoxStyles({
           top: `${textTop}px`,

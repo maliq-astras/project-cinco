@@ -62,15 +62,11 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
   
   // Use our new responsive system
   const { 
-    breakpoint, 
-    heightBreakpoint, 
-    isLandscape, 
-    isPortrait,
-    responsiveValues 
+    isMobileMenu
   } = useResponsive();
   
   // Use responsive breakpoint for mobile detection
-  const isMobile = breakpoint === 'xs' || breakpoint === 'sm';
+  const isMobile = isMobileMenu;
 
   // Fix: Add dark mode detection and text segment background here
   const isDarkMode = hasClass('dark');
