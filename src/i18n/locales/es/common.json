@@ -40,7 +40,7 @@
       "title": "FINAL 5",
       "intro": "¡Es hora del Final de Cinco!",
       "instructions": "Selecciona el dato correcto para cada categoría",
-      "timeUp": "¡Se acabó el tiempo! Pero todavía hay una oportunidad en la ronda FINAL 5. Elige la respuesta correcta entre 5 opciones en un duelo de {{timeLimit}} segundos. ¿Listo para convertirte en campeón?",
+      "timeUp": "¡Se acabó el tiempo! Pero todavía hay una oportunidad en el FINAL 5. Elige la respuesta correcta entre 5 opciones en un duelo de {{timeLimit}} segundos. ¿Listo para convertirte en campeón?",
       "guessesUp": "5 intentos agotados, ¡pero la victoria te espera en el FINAL 5! Tendrás {{timeLimit}} segundos para elegir la respuesta correcta entre 5 opciones. ¡Este es tu momento de brillar!",
       "revealingCards": "Las cartas se están revelando...",
       "checkingAnswer": "Determinando la respuesta correcta...",

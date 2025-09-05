@@ -6,10 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useFactBubbleGrid } from './useFactBubbleGrid';
 import styles from './FactBubbleGrid.module.css';
 
-/**
- * Grid component that displays interactive fact bubbles
- * Handles responsive layout and animations
- */
 const FactBubbleGrid: React.FC = () => {
   const {
     gridItems,
@@ -24,7 +20,6 @@ const FactBubbleGrid: React.FC = () => {
     layoutMode
   } = useFactBubbleGrid();
 
-  // Create responsive container style
   const containerStyle = {
     '--bubble-size': `${bubbleSize}px`,
     '--bubble-spacing': `${gapSize}px`,
@@ -32,14 +27,9 @@ const FactBubbleGrid: React.FC = () => {
     '--remaining-count': remainingFactsCount
   } as React.CSSProperties;
 
-  // Determine if we should use single row layout (4 or fewer bubbles, and only in desktop mode)
   const isSingleRow = remainingFactsCount <= 4 && remainingFactsCount > 0 && layoutMode === 'desktop';
-  
-  // Check if grid will fit in available height
   const gridHeight = isSingleRow ? bubbleSize : (2 * bubbleSize) + gapSize;
   const willGridFit = willFit.bubbleGrid(gridHeight);
-
-  // Calculate responsive scale if grid doesn't fit
   const gridScale = willGridFit ? 1 : Math.min(0.9, availableContentHeight / gridHeight);
 
   return (
@@ -55,7 +45,6 @@ const FactBubbleGrid: React.FC = () => {
         }}
       >
         {(isSingleRow ? gridItems.filter(item => !item.isEmpty) : gridItems).map(item => {
-          // For empty slots, render a placeholder (only in double row mode)
           if (item.isEmpty) {
             return (
               <div 
@@ -66,7 +55,6 @@ const FactBubbleGrid: React.FC = () => {
             );
           }
 
-          // For fact bubbles, render the animated bubble
           return (
             <AnimatePresence mode="popLayout" key={`slot-${item.slotIndex}`}>
               <motion.div

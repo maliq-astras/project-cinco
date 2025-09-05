@@ -12,17 +12,12 @@ interface FactCardBackProps {
   inStack?: boolean;
 }
 
-/**
- * Component that displays the back side of a fact card
- * Used in the card stack and when cards are flipped
- */
 export default function FactCardBack({ 
   fact, 
   size = 'large', 
   isRevealed = false,
   inStack = false
 }: FactCardBackProps) {
-  // Use the consolidated hook for styles, classes, and icon logic
   const { containerClasses, backgroundStyle, icon, iconStyle } = useFactCardBack({
     fact,
     size,

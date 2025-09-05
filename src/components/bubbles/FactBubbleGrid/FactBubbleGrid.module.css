@@ -1,9 +1,3 @@
-/**
- * CSS Modules for FactBubbleGrid component
- * Leverages existing responsive system for fluid grid layout
- */
-
-/* Container - full width with centered content */
 .container {
   width: 100%;
   display: flex;
@@ -12,14 +6,12 @@
   padding: 0 1rem;
 }
 
-/* Desktop layout - remove top margin to bring bubbles closer to context */
 @media (min-width: 1024px) {
   .container {
     margin-top: 0;
   }
 }
 
-/* Grid configuration - base grid layout */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, var(--bubble-size));
@@ -30,13 +22,11 @@
   margin: 0 auto;
 }
 
-/* Double row layout - default 4x2 grid */
 .doubleRow {
   grid-template-rows: repeat(2, var(--bubble-size));
   height: calc(2 * var(--bubble-size) + var(--bubble-spacing));
 }
 
-/* Single row layout - dynamic columns based on remaining bubbles */
 .singleRow {
   grid-template-columns: repeat(var(--remaining-count, 4), var(--bubble-size));
   grid-template-rows: var(--bubble-size);
@@ -45,13 +35,11 @@
   justify-content: center;
 }
 
-/* Empty slot placeholder */
 .emptySlot {
   aspect-ratio: 1;
   opacity: 0;
 }
 
-/* Bubble container for animations */
 .bubbleContainer {
   display: flex;
   align-items: center;

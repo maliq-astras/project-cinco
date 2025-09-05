@@ -54,8 +54,8 @@ export function useCardStack(visibleCards: number[], onCardClicked?: (factIndex:
     // Update the previous revealed facts
     setPrevVisibleCards(visibleCards);
     
-    // Resize the refs array
-    cardRefs.current = cardRefs.current.slice(0, visibleCards.length);
+    // Ensure the refs array has the right length
+    cardRefs.current = new Array(visibleCards.length).fill(null);
   }, [visibleCards]);
 
   // Mouse interaction handlers

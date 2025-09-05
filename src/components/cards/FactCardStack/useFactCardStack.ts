@@ -1,17 +1,12 @@
 import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useCardStack } from '@/hooks/card';
 import { calculateCardPosition, getCardAnimationVariants } from '@/helpers/uiHelpers';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useEffect } from 'react';
 import { useResponsive } from '@/hooks/responsive';
 
-/**
- * Hook for managing FactCardStack logic and interactions
- */
 export function useFactCardStack() {
-  // Access state and actions from the store
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const facts = useGameStore(state => state.gameState.challenge?.facts || []);
   const handleCardClick = useGameStore(state => state.handleCardClick);
@@ -21,54 +16,43 @@ export function useFactCardStack() {
   const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
-  const { darkMode } = useTheme();
   
-  // Use our new unified responsive system
   const { 
     responsiveValues,
-    width,
-    height,
     breakpoint,
-    isLandscape,
-    isPortrait
+    getResponsiveValue
   } = useResponsive();
   
-  // DOM refs for accessing card stack elements
   const { registerElement, unregisterElement } = useDOMRefs();
   
-  // Filter out the currently viewed card from the stack unless it's returning
   const visibleStackFacts = useMemo(() => {
     return revealedFacts.filter(factIndex => 
       factIndex !== viewingFact || (isReturningToStack && !isCardAnimatingOut)
     );
   }, [revealedFacts, viewingFact, isReturningToStack, isCardAnimatingOut]);
   
-  // Card click handler that connects to game store
   const onCardClicked = (factIndex: number, cardIndex: number, e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation();
     }
     
-    // Don't allow clicking if we can't reveal a new clue
     if (!canRevealNewClue && !revealedFacts.includes(factIndex)) return;
     
-    // Get the exact position of the card element for touch or mouse
-    const cardElement = cardStackHook.cardRefs.current[cardIndex];
+    // NOTE: Direct DOM query is necessary here due to React ref timing issues
+    // The DOM refs are registered in useEffect, but the click handler needs immediate access
+    // to the card position. This ensures we get the correct source position for animations.
+    const cardElement = document.querySelector(`[data-card-index="${cardIndex}"]`);
     
     if (cardElement) {
-      // Get the bounding rectangle of the card
       const rect = cardElement.getBoundingClientRect();
       
-      // Calculate the center of the card
       const sourcePosition = {
         x: rect.left + rect.width / 2,
         y: rect.top + rect.height / 2
       };
       
-      // Pass the fact index and source position to the store action
       handleCardClick(factIndex, sourcePosition);
     } else {
-      // Fallback - use center of screen if no card element
       handleCardClick(factIndex, { 
         x: window.innerWidth / 2, 
         y: window.innerHeight / 2 
@@ -76,17 +60,14 @@ export function useFactCardStack() {
     }
   };
 
-  // Use our custom hook for card stack interactions and animations
   const cardStackHook = useCardStack(visibleStackFacts, onCardClicked);
   const centerIndex = Math.floor(visibleStackFacts.length / 2);
 
-  // Register card stack elements with DOM refs provider
   useEffect(() => {
     if (cardStackHook.stackRef.current) {
       registerElement('card-stack-container', cardStackHook.stackRef.current);
     }
     
-    // Register the rightmost card if it exists
     if (cardStackHook.cardRefs.current.length > 0) {
       const lastIndex = cardStackHook.cardRefs.current.length - 1;
       const rightmostCard = cardStackHook.cardRefs.current[lastIndex];
@@ -101,31 +82,11 @@ export function useFactCardStack() {
     };
   }, [cardStackHook.stackRef, cardStackHook.cardRefs, registerElement, unregisterElement]);
 
-  // Responsive card sizes using our new system - sized to fit within drop zone
   const cardSize = useMemo(() => {
-    // Use responsive values for card sizing
-    const baseSize = responsiveValues.cardSize;
-    
-    // Adjust for different breakpoints while maintaining aspect ratio
-    const aspectRatio = baseSize.height / baseSize.width;
-    
-    // Increased sizes since drop zone now has proper height
-    if (breakpoint === 'xs') {
-      return { width: Math.round(80 * 1.15), height: Math.round(80 * aspectRatio * 1.1) };
-    } else if (breakpoint === 'sm') {
-      return { width: Math.round(90 * 1.15), height: Math.round(90 * aspectRatio * 1.1) };
-    } else if (breakpoint === 'md') {
-      return { width: Math.round(100 * 1.15), height: Math.round(100 * aspectRatio * 1.1) };
-    } else if (breakpoint === 'lg') {
-      return { width: Math.round(110 * 1.15), height: Math.round(110 * aspectRatio * 1.1) };
-    } else {
-      return { width: Math.round(120 * 1.15), height: Math.round(120 * aspectRatio * 1.1) };
-    }
-  }, [responsiveValues.cardSize, breakpoint]);
+    return responsiveValues.cardSize;
+  }, [responsiveValues.cardSize]);
   
-  // Height of the container using responsive values
   const getContainerHeight = () => {
-    // Use responsive spacing for container height
     const baseHeight = responsiveValues.cardSize.height;
     const spacing = responsiveValues.spacing;
     
@@ -133,29 +94,10 @@ export function useFactCardStack() {
   };
 
   
-  // Determines if a card is clickable
   const isCardClickable = (factIndex: number) => {
     return canRevealNewClue || revealedFacts.includes(factIndex);
   };
   
-  // Animation variants for victory celebration
-  const victoryVariants = {
-    initial: { x: 0, y: 0, rotate: 0 },
-    animate: (i: number) => ({
-      x: i % 2 === 0 ? [0, -10, 0, 10, 0] : [0, 10, 0, -10, 0],
-      y: [0, -15, 0, -15, 0],
-      rotate: [0, -5, 5, -5, 0],
-      transition: {
-        duration: 2,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "reverse" as const,
-        delay: 0.5 // Add a small delay before starting the dance
-      }
-    })
-  };
-
-  // Generate card variants for each card in the stack
   const getCardVariants = (factIndex: number, index: number) => {
     const isHovered = cardStackHook.hoveredCardIndex === index && isCardClickable(factIndex);
     const cardPosition = calculateCardPosition(
@@ -166,23 +108,15 @@ export function useFactCardStack() {
       breakpoint
     );
     
-    // Scale hover effect based on responsive breakpoint
     const getHoverTranslateY = () => {
-      if (breakpoint === 'xs') return -15; // Less dramatic on small screens
-      if (breakpoint === 'sm') return -18;
-      if (breakpoint === 'md') return -20;
-      if (breakpoint === 'lg') return -25;
-      return -30; // Full effect on larger screens
+      return getResponsiveValue({ xs: -15, sm: -18, md: -20, lg: -25, xl: -30 });
     };
     
-    // Adjust translateY for hover
     const adjustedTranslateY = isHovered ? getHoverTranslateY() : cardPosition.translateY;
     
-    // Special animation for the last card if it's returning to the stack
     const isLastCard = index === visibleStackFacts.length - 1;
     const isReturningCard = isLastCard && cardStackHook.isCardReturning;
     
-    // Get animation variants for this card
     const animations = getCardAnimationVariants(
       cardStackHook.isInitialRender,
       isReturningCard,
@@ -231,7 +165,6 @@ export function useFactCardStack() {
     };
   };
 
-  // Generate container styles for the stack
   const containerStyles = {
     main: {
       minHeight: `${getContainerHeight()}px`, 
@@ -247,33 +180,16 @@ export function useFactCardStack() {
   };
 
   return {
-    // State and data
     facts,
     visibleStackFacts,
     isVictoryAnimationActive,
-    darkMode,
-    
-    // Card stack hook properties
     ...cardStackHook,
-    
-    // Calculated values
     cardSize,
     containerStyles,
-    
-    // Event handlers
     onCardClicked,
     isCardClickable,
-    
-    // Animation helpers
     getCardVariants,
-    victoryVariants,
-    
-    // Responsive values from our new system
     responsiveValues,
-    width,
-    height,
-    breakpoint,
-    isLandscape,
-    isPortrait
+    breakpoint
   };
 } 

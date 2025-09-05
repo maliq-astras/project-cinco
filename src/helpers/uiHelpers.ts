@@ -35,8 +35,8 @@ export function formatTime(seconds: number): string {
  * @returns Optimal fan angle
  */
 export function calculateFanAngle(cardCount: number, breakpoint: string): number {
-  // Base angle calculation
-  let baseAngle = Math.min(4, 12 / Math.max(1, cardCount));
+  // Base angle calculation - reduced from 4 to 3 degrees max
+  let baseAngle = Math.min(3, 10 / Math.max(1, cardCount));
   
   // Adjust for screen size based on breakpoint
   if (breakpoint === 'xs') {
@@ -58,32 +58,27 @@ export function calculateFanAngle(cardCount: number, breakpoint: string): number
  * @returns Spread factor for horizontal positioning
  */
 export function calculateSpreadFactor(cardCount: number, breakpoint: string): number {
-  // Ensure minimum spread even with few cards to avoid overlap
-  let baseSpread, minSpread;
+  // Get the current card size from the responsive system
+  // This ensures spreads are proportional to actual card dimensions
+  const cardSize = (window as any).__CARD_SIZE__ || { width: 120 }; // Fallback if not set
   
-  if (breakpoint === 'xs') {
-    // Very small mobile - ensure good spread even with 1-3 cards
-    minSpread = cardCount <= 3 ? 55 : 18;
-    baseSpread = Math.max(minSpread, 4.7 + (cardCount * 10));
-  } else if (breakpoint === 'sm') {
-    // Small mobile - ensure good spread even with 1-3 cards
-    minSpread = cardCount <= 3 ? 35 : 32;
-    baseSpread = Math.max(minSpread, 25 + (cardCount * 11));
-  } else if (breakpoint === 'md') {
-    // Mobile - ensure good spread even with 1-3 cards
-    minSpread = cardCount <= 3 ? 40 : 38;
-    baseSpread = Math.max(minSpread, 30 + (cardCount * 13));
-  } else if (breakpoint === 'lg') {
-    // Small tablets - ensure good spread even with 1-3 cards
-    minSpread = cardCount <= 3 ? 40 : 38;
-    baseSpread = Math.max(minSpread, 30 + (cardCount * 13));
+  // Calculate spread as a percentage of card width
+  let spreadPercentage;
+  if (cardCount === 2) {
+    spreadPercentage = 0.80; // 80% of card width - widest spread
+  } else if (cardCount === 3) {
+    spreadPercentage = 0.75; // 75% of card width - medium spread
+  } else if (cardCount === 4) {
+    spreadPercentage = 0.70; // 70% of card width - narrower spread
   } else {
-    // Default for larger screens - ensure good spread even with 1-3 cards
-    minSpread = cardCount <= 3 ? 45 : 42;
-    baseSpread = Math.max(minSpread, 32 + (cardCount * 16));
+    spreadPercentage = 0.65; // 65% of card width - narrowest spread
   }
   
-  return baseSpread;
+  // Calculate actual spread in pixels
+  const spread = Math.round(cardSize.width * spreadPercentage);
+  
+  // Ensure minimum spread for very small cards
+  return Math.max(20, spread);
 }
 
 /**
@@ -222,4 +217,19 @@ export function calculate3DTiltEffect(e: React.MouseEvent): { x: number, y: numb
   const y = (e.clientY - rect.top - centerY) / centerY; // -1 to 1
   
   return { x, y };
+}
+
+export function getCardPosition(
+  cardSize: { width: number; height: number },
+  index: number,
+  totalCards: number
+): React.CSSProperties {
+  return {
+    transformOrigin: 'center center',
+    left: `calc(50% - ${cardSize.width / 2}px)`,
+    top: `calc(50% - ${cardSize.height / 2}px)`,
+    width: `${cardSize.width}px`,
+    height: `${cardSize.height}px`,
+    zIndex: totalCards - index
+  };
 } 

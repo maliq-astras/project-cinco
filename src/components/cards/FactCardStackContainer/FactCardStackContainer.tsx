@@ -7,9 +7,6 @@ import { useFactCardStackContainer } from './useFactCardStackContainer';
 import styles from './FactCardStackContainer.module.css';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
 
-/**
- * Container component for FactCardStack
- */
 export const FactCardStackContainer: React.FC = () => {
   const { 
     shouldShowPlaceholder,
@@ -21,9 +18,6 @@ export const FactCardStackContainer: React.FC = () => {
     responsiveValues,
   } = useFactCardStackContainer();
 
-
-
-  // Create responsive container style
   const responsiveContainerStyle = {
     padding: `${responsiveValues.spacing}px`,
     marginBottom: `${responsiveValues.spacing}px`
@@ -47,7 +41,6 @@ export const FactCardStackContainer: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* FactCardStack - clean component, no drop zone logic */}
         <div className={styles.cardStackWrapper}>
           <div className={cardStackVisibilityClass} style={{ opacity: isHidden ? 0 : 1 }}>
             <FactCardStack key="main-stack" />

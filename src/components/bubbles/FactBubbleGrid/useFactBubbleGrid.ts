@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { Fact } from '@/types';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
@@ -13,55 +13,43 @@ interface BubbleGridItem {
   slotIndex: number;
 }
 
-/**
- * Hook for managing FactBubbleGrid logic and layout
- */
 export function useFactBubbleGrid() {
-  // Access state from the store
   const challenge = useGameStore(state => state.gameState.challenge);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   
-  // Use our new unified responsive system
   const { 
     responsiveValues,
-    width,
-    height,
-    breakpoint,
-    isLandscape,
-    isPortrait,
     willFit,
     availableContentHeight,
-    layoutMode,
-    isNarrow
+    layoutMode
   } = useResponsive();
   
-  // DOM refs for tutorial targeting
   const bubbleGridRef = useRef<HTMLDivElement>(null);
   const { registerElement, unregisterElement } = useDOMRefs();
   
-  // Always 8 grid items (4x2 layout)
   const totalSlots = 8;
 
-  // Calculate remaining facts count
   const remainingFactsCount = useMemo(() => {
     if (!challenge) return 0;
     return challenge.facts.length - revealedFacts.length;
   }, [challenge, revealedFacts]);
 
-  // Calculate grid items to display
   const gridItems = useMemo<BubbleGridItem[]>(() => {
-    return Array.from({ length: totalSlots }).map((_, slotIndex) => {
-      // Find the fact that should be in this position
-      const factIndex = challenge?.facts.findIndex((_, factIndex) => 
-        !revealedFacts.includes(factIndex) && 
-        challenge?.facts
-          .filter((_, i) => !revealedFacts.includes(i))
-          .indexOf(challenge?.facts[factIndex]) === slotIndex
-      );
+    if (!challenge) {
+      return Array.from({ length: totalSlots }, (_, slotIndex) => ({
+        key: `empty-${slotIndex}`,
+        isEmpty: true,
+        slotIndex
+      }));
+    }
+
+    const unrevealedFacts = challenge.facts.filter((_, index) => !revealedFacts.includes(index));
+
+    return Array.from({ length: totalSlots }, (_, slotIndex) => {
+      const fact = unrevealedFacts[slotIndex];
       
-      // If no fact should be in this position, it's an empty slot
-      if (factIndex === undefined || factIndex === -1) {
+      if (!fact) {
         return {
           key: `empty-${slotIndex}`,
           isEmpty: true,
@@ -69,8 +57,7 @@ export function useFactBubbleGrid() {
         };
       }
       
-      // Otherwise, it's a fact bubble
-      const fact = challenge?.facts[factIndex];
+      const factIndex = challenge.facts.indexOf(fact);
       const category = fact?.category ? fact.category : challenge?.category;
       
       return {
@@ -84,7 +71,6 @@ export function useFactBubbleGrid() {
     });
   }, [challenge, revealedFacts]);
   
-  // Register grid container once
   useEffect(() => {
     if (bubbleGridRef.current) {
       registerElement('bubble-grid', bubbleGridRef.current);
@@ -94,7 +80,6 @@ export function useFactBubbleGrid() {
     };
   }, [registerElement, unregisterElement]);
 
-  // Animation variants for the bubbles
   const animationProps = (slotIndex: number) => ({
     initial: { scale: 0.9, opacity: 0 },
     animate: { 
@@ -108,7 +93,7 @@ export function useFactBubbleGrid() {
       duration: isVictoryAnimationActive ? 0.5 : undefined,
       stiffness: isVictoryAnimationActive ? undefined : 300,
       damping: isVictoryAnimationActive ? undefined : 25,
-      delay: isVictoryAnimationActive ? slotIndex * 0.15 : 0 // Staggered delay
+      delay: isVictoryAnimationActive ? slotIndex * 0.15 : 0
     }
   });
   
@@ -117,20 +102,11 @@ export function useFactBubbleGrid() {
     bubbleSize: responsiveValues.bubbleSize,
     gapSize: responsiveValues.bubbleSpacing,
     animationProps,
-    isVictoryAnimationActive,
     bubbleGridRef,
     remainingFactsCount,
-    
-    // Responsive values from our new system
     responsiveValues,
-    width,
-    height,
-    breakpoint,
-    isLandscape,
-    isPortrait,
     willFit,
     availableContentHeight,
-    layoutMode,
-    isNarrow
+    layoutMode
   };
 } 

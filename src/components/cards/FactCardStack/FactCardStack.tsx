@@ -4,20 +4,13 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FactCardBack from '../FactCardBack';
 import { useFactCardStack } from './useFactCardStack';
-import { factCardStackStyles, getCardClassNames } from './FactCardStack.styles';
+import { getCardPosition } from '@/helpers/uiHelpers';
+import styles from './FactCardStack.module.css';
 
-/**
- * Component that displays a stack of revealed fact cards
- * Supports interactive hover effects and animations
- */
 export default function FactCardStack() {
   const {
-    // State and data
     facts,
     visibleStackFacts,
-    darkMode,
-    
-    // Card interaction handlers
     handleMouseMove,
     handleMouseLeave,
     handleTouchStart,
@@ -26,29 +19,16 @@ export default function FactCardStack() {
     stackRef,
     cardRefs,
     setHoveredCardIndex,
-    
-    // Computed values
     cardSize,
     containerStyles,
-    
-    // Event handlers
     onCardClicked,
     isCardClickable,
-    
-    // Animation helpers
-    getCardVariants,
-    
-    // Responsive values from our new system
-    responsiveValues,
-    breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait
+    getCardVariants
   } = useFactCardStack();
 
   return (
     <div 
-      className={factCardStackStyles.container}
+      className={styles.container}
       style={containerStyles.main}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -58,7 +38,7 @@ export default function FactCardStack() {
       ref={stackRef}
     >
       <motion.div 
-        className={factCardStackStyles.innerContainer}
+        className={styles.innerContainer}
         style={containerStyles.inner}
       >
         <AnimatePresence mode="popLayout">
@@ -76,18 +56,18 @@ export default function FactCardStack() {
                 onClick={(e) => onCardClicked(factIndex, i, e)}
                 onMouseEnter={() => isCardClickable(factIndex) && setHoveredCardIndex(i)}
                 onMouseLeave={() => setHoveredCardIndex(null)}
-                className={getCardClassNames({
-                  isClickable: cardVariantInfo.isClickable,
-                  shadowClass: cardVariantInfo.shadowClass,
-                  isDarkMode: darkMode
-                })}
+                className={[
+                  styles.card,
+                  cardVariantInfo.isClickable ? `${styles.cardClickable} card-hover-glow` : styles.cardNonClickable,
+                  cardVariantInfo.shadowClass
+                ].join(' ')}
                 custom={i}
                 variants={cardVariantInfo.variants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 transition={cardVariantInfo.transitionSettings}
-                style={factCardStackStyles.getCardPosition(
+                style={getCardPosition(
                   cardSize,
                   i,
                   visibleStackFacts.length

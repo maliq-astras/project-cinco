@@ -19,10 +19,6 @@ interface FactBubbleProps {
   slotIndex?: number;
 }
 
-/**
- * Component that displays a circular bubble representing a fact type
- * Supports interactions, animations, and responsive design
- */
 export default function FactBubble({ 
   factType, 
   isRevealed, 
@@ -37,31 +33,18 @@ export default function FactBubble({
   const setIsDragging = useDragState(state => state.setIsDragging);
   
   const {
-    // State
     isPopping,
     isClickable,
-    
-    // UI Elements
     icon,
     particles,
     colors,
-    
-    // Animation
     bubbleAnimation,
-    
-    // Handlers
     handleDragStart,
     handleDragEnd,
     mouseHandlers,
-    
-    // Styling
     getIconFilter,
     popPosition,
-    
-    // DOM refs
     bubbleRef,
-    
-    // Responsive values from our new system
     responsiveValues
   } = useFactBubble({
     factType,
@@ -71,21 +54,16 @@ export default function FactBubble({
     slotIndex
   });
 
-  // Get appropriate classNames using CSS modules
   const bubbleClassNames = isClickable ? styles.bubbleClickable : styles.bubbleNotClickable;
-
-  // Get translated fact type
   const translatedFactType = getFactTypeName(factType, t);
 
-  // Handle drag start - now uses the hook's handleDragStart
   const onDragStart = () => {
     if (isClickable) {
       setIsDragging(true);
-      handleDragStart(); // This will set hoveredFact to show category name
+      handleDragStart();
     }
   };
 
-  // Create responsive style with bubble size from our new system
   const responsiveStyle = {
     ...style,
     '--bubble-size': `${responsiveValues.bubbleSize}px`,

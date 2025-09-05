@@ -10,10 +10,6 @@ interface DropZoneIndicatorProps {
   className?: string;
 }
 
-/**
- * Component that displays a visual indicator for the drop zone
- * Appears when a bubble is being dragged to help users understand where to drop it
- */
 export default function DropZoneIndicator({ 
   isVisible,
   className = ''
@@ -23,33 +19,20 @@ export default function DropZoneIndicator({
   return (
     <motion.div
       className={`${styles.container} ${className}`}
-      initial={{ opacity: 0, scale: 0.98 }}
+      initial={{ opacity: 0, scale: 0.98, y: 5 }}
       animate={{ 
         opacity: isVisible ? 1 : 0,
-        scale: isVisible ? 1 : 0.98
+        scale: isVisible ? 1 : 0.98,
+        y: isVisible ? 0 : 5
       }}
       transition={{ 
         duration: 0.2,
         ease: "easeOut"
       }}
     >
-      <motion.div
-        className={styles.textContainer}
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ 
-          opacity: isVisible ? 1 : 0,
-          y: isVisible ? 0 : 5
-        }}
-        transition={{ 
-          duration: 0.2,
-          delay: 0.1,
-          ease: "easeOut"
-        }}
-      >
-        <p className={styles.text}>
-          {t('game.actions.dropToReveal', 'Drop here to reveal')}
-        </p>
-      </motion.div>
+      <p className={styles.text}>
+        {t('game.actions.dropToReveal', 'Drop here to reveal')}
+      </p>
     </motion.div>
   );
 } 

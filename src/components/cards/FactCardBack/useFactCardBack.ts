@@ -12,9 +12,6 @@ interface UseFactCardBackProps {
   inStack: boolean;
 }
 
-/**
- * Hook for managing FactCardBack styles, classes, and icon logic
- */
 export function useFactCardBack({ 
   fact,
   size,
@@ -22,60 +19,35 @@ export function useFactCardBack({
   inStack 
 }: UseFactCardBackProps) {
   const { colors } = useTheme();
-  const { breakpoint } = useResponsive();
+  const { breakpoint, getResponsiveValue } = useResponsive();
   
-  // Build class string with conditional classes
   const containerClasses = useMemo(() => {
-    const baseClass = styles.container;
-    const cardTypeClass = styles.factCard; 
-    const revealedClass = isRevealed ? styles.revealed : '';
-    const stackClass = inStack ? styles.inStack : '';
-    
-    return `${baseClass} ${cardTypeClass} ${revealedClass} ${stackClass}`.trim();
-  }, [isRevealed, inStack]);
+    const classes = [styles.container, styles.factCard];
+    if (inStack) classes.push(styles.inStack);
+    return classes.join(' ');
+  }, [inStack]);
   
-  // Get theme-specific background style for fact cards
-  const backgroundStyle = useMemo(() => {
-    return {
-      '--fact-card-color': `var(--color-${colors.primary})`
-    } as React.CSSProperties;
-  }, [colors.primary]);
+  const backgroundStyle = useMemo(() => ({
+    '--fact-card-color': `var(--color-${colors.primary})`
+  } as React.CSSProperties), [colors.primary]);
   
-  // Icon logic
   const category = useMemo(() => {
-    return fact.category ? 
-      (typeof fact.category === 'string' ? fact.category : fact.category.toString()) : 
-      'countries';
+    if (!fact.category) return 'countries';
+    return typeof fact.category === 'string' ? fact.category : fact.category.toString();
   }, [fact.category]);
   
   const customIconSize = useMemo(() => {
-    // Responsive icon sizes based on breakpoint and card size
+    // Use the getResponsiveValue helper from useResponsive to eliminate duplication
     if (size === 'small') {
-      // Small cards (in stack) - responsive sizing
-      switch (breakpoint) {
-        case 'xs': return 52;
-        case 'sm': return 54;
-        case 'md': return 56;
-        case 'lg': return 58;
-        case 'xl': return 60;
-        default: return 56;
-      }
+      return getResponsiveValue({ xs: 52, sm: 54, md: 56, lg: 58, xl: 60 });
     } else {
-      // Large cards (opened) - responsive sizing
-      switch (breakpoint) {
-        case 'xs': return 80;
-        case 'sm': return 84;
-        case 'md': return 88;
-        case 'lg': return 92;
-        case 'xl': return 96;
-        default: return 88;
-      }
+      return getResponsiveValue({ xs: 80, sm: 84, md: 88, lg: 92, xl: 96 });
     }
-  }, [size, breakpoint]);
+  }, [size, getResponsiveValue]);
   
-  const icon = useMemo(() => {
-    return getFactIcon(fact.factType, isRevealed, customIconSize, category.toLowerCase());
-  }, [fact.factType, isRevealed, customIconSize, category]);
+  const icon = useMemo(() => 
+    getFactIcon(fact.factType, isRevealed, customIconSize, category.toLowerCase()),
+  [fact.factType, isRevealed, customIconSize, category]);
   
   const iconStyle = useMemo(() => ({
     filter: "brightness(0) invert(1)",

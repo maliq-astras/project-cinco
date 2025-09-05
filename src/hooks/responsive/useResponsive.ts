@@ -153,17 +153,28 @@ export const useResponsive = () => {
       // Calculate optimal card dimensions (maintaining 2:3 aspect ratio)
       const aspectRatio = 1.5; // height / width = 3/2
       
-      // Start with width-based sizing (cards are typically width-constrained)
-      const maxCardWidth = Math.min(availableWidth * 0.6, 140); // 60% of available width, max 140px
-      let cardWidth = Math.max(55, maxCardWidth);
-      let cardHeight = cardWidth * aspectRatio;
-      
-      // Check if height fits, if not, constrain by height
-      const maxCardHeight = Math.min(availableHeight * 0.5, 210); // 50% of available height, max 210px
-      if (cardHeight > maxCardHeight) {
-        cardHeight = Math.max(83, maxCardHeight); // Min 83px height
-        cardWidth = Math.max(55, cardHeight / aspectRatio);
+      // Responsive card sizing - switch case for clarity
+      let cardPercentage;
+      switch (true) {
+        case isMobileLayoutDetected && height < 940:
+          cardPercentage = 0.25; 
+          break;
+        case isMobileLayoutDetected && width < 560:
+          cardPercentage = 0.25; 
+          break;
+        case isMobileLayoutDetected && width >= 800:
+          cardPercentage = 0.4; // Wide mobile
+          break;
+        case !isMobileLayoutDetected && width < 1000:
+          cardPercentage = 0.28; // Narrow desktop
+          break;
+        default:
+          cardPercentage = 0.45; // Standard desktop
+          break;
       }
+      const maxCardWidth = Math.min(availableWidth * cardPercentage, 130);
+      const cardWidth = Math.max(55, maxCardWidth);
+      const cardHeight = cardWidth * aspectRatio;
       
       return {
         width: Math.round(cardWidth),
@@ -175,6 +186,11 @@ export const useResponsive = () => {
     
     // Use card size directly from calculation
     const cardSize = baseCardSize;
+    
+    // Set card size globally so spread calculations can access it
+    if (typeof window !== 'undefined') {
+      (window as any).__CARD_SIZE__ = cardSize;
+    }
 
     return {
       // Bubble sizes - dynamic and layout-aware
@@ -192,9 +208,9 @@ export const useResponsive = () => {
         breakpoint
       ),
 
-      // Container heights - more aggressive for limited space
+      // Container heights - increased to better utilize available space
       containerHeight: getResponsiveValue(
-        { xs: 120, sm: 130, md: 140, lg: 150, xl: 160 },
+        { xs: 180, sm: 200, md: 220, lg: 240, xl: 260 },
         breakpoint
       ),
 
