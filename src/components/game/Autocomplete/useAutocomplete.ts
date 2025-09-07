@@ -30,7 +30,6 @@ export const useAutocomplete = ({
 }: UseAutocompleteProps) => {
   const { language } = useLanguage();
   
-  // Use our new unified responsive system
   const { 
     responsiveValues,
     width,
@@ -46,7 +45,6 @@ export const useAutocomplete = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Get suggestions using frontend helper
   const getSuggestions = (searchQuery: string) => {
     if (!searchQuery || searchQuery.length < 2) {
       setSuggestions([]);
@@ -57,13 +55,13 @@ export const useAutocomplete = ({
       const suggestionTexts = getAutocompleteSuggestions(
         category,
         searchQuery,
-        5, // max 5 suggestions
+        5, 
         previousGuesses,
-        language as Language // Convert to Language type
+        language as Language 
       );
       
       const suggestionObjects = suggestionTexts
-        .filter((text: string) => text.toLowerCase() !== searchQuery.toLowerCase()) // Filter out exact matches
+        .filter((text: string) => text.toLowerCase() !== searchQuery.toLowerCase()) 
         .map((text: string, index: number) => ({
           text,
           id: `suggestion-${index}`
@@ -76,7 +74,6 @@ export const useAutocomplete = ({
     }
   };
 
-  // Track input focus so we only show suggestions while actively typing/focused
   useEffect(() => {
     const el = inputRef.current;
     if (!el) return;
@@ -89,7 +86,6 @@ export const useAutocomplete = ({
     };
     el.addEventListener('focus', handleFocus);
     el.addEventListener('blur', handleBlur);
-    // Initialize current focus state
     setInputFocused(document.activeElement === el);
     return () => {
       el.removeEventListener('focus', handleFocus);
@@ -97,7 +93,6 @@ export const useAutocomplete = ({
     };
   }, [inputRef, onSelectionChange]);
 
-  // Debounced effect for getting suggestions (only when focused and visible)
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -109,7 +104,7 @@ export const useAutocomplete = ({
       } else {
         setSuggestions([]);
       }
-    }, 150); // 150ms debounce (faster since no API call)
+    }, 150); // 150ms debounce  
 
     return () => {
       if (debounceRef.current) {
@@ -118,7 +113,6 @@ export const useAutocomplete = ({
     };
   }, [query, category, isVisible, inputFocused, previousGuesses, language]);
 
-  // Reset selected index when suggestions change and notify parent
   useEffect(() => {
     // Only reset if suggestions actually changed content, not just re-rendered
     setSelectedIndex(prev => {
@@ -126,18 +120,17 @@ export const useAutocomplete = ({
       if (prev >= 0 && prev < suggestions.length) {
         return prev;
       }
-      // Otherwise reset to -1
+    
       return -1;
     });
     onSelectionChange?.(false);
-  }, [suggestions.length, onSelectionChange]); // Only depend on length, not the entire suggestions array
+    }, [suggestions.length, onSelectionChange]); 
 
-  // Notify parent when selection changes
+  // Only depend on length, not the entire suggestions array
   useEffect(() => {
     onSelectionChange?.(selectedIndex >= 0);
   }, [selectedIndex, onSelectionChange]);
 
-  // Handle keyboard navigation on the input element
   useEffect(() => {
     const inputElement = inputRef.current;
     if (!inputElement) return;
@@ -178,25 +171,23 @@ export const useAutocomplete = ({
     return () => inputElement.removeEventListener('keydown', handleKeyDown as EventListener);
   }, [isVisible, suggestions, selectedIndex, onSuggestionClick, inputRef]);
 
-  // Position the autocomplete above the input using responsive values
   const getPosition = () => {
     if (!inputRef.current) return {};
     
     const inputRect = inputRef.current.getBoundingClientRect();
     const isSmallScreen = breakpoint === 'xs' || breakpoint === 'sm';
     
-    // Calculate responsive width based on breakpoint
     const desktopWidth = Math.max(inputRect.width, 320);
-    const mobileWidth = width - (responsiveValues.spacing * 2); // Account for margins
+    const mobileWidth = width - (responsiveValues.spacing * 2); 
     
     const leftPosition = isSmallScreen 
       ? responsiveValues.spacing 
-      : inputRect.left - (desktopWidth - inputRect.width) / 2; // Center the wider box above the input
+      : inputRect.left - (desktopWidth - inputRect.width) / 2; 
     
     return {
       position: 'fixed' as const,
       left: leftPosition,
-      bottom: height - inputRect.top + 6, // attach to the top of the textarea since it will translateY upwards
+      bottom: height - inputRect.top + 6, 
       width: isSmallScreen ? mobileWidth : desktopWidth,
       zIndex: 58
     };
@@ -210,8 +201,6 @@ export const useAutocomplete = ({
     setSelectedIndex,
     setSuggestions,
     getPosition,
-    
-    // Responsive values from our new system
     responsiveValues,
     width,
     height,

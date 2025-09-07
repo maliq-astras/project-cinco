@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGuessProgressBar } from './useGuessProgressBar';
+import { useGuessProgressBar } from './hooks/useGuessProgressBar';
 import styles from './GuessProgressBar.module.css';
 
 /**
@@ -10,7 +10,6 @@ import styles from './GuessProgressBar.module.css';
  * Shows sparks animation when all guesses are used
  */
 export default function GuessProgressBar() {
-  // Use comprehensive hook for all logic and state
   const {
     // State
     animatedCount,

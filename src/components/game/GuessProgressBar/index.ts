@@ -1,3 +1,3 @@
 export { default } from './GuessProgressBar';
-export * from './useGuessProgressBar';
-export * from './useGuessProgress'; 
+export { useGuessProgressBar } from './hooks/useGuessProgressBar';
+export { useGuessProgress } from './hooks/useGuessProgress'; 

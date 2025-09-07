@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useImperativeHandle, Ref, useState, useEffect } from 'react';
+import { FormEvent, useRef, useImperativeHandle, Ref, useState, useEffect, RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,7 +11,29 @@ export interface GameControlsHandle {
   focusInput: () => void;
 }
 
-export const useGameControls = (ref: Ref<GameControlsHandle>) => {
+interface UseGameControlsReturn {
+  inputBarRef: RefObject<InputBarHandle | null>;
+  timeRemaining: number;
+  isVictoryAnimationActive: boolean;
+  colors: { primary: string };
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleSkip: () => void;
+  getInputPlaceholder: () => string;
+  isInputDisabled: () => boolean;
+  isSkipDisabled: () => boolean;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  isSkipConfirmActive: boolean;
+  isTouchDevice: boolean;
+  duplicateErrorRef: RefObject<HTMLDivElement | null>;
+  skipMessageRef: RefObject<HTMLDivElement | null>;
+  responsiveValues: any;
+  breakpoint: string;
+  isLandscape: boolean;
+  isPortrait: boolean;
+}
+
+export const useGameControls = (ref: Ref<GameControlsHandle>): UseGameControlsReturn => {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState('');
   const [isSkipConfirmActive, setIsSkipConfirmActive] = useState(false);
@@ -19,33 +41,22 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
-  const canRevealNewClue = useGameStore(state => state.canRevealNewClue);
   const canMakeGuess = useGameStore(state => state.canMakeGuess);
   const submitGuess = useGameStore(state => state.submitGuess);
-  const hardMode = useGameStore(state => state.hardMode);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const { colors } = useTheme();
   
-  // Use our new unified responsive system
   const { 
     responsiveValues,
-    width,
-    height,
     breakpoint,
     isLandscape,
     isPortrait
   } = useResponsive();
-  
-  // Create refs for toast elements
   const duplicateErrorRef = useRef<HTMLDivElement>(null);
   const skipMessageRef = useRef<HTMLDivElement>(null);
-  
-  // Create a ref for the InputBar component
   const inputBarRef = useRef<InputBarHandle>(null);
-  
-  // Expose the focusInput method to parent components
   useImperativeHandle(ref, () => ({
     focusInput: () => {
       if (inputBarRef.current && !isInputDisabled()) {
@@ -54,12 +65,11 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     }
   }));
 
-  // Reset skip confirmation after a delay
   useEffect(() => {
     if (isSkipConfirmActive) {
       const timer = setTimeout(() => {
         setIsSkipConfirmActive(false);
-      }, 2000); // Reset after 2 seconds
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isSkipConfirmActive]);
@@ -83,14 +93,12 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
       return;
     }
     
-    // Set processing state immediately
     useGameStore.setState({ isProcessingGuess: true, hasMadeGuess: true });
     setInputValue('');
-    setHasUserInput(false); // Reset user input flag so context area becomes visible again
+    setHasUserInput(false); 
     submitGuess(guess);
   };
 
-  // Handle skip button click - now with confirmation
   const handleSkip = () => {
     if (!hasSeenClue || !canMakeGuess || isProcessingGuess) return;
     
@@ -99,13 +107,11 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
       return;
     }
 
-    // Second click - actually skip
     setIsSkipConfirmActive(false);
     submitGuess("___SKIPPED___");
     showToastMessageFromElement(skipMessageRef.current);
   };
 
-  // Generate a descriptive message based on the game state
   const getInputPlaceholder = () => {
     if (!hasSeenClue) {
       return t('game.input.disabled');
@@ -114,12 +120,10 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     return t('game.input.placeholder');
   };
 
-  // Determine if input should be disabled
   const isInputDisabled = () => {
     return !hasSeenClue || !canMakeGuess || isProcessingGuess;
   };
 
-  // Determine if skip button should be disabled
   const isSkipDisabled = () => {
     return !hasSeenClue || !canMakeGuess || isProcessingGuess;
   };
@@ -140,11 +144,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>) => {
     isTouchDevice,
     duplicateErrorRef,
     skipMessageRef,
-    
-    // Responsive values from our new system
     responsiveValues,
-    width,
-    height,
     breakpoint,
     isLandscape,
     isPortrait

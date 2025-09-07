@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { finalFiveCardStyles } from './FinalFiveCard.styles';
 import { useResponsive } from '@/hooks/responsive';
 
 interface UseFinalFiveCardProps {
@@ -23,7 +22,6 @@ interface UseFinalFiveCardReturn {
   handleMouseEnter: () => void;
   handleMouseLeave: () => void;
   getBackCardStyle: (backBg: string, textColor: string) => React.CSSProperties;
-  // Responsive utilities
   width: number;
   height: number;
   breakpoint: string;
@@ -41,11 +39,9 @@ export function useFinalFiveCard({
   frontBg,
   isCorrect = false
 }: UseFinalFiveCardProps): UseFinalFiveCardReturn {
-  // Local state for interaction
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
   
-  // Use our new responsive system
   const { 
     width,
     height,
@@ -56,20 +52,13 @@ export function useFinalFiveCard({
     responsiveValues 
   } = useResponsive();
   
-  // Check if time ran out - happens when game is over but no option was selected
   const timeRanOut = isGameOver && !selectedOption;
   
-  // Check if this card is selected or should be faded
   const isSelected = selectedOption === option;
   const shouldFadeOut = (selectedOption !== null && !isSelected) || timeRanOut;
   
-  // Determine final visibility
-  // - Selected options stay visible to show result (highlighted or X)
-  // - Non-selected options fade out permanently
-  // - All options fade out when time runs out
   const finalOpacity = shouldFadeOut ? 0 : 1;
 
-  // Event handlers
   const handleMouseDown = () => {
     if (!isGameOver && allCardsFlipped && !selectedOption) {
       setIsActive(true);
@@ -95,9 +84,7 @@ export function useFinalFiveCard({
     }
   };
   
-  // Get the appropriate back card style
   const getBackCardStyle = (backBg: string, textColor: string): React.CSSProperties => {
-    // Base styles
     const baseStyle = {
       backgroundColor: backBg,
       color: textColor,
@@ -112,21 +99,23 @@ export function useFinalFiveCard({
       cursor: (!isGameOver && allCardsFlipped && !selectedOption) ? "pointer" : "default",
       transform: "rotateY(180deg)",
       WebkitTransform: "rotateY(180deg)",
-      opacity: shouldFadeOut ? 0.4 : 1 // Initial fade for animation smoothness
+      opacity: shouldFadeOut ? 0.4 : 1 
     };
     
-    // Add interactive styles only if not game over and all cards flipped and no selection yet
     if (!isGameOver && allCardsFlipped && !selectedOption) {
       if (isActive) {
         return {
           ...baseStyle,
-          ...finalFiveCardStyles.interactive.active
+          transform: "rotateY(180deg) scale(0.95)",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         };
       } else if (isHovered) {
-        const hoverStyles = finalFiveCardStyles.interactive.hover(frontBg);
         return {
           ...baseStyle,
-          ...hoverStyles
+          boxShadow: `0 8px 16px rgba(0,0,0,0.2), 0 0 8px ${frontBg}80`,
+          transform: "rotateY(180deg) scale(1.03)",
+          cursor: 'pointer',
+          borderColor: `${frontBg}`
         };
       }
     }
@@ -146,7 +135,6 @@ export function useFinalFiveCard({
     handleMouseEnter,
     handleMouseLeave,
     getBackCardStyle,
-    // Export responsive utilities
     width,
     height,
     breakpoint,

@@ -34,7 +34,6 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
 
   const { t } = useTranslation();
 
-  // Transform the message into JSX by wrapping "FINAL 5" in a styled span
   const messageJSX = message.split('FINAL 5').map((part, i, arr) => (
     <React.Fragment key={i}>
       {part}
@@ -84,7 +83,6 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
             </motion.button>
           )}
           
-          {/* Loading indicator */}
           {isLoading && (
             <motion.div
               className={styles.loadingContainer}
@@ -95,7 +93,7 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
             >
               <div className={styles.loadingSpinnerContainer}>
                 <svg 
-                  className="animate-spin h-10 w-10"
+                  className={`animate-spin ${styles.loadingSpinnerIcon}`}
                   style={{ color: `var(--color-${colors.primary})` }}
                   xmlns="http://www.w3.org/2000/svg" 
                   fill="none" 

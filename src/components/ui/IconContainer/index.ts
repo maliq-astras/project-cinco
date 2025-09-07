@@ -1,4 +1,4 @@
 export { default } from './IconContainer';
-export * from './useIconContainer';
-export * from './useIconStyles';
-export * from './useIconSize'; 
+export * from './hooks/useIconContainer';
+export * from './hooks/useIconStyles';
+export * from './hooks/useIconSize'; 

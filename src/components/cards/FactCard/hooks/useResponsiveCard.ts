@@ -3,7 +3,7 @@ import { useState, useEffect, RefObject } from 'react';
 export function useResponsiveCard(cardRef: RefObject<HTMLDivElement | null>) {
   const [iconSize, setIconSize] = useState(40);
 
-  // Dynamically adjust icon size based on card size
+  
   useEffect(() => {
     const updateIconSize = () => {
       if (cardRef.current) {

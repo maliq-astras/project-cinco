@@ -12,9 +12,6 @@ interface GameButtonsProps {
   isTouchDevice: boolean;
 }
 
-/**
- * Game action buttons component (info and skip buttons)
- */
 export default function GameButtons({
   colors,
   isSkipDisabled,
@@ -25,7 +22,6 @@ export default function GameButtons({
   const { t } = useTranslation();
   const {
     controlsRef,
-    // Animation configurations
     buttonAnimation,
     disabledButtonAnimation,
     tooltipAnimation
@@ -43,7 +39,6 @@ export default function GameButtons({
         '--tooltip-color': `var(--color-${colors.primary})`
       } as React.CSSProperties}
     >
-      {/* Info button */}
       <motion.button 
         className={styles.controlButton}
         {...buttonAnimation}
@@ -57,8 +52,6 @@ export default function GameButtons({
       </motion.button>
       
       <div className={styles.divider} />
-      
-      {/* Skip button */}
       <div className="relative">
         <motion.button 
           className={`${styles.controlButton} ${isSkipConfirmActive ? styles.active : ''}`}

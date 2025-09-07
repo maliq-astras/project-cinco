@@ -1,10 +1,9 @@
 import React, { forwardRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import Autocomplete from '../Autocomplete';
 import GuessProgressBar from '../GuessProgressBar';
-import { useAutoGrowTextarea } from './useAutoGrowTextarea';
-import { inputBarStyles } from './InputBar.styles';
-import { useInputBar, InputBarHandle } from './useInputBar';
+import { useAutoGrowTextarea } from './hooks/useAutoGrowTextarea';
+import styles from './InputBar.module.css';
+import { useInputBar, InputBarHandle } from './hooks/useInputBar';
 import { CategoryType } from '@/types';
 
 interface InputBarProps {
@@ -35,28 +34,16 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
   isAutocompleteEnabled,
   setHasUserInput
 }, ref) => {
-  // Translation hook for potential future use
-  useTranslation();
-  
   const {
-    // Refs
     inputRef,
     progressRef,
     formRef,
     textareaShellRef,
-    
-    // Event handlers
     handleSuggestionClick,
     handleFormSubmit,
     handleInputChange,
     handleKeyDown,
-    
-    // Responsive values from our new system
-    responsiveValues,
-    breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait
+    responsiveValues
   } = useInputBar({
     ref,
     setInputValue,
@@ -75,14 +62,13 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
     { maxHeightPx: maxHeight }
   );
 
-  // Create responsive container style
   const responsiveContainerStyle = {
     gap: `${responsiveValues.spacing * 0.5}px`
   };
 
   return (
-    <div className={inputBarStyles.container} style={responsiveContainerStyle}>
-      <div ref={textareaShellRef} className={inputBarStyles.inputShell}>
+    <div className={styles.container} style={responsiveContainerStyle}>
+      <div ref={textareaShellRef} className={styles.inputShell}>
         <form ref={formRef} onSubmit={handleFormSubmit}>
           {/* Autocomplete suggestions */}
           <Autocomplete
@@ -98,8 +84,18 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
           <textarea
             id="game-input"
             ref={inputRef}
-            className={`${inputBarStyles.input(isInputDisabled())} ${inputBarStyles.inputPosition}`}
-            style={inputBarStyles.inputWithTheme(colors.primary)}
+            className={`${styles.inputBase} ${isInputDisabled() ? styles.inputDisabled : styles.inputEnabled} ${styles.hideScrollbar} ${styles.inputPosition}`}
+            style={{
+              "--theme-color": `var(--color-${colors.primary})`,
+              transitionProperty: "height, transform",
+              transitionDuration: "200ms", 
+              transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+              willChange: "height, transform",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "translateY(0)",
+              overflowY: "hidden"
+            }}
             disabled={isInputDisabled()}
             autoComplete="off"
             value={inputValue}
@@ -110,7 +106,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
           />
           <button
             type="submit"
-            className={inputBarStyles.submitButton}
+            className={styles.submitButton}
             style={{
               color: `var(--color-${colors.primary})`,
               backgroundColor: `var(--color-${colors.primary}10)`,
@@ -123,7 +119,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
         </form>
       </div>
       
-      <div className={inputBarStyles.progressContainer}>
+      <div className={styles.progressContainer}>
         <div ref={progressRef} id="game-progress">
           <GuessProgressBar />
         </div>

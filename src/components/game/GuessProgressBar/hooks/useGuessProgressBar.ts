@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGuessProgress } from './useGuessProgress';
-import { getGradientBackground, getBottomShadowStyle } from '@/helpers/guessProgressBarHelpers';
-import styles from './GuessProgressBar.module.css';
+import { getGradientBackground, getBottomShadowStyle } from '../helpers';
+import styles from '../GuessProgressBar.module.css';
 
 interface UseGuessProgressBarProps {
   maxGuesses?: number;
@@ -19,7 +19,6 @@ export function useGuessProgressBar({
   const guesses = useGameStore(state => state.gameState.guesses);
   const { colors } = useTheme();
   
-  // Use custom hooks for progress and animations
   const { 
     wrongGuessCount,
     animatedCount,
@@ -60,7 +59,6 @@ export function useGuessProgressBar({
     return `${styles.progressBar} ${isShaking ? styles.shake : ''}`;
   }, [isShaking]);
   
-  // Create array for segments
   const segments = useMemo(() => {
     return Array.from({ length: maxGuesses }).map((_, index) => ({
       index,

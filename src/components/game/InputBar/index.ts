@@ -1,2 +1,2 @@
 export { default } from './InputBar';
-export type { InputBarHandle } from './useInputBar';
+export type { InputBarHandle } from './hooks/useInputBar';

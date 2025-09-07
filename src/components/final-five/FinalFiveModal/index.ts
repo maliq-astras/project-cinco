@@ -1,3 +1,2 @@
 export { default } from './FinalFiveModal';
-export { useFinalFiveModal } from './useFinalFiveModal';
-export * from './FinalFiveModal.styles'; 
+export { useFinalFiveModal } from './useFinalFiveModal'; 

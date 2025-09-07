@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { iconImageStyles, getIconContainerBgStyle, iconContainerStyles } from './IconContainer.styles';
+import { iconImageStyles, getIconContainerBgStyle, iconContainerStyles } from '../IconContainer.styles';
 
 interface UseIconStylesProps {
   isRevealed: boolean;

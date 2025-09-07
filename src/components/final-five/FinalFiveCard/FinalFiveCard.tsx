@@ -3,8 +3,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Righteous } from 'next/font/google';
-import { finalFiveCardStyles } from './FinalFiveCard.styles';
+import styles from './FinalFiveCard.module.css';
 import { useFinalFiveCard } from './useFinalFiveCard';
+import { getFinalFiveCardDimensions } from '../shared/helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -23,9 +24,6 @@ interface FinalFiveCardProps {
   selectedOption: string | null;
 }
 
-/**
- * Individual card for Final Five options
- */
 export default function FinalFiveCard({
   option,
   index,
@@ -60,13 +58,12 @@ export default function FinalFiveCard({
     isCorrect
   });
 
-  // Get dimensions for the card based on responsive values
-  const cardDimensions = finalFiveCardStyles.getDimensions(width, height, isLandscape);
+  const cardDimensions = getFinalFiveCardDimensions(width, height, isLandscape);
 
   return (
     <motion.div 
       key={`option-${index}`} 
-      className={finalFiveCardStyles.container}
+      className={styles.container}
       animate={{ 
         opacity: shouldFadeOut ? 0 : 1,
         scale: shouldFadeOut ? 0.8 : 1
@@ -80,7 +77,7 @@ export default function FinalFiveCard({
       }}
     >
       <motion.div
-        className={finalFiveCardStyles.wrapper}
+        className={styles.wrapper}
         initial={{ rotateY: 0 }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{
@@ -93,26 +90,21 @@ export default function FinalFiveCard({
           transformStyle: "preserve-3d",
           WebkitTransformStyle: "preserve-3d"
         }}
-      >
-        {/* Front of card - Number 5 */}
+      >      
         <div 
-          className={`${finalFiveCardStyles.front} ${righteous.className} ${finalFiveCardStyles.frontNumber}`}
+          className={`${styles.front} ${righteous.className}`}
           style={{ 
             backgroundColor: frontBg,
-            color: "white",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
-            fontSize: "3.5rem",
-            fontWeight: "bold",
             boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
           }}
         >
           5
         </div>
-        
-        {/* Back of card - Option text */}
+         
         <div 
-          className={finalFiveCardStyles.back}
+          className={styles.back}
           style={getBackCardStyle(backBg, textColor)}
           onClick={() => (!isGameOver && allCardsFlipped && !selectedOption) && onCardClick(option)}
           onMouseDown={handleMouseDown}
@@ -120,26 +112,25 @@ export default function FinalFiveCard({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <span className={finalFiveCardStyles.optionText}>
+          <span className={styles.optionText}>
             {option}
           </span>
           
-          {/* X overlay for incorrect guesses */}
           {isGameOver && isIncorrectGuess && (
             <div 
-              className={finalFiveCardStyles.xOverlay}
+              className={styles.xOverlay}
               aria-hidden="true"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 0.9, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
-                className={finalFiveCardStyles.xOverlayContent}
+                className={styles.xOverlayContent}
               >
                 <svg 
                   viewBox="0 0 100 100" 
                   xmlns="http://www.w3.org/2000/svg"
-                  className={finalFiveCardStyles.xSvg}
+                  className={styles.xSvg}
                 >
                   <g stroke={frontBg} strokeWidth="12" strokeLinecap="round">
                     <path d="M25,25 L75,75" />

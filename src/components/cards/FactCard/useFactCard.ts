@@ -2,9 +2,10 @@ import { useMemo, useRef } from 'react';
 import { Fact } from '@/types';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useCardFlip, useResponsiveCard } from '@/hooks/card';
-import { useCardAnimations } from '@/hooks/animation';
-import { factCardInlineStyles, normalizeCategory } from '@/helpers/factCardHelpers';
+import { useCardFlip } from './hooks/useCardFlip';
+import { useResponsiveCard } from './hooks/useResponsiveCard';
+import { useCardAnimations } from './hooks/useCardAnimations';
+import { factCardInlineStyles, normalizeCategory } from './helpers';
 
 interface UseFactCardProps {
   fact: Fact<any>;

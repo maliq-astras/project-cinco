@@ -23,7 +23,6 @@ export const useInputBar = ({
   hasSuggestionSelected,
   onSubmit
 }: UseInputBarProps) => {
-  // Use our new unified responsive system
   const { 
     responsiveValues,
     width,
@@ -32,8 +31,6 @@ export const useInputBar = ({
     isLandscape,
     isPortrait
   } = useResponsive();
-
-  // Create refs for the input elements
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -70,65 +67,44 @@ export const useInputBar = ({
     }
   }));
 
-  // Handle autocomplete suggestion selection
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);
     setHasSuggestionSelected(false);
-    // Focus back to input after selection and set cursor to end
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
-        // Set cursor position to the end of the text
         inputRef.current.setSelectionRange(suggestion.length, suggestion.length);
       }
     }, 0);
   };
-
-  // Handle form submission
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Prevent submission if a suggestion is selected
     if (hasSuggestionSelected) {
       e.preventDefault();
       return;
     }
     onSubmit(e);
   };
-
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setInputValue(val);
     setHasUserInput(val.trim().length > 0);
   };
-
-  // Handle key down events
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !hasSuggestionSelected) {
       e.preventDefault();
-      // Submit the form programmatically
       formRef.current?.requestSubmit();
     }
   };
 
   return {
-    // Refs
     inputRef,
     progressRef,
     formRef,
     textareaShellRef,
-    
-    // Event handlers
     handleSuggestionClick,
     handleFormSubmit,
     handleInputChange,
     handleKeyDown,
-    
-    // Responsive values from our new system
-    responsiveValues,
-    width,
-    height,
-    breakpoint,
-    isLandscape,
-    isPortrait
+    responsiveValues
   };
 };

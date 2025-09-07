@@ -12,7 +12,6 @@ interface TutorialStep {
   textPosition: 'left' | 'right' | 'top' | 'bottom';
 }
 
-// Create the tutorial steps as a function that takes hardMode as a parameter
 const createTutorialSteps = (hardMode: boolean, t: any): TutorialStep[] => [
   {
     target: 'header-area',
@@ -93,31 +92,15 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     width: '0px'
   });
 
-  // Get the hardMode status and timer pause functions
   const hardMode = useGameStore(state => state.hardMode);
   const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
-  
-  // Use the dynamic tutorial steps based on game mode
   const tutorialSteps = createTutorialSteps(hardMode, t);
-
-  // Use the centralized DOM refs system
   const { registerElement, unregisterElement, getElement } = useDOMRefs();
-
-  // Use the new responsive hook for viewport dimensions and responsive values
   const { 
     width, 
     height, 
-    breakpoint, 
-    heightBreakpoint, 
-    isLandscape, 
-    isPortrait,
-    responsiveValues 
   } = useResponsive();
-
-
-  // Reset step when tutorial is closed and manage timer pausing
   useEffect(() => {
-    // The tutorial is opening or closing
     setTutorialOpen(isOpen);
     
     if (!isOpen) {
@@ -138,25 +121,20 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         const navigationHeight = 120;
         const viewportHeight = height;
         
-        // Special handling for the logo area
         if (currentTarget === 'header-area') {
-          // For the logo, keep the original width but constrain the height
-          const logoWidth = rect.width; // Keep full width
-          const logoHeight = Math.min(150, rect.height * 0.6); // Only constrain height
+          const logoWidth = rect.width; 
+          const logoHeight = Math.min(150, rect.height * 0.6); 
           
-          // Center the spotlight on the logo
           const centerY = rect.top + rect.height / 2;
           
           setSpotlightStyles({
             top: `${centerY - logoHeight / 2}px`,
-            left: `${rect.left}px`, // Keep original left position
+            left: `${rect.left}px`, 
             width: `${logoWidth}px`,
             height: `${logoHeight}px`
           });
         } else {
-          // Different spotlight behaviors for different elements
           if (currentTarget === 'category-title') {
-            // For h1 category title, add more vertical padding and less horizontal
             setSpotlightStyles({
               top: `${rect.top - 12}px`,
               left: `${rect.left - 1}px`,
@@ -164,9 +142,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
               height: `${rect.height + 24}px`
             });
           } else if (currentTarget === 'facts-area') {
-            // For facts area, match DropZoneIndicator behavior - use exact element boundaries
             if (isMobile) {
-              // On mobile, use full viewport width but match element height exactly
               setSpotlightStyles({
                 top: `${rect.top}px`,
                 left: '2.5px',
@@ -174,7 +150,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
                 height: `${rect.height}px`
               });
             } else {
-              // On desktop, match element boundaries exactly like DropZoneIndicator
               setSpotlightStyles({
                 top: `${rect.top}px`,
                 left: `${rect.left}px`,
@@ -183,8 +158,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
               });
             }
           } else if (currentTarget === 'bubble-0') {
-            // For first bubble (Reveal Facts), slightly smaller square highlight
-            const padding = 10; // Reduced from 16 to bring it in a smidge
+            const padding = 10; 
             setSpotlightStyles({
               top: `${rect.top - padding}px`,
               left: `${rect.left - padding}px`,
@@ -192,7 +166,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
               height: `${rect.height + (padding * 2)}px`
             });
           } else if (currentTarget === 'game-input') {
-            // For game input, use smart clamping like category-title
             setSpotlightStyles({
               top: `${rect.top - 2.5}px`,
               left: `${rect.left - 1.3}px`,
@@ -228,7 +201,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
               height: `${rect.height + 10}px`
             });
           } else {
-            // fallback
             setSpotlightStyles({
               top: `${rect.top - 16}px`,
               left: `${rect.left - 16}px`,
@@ -244,28 +216,23 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         let textLeft = rect.left + (rect.width - textBoxWidth) / 2;
         
         if (currentTarget === 'bubble-grid' || currentTarget === 'bubble-0') {
-          // For hidden facts (bubble grid) and reveal facts (first bubble), position text box ABOVE the highlighted area with spacing
           textTop = Math.max(16, rect.top - 200 - textPadding);
         } else if (currentTarget === 'facts-area') {
-          // For facts area, use fixed spacing like bubble-grid for consistency
           textTop = Math.max(
-            rect.bottom + 100, // Fixed 100px spacing below facts area
-            16 // Minimum distance from top
+            rect.bottom + 100, 
+            16 
           );
         } else {
-          // For all other elements, position text box BELOW the highlighted area
           textTop = Math.min(
             rect.bottom + textPadding * 2,
             viewportHeight - 200 - navigationHeight
           );
         }
 
-        // Ensure text box stays within viewport bounds
         textLeft = Math.max(16, Math.min(textLeft, width - textBoxWidth - 16));
         
-        // For facts-area, be less restrictive with bottom constraint to maintain spacing
         if (currentTarget === 'facts-area') {
-          textTop = Math.max(16, Math.min(textTop, height - 190)); // More lenient bottom constraint
+          textTop = Math.max(16, Math.min(textTop, height - 190)); 
         } else {
           textTop = Math.max(16, Math.min(textTop, height - 200));
         }
@@ -279,9 +246,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     }
   }, [isOpen, currentStep, tutorialSteps, getElement, width, height]);
 
-  // Update positions when step changes or viewport dimensions change
   useEffect(() => {
-    // Add a small delay to ensure DOM refs are registered
     const timer = setTimeout(() => {
       updatePositions();
     }, 50);
@@ -308,16 +273,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
     handleClick,
     continueText: currentStep === tutorialSteps.length - 1 
       ? t('tutorial.navigation.finish')
-      : t('tutorial.navigation.continue'),
-    registerElement,
-    unregisterElement,
-    // Export responsive utilities
-    width,
-    height,
-    breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait,
-    responsiveValues
+      : t('tutorial.navigation.continue')
   };
 }; 

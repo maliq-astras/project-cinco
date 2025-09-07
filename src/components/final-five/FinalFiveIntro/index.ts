@@ -1,2 +1,2 @@
 export { default } from './FinalFiveIntro';
-export * from './useFinalFiveIntro'; 
+export { useFinalFiveIntro } from './useFinalFiveIntro'; 

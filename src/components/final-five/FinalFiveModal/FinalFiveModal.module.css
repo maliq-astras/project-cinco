@@ -1,6 +1,3 @@
-/* Static styles for FinalFiveModal component */
-
-/* Main modal container */
 .modalContainer {
   position: fixed;
   inset: 0;
@@ -19,7 +16,6 @@
   }
 }
 
-/* Modal content panel */
 .modalContent {
   width: 100vw;
   max-width: none;
@@ -41,7 +37,6 @@
   }
 }
 
-/* Dark mode support */
 :global(.dark) .modalContent {
   background-color: rgb(17 24 39);
   border: 2px solid rgb(55 65 81);
@@ -51,7 +46,6 @@
   border-color: rgb(209 213 219);
 }
 
-/* Mobile handle */
 .mobileHandle {
   width: 4rem;
   height: 0.25rem;
@@ -70,7 +64,6 @@
   background-color: rgb(55 65 81);
 }
 
-/* Warning icon */
 .warningIconContainer {
   color: rgb(239 68 68);
   margin-bottom: 1rem;
@@ -92,7 +85,6 @@
   background-color: rgba(239, 68, 68, 0.3);
 }
 
-/* Header */
 .header {
   font-size: 2.25rem;
   font-weight: bold;
@@ -100,7 +92,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Message */
 .message {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -115,7 +106,6 @@
   color: rgb(209 213 219);
 }
 
-/* Timer container */
 .timerContainer {
   position: relative;
   aspect-ratio: 1;
@@ -143,13 +133,11 @@
   border-color: rgb(209 213 219);
 }
 
-/* Button container */
 .buttonContainer {
   height: 3.5rem;
   position: relative;
 }
 
-/* Continue button */
 .continueButton {
   padding: 0.75rem 2rem;
   border-radius: 9999px;
@@ -159,7 +147,6 @@
   transition: all 0.2s ease;
 }
 
-/* Loading spinner */
 .loadingSpinner {
   height: 1.25rem;
   width: 1.25rem;
@@ -176,7 +163,6 @@
   }
 }
 
-/* Responsive adjustments for very small screens */
 @media (max-width: 480px) {
   .modalContent {
     padding: 0.75rem;
@@ -198,7 +184,6 @@
   }
 }
 
-/* Responsive adjustments for landscape orientation */
 @media (orientation: landscape) and (max-height: 600px) {
   .modalContent {
     padding: 0.75rem;

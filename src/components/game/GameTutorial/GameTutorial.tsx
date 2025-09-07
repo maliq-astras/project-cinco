@@ -2,19 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
 import { useGameTutorial } from './useGameTutorial';
-import { gameTutorialStyles } from './GameTutorial.styles';
+import { getOverlayMaskStyle, getSpotlightStyle } from './helpers';
 import { useTheme } from '@/contexts/ThemeContext';
+import styles from './GameTutorial.module.css';
 
 const inter = Inter({ subsets: ['latin'] });
-
-interface TutorialStep {
-  target: string;
-  title: string;
-  description: string;
-  textPosition: 'left' | 'right' | 'top' | 'bottom';
-}
-
-
 
 interface GameTutorialProps {
   isOpen: boolean;
@@ -30,7 +22,6 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
     tutorialSteps,
     handleClick,
     continueText,
-    responsiveValues
   } = useGameTutorial({ isOpen, onClose });
   
   const { darkMode } = useTheme();
@@ -39,33 +30,51 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
   const currentTutorialStep = tutorialSteps[currentStep];
 
+  const isLogo = tutorialSteps[currentStep].target === 'header-area';
+
   return (
     <div 
-      className={gameTutorialStyles.container}
+      className={styles.container}
       onClick={handleClick}
     >
-      {/* Mask-based overlay */}
-      <div className={gameTutorialStyles.overlay} style={{ pointerEvents: 'none' }}>
-        <div style={gameTutorialStyles.overlayMask(spotlightStyles, tutorialSteps[currentStep].target === 'header-area')} />
+      <div className={styles.overlay} style={{ pointerEvents: 'none' }}>
+        <div style={getOverlayMaskStyle(spotlightStyles, isLogo)} />
       </div>
 
-      {/* White border around the spotlight (adjusted for dark mode) */}
       <div
-        className={gameTutorialStyles.spotlightWrapper}
-        style={gameTutorialStyles.spotlight(spotlightStyles, tutorialSteps[currentStep].target === 'header-area', darkMode)}
+        className={styles.spotlightWrapper}
+        style={getSpotlightStyle(spotlightStyles, isLogo, darkMode)}
       />
 
-      {/* Tutorial text box */}
       <motion.div 
-        className={`${inter.className} ${gameTutorialStyles.textBox}`}
-        style={gameTutorialStyles.textBoxBorder(colors.primary, darkMode)}
-        {...gameTutorialStyles.textBoxAnimation}
-        animate={gameTutorialStyles.textBoxAnimation.animate(textBoxStyles)}
+        className={`${inter.className} ${styles.textBox}`}
+        style={{
+          borderColor: `var(--color-${colors.primary})`,
+          boxShadow: darkMode 
+            ? '0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5)' 
+            : '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'
+        }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ 
+          opacity: 1,
+          scale: 1,
+          x: parseFloat(textBoxStyles.left),
+          y: parseFloat(textBoxStyles.top),
+          width: parseFloat(textBoxStyles.width)
+        }}
+        transition={{ 
+          duration: 0.4,
+          ease: [0.4, 0, 0.2, 1],
+          layout: {
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1]
+          }
+        }}
         layout
         onClick={(e) => e.stopPropagation()}
       >
         <motion.h3 
-          className={gameTutorialStyles.textBoxTitle}
+          className={styles.textBoxTitle}
           style={{ color: `var(--color-${colors.primary})` }}
           layout="position"
           transition={{ duration: 0.4 }}
@@ -73,7 +82,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
           {currentTutorialStep.title}
         </motion.h3>
         <motion.p 
-          className={gameTutorialStyles.textBoxDescription}
+          className={styles.textBoxDescription}
           layout="position"
           transition={{ duration: 0.4 }}
         >
@@ -81,26 +90,35 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
         </motion.p>
       </motion.div>
 
-            {/* Progress indicator and continue message */}
       <motion.div 
-        className={gameTutorialStyles.progressContainer}
-        {...gameTutorialStyles.progressAnimation}
-        animate={gameTutorialStyles.progressAnimation.animate()}
+        className={styles.progressContainer}
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: 1,
+          y: 0
+        }}
+        transition={{ 
+          duration: 0.4,
+          ease: [0.4, 0, 0.2, 1]
+        }}
       >
         <motion.p 
-          className={gameTutorialStyles.progressText}
-          style={gameTutorialStyles.progressTextShadow}
+          className={styles.progressText}
         >
           {continueText}
         </motion.p>
         <motion.div 
-          className={gameTutorialStyles.progressDots}
+          className={styles.progressDots}
         >
           {tutorialSteps.map((_, index) => (
             <motion.div
               key={index}
-              className={gameTutorialStyles.progressDot}
-              style={gameTutorialStyles.progressDotColor(colors.primary, index === currentStep)}
+              className={styles.progressDot}
+              style={{
+                backgroundColor: index === currentStep 
+                  ? `var(--color-${colors.primary})`
+                  : `var(--color-${colors.primary}30)`
+              }}
             />
           ))}
         </motion.div>

@@ -12,7 +12,8 @@ export function useFactCardStackContainer() {
   const { 
     responsiveValues,
     width,
-    height
+    height,
+    isLandscape
   } = useResponsive();
   
   const isDesktopLayout = !isMobileLayout(width, height);
@@ -41,6 +42,18 @@ export function useFactCardStackContainer() {
   }, [registerElement, unregisterElement]);
 
   const containerStyles = useMemo<CSSProperties>(() => {
+    const calculateOptimalHeight = () => {
+      const reservedSpace = isLandscape ? 450 : 400;
+      const availableSpace = Math.max(0, height - reservedSpace);
+      const heightPercentage = isLandscape ? 0.3 : 0.35;
+      const calculatedHeight = Math.max(availableSpace * heightPercentage, 150);
+      const minHeight = 120;
+      const maxHeight = isLandscape ? 200 : 250;
+      return Math.max(minHeight, Math.min(maxHeight, calculatedHeight));
+    };
+
+    const optimalHeight = calculateOptimalHeight();
+
     if (isDesktopLayout) {
       return {
         height: '100%',
@@ -52,11 +65,11 @@ export function useFactCardStackContainer() {
     }
     
     return {
-      height: `${responsiveValues.containerHeight}px`,
-      minHeight: `${responsiveValues.containerHeight}px`,
+      height: `${optimalHeight}px`,
+      minHeight: `${optimalHeight}px`,
       marginTop: `${responsiveValues.spacing * 5}px`
     };
-  }, [responsiveValues, isDesktopLayout]);
+  }, [height, isLandscape, responsiveValues, isDesktopLayout]);
 
   useEffect(() => {
     if (isDragging) {

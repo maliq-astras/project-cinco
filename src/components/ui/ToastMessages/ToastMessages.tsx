@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import styles from './ToastMessages.module.css';
 
 interface ToastMessagesProps {
-  duplicateErrorRef?: RefObject<HTMLDivElement>;
-  skipMessageRef?: RefObject<HTMLDivElement>;
+  duplicateErrorRef?: RefObject<HTMLDivElement | null>;
+  skipMessageRef?: RefObject<HTMLDivElement | null>;
 }
 
 /**

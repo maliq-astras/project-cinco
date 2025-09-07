@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { useCardStack } from '@/hooks/card';
-import { calculateCardPosition, getCardAnimationVariants } from '@/helpers/uiHelpers';
+import { useCardStack } from './useCardStack';
+import { calculateCardPosition, getCardAnimationVariants } from '../helpers';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useEffect } from 'react';
 import { useResponsive } from '@/hooks/responsive';

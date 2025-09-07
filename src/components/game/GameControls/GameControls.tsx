@@ -1,11 +1,11 @@
 import React, { forwardRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Timer from '../../ui/Timer';
-import InputBar, { InputBarHandle } from '../InputBar';
+import InputBar from '../InputBar';
 import GameButtons from '../GameButtons';
 import ToastMessages from '../../ui/ToastMessages';
 import { useGameControls, GameControlsHandle } from './useGameControls';
-import { gameControlsStyles } from './GameControls.styles';
+import styles from './GameControls.module.css';
 import { useGameStore } from '@/store/gameStore';
 
 const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
@@ -25,10 +25,6 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     duplicateErrorRef,
     skipMessageRef,
     responsiveValues,
-    breakpoint,
-    heightBreakpoint,
-    isLandscape,
-    isPortrait
   } = useGameControls(ref);
 
   const gameState = useGameStore(state => state.gameState);
@@ -36,7 +32,6 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const [hasSuggestionSelected, setHasSuggestionSelected] = useState(false);
 
-  // Create responsive container style
   const responsiveContainerStyle = {
     padding: `0 ${responsiveValues.spacing}px`,
     paddingTop: `${responsiveValues.spacing}px`,
@@ -44,21 +39,21 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   };
 
   return (
-    <div id="game-controls" className={gameControlsStyles.container} style={responsiveContainerStyle}>
+    <div id="game-controls" className={styles.container} style={responsiveContainerStyle}>
       <motion.div
-        className={gameControlsStyles.wrapper}
-        {...gameControlsStyles.wrapperAnimation}
-        animate={gameControlsStyles.wrapperAnimation.animate(isVictoryAnimationActive)}
+        className={styles.wrapper}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isVictoryAnimationActive ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="relative">
-          {/* Toast messages */}
           <ToastMessages 
             duplicateErrorRef={duplicateErrorRef}
             skipMessageRef={skipMessageRef}
           />
           
-          <div className={gameControlsStyles.controlsArea}>
-            <div id="facts-area" className={gameControlsStyles.factsArea}>
+          <div className={styles.controlsArea}>
+            <div id="facts-area" className={styles.factsArea}>
               <div className="relative">
                 <Timer seconds={timeRemaining} />
               </div>

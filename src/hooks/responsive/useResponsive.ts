@@ -208,9 +208,9 @@ export const useResponsive = () => {
         breakpoint
       ),
 
-      // Container heights - increased to better utilize available space
+      // Container heights - more aggressive for limited space
       containerHeight: getResponsiveValue(
-        { xs: 180, sm: 200, md: 220, lg: 240, xl: 260 },
+        { xs: 120, sm: 130, md: 140, lg: 150, xl: 160 },
         breakpoint
       ),
 

@@ -5,7 +5,6 @@ interface AnimationProps {
 }
 
 export function useCardAnimations({ primaryColor }: AnimationProps) {
-  // Close button animation settings
   const closeButtonAnimations = useMemo(() => ({
     initial: { opacity: 0, scale: 0.8 },
     animate: { opacity: 1, scale: 1 },
@@ -15,7 +14,7 @@ export function useCardAnimations({ primaryColor }: AnimationProps) {
     }
   }), []);
 
-  // Close button icon animation settings
+
   const closeButtonIconAnimations = useMemo(() => ({
     initial: { rotate: -90 },
     animate: { rotate: 0 },
@@ -25,12 +24,12 @@ export function useCardAnimations({ primaryColor }: AnimationProps) {
     }
   }), []);
 
-  // Primary color styles
+
   const colorStyle = useMemo<React.CSSProperties>(() => ({
     color: `var(--color-${primaryColor})`
   }), [primaryColor]);
 
-  // Stroke style for SVG elements
+
   const strokeStyle = useMemo(() => 
     `var(--color-${primaryColor})`, 
     [primaryColor]

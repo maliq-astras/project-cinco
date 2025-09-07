@@ -6,20 +6,17 @@ import { Righteous } from 'next/font/google';
 import { useFinalFiveModal } from './useFinalFiveModal';
 import Timer from '../../ui/Timer';
 import FinalFiveCard from '../FinalFiveCard';
-import { finalFiveStyles } from './FinalFiveModal.styles';
+import styles from './FinalFiveModal.module.css';
 import BaseModal from '@/components/modals/BaseModal/BaseModal';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
+import { getFinalFiveGridClasses, getFinalFiveCardDimensions } from '../shared/helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-/**
- * Modal component that shows the Final Five options
- */
 export default function FinalFiveModal() {
   const {
-    // State
     options,
     flippedCards,
     allCardsFlipped,
@@ -34,33 +31,25 @@ export default function FinalFiveModal() {
     selectedOption,
     timerReachedZero,
     correctAnswer,
-    
-    // Responsive values
     width,
     height,
     isLandscape,
-    
-    // Styles and helpers
     themeColor,
     primaryColorClass,
     getMessage,
     getCardStyles,
     isCorrectOption,
     isIncorrectGuess,
-    
-    // Actions
     handleOptionClick,
     closeFinalFive
   } = useFinalFiveModal();
 
   const { t } = useTranslation();
   
-  // Get error state from the game store
   const finalFiveError = useGameStore(state => state.finalFiveError);
   const resetFinalFiveError = useGameStore(state => state.resetFinalFiveError);
   const triggerFinalFive = useGameStore(state => state.triggerFinalFive);
   
-  // If there's an error, show error state instead of normal content via BaseModal
   if (finalFiveError) {
     return (
       <BaseModal
@@ -70,14 +59,14 @@ export default function FinalFiveModal() {
         mobileHeight={'auto'}
       >
         <div className="flex flex-col items-center justify-center p-6 text-center">
-          <div className={finalFiveStyles.warningIcon.container}>
-            <div className={finalFiveStyles.warningIcon.icon}>
+          <div className={styles.warningIconContainer}>
+            <div className={styles.warningIcon}>
               <span className="text-2xl">!</span>
             </div>
             <p>{finalFiveError}</p>
           </div>
           <button
-            className={finalFiveStyles.continueButton}
+            className={styles.continueButton}
             style={{ backgroundColor: themeColor }}
             onClick={() => {
               resetFinalFiveError();
@@ -91,7 +80,7 @@ export default function FinalFiveModal() {
     );
   }
   
-  const modal = (
+  return (
     <AnimatePresence>
       {(options.length > 0 && isFinalFiveActive) && (
         <BaseModal
@@ -102,18 +91,16 @@ export default function FinalFiveModal() {
           dismissible={false}
         >
           <h2 
-            className={`${finalFiveStyles.header} ${righteous.className}`}
+            className={`${styles.header} ${righteous.className}`}
             style={{ color: themeColor }}
           >
             {t('game.finalFive.title')}
           </h2>
             
-            {/* Message */}
-            <div className={finalFiveStyles.message}>
+            <div className={styles.message}>
               {(() => {
                 const message = getMessage();
                 
-                // Add loading animation for verifying guess or checking answer
                 if (typeof message === 'string' && 
                     (message === t('game.finalFive.checkingAnswer') || 
                      message === t('game.finalFive.verifyingGuess') ||
@@ -122,12 +109,11 @@ export default function FinalFiveModal() {
                      message.includes(t('game.finalFive.retrying')) ||
                      (timerReachedZero && loading && !correctAnswer))) {
                   
-                  // Show loading spinner with primary theme color
                   return (
                     <span className="flex flex-col items-center justify-center">
                       <span className="flex items-center justify-center mb-2">
                         <div 
-                          className={`${finalFiveStyles.loadingSpinnerClass} ${finalFiveStyles.loadingSpinner}`}
+                          className={`h-5 w-5 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent ${styles.loadingSpinner}`}
                           style={{ color: themeColor }}
                         />
                         <span>
@@ -135,7 +121,6 @@ export default function FinalFiveModal() {
                         </span>
                       </span>
                       
-                      {/* Show retry count if retrying */}
                       {message.includes(t('game.finalFive.retrying')) && (
                         <span className="text-xs text-gray-500">
                           {message}
@@ -145,18 +130,16 @@ export default function FinalFiveModal() {
                   );
                 }
                 
-                // Style "correct answer was" message
                 if (typeof message === 'string' && 
                     (message.includes(t('game.finalFive.theCorrectAnswerWas')) || 
                      message.includes(t('game.finalFive.timesUp')))) {
                   
-                  // If the message doesn't contain the actual answer yet (database still loading)
                   if (message.includes(t('game.finalFive.timesUp')) && 
                       !message.includes(t('game.finalFive.theCorrectAnswerWas'))) {
                     return (
                       <span className="flex items-center justify-center">
                         <div 
-                          className={`${finalFiveStyles.loadingSpinnerClass} ${finalFiveStyles.loadingSpinner}`}
+                          className={`h-5 w-5 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent ${styles.loadingSpinner}`}
                           style={{ color: themeColor }}
                         />
                         <span>{t('game.finalFive.loadingAnswer')}</span>
@@ -164,14 +147,13 @@ export default function FinalFiveModal() {
                     );
                   }
                   
-                  // Handle "time's up" message with special formatting
                   if (message.includes(t('game.finalFive.timesUp'))) {
                     const parts = message.split(t('game.finalFive.theCorrectAnswerWas'));
                     if (parts.length === 2) {
                       return (
                         <>
                           {t('game.finalFive.theCorrectAnswerWas')}{' '}
-                          <span style={finalFiveStyles.correctAnswerText(themeColor)}>
+                          <span style={{ color: themeColor, fontWeight: 'bold' }}>
                             {parts[1].trim()}
                           </span>
                         </>
@@ -179,13 +161,12 @@ export default function FinalFiveModal() {
                     }
                   }
                   
-                  // Regular correct answer message
                   const parts = message.split(t('game.finalFive.theCorrectAnswerWas') + ' ');
                   if (parts.length === 2) {
                     return (
                       <>
                         {t('game.finalFive.theCorrectAnswerWas')}{' '}
-                        <span style={finalFiveStyles.correctAnswerText(themeColor)}>
+                        <span style={{ color: themeColor, fontWeight: 'bold' }}>
                           {capitalizeAnswer(parts[1])}
                         </span>
                       </>
@@ -197,8 +178,7 @@ export default function FinalFiveModal() {
               })()}
             </div>
             
-            {/* Grid of cards - 3-2 layout with timer in the bottom center */}
-            <div className={finalFiveStyles.getCardGrid(width, height, isLandscape)}>
+            <div className={getFinalFiveGridClasses(width, height, isLandscape)}>
               {options.map((option: string, index: number) => {
                 const { frontBg, backBg, textColor } = getCardStyles(option);
                 
@@ -221,10 +201,9 @@ export default function FinalFiveModal() {
                 );
               })}
               
-              {/* Timer - as part of the grid */}
               {allCardsFlipped && !selectedOption && (
                 <motion.div 
-                  className={finalFiveStyles.timerContainer}
+                  className={styles.timerContainer}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ 
                     opacity: (isGameOver && animationComplete) || selectedOption || timerReachedZero ? 0 : 1,
@@ -233,12 +212,11 @@ export default function FinalFiveModal() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.5 }}
                   style={{ 
-                    minHeight: finalFiveStyles.card.getDimensions(width, height, isLandscape).minHeight,
-                    maxWidth: finalFiveStyles.card.getDimensions(width, height, isLandscape).maxWidth,
+                    ...getFinalFiveCardDimensions(width, height, isLandscape),
                     margin: "0 auto"
                   }}
                 >
-                  <div className={finalFiveStyles.timerWrapper}>
+                  <div className={styles.timerWrapper}>
                     <Timer 
                       seconds={finalFiveTimeRemaining} 
                       isGameOver={isGameOver} 
@@ -250,9 +228,7 @@ export default function FinalFiveModal() {
               )}
             </div>
             
-            {/* Fixed-height container for the continue button to prevent layout shift */}
-            <div className={finalFiveStyles.buttonContainer}>
-              {/* Continue button - only visible after animations complete */}
+            <div className={styles.buttonContainer}>
               <AnimatePresence>
                 {showContinueButton && (
                   <motion.div
@@ -263,7 +239,7 @@ export default function FinalFiveModal() {
                     className="absolute inset-x-0 flex justify-center"
                   >
                     <button
-                      className={finalFiveStyles.continueButton}
+                      className={styles.continueButton}
                       style={{ 
                         backgroundColor: themeColor,
                         boxShadow: `0 4px 12px rgba(0, 0, 0, 0.15)`
@@ -280,5 +256,4 @@ export default function FinalFiveModal() {
       )}
     </AnimatePresence>
   );
-  return modal;
 } 

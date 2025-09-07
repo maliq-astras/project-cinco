@@ -5,7 +5,6 @@ export const useGameButtons = () => {
   const controlsRef = useRef<HTMLDivElement>(null);
   const { registerElement, unregisterElement } = useDOMRefs();
 
-  // Register the controls element with the DOM refs system
   useEffect(() => {
     if (controlsRef.current) {
       registerElement('game-controls-right', controlsRef.current);
@@ -16,7 +15,6 @@ export const useGameButtons = () => {
     };
   }, [registerElement, unregisterElement]);
 
-  // Animation configurations
   const buttonAnimation = {
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.95 },

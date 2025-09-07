@@ -3,8 +3,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FactCardBack from '../FactCardBack';
-import { useFactCardStack } from './useFactCardStack';
-import { getCardPosition } from '@/helpers/uiHelpers';
+import { useFactCardStack } from './hooks/useFactCardStack';
+import { getCardPosition } from './helpers';
 import styles from './FactCardStack.module.css';
 
 export default function FactCardStack() {

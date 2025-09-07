@@ -53,11 +53,9 @@ export function useAutoGrowTextarea(
     const baseline = baseHeightRef.current;
     // Measure current rendered height to create a smooth transition, especially on shrink
     const currentH = Math.round(el.getBoundingClientRect().height);
-    // Calculate target height from content
     el.style.height = 'auto';
     const needed = Math.min(el.scrollHeight, maxHeightPx);
     const finalH = Math.max(baseline, needed);
-    // Set an explicit start height, then in the next frame set the target height
     el.style.height = `${currentH || baseline}px`;
     requestAnimationFrame(() => {
       el.style.height = `${finalH}px`;
