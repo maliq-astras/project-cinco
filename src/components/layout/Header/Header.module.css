@@ -1,9 +1,3 @@
-/**
- * CSS Modules for Header component - Static styles only
- * Dynamic styles remain in Header.styles.ts
- */
-
-/* Base container */
 .container {
   width: 100%;
   padding: 0.5rem 0;
@@ -15,13 +9,11 @@
   }
 }
 
-/* Header element */
 .header {
   max-width: 72rem;
   margin: 0 auto;
 }
 
-/* Base content layout */
 .content {
   display: flex;
   align-items: center;
@@ -35,7 +27,6 @@
   }
 }
 
-/* Container size variants */
 .containerXs {
   width: 100%;
   padding: 0.25rem 0;
@@ -61,7 +52,6 @@
   padding: 0.75rem 0;
 }
 
-/* Content size variants */
 .contentXs {
   display: flex;
   align-items: center;
@@ -97,7 +87,6 @@
   gap: 1.25rem;
 }
 
-/* Logo container size variants */
 .logoContainerXs {
   height: 120px;
   max-width: 263px;
@@ -123,12 +112,10 @@
   max-width: 473px;
 }
 
-/* Title base styles */
 .title {
   margin: 0;
 }
 
-/* Title size variants */
 .titleXs {
   margin: 0;
   font-size: 1.125rem;
@@ -154,7 +141,6 @@
   font-size: 2.25rem;
 }
 
-/* Legacy compact styles */
 .compactContainer {
   width: 100%;
   padding: 0.25rem 0;

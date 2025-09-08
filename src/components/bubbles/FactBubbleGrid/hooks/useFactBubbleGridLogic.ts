@@ -1,19 +1,22 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { Fact } from '@/types';
-import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useResponsive } from '@/hooks/responsive';
+import { Fact, CategoryType } from '@/types';
 
 interface BubbleGridItem {
   key: string;
   isEmpty: boolean;
   factIndex?: number;
-  fact?: Fact<any>;
+  fact?: Fact<CategoryType>;
   category?: string;
   slotIndex: number;
 }
 
-export function useFactBubbleGrid() {
+interface UseFactBubbleGridLogicProps {
+  totalSlots: number;
+}
+
+export const useFactBubbleGridLogic = ({ totalSlots }: UseFactBubbleGridLogicProps) => {
   const challenge = useGameStore(state => state.gameState.challenge);
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
@@ -24,11 +27,6 @@ export function useFactBubbleGrid() {
     availableContentHeight,
     layoutMode
   } = useResponsive();
-  
-  const bubbleGridRef = useRef<HTMLDivElement>(null);
-  const { registerElement, unregisterElement } = useDOMRefs();
-  
-  const totalSlots = 8;
 
   const remainingFactsCount = useMemo(() => {
     if (!challenge) return 0;
@@ -69,16 +67,7 @@ export function useFactBubbleGrid() {
         slotIndex
       };
     });
-  }, [challenge, revealedFacts]);
-  
-  useEffect(() => {
-    if (bubbleGridRef.current) {
-      registerElement('bubble-grid', bubbleGridRef.current);
-    }
-    return () => {
-      unregisterElement('bubble-grid');
-    };
-  }, [registerElement, unregisterElement]);
+  }, [challenge, revealedFacts, totalSlots]);
 
   const animationProps = (slotIndex: number) => ({
     initial: { scale: 0.9, opacity: 0 },
@@ -96,17 +85,16 @@ export function useFactBubbleGrid() {
       delay: isVictoryAnimationActive ? slotIndex * 0.15 : 0
     }
   });
-  
+
   return {
     gridItems,
+    remainingFactsCount,
+    animationProps,
     bubbleSize: responsiveValues.bubbleSize,
     gapSize: responsiveValues.bubbleSpacing,
-    animationProps,
-    bubbleGridRef,
-    remainingFactsCount,
     responsiveValues,
     willFit,
     availableContentHeight,
     layoutMode
   };
-} 
+};

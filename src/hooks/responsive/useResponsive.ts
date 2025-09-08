@@ -10,7 +10,7 @@ import {
   willContentFitInHeight,
   getAvailableContentHeight,
   type Breakpoint
-} from '@/helpers/breakpoints';
+} from '@/constants/breakpoints';
 
 /**
  * Unified Responsive Hook
@@ -254,7 +254,54 @@ export const useResponsive = () => {
       progressBarHeight: getResponsiveValue(
         { xs: 6, sm: 7, md: 8, lg: 9, xl: 10 },
         breakpoint
-      )
+      ),
+
+      // Header responsive values - consolidated from Header.styles.ts
+      header: {
+        // Title typography with viewport-based sizing
+        titleFontSize: getResponsiveValue({
+          xs: "clamp(25px, 3.5vh, 32px)",
+          sm: "clamp(30px, 4vh, 38px)", 
+          md: "clamp(35px, 4.5vh, 44px)",
+          lg: "clamp(40px, 5vh, 50px)",
+          xl: "clamp(45px, 5.5vh, 56px)"
+        }, breakpoint),
+        
+        // Title max width for text overflow
+        titleMaxWidth: getResponsiveValue({
+          xs: "263px",
+          sm: "315px", 
+          md: "368px",
+          lg: "420px",
+          xl: "473px"
+        }, breakpoint),
+        
+        // Header height values used in other calculations
+        headerHeight: getResponsiveValue({
+          xs: 120, sm: 140, md: 160, lg: 180, xl: 200
+        }, breakpoint)
+      },
+
+      // Navigation responsive values - consolidated from Navigation.styles.ts  
+      navigation: {
+        // Dropdown button padding
+        dropdownButtonPadding: getResponsiveValue({
+          xs: "0.375rem",
+          sm: "0.375rem", 
+          md: "0.4375rem",
+          lg: "0.5rem",
+          xl: "0.625rem"
+        }, breakpoint),
+        
+        // Icon sizes for navigation
+        iconSize: getResponsiveValue({
+          xs: "1.125rem", // 18px
+          sm: "1.125rem", // 18px
+          md: "1.25rem",  // 20px 
+          lg: "1.375rem", // 22px
+          xl: "1.5rem"    // 24px
+        }, breakpoint)
+      }
     };
   }, [width, height, breakpoint, isLandscapeMode, isMobileLayoutDetected]);
 

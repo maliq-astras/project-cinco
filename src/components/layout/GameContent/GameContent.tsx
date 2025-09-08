@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   FactCardStackContainer, 
   FactBubbleGrid, 
@@ -18,7 +18,8 @@ import { GameState, GameOutcome } from '@/types';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import styles from './GameContent.module.css';
-import { gameContentStyles } from './GameContent.styles';
+import { ANIMATIONS } from '@/constants/animations';
+import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
 
 interface GameContentProps {
   gameState: GameState;
@@ -36,7 +37,7 @@ interface GameContentProps {
   gameControlsRef: React.RefObject<any>;
 }
 
-const GameContent: React.FC<GameContentProps> = ({
+const GameContent: React.FC<GameContentProps> = React.memo(({
   gameState,
   gameEntranceComplete,
   showGameMessage,
@@ -55,6 +56,13 @@ const GameContent: React.FC<GameContentProps> = ({
 
   // Calculate dynamic spacing for bubble context area based on bubble size
   const bubbleContextSpacing = responsiveValues.bubbleSize * 0.5; // 50% of bubble size for appropriate spacing
+  
+  // Animation configurations
+  const animations = {
+    cardStack: ANIMATIONS.CARD_STACK,
+    middleSection: ANIMATIONS.MIDDLE_SECTION,
+    bottomSection: ANIMATIONS.BOTTOM_SECTION
+  };
   
   // Register the drop zone as the drop target when dragging (but not during tutorial)
   useEffect(() => {
@@ -104,10 +112,10 @@ const GameContent: React.FC<GameContentProps> = ({
         {!isAlreadyPlayedScenario && (
           <motion.div 
             className={styles.cardSection}
-            {...gameContentStyles.gameEntranceAnimation.cardStack}
+            {...animations.cardStack}
             animate={gameEntranceComplete ? 
-              gameContentStyles.gameEntranceAnimation.cardStack.animate : 
-              gameContentStyles.gameEntranceAnimation.cardStack.initial
+              animations.cardStack.animate : 
+              animations.cardStack.initial
             }
           >
             <FactCardStackContainer />
@@ -120,10 +128,10 @@ const GameContent: React.FC<GameContentProps> = ({
         {/* Fact Bubbles Area */}
         <motion.div 
           className={styles.factBubblesWrapper}
-          {...gameContentStyles.gameEntranceAnimation.middleSection}
+          {...animations.middleSection}
           animate={gameEntranceComplete ? 
-            gameContentStyles.gameEntranceAnimation.middleSection.animate : 
-            gameContentStyles.gameEntranceAnimation.middleSection.initial
+            animations.middleSection.animate : 
+            animations.middleSection.initial
           }
         >
           <div className={styles.factBubblesContainer}>
@@ -135,7 +143,7 @@ const GameContent: React.FC<GameContentProps> = ({
                   <>
                     <FactBubbleGrid />
                     {/* Bubble Context Area - moved inside bubble container */}
-                    {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+                    {shouldShowContextLine(isAlreadyPlayedScenario, isVictoryAnimationActive) && (
                       <div 
                         className={styles.bubbleContextArea}
                         style={{
@@ -157,14 +165,14 @@ const GameContent: React.FC<GameContentProps> = ({
       <div className={styles.controlsPanel}>
         <motion.div 
           className="w-full"
-          {...gameContentStyles.gameEntranceAnimation.bottomSection}
+          {...animations.bottomSection}
           animate={gameEntranceComplete ? 
-            gameContentStyles.gameEntranceAnimation.bottomSection.animate : 
-            gameContentStyles.gameEntranceAnimation.bottomSection.initial
+            animations.bottomSection.animate : 
+            animations.bottomSection.initial
           }
         >
           {/* Game instructions - hide for already-played scenarios and during victory animation */}
-          {!isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+          {shouldShowGameInstructions(isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) && (
             <div className={styles.instructionsWrapper}>
               <div className={styles.instructionsContainer}>
                 <GameInstructionsArea />
@@ -173,7 +181,7 @@ const GameContent: React.FC<GameContentProps> = ({
           )}
 
           {/* Game Controls - hide for already-played scenarios and during victory animation */}
-          {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+          {shouldShowGameControls(showGameMessage, isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) && (
             <div className={styles.gameControlsWrapper}>
               <GameControls ref={gameControlsRef} />
             </div>
@@ -182,6 +190,8 @@ const GameContent: React.FC<GameContentProps> = ({
       </div>
     </motion.div>
   );
-};
+});
+
+GameContent.displayName = 'GameContent';
 
 export default GameContent;

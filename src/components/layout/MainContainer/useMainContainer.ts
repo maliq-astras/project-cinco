@@ -5,7 +5,7 @@ import type { GameControlsHandle } from '../../game/GameControls';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
 import { useResponsive } from '@/hooks/responsive';
-import { getLayoutMode, isMobileLayout } from '@/helpers/breakpoints';
+import { getLayoutMode, isMobileLayout } from '@/constants/breakpoints';
 import { GameOutcome } from '@/types';
 
 export function useMainContainer() {
@@ -176,7 +176,6 @@ export function useMainContainer() {
 
   // Simplified responsive values based on our new system
   const responsiveLayoutMode = breakpoint === 'xs' || breakpoint === 'sm' ? 'compact' : 'normal';
-  const headerSizeMode = breakpoint;
   const isTablet = breakpoint === 'md' || breakpoint === 'lg';
   const isTabletLandscape = isTablet && isLandscape;
   
@@ -206,7 +205,6 @@ export function useMainContainer() {
     breakpoint,
     layoutMode,
     isNarrow,
-    headerSizeMode,
     isLandscape
   };
 } 

@@ -4,13 +4,7 @@ import { useGameStore } from '@/store/gameStore';
 import { GameState } from '@/helpers/gameLogic';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useResponsive } from '@/hooks/responsive';
-
-interface MenuItem {
-  label: string;
-  onClick: () => void;
-  showArrow: boolean;
-  ariaLabel: string;
-}
+import { MenuItem } from '@/types/navigation';
 
 interface GameStoreState {
   gameState: GameState;
@@ -95,16 +89,6 @@ export const useNavigation = () => {
     };
   }, [isDropdownOpen, getElement]);
 
-  // Keep the old handler for backwards compatibility (though not used now)
-  const handleClickOutside = (event: React.MouseEvent, menuRef?: React.RefObject<HTMLDivElement>) => {
-    const clickedElement = event.target as Node;
-    const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(clickedElement);
-    const isOutsideMenu = !menuRef?.current || !menuRef.current.contains(clickedElement);
-    
-    if (isOutsideDropdown && isOutsideMenu) {
-      setIsDropdownOpen(false);
-    }
-  };
 
   // Define all menu items, we'll filter based on game state later
   const allMenuItems: MenuItem[] = [
@@ -180,8 +164,7 @@ export const useNavigation = () => {
     closeTutorial,
     setIsFeedbackModalOpen,
     setIsBugReportModalOpen,
-    setIsDropdownOpen, // Add missing function
-    handleClickOutside, // Now returns the handler for component use
+    setIsDropdownOpen,
     
     // Responsive values from our new system
     breakpoint,

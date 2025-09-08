@@ -142,4 +142,9 @@
   }
 }
 
+/* Section gap utility */
+.sectionGap {
+  gap: 1rem;
+}
+
 /* Screen sizes below thresholds now handled by warning component */

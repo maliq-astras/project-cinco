@@ -16,7 +16,9 @@ import { useDragState } from '@/hooks/ui/useDragState';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import DropZoneIndicator from '../../cards/DropZoneIndicator';
 import styles from './MobileGameContent.module.css';
-import { mobileGameContentStyles } from './MobileGameContent.styles';
+import { ANIMATIONS } from '@/constants/animations';
+import { getContextLineBackground } from './helpers';
+import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
 
 interface MobileGameContentProps {
   gameState: GameState;
@@ -35,7 +37,7 @@ interface MobileGameContentProps {
   gameControlsRef: React.RefObject<any>;
 }
 
-const MobileGameContent: React.FC<MobileGameContentProps> = ({
+const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
   gameState,
   gameEntranceComplete,
   showGameMessage,
@@ -50,6 +52,16 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
   const isDragging = useDragState(state => state.isDragging);
   const { registerElement, unregisterElement } = useDOMRefs();
   const dropZoneRef = useRef<HTMLDivElement>(null);
+  
+  
+  // Animation configurations
+  const animations = {
+    cardStack: ANIMATIONS.MOBILE_CARD_STACK,
+    topSection: ANIMATIONS.MOBILE_TOP_SECTION,
+    middleSection: ANIMATIONS.MOBILE_MIDDLE_SECTION,
+    bottomSection: ANIMATIONS.MOBILE_BOTTOM_SECTION
+  };
+  
   
   // Register the drop zone as the drop target when dragging in mobile layout
   useEffect(() => {
@@ -76,10 +88,10 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
       {!isAlreadyPlayedScenario && (
         <motion.div 
           className={styles.topSection}
-          {...mobileGameContentStyles.gameEntranceAnimation.cardStack}
+          {...animations.cardStack}
           animate={gameEntranceComplete ? 
-            mobileGameContentStyles.gameEntranceAnimation.cardStack.animate : 
-            mobileGameContentStyles.gameEntranceAnimation.cardStack.initial
+            animations.cardStack.animate : 
+            animations.cardStack.initial
           }
           style={{ position: 'relative' }}
         >
@@ -112,19 +124,19 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
       )}
       
       {/* Middle section */}
-      <div className={`${styles.middleSection} ${isTabletLandscape ? 'py-0' : ''}`} style={mobileGameContentStyles.sectionGap}>
+      <div className={`${styles.middleSection} ${styles.sectionGap} ${isTabletLandscape ? 'py-0' : ''}`}>
         {/* Context line - hide for already-played scenarios and during victory animation */}
-        {!isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+        {shouldShowContextLine(isAlreadyPlayedScenario, isVictoryAnimationActive) && (
           <motion.div 
             className={styles.contextLine}
-            {...mobileGameContentStyles.gameEntranceAnimation.topSection}
+            {...animations.topSection}
             animate={gameEntranceComplete ? 
-              mobileGameContentStyles.gameEntranceAnimation.topSection.animate : 
-              mobileGameContentStyles.gameEntranceAnimation.topSection.initial
+              animations.topSection.animate : 
+              animations.topSection.initial
             }
           >
             <div 
-              style={mobileGameContentStyles.contextLineBackground(colors.primary)} 
+              style={getContextLineBackground(colors.primary)} 
               className="absolute inset-x-0 h-1"
             />
             <div className={styles.contextWrapper}>
@@ -138,10 +150,10 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
         {/* Fact Bubbles Area */}
         <motion.div 
           className={styles.factBubblesWrapper}
-          {...mobileGameContentStyles.gameEntranceAnimation.middleSection}
+          {...animations.middleSection}
           animate={gameEntranceComplete ? 
-            mobileGameContentStyles.gameEntranceAnimation.middleSection.animate : 
-            mobileGameContentStyles.gameEntranceAnimation.middleSection.initial
+            animations.middleSection.animate : 
+            animations.middleSection.initial
           }
         >
           <div className={styles.factBubblesContainer}>
@@ -161,14 +173,14 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
       {/* Bottom section */}
       <motion.div 
         className={`${styles.bottomSection} ${isTabletLandscape ? 'mt-8' : ''}`}
-        {...mobileGameContentStyles.gameEntranceAnimation.bottomSection}
+        {...animations.bottomSection}
         animate={gameEntranceComplete ? 
-          mobileGameContentStyles.gameEntranceAnimation.bottomSection.animate : 
-          mobileGameContentStyles.gameEntranceAnimation.bottomSection.initial
+          animations.bottomSection.animate : 
+          animations.bottomSection.initial
         }
       >
         {/* Game instructions - hide for already-played scenarios and during victory animation */}
-        {!isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+        {shouldShowGameInstructions(isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) && (
           <div className={styles.instructionsWrapper}>
             <div className={styles.instructionsContainer}>
               <div className={styles.instructionsInner}>
@@ -179,7 +191,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
         )}
 
         {/* Game Controls - hide for already-played scenarios and during victory animation */}
-        {!showGameMessage && !isFinalFiveActive && !isAlreadyPlayedScenario && !isVictoryAnimationActive && (
+        {shouldShowGameControls(showGameMessage, isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) && (
           <div className={`${styles.controlsWrapper} ${isTabletLandscape ? 'mb-12' : ''}`}>
             <GameControls ref={gameControlsRef} />
           </div>
@@ -187,6 +199,8 @@ const MobileGameContent: React.FC<MobileGameContentProps> = ({
       </motion.div>
     </motion.div>
   );
-};
+});
+
+MobileGameContent.displayName = 'MobileGameContent';
 
 export default MobileGameContent;

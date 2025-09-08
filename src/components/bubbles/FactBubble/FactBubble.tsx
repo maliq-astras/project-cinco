@@ -3,10 +3,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useFactBubble } from './useFactBubble';
 import { useDragState } from '@/hooks/ui';
 import styles from './FactBubble.module.css';
-import { getFactTypeName } from '@/helpers/i18nHelpers';
+import { useFactBubble } from './hooks';
+import { getBubbleClassNames, getIconClassNames, getResponsiveStyle, getTranslatedFactType } from './helpers';
 
 interface FactBubbleProps {
   factType: string;
@@ -15,20 +15,18 @@ interface FactBubbleProps {
   className?: string;
   style?: React.CSSProperties;
   category?: string;
-  id?: string;
   slotIndex?: number;
 }
 
-export default function FactBubble({ 
+const FactBubble = React.memo<FactBubbleProps>(({ 
   factType, 
   isRevealed, 
   'data-fact-index': factIndex,
   className = '',
   style = {},
   category = 'countries',
-  id,
   slotIndex
-}: FactBubbleProps) {
+}) => {
   const { t } = useTranslation();
   const setIsDragging = useDragState(state => state.setIsDragging);
   
@@ -54,8 +52,10 @@ export default function FactBubble({
     slotIndex
   });
 
-  const bubbleClassNames = isClickable ? styles.bubbleClickable : styles.bubbleNotClickable;
-  const translatedFactType = getFactTypeName(factType, t);
+  const bubbleClassNames = getBubbleClassNames(isClickable);
+  const iconClassNames = getIconClassNames(isClickable);
+  const translatedFactType = getTranslatedFactType(factType, t);
+  const responsiveStyle = getResponsiveStyle(style, responsiveValues.bubbleSize, responsiveValues.bubbleSpacing);
 
   const onDragStart = () => {
     if (isClickable) {
@@ -63,12 +63,6 @@ export default function FactBubble({
       handleDragStart();
     }
   };
-
-  const responsiveStyle = {
-    ...style,
-    '--bubble-size': `${responsiveValues.bubbleSize}px`,
-    '--bubble-spacing': `${responsiveValues.bubbleSpacing}px`
-  } as React.CSSProperties;
 
   return (
     <div 
@@ -82,7 +76,7 @@ export default function FactBubble({
             <motion.button
               ref={bubbleRef}
               key={`bubble-${factIndex}`}
-              className={bubbleClassNames}
+              className={styles[bubbleClassNames]}
               style={{
                 borderColor: `var(--color-${colors.primary})`
               }}
@@ -106,7 +100,7 @@ export default function FactBubble({
                 alt={translatedFactType}
                 width={icon.size}
                 height={icon.size}
-                className={isClickable ? styles.iconClickable : styles.iconNotClickable}
+                className={styles[iconClassNames]}
                 style={{
                   filter: getIconFilter(icon.category)
                 }}
@@ -151,4 +145,8 @@ export default function FactBubble({
       </div>
     </div>
   );
-} 
+});
+
+FactBubble.displayName = 'FactBubble';
+
+export default FactBubble;

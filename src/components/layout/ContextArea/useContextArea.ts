@@ -16,7 +16,6 @@ export function useBubbleContext() {
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
   const { colors, darkMode } = useTheme();
-  const hasUserInput = useGameStore(state => state.hasUserInput);
 
   // Determine message to show when hovering over a bubbleZ
   const getMessage = () => {
@@ -54,21 +53,8 @@ export function useGameInstructions() {
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const { colors, darkMode } = useTheme();
   const hasUserInput = useGameStore(state => state.hasUserInput);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [isLongRequest, setIsLongRequest] = useState(false);
-
-  // Detect touch device on mount
-  useEffect(() => {
-    const detectTouch = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    };
-    
-    detectTouch();
-    window.addEventListener('touchstart', () => setIsTouchDevice(true), { once: true });
-    
-    return () => window.removeEventListener('touchstart', () => setIsTouchDevice(true));
-  }, []);
 
   // Delayed loading indicator for better user experience
   useEffect(() => {

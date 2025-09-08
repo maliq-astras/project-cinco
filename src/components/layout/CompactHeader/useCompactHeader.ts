@@ -1,25 +1,17 @@
 import { useRef, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { useResponsive } from '@/hooks/responsive';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
-
-export interface MenuItem {
-  label: string;
-  onClick: () => void;
-  showArrow?: boolean;
-  ariaLabel?: string;
-}
+import { MenuItem } from '@/types/navigation';
 
 export const useCompactHeader = () => {
-  const { t } = useTranslation();
   const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
   const hardMode = useGameStore(state => state.hardMode);
   const isHardModeEnabled = useGameStore(state => state.isHardModeEnabled);
   const gameState = useGameStore(state => state.gameState);
-  const { breakpoint, mounted, getResponsiveValue } = useResponsive();
+  const { getResponsiveValue } = useResponsive();
   const { registerElement, unregisterElement } = useDOMRefs();
   
   // UI state from gameStore
@@ -135,7 +127,7 @@ export const useCompactHeader = () => {
     },
     challenge,
     logoRef,
-    categoryTitleRef, // Add the missing ref
+    categoryTitleRef, 
     isMenuOpen,
     toggleMenu,
     menuItems,
@@ -148,9 +140,7 @@ export const useCompactHeader = () => {
     setIsFeedbackModalOpen,
     isBugReportModalOpen,
     setIsBugReportModalOpen,
-    // Add responsive sizes
     compactSizes,
-    // Hard mode state
     hardMode,
     isHardModeEnabled
   };

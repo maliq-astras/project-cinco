@@ -1,35 +1,26 @@
 'use client';
 
-import React, { CSSProperties, useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { CSSProperties, useMemo, useCallback } from 'react';
 import { useMainContainer } from './useMainContainer';
-import { mainContainerStyles } from './MainContainer.styles';
+import styles from './MainContainer.module.css';
 import { 
   FactCard, 
-  FinalFiveModal, 
-  Header, 
-  FactCardStackContainer, 
-  FactBubbleGrid, 
-  GameControls, 
   LoadingAnimation, 
-  EndGameMessage, 
-  BubbleContextArea, 
-  GameInstructionsArea, 
-  Navigation, 
-  FinalFiveIntro,
   WrongAnswerOverlay,
   LanguageSwitchLoader
 } from '@/components';
-import CompactHeader from '../CompactHeader';
-import GameContent from '../GameContent';
-import MobileGameContent from '../MobileGameContent';
+import GameContentRenderer from '../GameContentRenderer';
+import { getHeaderComponent, getResponsiveLayoutClass, getSmartScalingStyle } from './helpers';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
+import { useScreenSizeValidation } from '@/hooks/ui/useScreenSizeValidation';
 import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
-import { isMobileDevice, isScreenTooSmall } from '@/helpers/deviceDetection';
+import { ANIMATIONS } from '@/constants/animations';
 
 export default function MainContainer() {
+  // Animation objects
+  const fadeInAnimation = useMemo(() => ANIMATIONS.FADE_IN, []);
   const {
     gameState,
     viewingFact,
@@ -41,7 +32,6 @@ export default function MainContainer() {
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
-    colors,
     showGameMessage,
     isVictoryAnimationActive,
     isAlreadyPlayedScenario,
@@ -50,9 +40,7 @@ export default function MainContainer() {
     getGameMessageProps,
     startFinalFive,
     breakpoint,
-    layoutMode,
-    isNarrow,
-    isLandscape
+    isNarrow
   } = useMainContainer();
   
   // Get responsive layout mode from the store
@@ -64,68 +52,32 @@ export default function MainContainer() {
   // Wrong answer overlay hook
   const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
   
-  // Get current screen dimensions for size checks
-  const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
+  // Screen size validation hook
+  const { isScreenTooSmall, isActualMobileDevice } = useScreenSizeValidation(isNarrow);
   
-  useEffect(() => {
-    const updateDimensions = () => {
-      setScreenDimensions({ width: window.innerWidth, height: window.innerHeight });
-    };
-    
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
-  
-  // Determine actual device type and layout needs
-  const isActualMobileDevice = isMobileDevice();
+  // Layout determination
   const needsMobileLayout = isNarrow;
   
-  // Check if screen is too small (only after dimensions are initialized)
-  const screenTooSmall = screenDimensions.width > 0 && screenDimensions.height > 0 && 
-    isScreenTooSmall(screenDimensions.width, screenDimensions.height, isActualMobileDevice, needsMobileLayout);
-  
-  // Screen size warning takes priority
-  if (screenTooSmall) {
+  // Early return for screen size warning
+  if (isScreenTooSmall) {
     return <ScreenSizeWarning isMobile={isActualMobileDevice} />;
   }
 
-  // Create responsive layout classes and smart scaling for no-scroll experience
-  const getResponsiveLayoutClasses = () => {
-    if (!isTabletLandscape) return '';
-    
-    switch (responsiveLayoutMode) {
-      case 'compact':
-        return 'layout-compact';
-      case 'spacious':
-        return 'layout-spacious';
-      default:
-        return 'layout-normal';
-    }
-  };
+  // Memoized layout utilities
+  const responsiveLayoutClass = useMemo(() => 
+    getResponsiveLayoutClass(isTabletLandscape, responsiveLayoutMode),
+    [isTabletLandscape, responsiveLayoutMode]
+  );
 
-  // Create smart scaling style only when needed for no-scroll experience
-  const getSmartScalingStyle = (): CSSProperties => {
-    if (!isTabletLandscape || scaleFactor >= 0.99) {
-      return {}; // No scaling needed
-    }
-    
-    return {
-      transform: `scale(${scaleFactor})`,
-      transformOrigin: 'center top',
-      height: '100%',
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      overflow: 'visible'
-    };
-  };
+  const smartScalingStyle = useMemo(() =>
+    getSmartScalingStyle(isTabletLandscape, scaleFactor),
+    [isTabletLandscape, scaleFactor]
+  );
 
   return (
-    <div className={isTabletLandscape ? mainContainerStyles.tabletLandscapeContainer : mainContainerStyles.container}>
+    <div className={isTabletLandscape ? styles.tabletLandscapeContainer : styles.container}>
       {!loadingComplete ? (
-        <div className={mainContainerStyles.loadingWrapper}>
+        <div className={styles.loadingWrapper}>
           <LoadingAnimation 
             finalCategory={gameState.challenge?.category || "Please wait..."} 
             onComplete={handleLoadingComplete}
@@ -134,76 +86,31 @@ export default function MainContainer() {
         </div>
       ) : (
         <>
-          {/* Use CompactHeader for limited vertical space, regular Header+Navigation otherwise */}
-          {breakpoint === 'xs' || breakpoint === 'sm' || (breakpoint === 'md' && isLandscape) || (screenDimensions.width < 900 && screenDimensions.height < 1051) ? (
-            <CompactHeader headerEntranceComplete={headerEntranceComplete} />
-          ) : (
-            <>
-              <Navigation headerEntranceComplete={headerEntranceComplete} />
-              <Header headerEntranceComplete={headerEntranceComplete} />
-            </>
-          )}
+          {getHeaderComponent({
+            breakpoint,
+            headerEntranceComplete
+          })}
 
           <main 
-            className={`${isTabletLandscape ? mainContainerStyles.tabletLandscapeMain : mainContainerStyles.main} ${getResponsiveLayoutClasses()}`}
-            style={getSmartScalingStyle()}
+            className={`${isTabletLandscape ? styles.tabletLandscapeMain : styles.main} ${responsiveLayoutClass}`}
+            style={smartScalingStyle}
           >
-            {gameState.challenge && (
-              <>
-                {/* Final Five Transition Container - Absolute overlay */}
-                <AnimatePresence>
-                  {showFinalFiveTransition && (
-                    <motion.div
-                      key="final-five-transition"
-                      className="absolute inset-0 flex items-center justify-center z-10"
-                      {...mainContainerStyles.fadeIn}
-                    >
-                      <FinalFiveIntro 
-                        reason={finalFiveTransitionReason || 'guesses'} 
-                        onStart={startFinalFive}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Main game content - conditional layout */}
-                <AnimatePresence>
-                  {!showFinalFiveTransition && (
-                    <>
-                      {!needsMobileLayout ? (
-                        // Desktop layout
-                        <GameContent
-                          gameState={gameState}
-                          gameEntranceComplete={gameEntranceComplete}
-                          showGameMessage={showGameMessage}
-                          getGameMessageProps={getGameMessageProps}
-                          isFinalFiveActive={isFinalFiveActive}
-                          isAlreadyPlayedScenario={isAlreadyPlayedScenario}
-                          isVictoryAnimationActive={isVictoryAnimationActive}
-                          gameControlsRef={gameControlsRef}
-                        />
-                      ) : (
-                        // Mobile layout
-                        <MobileGameContent
-                          gameState={gameState}
-                          gameEntranceComplete={gameEntranceComplete}
-                          showGameMessage={showGameMessage}
-                          getGameMessageProps={getGameMessageProps}
-                          isFinalFiveActive={isFinalFiveActive}
-                          isAlreadyPlayedScenario={isAlreadyPlayedScenario}
-                          isVictoryAnimationActive={isVictoryAnimationActive}
-                          isTabletLandscape={isTabletLandscape}
-                          gameControlsRef={gameControlsRef}
-                        />
-                      )}
-                    </>
-                  )}
-                </AnimatePresence>
-                
-                {/* Final Five Modal */}
-                {isFinalFiveActive && <FinalFiveModal />}
-              </>
-            )}
+            <GameContentRenderer
+              gameState={gameState}
+              gameEntranceComplete={gameEntranceComplete}
+              showGameMessage={showGameMessage}
+              getGameMessageProps={getGameMessageProps}
+              isFinalFiveActive={isFinalFiveActive}
+              isAlreadyPlayedScenario={isAlreadyPlayedScenario}
+              isVictoryAnimationActive={isVictoryAnimationActive}
+              gameControlsRef={gameControlsRef}
+              showFinalFiveTransition={showFinalFiveTransition}
+              finalFiveTransitionReason={finalFiveTransitionReason}
+              startFinalFive={startFinalFive}
+              needsMobileLayout={needsMobileLayout}
+              isTabletLandscape={isTabletLandscape}
+              fadeInAnimation={fadeInAnimation}
+            />
           </main>
           
           {/* Viewing card from the stack */}

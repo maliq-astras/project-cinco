@@ -1,3 +1,6 @@
+// Re-export navigation types
+export * from './navigation';
+
 // Define game outcome types
 export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss-final-five-wrong' | 'loss-final-five-time' | 'loss-time';
 

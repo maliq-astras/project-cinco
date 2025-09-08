@@ -1,24 +1,18 @@
-/**
- * CSS Modules for GameContent component
- * Implements 2-column layout for wide screens
- */
-
-/* Main container - CSS Grid layout */
 .container {
   display: grid;
-  grid-template-rows: 1fr auto; /* Main content area, then controls */
-  grid-template-columns: 1fr 1fr; /* Equal space - separator line in exact center */
+  grid-template-rows: 1fr auto; 
+  grid-template-columns: 1fr 1fr; 
   grid-template-areas: 
     "cards bubbles"
     "controls controls";
-  gap: 1.5rem 2rem; /* Smaller vertical gap, larger horizontal gap */
+  gap: 1.5rem 2rem; 
   width: 100%;
   height: 100%;
   padding: 0 1rem 1rem 1rem;
   align-items: start;
 }
 
-/* Cards Panel - Left side */
+
 .cardsPanel {
   grid-area: cards;
   display: flex;
@@ -26,16 +20,16 @@
   height: 100%;
   justify-content: center;
   align-items: center;
-  min-width: 0; /* Prevent flex overflow */
+  min-width: 0; 
   position: relative;
 }
 
-/* Separator line between panels */
+
 .cardsPanel::after {
   content: '';
   position: absolute;
   top: 0;
-  right: -1rem; /* Position at the gap center (1rem from 2rem gap) */
+  right: -1rem; 
   width: 1px;
   height: 100%;
   background: linear-gradient(
@@ -59,19 +53,19 @@
   );
 }
 
-/* Bubbles Panel - Right side */
+
 .bubblesPanel {
   grid-area: bubbles;
   display: flex;
   flex-direction: column;
   height: 100%;
   gap: 0.5rem;
-  min-width: 0; /* Prevent flex overflow */
-  justify-content: center; /* Match left panel centering */
-  align-items: center; /* Match left panel centering */
+  min-width: 0; 
+  justify-content: center; 
+  align-items: center; 
 }
 
-/* Card Stack Section */
+
 .cardSection {
   display: flex;
   justify-content: center;
@@ -81,7 +75,7 @@
   height: 100%;
 }
 
-/* Controls Panel - Bottom spanning full width */
+
 .controlsPanel {
   grid-area: controls;
   display: flex;
@@ -91,7 +85,7 @@
   padding-top: 1rem;
 }
 
-/* Instructions Wrapper */
+
 .instructionsWrapper {
   width: 100%;
   display: flex;
@@ -100,27 +94,27 @@
   margin-bottom: 0.5rem;
 }
 
-/* Instructions Container */
+
 .instructionsContainer {
   display: flex;
   justify-content: center;
 }
 
-/* Game Controls Wrapper */
+
 .gameControlsWrapper {
   display: flex;
   justify-content: center;
 }
 
-/* Context Line */
+
 .contextLine {
   width: 100%;
   position: relative;
   flex-shrink: 0;
-  margin-top: 0.25rem; /* 4px spacing below bubbles - much closer */
+  margin-top: 0.25rem; 
 }
 
-/* Context Wrapper */
+
 .contextWrapper {
   position: absolute;
   top: 50%;
@@ -131,7 +125,6 @@
   justify-content: center;
 }
 
-/* Context Container */
 .contextContainer {
   padding: 0 1rem 0.25rem 1rem;
   border-radius: 0.5rem;
@@ -139,20 +132,17 @@
   z-index: 10;
 }
 
-/* Fact Bubbles Wrapper */
 .factBubblesWrapper {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-bottom: 0; /* Remove bottom margin since context is now below */
-  padding-bottom: 0; /* Remove any bottom padding */
-  /* Force perfect vertical centering */
+  margin-bottom: 0; 
+  padding-bottom: 0; 
   min-height: 0;
 }
 
-/* Fact Bubbles Container */
 .factBubblesContainer {
   width: 100%;
   display: flex;
@@ -160,13 +150,11 @@
   align-items: center;
   margin-bottom: 0;
   padding-bottom: 0;
-  position: relative; /* For absolute positioning of bubble context */
+  position: relative; 
 }
 
-/* Bubble Context Area - positioned directly below bubbles */
 .bubbleContextArea {
   position: absolute;
-  /* bottom is set dynamically via inline style based on bubble size */
   left: 0;
   right: 0;
   display: flex;
@@ -175,16 +163,15 @@
   z-index: 10;
 }
 
-/* Responsive adjustments for smaller wide screens */
 @media (max-width: 1200px) {
   .container {
-    grid-template-columns: 1fr 1fr; /* Equal columns for smaller wide screens */
+    grid-template-columns: 1fr 1fr; 
     gap: 1.5rem;
-    padding: 0 0 1rem 0; /* Remove left and right padding to use full width */
+    padding: 0 0 1rem 0; 
   }
   
   .cardsPanel {
-    padding-left: 1rem; /* Add some breathing room from left edge */
+    padding-left: 1rem; 
   }
   
   .leftPanel {
@@ -196,14 +183,10 @@
   }
 }
 
-/* Adjust for very wide screens */
 @media (min-width: 1600px) {
   .container {
-    gap: 3rem; /* Larger gap for breathing room */
-    max-width: 1400px; /* Container max-width for very wide screens */
-    margin: 0 auto; /* Center the container */
-    /* Keep equal 1fr 1fr columns for perfect balance */
+    gap: 3rem; 
+    max-width: 1400px; 
+    margin: 0 auto; 
   }
 }
-
-/* Desktop threshold now handled by screen size warning component */

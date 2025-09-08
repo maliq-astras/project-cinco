@@ -1,2 +1,2 @@
 export { default } from './FactBubble';
-export { useFactBubble } from './useFactBubble';
+export { useFactBubble } from './hooks';

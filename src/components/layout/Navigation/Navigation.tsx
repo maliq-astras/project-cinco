@@ -7,8 +7,17 @@ import NavDropdownMenu from '../NavDropdownMenu';
 import FeedbackModal from '@/components/modals/FeedbackModal';
 import BugReportModal from '@/components/modals/BugReportModal';
 import { useNavigation } from './useNavigation';
-import { navigationStyles } from './Navigation.styles';
-import { useMainContainer } from '../MainContainer';
+import styles from './Navigation.module.css';
+import { useResponsive } from '@/hooks/responsive';
+import { ANIMATIONS } from '@/constants/animations';
+import { 
+  getDropdownButtonStyle, 
+  getDropdownButtonClass, 
+  getNavIconStyle,
+  getDropdownMenuStyle,
+  getMenuItemStyle 
+} from './helpers';
+import { getHardModeBadgeStyle } from '@/utils/layout';
 
 
 
@@ -16,7 +25,7 @@ interface NavigationProps {
   headerEntranceComplete?: boolean;
 }
 
-export default function Navigation({ headerEntranceComplete = false }: NavigationProps) {
+const Navigation = React.memo(function Navigation({ headerEntranceComplete = false }: NavigationProps) {
   const { t } = useTranslation();
   const {
     colors,
@@ -34,84 +43,32 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
     closeSettings,
     closeTutorial,
     setIsFeedbackModalOpen,
-    setIsBugReportModalOpen
+    setIsBugReportModalOpen,
+    setIsDropdownOpen
   } = useNavigation();
   
-  const { headerSizeMode } = useMainContainer();
+  const { responsiveValues, breakpoint } = useResponsive();
+  
+  
+  // Animation object
+  const navigationAnimation = ANIMATIONS.NAVIGATION;
 
-  // Get navigation size classes based on headerSizeMode
-  const getNavigationSizeClasses = () => {
-    switch (headerSizeMode) {
-      case 'xs':
-        return {
-          container: navigationStyles.containerXs,
-          innerContainer: navigationStyles.innerContainerXs,
-          navBar: navigationStyles.navBarXs,
-          nav: navigationStyles.navXs,
-          dropdownButton: navigationStyles.dropdownButtonXs,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassXs,
-          navIconClass: navigationStyles.navIconClassXs,
-          iconSize: navigationStyles.iconSizeXs
-        };
-      case 'sm':
-        return {
-          container: navigationStyles.containerSm,
-          innerContainer: navigationStyles.innerContainerSm,
-          navBar: navigationStyles.navBarSm,
-          nav: navigationStyles.navSm,
-          dropdownButton: navigationStyles.dropdownButtonSm,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassSm,
-          navIconClass: navigationStyles.navIconClassSm,
-          iconSize: navigationStyles.iconSizeSm
-        };
-      case 'md':
-        return {
-          container: navigationStyles.containerMd,
-          innerContainer: navigationStyles.innerContainerMd,
-          navBar: navigationStyles.navBarMd,
-          nav: navigationStyles.navMd,
-          dropdownButton: navigationStyles.dropdownButtonMd,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassMd,
-          navIconClass: navigationStyles.navIconClassMd,
-          iconSize: navigationStyles.iconSizeMd
-        };
-      case 'lg':
-        return {
-          container: navigationStyles.containerLg,
-          innerContainer: navigationStyles.innerContainerLg,
-          navBar: navigationStyles.navBarLg,
-          nav: navigationStyles.navLg,
-          dropdownButton: navigationStyles.dropdownButtonLg,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassLg,
-          navIconClass: navigationStyles.navIconClassLg,
-          iconSize: navigationStyles.iconSizeLg
-        };
-      case 'xl':
-        return {
-          container: navigationStyles.containerXl,
-          innerContainer: navigationStyles.innerContainerXl,
-          navBar: navigationStyles.navBarXl,
-          nav: navigationStyles.navXl,
-          dropdownButton: navigationStyles.dropdownButtonXl,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassXl,
-          navIconClass: navigationStyles.navIconClassXl,
-          iconSize: navigationStyles.iconSizeXl
-        };
-      default:
-        return {
-          container: navigationStyles.containerMd,
-          innerContainer: navigationStyles.innerContainerMd,
-          navBar: navigationStyles.navBarMd,
-          nav: navigationStyles.navMd,
-          dropdownButton: navigationStyles.dropdownButtonMd,
-          dropdownButtonClass: navigationStyles.dropdownButtonClassMd,
-          navIconClass: navigationStyles.navIconClassMd,
-          iconSize: navigationStyles.iconSizeMd
-        };
-    }
+  // Get responsive CSS classes based on breakpoint
+  const getResponsiveNavClasses = () => {
+    const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    const bp = capitalize(breakpoint);
+    
+    return {
+      container: `${styles.container} ${styles[`container${bp}`] || styles.containerMd}`,
+      innerContainer: `${styles.innerContainer} ${styles[`innerContainer${bp}`] || styles.innerContainerMd}`,
+      navBar: `${styles.navBar} ${styles[`navBar${bp}`] || styles.navBarMd}`,
+      nav: `${styles[`nav${bp}`] || styles.navMd}`,
+      navIconClass: `${styles[`navIconClass${bp}`] || styles.navIconClassMd}`,
+      iconSize: styles[`iconSize${bp}`] || styles.iconSizeMd
+    };
   };
 
-  const navClasses = getNavigationSizeClasses();
+  const navClasses = getResponsiveNavClasses();
 
   return (
     <>
@@ -119,11 +76,11 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
         <div className={navClasses.innerContainer}>
           <div className={navClasses.navBar}>
             {/* Hard Mode Badge */}
-            <div className={navigationStyles.badgeContainer}>
+            <div className={styles.badgeContainer}>
               {(hardMode || isHardModeEnabled) && (
                 <motion.div 
-                  className={navigationStyles.hardModeBadgeText}
-                  style={navigationStyles.hardModeBadge(colors.primary)}
+                  className={styles.hardModeBadgeText}
+                  style={getHardModeBadgeStyle(colors.primary)}
                   initial={{ opacity: 0, scale: 0.8, y: -10 }}
                   animate={headerEntranceComplete ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: -10 }}
                   transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
@@ -134,14 +91,14 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
             </div>
             
             <nav className={navClasses.nav}>
-              <div className={navigationStyles.dropdownContainer} ref={dropdownRef}>
+              <div className={styles.dropdownContainer} ref={dropdownRef}>
                 <motion.button 
-                  className={navClasses.dropdownButtonClass(isDropdownOpen)} 
-                  style={navClasses.dropdownButton(isDropdownOpen, colors.primary)}
+                  className={getDropdownButtonClass(isDropdownOpen)} 
+                  style={getDropdownButtonStyle(isDropdownOpen, colors.primary, responsiveValues.navigation.dropdownButtonPadding)}
                   onClick={toggleDropdown}
                   aria-label={t('ui.buttons.info')}
-                  {...navigationStyles.headerAnimations.navigationIcons}
-                  animate={headerEntranceComplete ? navigationStyles.headerAnimations.navigationIcons.animate : navigationStyles.headerAnimations.navigationIcons.initial}
+                  {...navigationAnimation}
+                  animate={headerEntranceComplete ? navigationAnimation.animate : navigationAnimation.initial}
                 >
                   <motion.svg 
                     className={navClasses.iconSize} 
@@ -166,7 +123,7 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
               </div>
               <motion.button 
                 className={navClasses.navIconClass}
-                style={navigationStyles.navIcon(colors.primary)}
+                style={getNavIconStyle(colors.primary)}
                 onClick={openSettings}
                 aria-label={t('ui.buttons.settings')}
                 initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
@@ -212,4 +169,8 @@ export default function Navigation({ headerEntranceComplete = false }: Navigatio
       />
     </>
   );
-} 
+});
+
+Navigation.displayName = 'Navigation';
+
+export default Navigation;

@@ -1,2 +1,2 @@
 export { default } from './FactBubbleGrid';
-export { useFactBubbleGrid } from './useFactBubbleGrid';
+export { useFactBubbleGrid } from './hooks';

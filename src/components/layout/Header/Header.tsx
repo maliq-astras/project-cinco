@@ -4,9 +4,9 @@ import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import Logo from '../Logo';
 import { useHeader } from './useHeader';
-import { headerStyles } from './Header.styles';
+import styles from './Header.module.css';
 import { getCategoryName } from '@/helpers/i18nHelpers';
-import { useMainContainer } from '../MainContainer';
+import { useResponsive } from '@/hooks/responsive';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -14,70 +14,37 @@ interface HeaderProps {
   headerEntranceComplete?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
+const Header: React.FC<HeaderProps> = React.memo(({ headerEntranceComplete = false }) => {
   const { t } = useTranslation();
   const { colors, challenge, logoRef, categoryTitleRef } = useHeader();
-  const { headerSizeMode } = useMainContainer();
+  const { responsiveValues, breakpoint } = useResponsive();
+  
+  // Helper function for dynamic title styling
+  const getTitleStyle = (primaryColor: string) => ({
+    fontSize: responsiveValues.header.titleFontSize,
+    lineHeight: 1,
+    color: `var(--color-${primaryColor})`,
+    maxWidth: responsiveValues.header.titleMaxWidth,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap"
+  } as React.CSSProperties);
 
-  // Get header size classes based on headerSizeMode
-  const getHeaderSizeClasses = () => {
-    switch (headerSizeMode) {
-      case 'xs':
-        return {
-          container: headerStyles.containerXs,
-          content: headerStyles.contentXs,
-          logoContainer: headerStyles.logoContainerXs,
-          title: headerStyles.titleXs,
-          titleText: headerStyles.titleTextXs(colors)
-        };
-      case 'sm':
-        return {
-          container: headerStyles.containerSm,
-          content: headerStyles.contentSm,
-          logoContainer: headerStyles.logoContainerSm,
-          title: headerStyles.titleSm,
-          titleText: headerStyles.titleTextSm(colors)
-        };
-      case 'md':
-        return {
-          container: headerStyles.containerMd,
-          content: headerStyles.contentMd,
-          logoContainer: headerStyles.logoContainerMd,
-          title: headerStyles.titleMd,
-          titleText: headerStyles.titleTextMd(colors)
-        };
-      case 'lg':
-        return {
-          container: headerStyles.containerLg,
-          content: headerStyles.contentLg,
-          logoContainer: headerStyles.logoContainerLg,
-          title: headerStyles.titleLg,
-          titleText: headerStyles.titleTextLg(colors)
-        };
-      case 'xl':
-        return {
-          container: headerStyles.containerXl,
-          content: headerStyles.contentXl,
-          logoContainer: headerStyles.logoContainerXl,
-          title: headerStyles.titleXl,
-          titleText: headerStyles.titleTextXl(colors)
-        };
-      default:
-        return {
-          container: headerStyles.containerMd,
-          content: headerStyles.contentMd,
-          logoContainer: headerStyles.logoContainerMd,
-          title: headerStyles.titleMd,
-          titleText: headerStyles.titleTextMd(colors)
-        };
-    }
+  // Get responsive CSS classes based on breakpoint
+  const getResponsiveClasses = () => {
+    return {
+      container: `${styles.container} ${styles[`container${breakpoint.charAt(0).toUpperCase() + breakpoint.slice(1)}`] || styles.containerMd}`,
+      content: `${styles.content} ${styles[`content${breakpoint.charAt(0).toUpperCase() + breakpoint.slice(1)}`] || styles.contentMd}`,
+      logoContainer: `${styles[`logoContainer${breakpoint.charAt(0).toUpperCase() + breakpoint.slice(1)}`] || styles.logoContainerMd}`,
+      title: `${styles.title} ${styles[`title${breakpoint.charAt(0).toUpperCase() + breakpoint.slice(1)}`] || styles.titleMd}`
+    };
   };
 
-  const headerClasses = getHeaderSizeClasses();
+  const headerClasses = getResponsiveClasses();
 
   return (
     <div className={headerClasses.container}>
-      <header className={headerStyles.header}>
+      <header className={styles.header}>
         <div className={headerClasses.content}>
           <motion.div 
             ref={logoRef}
@@ -95,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
               ref={categoryTitleRef}
               id="category-title"
               className={`${headerClasses.title} ${righteous.className} header-title`}
-              style={headerClasses.titleText}
+              style={getTitleStyle(colors.primary)}
               initial={{ opacity: 0, y: -15 }}
               animate={headerEntranceComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: -15 }}
               transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -107,6 +74,8 @@ const Header: React.FC<HeaderProps> = ({ headerEntranceComplete = false }) => {
       </header>
     </div>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 export default Header; 

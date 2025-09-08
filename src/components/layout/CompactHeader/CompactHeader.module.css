@@ -6,17 +6,17 @@
 
 .content {
   display: flex;
-  align-items: flex-start; /* Change from center to flex-start to allow top alignment */
-  justify-content: center; /* Center the title section */
-  padding: 0.375rem 1rem 0.75rem 1rem; /* Reduced top padding from 0.75rem to 0.375rem */
+  align-items: flex-start; 
+  justify-content: center; 
+  padding: 0.375rem 1rem 0.75rem 1rem; 
   width: 100%;
-  position: relative; /* For absolute positioning of hamburger */
+  position: relative; 
 }
 
 .leftSection {
   display: flex;
   align-items: center;
-  padding-top: 0.25rem; /* Add padding to keep logo and title at proper height */
+  padding-top: 0.25rem; 
 }
 
 .logoContainer {
@@ -35,12 +35,12 @@
 }
 
 .rightSection {
-  position: absolute; /* Position absolutely to not affect centering */
-  right: 1rem; /* Position from right edge */
-  top: 0.375rem; /* Align with top padding */
+  position: absolute; 
+  right: 1rem; 
+  top: 0.375rem; 
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem; /* Space between hard mode badge and hamburger */
+  gap: 0.5rem; 
 }
 
 .hamburgerButton {
@@ -48,8 +48,8 @@
   border-radius: 9999px;
   transition: background-color 0.2s;
   color: hsl(var(--primary));
-  margin-top: -0.275rem; /* Move down further from -0.6875rem */
-  margin-right: -0.65rem; /* Move more to the right */
+  margin-top: -0.275rem; 
+  margin-right: -0.65rem; 
 }
 
 .hamburgerIcon {
@@ -99,7 +99,7 @@
   color: rgb(255 255 255);
   text-transform: uppercase;
   white-space: nowrap;
-  margin-top: 0.125rem; /* Align with hamburger button */
+  margin-top: 0.125rem; 
 }
 
 @media (min-width: 640px) {

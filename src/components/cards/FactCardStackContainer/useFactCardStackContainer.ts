@@ -3,7 +3,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useDragState } from '@/hooks/ui';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useResponsive } from '@/hooks/responsive';
-import { isMobileLayout } from '@/helpers/breakpoints';
+import { isMobileLayout } from '@/constants/breakpoints';
 
 export function useFactCardStackContainer() {
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);

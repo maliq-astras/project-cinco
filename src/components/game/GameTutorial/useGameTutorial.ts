@@ -116,7 +116,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
       if (element) {
         const rect = element.getBoundingClientRect();
         const textPadding = 24;
-        const { isMobileLayout } = require('@/helpers/breakpoints');
+        const { isMobileLayout } = require('@/constants/breakpoints');
         const isMobile = isMobileLayout(width, height);
         const navigationHeight = 120;
         const viewportHeight = height;

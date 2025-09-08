@@ -1,16 +1,10 @@
 import React from 'react';
 import { Inter } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
-import { navDropdownMenuStyles } from './navDropdownMenuStyles';
+import { MenuItem } from '@/types/navigation';
+import styles from './NavDropdownMenu.module.css';
 
 const inter = Inter({ subsets: ['latin'] });
-
-interface MenuItem {
-  label: string;
-  onClick: () => void;
-  showArrow?: boolean;
-  ariaLabel?: string;
-}
 
 interface NavDropdownMenuProps {
   isOpen: boolean;
@@ -39,6 +33,16 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
   const { t } = useTranslation();
   const menuRef = React.useRef<HTMLDivElement>(null);
   
+  // Helper functions for dynamic styles
+  const getMenuContainerStyle = (primaryColor: string) => ({
+    borderColor: `var(--color-${primaryColor})`
+  });
+  
+  const getMenuItemStyle = (primaryColor: string) => ({
+    color: `var(--color-${primaryColor})`
+  });
+  
+  
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
       onClose();
@@ -50,8 +54,8 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
   return (
     <div 
       ref={menuRef}
-      className={navDropdownMenuStyles.menuContainer}
-      style={navDropdownMenuStyles.menuContainerStyle(colors.primary)}
+      className={styles.menuContainer}
+      style={getMenuContainerStyle(colors.primary)}
       role="menu"
       aria-label={t(menuTitle)}
       onKeyDown={handleKeyDown}
@@ -60,16 +64,16 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
         <button
           key={index}
           onClick={item.onClick}
-          className={`${inter.className} ${navDropdownMenuStyles.menuItem}`}
-          style={navDropdownMenuStyles.menuItemStyle(colors.primary)}
+          className={`${inter.className} ${styles.menuItem}`}
+          style={getMenuItemStyle(colors.primary)}
           role="menuitem"
           aria-label={item.ariaLabel ? t(item.ariaLabel) : t(item.label)}
         >
-          <span style={navDropdownMenuStyles.textContainer}>{t(item.label)}</span>
+          <span className={styles.textContainer}>{t(item.label)}</span>
           {item.showArrow && (
-            <div style={navDropdownMenuStyles.arrowContainer}>
+            <div className={styles.arrowContainer}>
               <svg 
-                className={navDropdownMenuStyles.arrowIcon}
+                className={styles.arrowIcon}
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"

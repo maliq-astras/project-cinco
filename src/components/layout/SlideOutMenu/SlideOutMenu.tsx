@@ -4,16 +4,10 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Inter, Righteous } from 'next/font/google';
+import { Righteous } from 'next/font/google';
+import { MenuItem } from '@/types/navigation';
 
-const inter = Inter({ subsets: ['latin'] });
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
-
-interface MenuItem {
-  label: string;
-  onClick: () => void;
-  ariaLabel?: string;
-}
 
 interface SlideOutMenuProps {
   isOpen: boolean;

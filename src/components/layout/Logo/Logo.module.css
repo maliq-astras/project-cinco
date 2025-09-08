@@ -1,9 +1,3 @@
-/**
- * CSS Modules for Logo component - Static styles only
- * Dynamic styles remain in Logo.styles.ts
- */
-
-/* Base logo image styles */
 .logo {
   display: block;
   object-fit: contain;

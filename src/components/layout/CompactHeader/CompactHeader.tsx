@@ -8,9 +8,11 @@ import SettingsPanel from '../../modals/SettingsPanel';
 import FeedbackModal from '../../modals/FeedbackModal';
 import BugReportModal from '../../modals/BugReportModal';
 import SlideOutMenu from '../SlideOutMenu';
-import { useCompactHeader, type MenuItem } from './useCompactHeader';
+import { useCompactHeader } from './useCompactHeader';
 import { getCategoryName } from '@/helpers/i18nHelpers';
 import styles from './CompactHeader.module.css';
+import { ANIMATIONS } from '@/constants/animations';
+import { getHardModeBadgeStyle } from '@/utils/layout';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -18,7 +20,7 @@ interface CompactHeaderProps {
   headerEntranceComplete?: boolean;
 }
 
-const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = false }) => {
+const CompactHeader: React.FC<CompactHeaderProps> = React.memo(({ headerEntranceComplete = false }) => {
   const { t } = useTranslation();
   const {
     colors,
@@ -52,9 +54,9 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
                 ref={logoRef}
                 id="header-area"
                 className={styles.logoContainer}
-                initial={{ opacity: 0, scale: 0.8, x: -20 }}
-                animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: -20 }}
-                transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                initial={ANIMATIONS.LOGO.initial}
+                animate={headerEntranceComplete ? ANIMATIONS.LOGO.animate : ANIMATIONS.LOGO.initial}
+                transition={ANIMATIONS.LOGO.transition}
               >
                 <Logo height="128px" />
               </motion.div>
@@ -69,9 +71,9 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
                     fontSize: compactSizes.titleFontSize,
                     maxWidth: compactSizes.titleMaxWidth
                   }}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={headerEntranceComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-                  transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  initial={ANIMATIONS.CATEGORY_TITLE.initial}
+                  animate={headerEntranceComplete ? ANIMATIONS.CATEGORY_TITLE.animate : ANIMATIONS.CATEGORY_TITLE.initial}
+                  transition={ANIMATIONS.CATEGORY_TITLE.transition}
                 >
                   {getCategoryName(challenge.category, t)}
                 </motion.h1>
@@ -84,12 +86,10 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
               {(hardMode || isHardModeEnabled) && (
                 <motion.div 
                   className={styles.hardModeBadge}
-                  style={{
-                    backgroundColor: `var(--color-${colors.primary})`
-                  }}
-                  initial={{ opacity: 0, scale: 0.8, x: 10 }}
-                  animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: 10 }}
-                  transition={{ duration: 0.4, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  style={getHardModeBadgeStyle(colors.primary)}
+                  initial={ANIMATIONS.HARD_MODE_BADGE.initial}
+                  animate={headerEntranceComplete ? ANIMATIONS.HARD_MODE_BADGE.animate : ANIMATIONS.HARD_MODE_BADGE.initial}
+                  transition={ANIMATIONS.HARD_MODE_BADGE.transition}
                 >
                   {t('ui.settings.hard')}
                 </motion.div>
@@ -99,9 +99,9 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
                 className={`${styles.hamburgerButton} ${isMenuOpen ? styles.active : ''}`}
                 onClick={toggleMenu}
                 aria-label={t('ui.buttons.menu')}
-                initial={{ opacity: 0, scale: 0.8, x: 20 }}
-                animate={headerEntranceComplete ? { opacity: 1, scale: 1, x: 0 } : { opacity: 0, scale: 0.8, x: 20 }}
-                transition={{ duration: 0.5, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                initial={ANIMATIONS.HAMBURGER_BUTTON.initial}
+                animate={headerEntranceComplete ? ANIMATIONS.HAMBURGER_BUTTON.animate : ANIMATIONS.HAMBURGER_BUTTON.initial}
+                transition={ANIMATIONS.HAMBURGER_BUTTON.transition}
               >
                 <motion.svg
                   className={styles.hamburgerIcon}
@@ -154,6 +154,8 @@ const CompactHeader: React.FC<CompactHeaderProps> = ({ headerEntranceComplete = 
       />
     </>
   );
-};
+});
+
+CompactHeader.displayName = 'CompactHeader';
 
 export default CompactHeader;

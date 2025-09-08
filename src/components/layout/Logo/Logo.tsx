@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useLogo } from './useLogo';
-import { logoStyles } from './Logo.styles';
+import styles from './Logo.module.css';
 
 interface LogoProps {
   width?: number | string;
@@ -25,8 +25,11 @@ const Logo: React.FC<LogoProps> = ({
     <img 
       src={logoSrc}
       alt="Fact 5"
-      className={`${logoStyles.logo} ${logoClassName}`}
-      style={logoStyles.image(logoWidth, logoHeight)}
+      className={`${styles.logo} ${logoClassName}`}
+      style={{
+        width: logoWidth || 'auto',
+        height: logoHeight || 'auto'
+      }}
       draggable="false"
     />
   );

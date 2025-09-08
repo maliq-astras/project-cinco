@@ -3,10 +3,17 @@
 import React from 'react';
 import FactBubble from '../FactBubble';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useFactBubbleGrid } from './useFactBubbleGrid';
 import styles from './FactBubbleGrid.module.css';
+import { useFactBubbleGrid } from './hooks';
+import { 
+  getContainerStyle, 
+  getGridTransformStyle, 
+  isSingleRowLayout, 
+  getGridHeight, 
+  calculateGridScale 
+} from './helpers';
 
-const FactBubbleGrid: React.FC = () => {
+const FactBubbleGrid = React.memo(() => {
   const {
     gridItems,
     bubbleSize,
@@ -20,17 +27,18 @@ const FactBubbleGrid: React.FC = () => {
     layoutMode
   } = useFactBubbleGrid();
 
-  const containerStyle = {
-    '--bubble-size': `${bubbleSize}px`,
-    '--bubble-spacing': `${gapSize}px`,
-    '--grid-margin-top': `${responsiveValues.spacing}px`,
-    '--remaining-count': remainingFactsCount
-  } as React.CSSProperties;
+  const containerStyle = getContainerStyle(
+    bubbleSize, 
+    gapSize, 
+    responsiveValues.spacing, 
+    remainingFactsCount
+  );
 
-  const isSingleRow = remainingFactsCount <= 4 && remainingFactsCount > 0 && layoutMode === 'desktop';
-  const gridHeight = isSingleRow ? bubbleSize : (2 * bubbleSize) + gapSize;
+  const isSingleRow = isSingleRowLayout(remainingFactsCount, layoutMode);
+  const gridHeight = getGridHeight(isSingleRow, bubbleSize, gapSize);
   const willGridFit = willFit.bubbleGrid(gridHeight);
-  const gridScale = willGridFit ? 1 : Math.min(0.9, availableContentHeight / gridHeight);
+  const gridScale = calculateGridScale(willGridFit, availableContentHeight, gridHeight);
+  const gridTransformStyle = getGridTransformStyle(gridScale);
 
   return (
     <div className={styles.container} style={containerStyle}>
@@ -38,11 +46,7 @@ const FactBubbleGrid: React.FC = () => {
         ref={bubbleGridRef}
         id="bubble-grid"
         className={`${styles.grid} ${isSingleRow ? styles.singleRow : styles.doubleRow}`}
-        style={{
-          // Add responsive adjustments if grid doesn't fit
-          transform: gridScale !== 1 ? `scale(${gridScale})` : undefined,
-          transformOrigin: 'center'
-        }}
+        style={gridTransformStyle}
       >
         {(isSingleRow ? gridItems.filter(item => !item.isEmpty) : gridItems).map(item => {
           if (item.isEmpty) {
@@ -79,6 +83,8 @@ const FactBubbleGrid: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
-export default FactBubbleGrid; 
+FactBubbleGrid.displayName = 'FactBubbleGrid';
+
+export default FactBubbleGrid;

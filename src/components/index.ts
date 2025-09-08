@@ -16,7 +16,8 @@ export { default as GameButtons } from './game/GameButtons';
 export { default as Autocomplete } from './game/Autocomplete';
 export { default as EndGameMessage } from './post-game/EndGameMessage';
 export { default as GuessProgressBar } from './game/GuessProgressBar';
-export { default as MainContainer } from './layout/MainContainer'; 
+export { default as MainContainer } from './layout/MainContainer';
+export { default as GameContentRenderer } from './layout/GameContentRenderer'; 
 
 // Card Components
 export { default as FactCard } from './cards/FactCard';
