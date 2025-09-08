@@ -1,0 +1,1 @@
+export { useFactCardStack } from './useFactCardStackLogic';

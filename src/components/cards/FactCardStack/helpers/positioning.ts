@@ -5,7 +5,7 @@
  * @returns Optimal fan angle
  */
 export function calculateFanAngle(cardCount: number, breakpoint: string): number {
-  let baseAngle = Math.min(3, 10 / Math.max(1, cardCount));
+  const baseAngle = Math.min(3, 10 / Math.max(1, cardCount));
   
   if (breakpoint === 'xs') {
     return baseAngle * 0.7;

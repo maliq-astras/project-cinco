@@ -1,23 +1,23 @@
 'use client';
 
 import React from 'react';
-import { Fact } from '@/types';
-import { useFactCardBack } from './useFactCardBack';
+import { Fact, CategoryType } from '@/types';
+import { useFactCardBack } from './hooks';
 import styles from './FactCardBack.module.css';
 
 interface FactCardBackProps {
-  fact: Fact<any>;
+  fact: Fact<CategoryType>;
   size?: 'small' | 'large';
   isRevealed?: boolean;
   inStack?: boolean;
 }
 
-export default function FactCardBack({ 
+const FactCardBack = React.memo<FactCardBackProps>(({ 
   fact, 
   size = 'large', 
   isRevealed = false,
   inStack = false
-}: FactCardBackProps) {
+}) => {
   const { containerClasses, backgroundStyle, icon, iconStyle } = useFactCardBack({
     fact,
     size,
@@ -39,4 +39,8 @@ export default function FactCardBack({
       </div>
     </div>
   );
-} 
+});
+
+FactCardBack.displayName = 'FactCardBack';
+
+export default FactCardBack; 

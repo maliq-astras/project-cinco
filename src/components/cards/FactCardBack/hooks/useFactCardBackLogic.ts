@@ -1,25 +1,26 @@
 import { useMemo } from 'react';
-import { useTheme } from '@/contexts/ThemeContext';
-import { Fact } from '@/types';
+import { Fact, CategoryType } from '@/types';
 import { getFactIcon } from '@/helpers/iconHelpers';
-import { useResponsive } from '@/hooks/responsive';
-import styles from './FactCardBack.module.css';
+import styles from '../FactCardBack.module.css';
+import { getBackgroundStyle, getIconStyle, getCategoryFromFact } from '../helpers';
 
-interface UseFactCardBackProps {
-  fact: Fact<any>;
+interface UseFactCardBackLogicProps {
+  fact: Fact<CategoryType>;
   size: 'small' | 'large';
   isRevealed: boolean;
   inStack: boolean;
+  colors: { primary: string };
+  getResponsiveValue: (values: Record<string, number>) => number;
 }
 
-export function useFactCardBack({ 
+export function useFactCardBackLogic({ 
   fact,
   size,
   isRevealed, 
-  inStack 
-}: UseFactCardBackProps) {
-  const { colors } = useTheme();
-  const { breakpoint, getResponsiveValue } = useResponsive();
+  inStack,
+  colors,
+  getResponsiveValue
+}: UseFactCardBackLogicProps) {
   
   const containerClasses = useMemo(() => {
     const classes = [styles.container, styles.factCard];
@@ -27,14 +28,13 @@ export function useFactCardBack({
     return classes.join(' ');
   }, [inStack]);
   
-  const backgroundStyle = useMemo(() => ({
-    '--fact-card-color': `var(--color-${colors.primary})`
-  } as React.CSSProperties), [colors.primary]);
+  const backgroundStyle = useMemo(() => 
+    getBackgroundStyle(colors.primary), 
+  [colors.primary]);
   
-  const category = useMemo(() => {
-    if (!fact.category) return 'countries';
-    return typeof fact.category === 'string' ? fact.category : fact.category.toString();
-  }, [fact.category]);
+  const category = useMemo(() => 
+    getCategoryFromFact(fact), 
+  [fact.category]);
   
   const customIconSize = useMemo(() => {
     // Use the getResponsiveValue helper from useResponsive to eliminate duplication
@@ -49,13 +49,7 @@ export function useFactCardBack({
     getFactIcon(fact.factType, isRevealed, customIconSize, category.toLowerCase()),
   [fact.factType, isRevealed, customIconSize, category]);
   
-  const iconStyle = useMemo(() => ({
-    filter: "brightness(0) invert(1)",
-    WebkitFilter: "brightness(0) invert(1)",
-    opacity: 1,
-    maxWidth: "100%",
-    background: 'transparent'
-  }), []);
+  const iconStyle = useMemo(() => getIconStyle(), []);
   
   return {
     containerClasses,

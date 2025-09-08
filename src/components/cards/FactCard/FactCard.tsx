@@ -2,30 +2,28 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { Fact } from '@/types';
+import { Fact, CategoryType } from '@/types';
 import IconContainer from '../../ui/IconContainer';
 import FactCardBack from '../FactCardBack';
 import styles from './FactCard.module.css';
-import { useFactCard } from './useFactCard';
+import { useFactCard } from './hooks';
 import { getFactTypeName } from '@/helpers/i18nHelpers';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { getContentForLanguage, getFlipCardAnimationProps, factTypeClasses } from './helpers';
 
 interface FactCardProps {
-  fact: Fact<any>;
+  fact: Fact<CategoryType>;
   visibleStackCount?: number;
 }
 
-export default function FactCard({ 
+const FactCard = React.memo<FactCardProps>(({ 
   fact, 
   visibleStackCount = 0
-}: FactCardProps) {
-  const { t } = useTranslation();
-  const { language } = useLanguage();
-  const currentLanguage = language as 'en' | 'es';
+}) => {
   
   const {
     cardRef,
+    t,
+    currentLanguage,
     isFlipped,
     isDrawn,
     isClosing,
@@ -48,24 +46,12 @@ export default function FactCard({
     fact,
     visibleStackCount
   });
+
+  const flipCardAnimationProps = getFlipCardAnimationProps(isFlipped, isDrawn, isClosing);
   
   if (!fact) {
     return null;
   }
-  
-  const getContentForLanguage = () => {
-    if (fact.content && typeof fact.content === 'object') {
-      return fact.content[currentLanguage] || fact.content.en || '';
-    }
-    
-    if (typeof fact.content === 'string') {
-      return fact.content;
-    }
-    
-    return '';
-  };
-
-  const factTypeClasses = `text-base sm:text-lg font-semibold text-center mt-4 fact-type`;
 
   return (
     <div className={`${styles.modalOverlay} modal-overlay`} onClick={handleClickOutside}>
@@ -79,10 +65,8 @@ export default function FactCard({
         >
           <motion.div
             className="flip-card"
-            initial={{ rotateY: 0 }}
-            animate={{ rotateY: isFlipped && isDrawn && !isClosing ? 180 : 0 }}
+            {...flipCardAnimationProps}
             transition={flipTransition}
-            style={{ transformStyle: 'preserve-3d' }}
           >
             <div className={`${styles.cardBack} flip-card-back`} style={cardStyles.hidden}>
               <FactCardBack fact={fact} inStack={false} />
@@ -129,7 +113,7 @@ export default function FactCard({
                 
                 <div className={styles.bottomHalf}>
                   <p className={styles.factContent}>
-                    {getContentForLanguage()}
+                    {getContentForLanguage(fact, currentLanguage)}
                   </p>
                 </div>
               </div>
@@ -139,4 +123,8 @@ export default function FactCard({
       </div>
     </div>
   );
-} 
+});
+
+FactCard.displayName = 'FactCard';
+
+export default FactCard; 

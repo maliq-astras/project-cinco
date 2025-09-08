@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useCardStack } from './useCardStack';
 import { calculateCardPosition, getCardAnimationVariants } from '../helpers';
@@ -94,11 +94,11 @@ export function useFactCardStack() {
   };
 
   
-  const isCardClickable = (factIndex: number) => {
+  const isCardClickable = useCallback((factIndex: number) => {
     return canRevealNewClue || revealedFacts.includes(factIndex);
-  };
+  }, [canRevealNewClue, revealedFacts]);
   
-  const getCardVariants = (factIndex: number, index: number) => {
+  const getCardVariants = useCallback((factIndex: number, index: number) => {
     const isHovered = cardStackHook.hoveredCardIndex === index && isCardClickable(factIndex);
     const cardPosition = calculateCardPosition(
       index, 
@@ -163,7 +163,20 @@ export function useFactCardStack() {
       shadowClass: cardPosition.shadowClass,
       isClickable: isCardClickable(factIndex)
     };
-  };
+  }, [
+    cardStackHook.hoveredCardIndex,
+    cardStackHook.isCardReturning, 
+    cardStackHook.isInitialRender,
+    visibleStackFacts.length,
+    breakpoint,
+    centerIndex,
+    isVictoryAnimationActive,
+    victoryAnimationStep,
+    canRevealNewClue,
+    revealedFacts,
+    getResponsiveValue,
+    isCardClickable
+  ]);
 
   const containerStyles = {
     main: {

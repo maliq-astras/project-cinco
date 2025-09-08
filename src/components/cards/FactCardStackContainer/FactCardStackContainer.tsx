@@ -3,11 +3,12 @@
 import React from 'react';
 import FactCardStack from '../FactCardStack';
 import { AnimatePresence } from 'framer-motion';
-import { useFactCardStackContainer } from './useFactCardStackContainer';
+import { useFactCardStackContainer } from './hooks';
+import { getResponsiveContainerStyle } from './helpers';
 import styles from './FactCardStackContainer.module.css';
 import EmptyStackPlaceholder from '../EmptyStackPlaceholder';
 
-export const FactCardStackContainer: React.FC = () => {
+const FactCardStackContainer = React.memo(() => {
   const { 
     shouldShowPlaceholder,
     containerStyles,
@@ -18,10 +19,7 @@ export const FactCardStackContainer: React.FC = () => {
     responsiveValues,
   } = useFactCardStackContainer();
 
-  const responsiveContainerStyle = {
-    padding: `${responsiveValues.spacing}px`,
-    marginBottom: `${responsiveValues.spacing}px`
-  };
+  const responsiveContainerStyle = getResponsiveContainerStyle(responsiveValues.spacing);
 
   return (
     <div 
@@ -49,6 +47,8 @@ export const FactCardStackContainer: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
+FactCardStackContainer.displayName = 'FactCardStackContainer';
 
 export default FactCardStackContainer; 

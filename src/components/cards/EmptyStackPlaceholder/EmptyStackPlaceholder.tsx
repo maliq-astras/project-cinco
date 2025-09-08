@@ -2,18 +2,18 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import styles from './EmptyStackPlaceholder.module.css';
+import { useEmptyStackPlaceholder } from './hooks';
+import { getEmptyStackPlaceholderAnimationProps } from './helpers';
 
-const EmptyStackPlaceholder: React.FC = () => {
-  const { t } = useTranslation('common');
+const EmptyStackPlaceholder = React.memo(() => {
+  const { t } = useEmptyStackPlaceholder();
+  const animationProps = getEmptyStackPlaceholderAnimationProps();
 
   return (
     <motion.div 
       className={styles.container}
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      {...animationProps}
     >
       <div className={styles.element}>
         <div className={styles.text}>
@@ -22,6 +22,8 @@ const EmptyStackPlaceholder: React.FC = () => {
       </div>
     </motion.div>
   );
-};
+});
+
+EmptyStackPlaceholder.displayName = 'EmptyStackPlaceholder';
 
 export default EmptyStackPlaceholder; 

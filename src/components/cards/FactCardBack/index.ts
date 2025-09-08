@@ -1,2 +1,2 @@
 export { default } from './FactCardBack';
-export { useFactCardBack } from './useFactCardBack';
+export { useFactCardBack } from './hooks';

@@ -1,22 +1,23 @@
-import { useMemo, useRef } from 'react';
-import { Fact } from '@/types';
+import { useMemo } from 'react';
+import { Fact, CategoryType } from '@/types';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useCardFlip } from './hooks/useCardFlip';
-import { useResponsiveCard } from './hooks/useResponsiveCard';
-import { useCardAnimations } from './hooks/useCardAnimations';
-import { factCardInlineStyles, normalizeCategory } from './helpers';
+import { useCardFlip } from './useCardFlip';
+import { useResponsiveCard } from './useResponsiveCard';
+import { useCardAnimations } from './useCardAnimations';
+import { factCardInlineStyles, normalizeCategory } from '../helpers';
 
-interface UseFactCardProps {
-  fact: Fact<any>;
+interface UseFactCardLogicProps {
+  fact: Fact<CategoryType>;
   visibleStackCount: number;
+  cardRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export function useFactCard({
+export function useFactCardLogic({
   fact,
-  visibleStackCount
-}: UseFactCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
+  visibleStackCount,
+  cardRef
+}: UseFactCardLogicProps) {
   const sourcePosition = useGameStore(state => state.cardSourcePosition);
   const { colors } = useTheme();
 
@@ -58,7 +59,6 @@ export function useFactCard({
   };
 
   return {
-    cardRef,
     isFlipped,
     isDrawn,
     isClosing,

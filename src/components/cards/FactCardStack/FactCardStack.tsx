@@ -3,11 +3,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FactCardBack from '../FactCardBack';
-import { useFactCardStack } from './hooks/useFactCardStack';
+import { useFactCardStack } from './hooks';
 import { getCardPosition } from './helpers';
 import styles from './FactCardStack.module.css';
 
-export default function FactCardStack() {
+const FactCardStack = React.memo(() => {
   const {
     facts,
     visibleStackFacts,
@@ -81,4 +81,8 @@ export default function FactCardStack() {
       </motion.div>
     </div>
   );
-} 
+});
+
+FactCardStack.displayName = 'FactCardStack';
+
+export default FactCardStack; 
