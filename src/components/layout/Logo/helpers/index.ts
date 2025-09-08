@@ -1,0 +1,1 @@
+// No helpers currently needed for Logo component 

@@ -4,7 +4,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useResponsive } from '@/hooks/responsive';
 
-export const useHeader = () => {
+export const useHeaderState = () => {
   const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
   const logoRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,6 @@ export const useHeader = () => {
     challenge,
     logoRef,
     categoryTitleRef,
-    // Responsive values from our new system
     breakpoint,
     heightBreakpoint,
     isLandscape,

@@ -72,6 +72,13 @@ export const ANIMATIONS = {
     initial: { opacity: 0, scale: 0.8, x: 20 },
     animate: { opacity: 1, scale: 1, x: 0 },
     transition: { duration: 0.5, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
+  },
+  HAMBURGER_ICON: {
+    rotate: {
+      open: 180,
+      closed: 0
+    },
+    transition: { duration: 0.3 }
   }
 } as const;
 

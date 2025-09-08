@@ -6,6 +6,16 @@ import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Righteous } from 'next/font/google';
 import { MenuItem } from '@/types/navigation';
+import { useSlideOutMenu } from './hooks';
+import {
+  getBackdropAnimationProps,
+  getSlideMenuAnimationProps,
+  getCloseButtonAnimationProps,
+  getMenuItemAnimationProps,
+  getBackdropStyle,
+  getMenuTitleStyle,
+  getCloseButtonStyle
+} from './helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -19,38 +29,14 @@ interface SlideOutMenuProps {
   };
 }
 
-const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
+const SlideOutMenu = React.memo(function SlideOutMenu({
   isOpen,
   onClose,
   menuItems,
   colors
-}) => {
+}: SlideOutMenuProps) {
   const { t } = useTranslation();
-
-  // Handle escape key
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  // Prevent body scroll when menu is open
-  React.useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  const { handleMenuItemClick } = useSlideOutMenu({ isOpen, onClose, menuItems });
 
   return (
     <AnimatePresence>
@@ -58,46 +44,34 @@ const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
         <>
           {/* Backdrop with blur */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            {...getBackdropAnimationProps()}
             onClick={onClose}
             className="fixed inset-0 z-[999] bg-black bg-opacity-70"
-            style={{
-              backdropFilter: 'blur(12px)',
-            }}
+            style={getBackdropStyle()}
           />
 
           {/* Slide-out menu */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{
-              type: 'spring',
-              damping: 25,
-              stiffness: 200,
-            }}
+            {...getSlideMenuAnimationProps()}
             className="fixed top-0 right-0 h-full w-80 max-w-[80vw] z-[1000] bg-white dark:bg-black shadow-2xl border-l border-gray-200 dark:border-gray-700"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
               <h2 
                 className={`${righteous.className} text-xl font-normal`}
-                style={{ color: `var(--color-${colors.primary})` }}
+                style={getMenuTitleStyle(colors.primary)}
               >
                 MENU
               </h2>
               <motion.button
                 onClick={onClose}
                 className="p-2"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
+                {...getCloseButtonAnimationProps()}
                 aria-label={t('ui.buttons.close')}
               >
                 <X 
                   className="w-5 h-5" 
-                  style={{ color: `var(--color-${colors.primary})` }}
+                  style={getCloseButtonStyle(colors.primary)}
                 />
               </motion.button>
             </div>
@@ -108,15 +82,10 @@ const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
                 {menuItems.map((item, index) => (
                   <motion.li
                     key={index}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    {...getMenuItemAnimationProps(index)}
                   >
                     <button
-                      onClick={() => {
-                        item.onClick();
-                        onClose();
-                      }}
+                      onClick={() => handleMenuItemClick(item)}
                       className={`${righteous.className} w-full text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white font-normal uppercase tracking-wide`}
                       aria-label={item.ariaLabel ? t(item.ariaLabel) : t(item.label)}
                     >
@@ -131,6 +100,8 @@ const SlideOutMenu: React.FC<SlideOutMenuProps> = ({
       )}
     </AnimatePresence>
   );
-};
+});
+
+SlideOutMenu.displayName = 'SlideOutMenu';
 
 export default SlideOutMenu;

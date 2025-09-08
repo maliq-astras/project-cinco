@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   FactCardStackContainer, 
@@ -11,14 +11,10 @@ import {
   GameInstructionsArea 
 } from '@/components';
 import { GameState, GameOutcome } from '@/types';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useDragState } from '@/hooks/ui/useDragState';
-import { useDOMRefs } from '@/providers/DOMRefsProvider';
-import DropZoneIndicator from '../../cards/DropZoneIndicator';
+import DropZoneIndicator from '@/components/cards/DropZoneIndicator';
 import styles from './MobileGameContent.module.css';
-import { ANIMATIONS } from '@/constants/animations';
-import { getContextLineBackground } from './helpers';
 import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
+import { useMobileGameContent } from './hooks';
 
 interface MobileGameContentProps {
   gameState: GameState;
@@ -48,32 +44,24 @@ const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
   isTabletLandscape,
   gameControlsRef
 }) => {
-  const { colors } = useTheme();
-  const isDragging = useDragState(state => state.isDragging);
-  const { registerElement, unregisterElement } = useDOMRefs();
-  const dropZoneRef = useRef<HTMLDivElement>(null);
-  
-  
-  // Animation configurations
-  const animations = {
-    cardStack: ANIMATIONS.MOBILE_CARD_STACK,
-    topSection: ANIMATIONS.MOBILE_TOP_SECTION,
-    middleSection: ANIMATIONS.MOBILE_MIDDLE_SECTION,
-    bottomSection: ANIMATIONS.MOBILE_BOTTOM_SECTION
-  };
-  
-  
-  // Register the drop zone as the drop target when dragging in mobile layout
-  useEffect(() => {
-    if (isDragging && dropZoneRef.current) {
-      registerElement('fact-card-stack-container', dropZoneRef.current);
-    }
-    return () => {
-      if (isDragging) {
-        unregisterElement('fact-card-stack-container');
-      }
-    };
-  }, [isDragging, registerElement, unregisterElement]);
+  const {
+    colors,
+    isDragging,
+    dropZoneRef,
+    animations,
+    contextLineBackgroundStyle,
+    dropZoneOverlayStyles
+  } = useMobileGameContent({
+    gameState,
+    gameEntranceComplete,
+    showGameMessage,
+    getGameMessageProps,
+    isFinalFiveActive,
+    isAlreadyPlayedScenario,
+    isVictoryAnimationActive,
+    isTabletLandscape,
+    gameControlsRef
+  });
 
   return (
     <motion.div
@@ -103,19 +91,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
             <div 
               ref={dropZoneRef}
               className={styles.dropZoneOverlay}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0, // Cover full height for good UX
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 15, // Below bubble context area
-                backgroundColor: 'rgba(0,0,0,0.05)',
-                borderRadius: '0.5rem'
-              }}
+              style={dropZoneOverlayStyles}
             >
               <DropZoneIndicator isVisible={true} />
             </div>
@@ -136,7 +112,7 @@ const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
             }
           >
             <div 
-              style={getContextLineBackground(colors.primary)} 
+              style={contextLineBackgroundStyle} 
               className="absolute inset-x-0 h-1"
             />
             <div className={styles.contextWrapper}>

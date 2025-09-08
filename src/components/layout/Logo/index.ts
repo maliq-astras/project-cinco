@@ -1,2 +1,2 @@
 export { default } from './Logo';
-export * from './useLogo'; 
+export * from './hooks'; 

@@ -1,2 +1,2 @@
 export { default } from './MainContainer';
-export * from './useMainContainer'; 
+export { useMainContainer } from './hooks'; 

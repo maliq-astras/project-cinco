@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useLogo } from './useLogo';
+import { useLogo } from './hooks';
 import styles from './Logo.module.css';
 
 interface LogoProps {
@@ -10,7 +10,7 @@ interface LogoProps {
   className?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ 
+const Logo = React.memo<LogoProps>(({ 
   className = "",
   width,
   height
@@ -33,6 +33,8 @@ const Logo: React.FC<LogoProps> = ({
       draggable="false"
     />
   );
-};
+});
+
+Logo.displayName = 'Logo';
 
 export default Logo; 

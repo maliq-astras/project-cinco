@@ -1,8 +1,8 @@
 import React from 'react';
 import { Inter } from 'next/font/google';
-import { useTranslation } from 'react-i18next';
 import { MenuItem } from '@/types/navigation';
 import styles from './NavDropdownMenu.module.css';
+import { useNavDropdownMenu } from './hooks';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,24 +30,19 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
   menuTitle = 'ui.navigation.menu',
   onClose
 }) => {
-  const { t } = useTranslation();
-  const menuRef = React.useRef<HTMLDivElement>(null);
-  
-  // Helper functions for dynamic styles
-  const getMenuContainerStyle = (primaryColor: string) => ({
-    borderColor: `var(--color-${primaryColor})`
+  const {
+    t,
+    menuRef,
+    handleKeyDown,
+    menuContainerStyle,
+    menuItemStyle
+  } = useNavDropdownMenu({
+    isOpen,
+    menuItems,
+    colors,
+    menuTitle,
+    onClose
   });
-  
-  const getMenuItemStyle = (primaryColor: string) => ({
-    color: `var(--color-${primaryColor})`
-  });
-  
-  
-  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  }, [onClose]);
   
   if (!isOpen) return null;
   
@@ -55,7 +50,7 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
     <div 
       ref={menuRef}
       className={styles.menuContainer}
-      style={getMenuContainerStyle(colors.primary)}
+      style={menuContainerStyle}
       role="menu"
       aria-label={t(menuTitle)}
       onKeyDown={handleKeyDown}
@@ -65,7 +60,7 @@ const NavDropdownMenu: React.FC<NavDropdownMenuProps> = ({
           key={index}
           onClick={item.onClick}
           className={`${inter.className} ${styles.menuItem}`}
-          style={getMenuItemStyle(colors.primary)}
+          style={menuItemStyle}
           role="menuitem"
           aria-label={item.ariaLabel ? t(item.ariaLabel) : t(item.label)}
         >

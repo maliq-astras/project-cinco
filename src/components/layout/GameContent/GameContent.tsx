@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   FactCardStackContainer, 
@@ -11,15 +11,11 @@ import {
   GameInstructionsArea 
 } from '@/components';
 import DropZoneIndicator from '../../cards/DropZoneIndicator';
-import { useDragState } from '@/hooks/ui/useDragState';
-import { useDOMRefs } from '@/providers/DOMRefsProvider';
-import { useResponsive } from '@/hooks/responsive';
 import { GameState, GameOutcome } from '@/types';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useGameStore } from '@/store/gameStore';
-import styles from './GameContent.module.css';
-import { ANIMATIONS } from '@/constants/animations';
 import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
+import styles from './GameContent.module.css';
+import { useGameContent } from './hooks';
+import { getDropZoneOverlayStyles, getBubbleContextAreaStyles } from './helpers';
 
 interface GameContentProps {
   gameState: GameState;
@@ -47,34 +43,22 @@ const GameContent: React.FC<GameContentProps> = React.memo(({
   isVictoryAnimationActive,
   gameControlsRef
 }) => {
-  const { colors } = useTheme();
-  const isDragging = useDragState(state => state.isDragging);
-  const isTutorialOpen = useGameStore(state => state.isTutorialOpen);
-  const { registerElement, unregisterElement } = useDOMRefs();
-  const { responsiveValues } = useResponsive();
-  const dropZoneRef = useRef<HTMLDivElement>(null);
-
-  // Calculate dynamic spacing for bubble context area based on bubble size
-  const bubbleContextSpacing = responsiveValues.bubbleSize * 0.5; // 50% of bubble size for appropriate spacing
-  
-  // Animation configurations
-  const animations = {
-    cardStack: ANIMATIONS.CARD_STACK,
-    middleSection: ANIMATIONS.MIDDLE_SECTION,
-    bottomSection: ANIMATIONS.BOTTOM_SECTION
-  };
-  
-  // Register the drop zone as the drop target when dragging (but not during tutorial)
-  useEffect(() => {
-    if (isDragging && !isTutorialOpen && dropZoneRef.current) {
-      registerElement('fact-card-stack-container', dropZoneRef.current);
-    }
-    return () => {
-      if (isDragging && !isTutorialOpen) {
-        unregisterElement('fact-card-stack-container');
-      }
-    };
-  }, [isDragging, isTutorialOpen, registerElement, unregisterElement]);
+  const {
+    isDragging,
+    isTutorialOpen,
+    dropZoneRef,
+    bubbleContextSpacing,
+    animations
+  } = useGameContent({
+    gameState,
+    gameEntranceComplete,
+    showGameMessage,
+    getGameMessageProps,
+    isFinalFiveActive,
+    isAlreadyPlayedScenario,
+    isVictoryAnimationActive,
+    gameControlsRef
+  });
 
   return (
     <motion.div
@@ -92,17 +76,7 @@ const GameContent: React.FC<GameContentProps> = React.memo(({
           <div 
             ref={dropZoneRef}
             className={styles.dropZoneOverlay}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 20,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+            style={getDropZoneOverlayStyles()}
           >
             <DropZoneIndicator isVisible={true} />
           </div>
@@ -146,9 +120,7 @@ const GameContent: React.FC<GameContentProps> = React.memo(({
                     {shouldShowContextLine(isAlreadyPlayedScenario, isVictoryAnimationActive) && (
                       <div 
                         className={styles.bubbleContextArea}
-                        style={{
-                          bottom: `-${bubbleContextSpacing}px`
-                        }}
+                        style={getBubbleContextAreaStyles(bubbleContextSpacing)}
                       >
                         <BubbleContextArea />
                       </div>

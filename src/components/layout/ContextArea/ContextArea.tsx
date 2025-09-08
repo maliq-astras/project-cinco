@@ -2,13 +2,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useBubbleContext, useGameInstructions } from './useContextArea';
+import { useBubbleContext, useGameInstructions } from './hooks';
 import styles from './ContextArea.module.css';
 
-/**
- * Component for showing bubble category when hovering 
- */
-export const BubbleContextArea: React.FC = () => {
+//Bubble Category
+export const BubbleContextArea = React.memo(() => {
   const { message, textClassName } = useBubbleContext();
   
   return (
@@ -16,12 +14,12 @@ export const BubbleContextArea: React.FC = () => {
       {message}
     </span>
   );
-};
+});
 
-/**
- * Component for showing game instructions based on current game state
- */
-export const GameInstructionsArea: React.FC = () => {
+BubbleContextArea.displayName = 'BubbleContextArea';
+
+//Game Instructions
+export const GameInstructionsArea = React.memo(() => {
   const { 
     message, 
     textClassName, 
@@ -46,14 +44,6 @@ export const GameInstructionsArea: React.FC = () => {
       {message}
     </motion.span>
   );
-};
+});
 
-/**
- * Combined ContextArea component that selects which context to display
- * Default export maintained for backward compatibility
- */
-const ContextArea: React.FC = () => {
-  return <GameInstructionsArea />;
-};
-
-export default ContextArea; 
+GameInstructionsArea.displayName = 'GameInstructionsArea';

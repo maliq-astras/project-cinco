@@ -23,7 +23,8 @@ export const SIZES = {
     HEADER_HEIGHT: '64px',
     SIDEBAR_WIDTH: '280px',
     MODAL_MAX_WIDTH: '600px',
-    CARD_MIN_HEIGHT: '200px'
+    CARD_MIN_HEIGHT: '200px',
+    LOGO_HEIGHT_COMPACT: '128px'
   },
 
   // Icon sizes

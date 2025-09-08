@@ -1,7 +1,7 @@
 'use client';
 
-import React, { CSSProperties, useMemo, useCallback } from 'react';
-import { useMainContainer } from './useMainContainer';
+import React from 'react';
+import { useMainContainer } from './hooks';
 import styles from './MainContainer.module.css';
 import { 
   FactCard, 
@@ -10,17 +10,14 @@ import {
   LanguageSwitchLoader
 } from '@/components';
 import GameContentRenderer from '../GameContentRenderer';
-import { getHeaderComponent, getResponsiveLayoutClass, getSmartScalingStyle } from './helpers';
+import { getHeaderComponent } from './helpers';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 import { useScreenSizeValidation } from '@/hooks/ui/useScreenSizeValidation';
 import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
-import { ANIMATIONS } from '@/constants/animations';
 
 export default function MainContainer() {
-  // ALL HOOKS MUST BE CALLED UNCONDITIONALLY
-  const fadeInAnimation = useMemo(() => ANIMATIONS.FADE_IN, []);
   const {
     gameState,
     viewingFact,
@@ -28,7 +25,6 @@ export default function MainContainer() {
     headerEntranceComplete,
     gameEntranceComplete,
     isTabletLandscape,
-    responsiveLayoutMode,
     isFinalFiveActive,
     showFinalFiveTransition,
     finalFiveTransitionReason,
@@ -40,26 +36,16 @@ export default function MainContainer() {
     getGameMessageProps,
     startFinalFive,
     breakpoint,
-    isNarrow
+    isNarrow,
+    fadeInAnimation,
+    responsiveLayoutClass,
+    smartScalingStyle,
+    needsMobileLayout
   } = useMainContainer();
   
-  const scaleFactor = useGameStore(state => state.scaleFactor);
   const { isLanguageSwitching } = useLanguage();
   const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
   const { isScreenTooSmall, isActualMobileDevice } = useScreenSizeValidation(isNarrow);
-  
-  const needsMobileLayout = isNarrow;
-  
-  // ALL USEMEMO HOOKS MUST BE BEFORE EARLY RETURN
-  const responsiveLayoutClass = useMemo(() => 
-    getResponsiveLayoutClass(isTabletLandscape, responsiveLayoutMode),
-    [isTabletLandscape, responsiveLayoutMode]
-  );
-
-  const smartScalingStyle = useMemo(() =>
-    getSmartScalingStyle(isTabletLandscape, scaleFactor),
-    [isTabletLandscape, scaleFactor]
-  );
   
   // CONDITIONAL RENDERING WITH EARLY RETURN (AFTER ALL HOOKS)
   if (isScreenTooSmall) {

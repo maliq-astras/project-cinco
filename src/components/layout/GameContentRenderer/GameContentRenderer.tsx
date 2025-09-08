@@ -5,6 +5,8 @@ import GameContent from '../GameContent';
 import MobileGameContent from '../MobileGameContent';
 import { GameState, GameOutcome } from '@/types';
 import type { GameControlsHandle } from '../../game/GameControls';
+import styles from './GameContentRenderer.module.css';
+import { useGameContentRenderer } from './hooks';
 
 interface GameContentRendererProps {
   gameState: GameState;
@@ -57,8 +59,26 @@ const GameContentRenderer: React.FC<GameContentRendererProps> = React.memo(({
   isTabletLandscape,
   fadeInAnimation
 }) => {
-  // Only render if challenge data exists
-  if (!gameState.challenge) {
+  const {
+    shouldRender
+  } = useGameContentRenderer({
+    gameState,
+    gameEntranceComplete,
+    showGameMessage,
+    getGameMessageProps,
+    isFinalFiveActive,
+    isAlreadyPlayedScenario,
+    isVictoryAnimationActive,
+    gameControlsRef,
+    showFinalFiveTransition,
+    finalFiveTransitionReason,
+    startFinalFive,
+    needsMobileLayout,
+    isTabletLandscape,
+    fadeInAnimation
+  });
+
+  if (!shouldRender) {
     return null;
   }
 
@@ -69,7 +89,7 @@ const GameContentRenderer: React.FC<GameContentRendererProps> = React.memo(({
         {showFinalFiveTransition && (
           <motion.div
             key="final-five-transition"
-            className="absolute inset-0 flex items-center justify-center z-10"
+            className={styles.finalFiveTransition}
             {...fadeInAnimation}
           >
             <FinalFiveIntro 

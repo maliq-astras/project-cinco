@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
-import CompactHeader from '../CompactHeader';
-import Header from '../Header';
-import Navigation from '../Navigation';
+import CompactHeader from '@/components/layout/CompactHeader';
+import Header from '@/components/layout/Header';
+import Navigation from '@/components/layout/Navigation';
 
 interface HeaderSelectionProps {
   breakpoint: string;
@@ -42,39 +42,4 @@ export const getHeaderComponent = ({
   );
 };
 
-// MainContainer-specific layout utilities
-export const getResponsiveLayoutClass = (
-  isTabletLandscape: boolean,
-  responsiveLayoutMode: string
-): string => {
-  if (!isTabletLandscape) return '';
-  
-  switch (responsiveLayoutMode) {
-    case 'compact':
-      return 'layout-compact';
-    case 'spacious':
-      return 'layout-spacious';
-    default:
-      return 'layout-normal';
-  }
-};
-
-export const getSmartScalingStyle = (
-  isTabletLandscape: boolean,
-  scaleFactor: number
-): CSSProperties => {
-  if (!isTabletLandscape || scaleFactor >= 0.99) {
-    return {}; // No scaling needed
-  }
-  
-  return {
-    transform: `scale(${scaleFactor})`,
-    transformOrigin: 'center top',
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    overflow: 'visible'
-  };
-};
+// Moved getResponsiveLayoutClass and getSmartScalingStyle to calculations.ts

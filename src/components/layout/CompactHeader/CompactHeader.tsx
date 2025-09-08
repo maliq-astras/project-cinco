@@ -8,10 +8,12 @@ import SettingsPanel from '../../modals/SettingsPanel';
 import FeedbackModal from '../../modals/FeedbackModal';
 import BugReportModal from '../../modals/BugReportModal';
 import SlideOutMenu from '../SlideOutMenu';
-import { useCompactHeader } from './useCompactHeader';
+import { useCompactHeader } from './hooks';
 import { getCategoryName } from '@/helpers/i18nHelpers';
 import styles from './CompactHeader.module.css';
 import { ANIMATIONS } from '@/constants/animations';
+import { SIZES } from '@/constants/sizes';
+import { SVG } from '@/constants/svg';
 import { getHardModeBadgeStyle } from '@/utils/layout';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
@@ -58,7 +60,7 @@ const CompactHeader: React.FC<CompactHeaderProps> = React.memo(({ headerEntrance
                 animate={headerEntranceComplete ? ANIMATIONS.LOGO.animate : ANIMATIONS.LOGO.initial}
                 transition={ANIMATIONS.LOGO.transition}
               >
-                <Logo height="128px" />
+                <Logo height={SIZES.DIMENSIONS.LOGO_HEIGHT_COMPACT} />
               </motion.div>
               
               {/* Category title */}
@@ -111,11 +113,16 @@ const CompactHeader: React.FC<CompactHeaderProps> = React.memo(({ headerEntrance
                   }}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  animate={isMenuOpen ? { rotate: 180 } : { rotate: 0 }}
-                  transition={{ duration: 0.3 }}
+                  viewBox={SVG.HAMBURGER_MENU.viewBox}
+                  animate={isMenuOpen ? { rotate: ANIMATIONS.HAMBURGER_ICON.rotate.open } : { rotate: ANIMATIONS.HAMBURGER_ICON.rotate.closed }}
+                  transition={ANIMATIONS.HAMBURGER_ICON.transition}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path 
+                    strokeLinecap={SVG.HAMBURGER_MENU.strokeLinecap} 
+                    strokeLinejoin={SVG.HAMBURGER_MENU.strokeLinejoin} 
+                    strokeWidth={SVG.HAMBURGER_MENU.strokeWidth} 
+                    d={SVG.HAMBURGER_MENU.path} 
+                  />
                 </motion.svg>
               </motion.button>
             </div>
