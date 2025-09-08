@@ -4,8 +4,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import styles from './FinalFiveCard.module.css';
-import { useFinalFiveCard } from './useFinalFiveCard';
+import { useFinalFiveCard } from './hooks';
 import { getFinalFiveCardDimensions } from '../shared/helpers';
+import { 
+  getFinalFiveCardAnimations, 
+  getFlipAnimationProps, 
+  getXOverlayAnimations,
+  getWrapperStyle,
+  getFrontCardStyle,
+  getContainerStyle
+} from './helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -24,7 +32,7 @@ interface FinalFiveCardProps {
   selectedOption: string | null;
 }
 
-export default function FinalFiveCard({
+const FinalFiveCard = React.memo<FinalFiveCardProps>(({
   option,
   index,
   isFlipped,
@@ -37,7 +45,7 @@ export default function FinalFiveCard({
   onCardClick,
   allCardsFlipped,
   selectedOption
-}: FinalFiveCardProps) {
+}) => {
   const {
     shouldFadeOut,
     handleMouseDown,
@@ -47,8 +55,7 @@ export default function FinalFiveCard({
     getBackCardStyle,
     width,
     height,
-    isLandscape,
-    responsiveValues
+    isLandscape
   } = useFinalFiveCard({
     isGameOver,
     allCardsFlipped,
@@ -59,46 +66,28 @@ export default function FinalFiveCard({
   });
 
   const cardDimensions = getFinalFiveCardDimensions(width, height, isLandscape);
+  const canClick = isFlipped && !isGameOver && allCardsFlipped && (selectedOption === null || selectedOption === option);
+  
+  const cardAnimations = getFinalFiveCardAnimations(shouldFadeOut);
+  const flipAnimations = getFlipAnimationProps(isFlipped);
+  const containerStyle = getContainerStyle(cardDimensions.minHeight, cardDimensions.maxWidth, canClick);
+  const wrapperStyle = getWrapperStyle();
 
   return (
     <motion.div 
       key={`option-${index}`} 
       className={styles.container}
-      animate={{ 
-        opacity: shouldFadeOut ? 0 : 1,
-        scale: shouldFadeOut ? 0.8 : 1
-      }}
-      transition={{ duration: 0.5 }}
-      style={{ 
-        minHeight: cardDimensions.minHeight,
-        maxWidth: cardDimensions.maxWidth,
-        margin: "0 auto",
-        pointerEvents: (!isFlipped || isGameOver || !allCardsFlipped || (selectedOption !== null && selectedOption !== option)) ? "none" : "auto"
-      }}
+      {...cardAnimations}
+      style={containerStyle}
     >
       <motion.div
         className={styles.wrapper}
-        initial={{ rotateY: 0 }}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{
-          type: "spring", 
-          stiffness: 200,
-          damping: 25,
-          duration: 0.8
-        }}
-        style={{ 
-          transformStyle: "preserve-3d",
-          WebkitTransformStyle: "preserve-3d"
-        }}
+        {...flipAnimations}
+        style={wrapperStyle}
       >      
         <div 
           className={`${styles.front} ${righteous.className}`}
-          style={{ 
-            backgroundColor: frontBg,
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
-          }}
+          style={getFrontCardStyle(frontBg)}
         >
           5
         </div>
@@ -122,9 +111,7 @@ export default function FinalFiveCard({
               aria-hidden="true"
             >
               <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 0.9, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
+                {...getXOverlayAnimations()}
                 className={styles.xOverlayContent}
               >
                 <svg 
@@ -144,4 +131,8 @@ export default function FinalFiveCard({
       </motion.div>
     </motion.div>
   );
-} 
+});
+
+FinalFiveCard.displayName = 'FinalFiveCard';
+
+export default FinalFiveCard; 

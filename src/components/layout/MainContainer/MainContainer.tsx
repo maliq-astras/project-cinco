@@ -19,7 +19,7 @@ import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
 import { ANIMATIONS } from '@/constants/animations';
 
 export default function MainContainer() {
-  // Animation objects
+  // ALL HOOKS MUST BE CALLED UNCONDITIONALLY
   const fadeInAnimation = useMemo(() => ANIMATIONS.FADE_IN, []);
   const {
     gameState,
@@ -43,27 +43,14 @@ export default function MainContainer() {
     isNarrow
   } = useMainContainer();
   
-  // Get responsive layout mode from the store
-  const scaleFactor = useGameStore(state => state.scaleFactor); // Keep for backward compatibility
-  
-  // Language switching state
+  const scaleFactor = useGameStore(state => state.scaleFactor);
   const { isLanguageSwitching } = useLanguage();
-  
-  // Wrong answer overlay hook
   const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
-  
-  // Screen size validation hook
   const { isScreenTooSmall, isActualMobileDevice } = useScreenSizeValidation(isNarrow);
   
-  // Layout determination
   const needsMobileLayout = isNarrow;
   
-  // Early return for screen size warning
-  if (isScreenTooSmall) {
-    return <ScreenSizeWarning isMobile={isActualMobileDevice} />;
-  }
-
-  // Memoized layout utilities
+  // ALL USEMEMO HOOKS MUST BE BEFORE EARLY RETURN
   const responsiveLayoutClass = useMemo(() => 
     getResponsiveLayoutClass(isTabletLandscape, responsiveLayoutMode),
     [isTabletLandscape, responsiveLayoutMode]
@@ -73,6 +60,11 @@ export default function MainContainer() {
     getSmartScalingStyle(isTabletLandscape, scaleFactor),
     [isTabletLandscape, scaleFactor]
   );
+  
+  // CONDITIONAL RENDERING WITH EARLY RETURN (AFTER ALL HOOKS)
+  if (isScreenTooSmall) {
+    return <ScreenSizeWarning isMobile={isActualMobileDevice} />;
+  }
 
   return (
     <div className={isTabletLandscape ? styles.tabletLandscapeContainer : styles.container}>

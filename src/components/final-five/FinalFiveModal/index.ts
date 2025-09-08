@@ -1,2 +1,2 @@
 export { default } from './FinalFiveModal';
-export { useFinalFiveModal } from './useFinalFiveModal'; 
+export { useFinalFiveModal } from './hooks'; 

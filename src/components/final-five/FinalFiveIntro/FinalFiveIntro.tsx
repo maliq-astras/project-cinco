@@ -1,9 +1,19 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
-import { useFinalFiveIntro } from './useFinalFiveIntro';
+import { useFinalFiveIntro } from './hooks';
 import styles from './FinalFiveIntro.module.css';
 import { useTranslation } from 'react-i18next';
+import { 
+  getContainerAnimations,
+  getMessageAnimations,
+  getButtonAnimations,
+  getLoadingAnimations,
+  getButtonHoverProps,
+  parseMessageWithFinalFive,
+  getButtonStyle,
+  getSpinnerStyle
+} from './helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -13,7 +23,7 @@ interface FinalFiveIntroProps {
   onBackgroundAnimationComplete?: () => void;
 }
 
-export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }: FinalFiveIntroProps) {
+const FinalFiveIntro = React.memo<FinalFiveIntroProps>(({ reason, onBackgroundAnimationComplete }) => {
   const {
     handleStart,
     isTransitioning,
@@ -34,29 +44,18 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
 
   const { t } = useTranslation();
 
-  const messageJSX = message.split('FINAL 5').map((part, i, arr) => (
-    <React.Fragment key={i}>
-      {part}
-      {i < arr.length - 1 && (
-        <span style={{ color: `var(--color-${colors.primary})` }} className={righteous.className}>
-          FINAL 5
-        </span>
-      )}
-    </React.Fragment>
-  ));
+  const messageJSX = parseMessageWithFinalFive(message, colors, righteous);
+  const containerAnimations = getContainerAnimations();
+  const messageAnimations = getMessageAnimations();
 
   return (
     <motion.div
       className={styles.container}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      {...containerAnimations}
     >
       <motion.p 
         className={styles.message}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        {...messageAnimations}
       >
         {messageJSX}
       </motion.p>
@@ -66,18 +65,10 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
           {showStartButton && !isLoading && (
             <motion.button
               className={styles.button}
-              style={{ 
-                backgroundColor: `var(--color-${colors.primary})`,
-                opacity: isTransitioning ? 0.7 : 1,
-                pointerEvents: isTransitioning ? 'none' : 'auto'
-              }}
+              style={getButtonStyle(colors.primary, isTransitioning)}
               onClick={handleStart}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.5 }}
-              whileHover={!isTransitioning ? { scale: 1.05 } : {}}
-              whileTap={!isTransitioning ? { scale: 0.95 } : {}}
+              {...getButtonAnimations()}
+              {...getButtonHoverProps(isTransitioning)}
             >
               {t('game.finalFive.startButton')}
             </motion.button>
@@ -86,15 +77,12 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
           {isLoading && (
             <motion.div
               className={styles.loadingContainer}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.5 }}
+              {...getLoadingAnimations()}
             >
               <div className={styles.loadingSpinnerContainer}>
                 <svg 
                   className={`animate-spin ${styles.loadingSpinnerIcon}`}
-                  style={{ color: `var(--color-${colors.primary})` }}
+                  style={getSpinnerStyle(colors.primary)}
                   xmlns="http://www.w3.org/2000/svg" 
                   fill="none" 
                   viewBox="0 0 24 24"
@@ -132,4 +120,8 @@ export default function FinalFiveIntro({ reason, onBackgroundAnimationComplete }
       </div>
     </motion.div>
   );
-} 
+});
+
+FinalFiveIntro.displayName = 'FinalFiveIntro';
+
+export default FinalFiveIntro; 

@@ -19,7 +19,6 @@ const FactCard = React.memo<FactCardProps>(({
   fact, 
   visibleStackCount = 0
 }) => {
-  
   const {
     cardRef,
     t,
@@ -47,11 +46,11 @@ const FactCard = React.memo<FactCardProps>(({
     visibleStackCount
   });
 
-  const flipCardAnimationProps = getFlipCardAnimationProps(isFlipped, isDrawn, isClosing);
-  
   if (!fact) {
     return null;
   }
+
+  const flipCardAnimationProps = getFlipCardAnimationProps(isFlipped, isDrawn, isClosing);
 
   return (
     <div className={`${styles.modalOverlay} modal-overlay`} onClick={handleClickOutside}>

@@ -12,7 +12,7 @@ interface UseAutoGrowTextareaOptions {
  */
 export function useAutoGrowTextarea(
   textareaRef: React.RefObject<HTMLTextAreaElement>,
-  shellRef: React.RefObject<HTMLDivElement>,
+  shellRef: React.RefObject<HTMLDivElement | null>,
   value: string,
   { maxHeightPx = 120 }: UseAutoGrowTextareaOptions = {}
 ) {

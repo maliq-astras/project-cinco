@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
-import { useFinalFiveModal } from './useFinalFiveModal';
+import { useFinalFiveModal } from './hooks';
 import Timer from '../../ui/Timer';
 import FinalFiveCard from '../FinalFiveCard';
 import styles from './FinalFiveModal.module.css';
@@ -15,7 +15,7 @@ import { getFinalFiveGridClasses, getFinalFiveCardDimensions } from '../shared/h
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-export default function FinalFiveModal() {
+const FinalFiveModal = React.memo(() => {
   const {
     options,
     flippedCards,
@@ -256,4 +256,8 @@ export default function FinalFiveModal() {
       )}
     </AnimatePresence>
   );
-} 
+});
+
+FinalFiveModal.displayName = 'FinalFiveModal';
+
+export default FinalFiveModal; 

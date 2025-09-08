@@ -4,15 +4,8 @@
  * @param breakpoint Current responsive breakpoint
  * @returns Optimal fan angle
  */
-export function calculateFanAngle(cardCount: number, breakpoint: string): number {
+export function calculateFanAngle(cardCount: number): number {
   const baseAngle = Math.min(3, 10 / Math.max(1, cardCount));
-  
-  if (breakpoint === 'xs') {
-    return baseAngle * 0.7;
-  } else if (breakpoint === 'sm') {
-    return baseAngle * 0.85;
-  }
-  
   return baseAngle;
 }
 
@@ -22,7 +15,7 @@ export function calculateFanAngle(cardCount: number, breakpoint: string): number
  * @param breakpoint Current responsive breakpoint
  * @returns Spread factor for horizontal positioning
  */
-export function calculateSpreadFactor(cardCount: number, breakpoint: string): number {
+export function calculateSpreadFactor(cardCount: number): number {
   const cardSize = (window as any).__CARD_SIZE__ || { width: 120 }; 
   
   let spreadPercentage;

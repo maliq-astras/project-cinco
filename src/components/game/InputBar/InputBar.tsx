@@ -57,7 +57,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
   const maxHeight = responsiveValues.inputBarHeight * 2; // Allow input to grow to 2x the base height
   useAutoGrowTextarea(
     inputRef as unknown as React.RefObject<HTMLTextAreaElement>,
-    textareaShellRef as unknown as React.RefObject<HTMLDivElement>,
+    textareaShellRef,
     inputValue,
     { maxHeightPx: maxHeight }
   );
