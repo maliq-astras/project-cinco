@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { iconContainerStyles } from '../IconContainer.styles';
+import { iconContainerStyles } from '../helpers';
 
 interface UseIconSizeProps {
   size: 'small' | 'medium' | 'large';

@@ -1,2 +1,3 @@
 export { default } from './StreakDisplay';
-export * from './useStreakDisplay';
+export { useStreakDisplay } from './hooks';
+export * from './helpers';

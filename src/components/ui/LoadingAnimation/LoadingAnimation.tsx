@@ -1,17 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useGameStore } from '@/store/gameStore';
-import { useLoadingAnimation } from './useLoadingAnimation';
-import { loadingAnimationStyles } from './LoadingAnimation.styles';
-import { useThemeDOM } from '@/hooks/theme';
-import Logo from '../../layout/Logo';
 import { Righteous } from 'next/font/google';
-import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
-import { getCategoryName } from '../../../helpers/i18nHelpers';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLoadingAnimation } from './hooks';
+import { loadingAnimations, loadingAnimationStyles, getCategoryStyle, getAnimatedLineStyle, getLoadingSpinnerStyle } from './helpers';
+import Logo from '../../layout/Logo';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -26,16 +21,20 @@ export default function LoadingAnimation({
   onComplete, 
   isChallengeFetched 
 }: LoadingAnimationProps) {
-  const { t } = useTranslation('common');
   const {
     mounted,
     currentCategory,
     isShowingFinalCategory,
     isAnimationComplete,
-    isChallengeFetched: challengeFetched,
-    getThemeAdjustedPrimaryColor,
+    colorInfo,
+    translatedCategory,
+    isPlaceholder,
+    isHighContrast,
     darkMode,
-    onComplete: completeAnimation
+    challengeFetched,
+    getCSSProperty,
+    onComplete: completeAnimation,
+    t
   } = useLoadingAnimation({
     finalCategory,
     onComplete,
@@ -43,19 +42,6 @@ export default function LoadingAnimation({
   });
 
   const { highContrastMode } = useTheme();
-  const { hasClass, getCSSProperty } = useThemeDOM();
-
-  // Get the theme-adjusted color information
-  const colorInfo = getThemeAdjustedPrimaryColor();
-
-  // Get translated category name
-  const translatedCategory = currentCategory ? getCategoryName(currentCategory, t) : '';
-
-  // Check if we're showing the "Please wait..." placeholder
-  const isPlaceholder = currentCategory === "PLEASE WAIT...";
-
-  // Check if high contrast mode is active
-  const isHighContrast = hasClass('high-contrast');
 
   return (
     <div className={loadingAnimationStyles.container}>
@@ -63,7 +49,7 @@ export default function LoadingAnimation({
         {/* Top half - Logo */}
         <div className={loadingAnimationStyles.logoContainer}>
           <motion.div
-            {...loadingAnimationStyles.logoAnimation}
+            {...loadingAnimations.logo}
             className={loadingAnimationStyles.logoWrapper}
           >
             <Logo height="100%" />
@@ -75,8 +61,8 @@ export default function LoadingAnimation({
           {/* Line in the middle - appears when showing final category */}
           {mounted && isShowingFinalCategory && !isPlaceholder && (
             <motion.div
-              {...loadingAnimationStyles.lineAnimation}
-              style={loadingAnimationStyles.animatedLine(colorInfo.rgb)}
+              {...loadingAnimations.line}
+              style={getAnimatedLineStyle(colorInfo.rgb)}
               className={`${highContrastMode ? 'high-contrast-line' : ''}`}
             />
           )}
@@ -90,12 +76,12 @@ export default function LoadingAnimation({
               <AnimatePresence mode="wait">
                 <motion.h1
                   key={currentCategory}
-                  initial={loadingAnimationStyles.categoryAnimation.initial}
-                  animate={loadingAnimationStyles.categoryAnimation.animate(isShowingFinalCategory)}
-                  exit={loadingAnimationStyles.categoryAnimation.exit}
-                  transition={loadingAnimationStyles.categoryAnimation.transition(isShowingFinalCategory)}
+                  initial={loadingAnimations.category.initial}
+                  animate={loadingAnimations.category.animate(isShowingFinalCategory)}
+                  exit={loadingAnimations.category.exit}
+                  transition={loadingAnimations.category.transition(isShowingFinalCategory)}
                   className={`m-0 ${righteous.className} ${isShowingFinalCategory ? 'font-bold' : ''} ${isPlaceholder ? 'text-gray-500 dark:text-gray-400' : ''}`}
-                  style={loadingAnimationStyles.getCategoryStyle(
+                  style={getCategoryStyle(
                     isShowingFinalCategory,
                     colorInfo.rgb,
                     colorInfo.colorClass,
@@ -117,21 +103,20 @@ export default function LoadingAnimation({
           {/* Loading indicator */}
           {mounted && isAnimationComplete && !challengeFetched && (
             <motion.div
-              {...loadingAnimationStyles.loadingAnimation}
+              {...loadingAnimations.loading}
               className={loadingAnimationStyles.loadingIndicatorContainer}
             >
               <div 
-                style={loadingAnimationStyles.loadingSpinner(colorInfo.rgb)}
+                style={getLoadingSpinnerStyle(colorInfo.rgb)}
               ></div>
               <p className={loadingAnimationStyles.loadingText}>{t('loading.message', 'Please wait, loading challenge...')}</p>
             </motion.div>
           )}
         </div>
 
-        {/* Skip button - only shown when challenge is fetched */}
         {challengeFetched && (
           <motion.button
-            {...loadingAnimationStyles.skipButtonAnimation}
+            {...loadingAnimations.skipButton}
             onClick={completeAnimation}
             className={`${loadingAnimationStyles.skipButton} ${righteous.className}`}
           >

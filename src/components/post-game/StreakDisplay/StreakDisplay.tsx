@@ -1,10 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useStreakDisplay } from './useStreakDisplay';
-import styles from './StreakDisplay.module.css';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useStreakDisplay } from './hooks';
+import { 
+  streakDisplayAnimations, 
+  streakDisplayStyles, 
+  getFlameIconStyle, 
+  getDayIndicatorStyle,
+  shouldShowSymbol
+} from './helpers';
 
 interface StreakDisplayProps {
   className?: string;
@@ -21,198 +26,83 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
     dayNames,
     colors,
     animatedDays,
-    shouldShowStreak
-  } = useStreakDisplay();
-  
-  const { t } = useTranslation();
-  
-  // Animation values for the ticking counter
-  const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, { duration: 2000, bounce: 0.3 });
-  const displayValue = useTransform(springValue, (value) => Math.round(value));
-  
-  // Get current day for enhanced animation
-  const currentDay = new Date().getDay();
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const [showCurrentDaySymbol, setShowCurrentDaySymbol] = useState(!shouldAnimate);
-  
-  // Animate the counter when shouldAnimate is true
-  useEffect(() => {
-    if (shouldAnimate && !hasAnimated) {
-      // Delay the counter animation to start after the streak display appears
-      const timer = setTimeout(() => {
-        motionValue.set(currentStreak);
-        setHasAnimated(true);
-      }, 400); // Increased delay since streak appears first
-      
-      return () => clearTimeout(timer);
-    } else if (!shouldAnimate) {
-      motionValue.set(currentStreak);
-    }
-  }, [shouldAnimate, currentStreak, motionValue, hasAnimated]);
-
-  // Show current day symbol after the appropriate delay
-  useEffect(() => {
-    if (shouldAnimate) {
-      const timer = setTimeout(() => {
-        setShowCurrentDaySymbol(true);
-      }, 400 + currentDay * 100); // Same delay as the symbol animation
-      
-      return () => clearTimeout(timer);
-    } else {
-      setShowCurrentDaySymbol(true);
-    }
-  }, [shouldAnimate, currentDay]);
+    showCurrentDaySymbol,
+    shouldShow,
+    currentDay,
+    displayValue,
+    t
+  } = useStreakDisplay({ shouldAnimate });
   
   // Don't show anything if streak is 0 or no days completed
-  if (!shouldShowStreak) {
+  if (!shouldShow) {
     return null;
   }
   
   return (
     <div
-      className={`${styles.container} ${className}`}
+      className={`${streakDisplayStyles.container} ${className}`}
     >
       {/* Flame icon and streak count */}
-              <div className={styles.flameSection}>
-          <div className={styles.flameIcon}>
-          <div 
-            style={{ 
-              width: '40px',
-              height: '40px',
-              maskImage: `url(/icons/${currentStreak === 0 ? 'ice' : 'flame'}.svg)`,
-              maskSize: 'contain',
-              maskRepeat: 'no-repeat',
-              maskPosition: 'center',
-              WebkitMaskImage: `url(/icons/${currentStreak === 0 ? 'ice' : 'flame'}.svg)`,
-              WebkitMaskSize: 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              backgroundColor: `var(--color-${colors.primary})`
-            }}
-          />
+      <div className={streakDisplayStyles.flameSection}>
+        <div className={streakDisplayStyles.flameIcon}>
+          <div style={getFlameIconStyle(currentStreak, colors.primary)} />
         </div>
-        <div className={styles.streakText}>
+        <div className={streakDisplayStyles.streakText}>
           <motion.span 
-            className={styles.streakNumber}
+            className={streakDisplayStyles.streakNumber}
             style={{ color: `var(--color-${colors.primary})` }}
           >
             {shouldAnimate ? displayValue : currentStreak}
           </motion.span>
-          <span className={styles.streakLabel}>
+          <span className={streakDisplayStyles.streakLabel}>
             {t('game.streak.dayStreak')}
           </span>
         </div>
       </div>
       
       {/* Weekly calendar */}
-      <div className={styles.calendar}>
-        <div className={styles.calendarGrid}>
+      <div className={streakDisplayStyles.calendar}>
+        <div className={streakDisplayStyles.calendarGrid}>
           {dayNames.map((day, index) => (
-            <div key={day} className={styles.dayColumn}>
-              <div className={styles.dayLabel}>
+            <div key={day} className={streakDisplayStyles.dayColumn}>
+              <div className={streakDisplayStyles.dayLabel}>
                 {day}
               </div>
-                            <motion.div
-                className={`${styles.dayIndicator} ${
-                  index < currentDay || (index === currentDay && showCurrentDaySymbol)
-                    ? (weeklyCompletions[index] === 'completed' ? styles.completedDay :
-                       weeklyCompletions[index] === 'failed' ? styles.failedDay :
-                       weeklyCompletions[index] === 'missed' ? styles.missedDay :
-                       styles.futureDay)
-                    : index === currentDay && !showCurrentDaySymbol
-                    ? styles.transparentDay
-                    : ''
-                } border-gray-800`}
+              <motion.div
+                className={`${streakDisplayStyles.dayIndicator} border-gray-800`}
                 style={{
-                  backgroundColor: (() => {
-                                         // Current day logic
-                     if (index === currentDay) {
-                       // If symbol hasn't appeared yet, transparent
-                       if (!showCurrentDaySymbol) {
-                         return 'transparent';
-                       }
-                      // If symbol is showing, use theme color for completed/failed
-                      if (weeklyCompletions[index] === 'completed' || weeklyCompletions[index] === 'failed') {
-                        return `var(--color-${colors.primary})`;
-                      }
-                      if (weeklyCompletions[index] === 'missed') {
-                        return 'var(--color-gray-400)';
-                      }
-                      return 'transparent';
-                    }
-                    
-                    // Past days
-                    if (index < currentDay) {
-                      if (weeklyCompletions[index] === 'completed' || weeklyCompletions[index] === 'failed') {
-                        return `var(--color-${colors.primary})`;
-                      }
-                      if (weeklyCompletions[index] === 'missed') {
-                        return 'var(--color-gray-400)';
-                      }
-                      return 'var(--color-gray-300)';
-                    }
-                    
-                    // Future days
-                    return 'var(--color-gray-300)';
-                  })(),
+                  backgroundColor: getDayIndicatorStyle(
+                    index, 
+                    currentDay, 
+                    weeklyCompletions, 
+                    colors.primary, 
+                    showCurrentDaySymbol
+                  ),
                   borderColor: `var(--color-${colors.primary})`
                 }}
-                initial={{ scale: 0 }}
-                animate={{ 
-                  scale: animatedDays[index] ? 1 : 0.8,
-                  opacity: animatedDays[index] ? 1 : 0.5
-                }}
-                transition={{ 
-                  duration: 0.3,
-                  delay: shouldAnimate ? index * 0.1 : 0
-                }}
+                {...streakDisplayAnimations.dayIndicator(shouldAnimate, index, animatedDays)}
               >
-                {weeklyCompletions[index] === 'completed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
+                {weeklyCompletions[index] === 'completed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
-                    className={`${styles.checkmark} ${styles.completedSymbol}`}
-                    initial={{ scale: 0, rotate: -90, opacity: 0 }}
-                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                    transition={{ 
-                      duration: 0.4,
-                      delay: shouldAnimate ? 
-                        (index === currentDay ? 0.4 + index * 0.1 : index * 0.1) : 0,
-                      type: "spring",
-                      stiffness: 200
-                    }}
+                    className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.completedSymbol}`}
+                    {...streakDisplayAnimations.completedSymbol(shouldAnimate, index, currentDay)}
                   >
                     ✔
                   </motion.div>
                 )}
-                {weeklyCompletions[index] === 'failed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
+                {weeklyCompletions[index] === 'failed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
-                    className={`${styles.checkmark} ${styles.failedSymbol}`}
-                    initial={{ scale: 0, rotate: -90, opacity: 0 }}
-                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                    transition={{ 
-                      duration: 0.4,
-                      delay: shouldAnimate ? 
-                        (index === currentDay ? 0.4 + index * 0.1 : index * 0.1) : 0,
-                      type: "spring",
-                      stiffness: 200
-                    }}
+                    className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.failedSymbol}`}
+                    {...streakDisplayAnimations.failedSymbol(shouldAnimate, index, currentDay)}
                   >
                     ✖
                   </motion.div>
                 )}
-                {weeklyCompletions[index] === 'missed' && (index < currentDay || (index === currentDay && showCurrentDaySymbol)) && (
+                {weeklyCompletions[index] === 'missed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
-                    className={styles.checkmark}
+                    className={streakDisplayStyles.checkmark}
                     style={{ color: `var(--color-${colors.dark})` }}
-                    initial={{ scale: 0, rotate: -90, opacity: 0 }}
-                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                    transition={{ 
-                      duration: 0.4,
-                      delay: shouldAnimate ? 
-                        (index === currentDay ? 0.4 + index * 0.1 : index * 0.1) : 0,
-                      type: "spring",
-                      stiffness: 200
-                    }}
+                    {...streakDisplayAnimations.missedSymbol(shouldAnimate, index, currentDay)}
                   >
                     –
                   </motion.div>

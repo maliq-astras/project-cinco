@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useToastMessages } from './hooks';
 import styles from './ToastMessages.module.css';
 
 interface ToastMessagesProps {
@@ -14,7 +14,7 @@ export default function ToastMessages({
   duplicateErrorRef, 
   skipMessageRef 
 }: ToastMessagesProps) {
-  const { t } = useTranslation();
+  const { duplicateMessage, skipMessage } = useToastMessages();
 
   return (
     <div className={styles.container}>
@@ -24,7 +24,7 @@ export default function ToastMessages({
         id="duplicate-error" 
         className={styles.duplicateToast}
       >
-        {t('game.status.duplicate')}
+        {duplicateMessage}
       </div>
 
       {/* Skip message toast */}
@@ -33,7 +33,7 @@ export default function ToastMessages({
         id="skip-message" 
         className={styles.skipToast}
       >
-        {t('game.status.skipped')}
+        {skipMessage}
       </div>
     </div>
   );

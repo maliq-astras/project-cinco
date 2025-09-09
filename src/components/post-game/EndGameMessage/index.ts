@@ -1,2 +1,3 @@
 export { default } from './EndGameMessage';
-export * from './useEndGameMessage'; 
+export { useEndGameMessage } from './hooks';
+export * from './helpers'; 

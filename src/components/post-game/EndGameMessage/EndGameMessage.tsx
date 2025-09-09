@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
-import { useEndGameMessage, GameOutcome } from './useEndGameMessage';
-import { endGameMessageStyles } from './EndGameMessage.styles';
-import { useTranslation } from 'react-i18next';
+import { useEndGameMessage } from './hooks';
+import { GameOutcome } from './helpers';
+import { 
+  endGameMessageAnimations, 
+  endGameMessageStyles, 
+  getAnswerTextStyle, 
+  getConfettiPieceStyle, 
+  getTimeDisplayTextStyle 
+} from './helpers';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
 import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal';
 import StreakDisplay from '@/components/post-game/StreakDisplay';
@@ -28,38 +34,36 @@ export default function EndGameMessage({
     confettiPieces,
     showTomorrowMessage,
     timeFormatted,
-    shouldShowTime,
+    shouldShowTimeDisplay,
     messageData,
-    colors
+    colors,
+    t,
+    isAnswerModalOpen,
+    handleAnswerClick,
+    handleAnswerKeyDown,
+    handleCloseModal,
+    getAnswerAriaLabel
   } = useEndGameMessage({ outcome, correctAnswer, numberOfTries, timeSpent });
-
-  const { t } = useTranslation();
-  const [isAnswerModalOpen, setIsAnswerModalOpen] = useState(false);
 
   const getMessage = () => {
     const { type, displayAnswer, numberOfTries: tries } = messageData;
     const answerSpan = (
       <span 
         style={{
-          ...endGameMessageStyles.answerText(colors.primary),
+          ...getAnswerTextStyle(colors.primary),
           cursor: 'pointer'
         }}
-        onClick={() => setIsAnswerModalOpen(true)}
+        onClick={handleAnswerClick}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setIsAnswerModalOpen(true);
-          }
-        }}
-        aria-label={`Learn more about ${capitalizeAnswer(displayAnswer)}`}
+        onKeyDown={handleAnswerKeyDown}
+        aria-label={getAnswerAriaLabel(capitalizeAnswer(displayAnswer))}
       >
         {capitalizeAnswer(displayAnswer)}
       </span>
     );
     const finalFiveSpan = (
-      <span style={endGameMessageStyles.answerText(colors.primary)} className={righteous.className}>
+      <span style={getAnswerTextStyle(colors.primary)} className={righteous.className}>
         FINAL 5
       </span>
     );
@@ -128,24 +132,22 @@ export default function EndGameMessage({
       <div className={endGameMessageStyles.container} style={{ minHeight: '160px' }}>
         <motion.div
           className={endGameMessageStyles.messageWrapper}
-          {...endGameMessageStyles.messageWrapperAnimation}
+          {...endGameMessageAnimations.messageWrapper}
         >
           {/* Confetti animation - only for win scenarios */}
           {showConfetti && confettiPieces.map(piece => (
             <motion.div
               key={piece.id}
               className={endGameMessageStyles.confettiPiece}
-              {...endGameMessageStyles.confettiAnimation(piece.angle)}
-              style={endGameMessageStyles.confettiPieceStyle(piece.size, piece.color)}
+              {...endGameMessageAnimations.confetti(piece.angle)}
+              style={getConfettiPieceStyle(piece.size, piece.color)}
             />
           ))}
           
           {/* Streak Display - appears first with enhanced animations */}
           <motion.div 
             className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            {...endGameMessageAnimations.streakDisplay}
           >
             <StreakDisplay shouldAnimate={true} />
           </motion.div>
@@ -153,16 +155,14 @@ export default function EndGameMessage({
           {/* Message text - appears second */}
           <motion.div
             className={endGameMessageStyles.messageContent}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.0 }}
+            {...endGameMessageAnimations.messageText}
           >
             {getMessage()}
             
             {/* Time display - only for standard wins */}
-            {shouldShowTime && (
+            {shouldShowTimeDisplay && (
               <div className={endGameMessageStyles.timeDisplay}>
-                <span style={endGameMessageStyles.timeDisplayText(colors.primary)}>
+                <span style={getTimeDisplayTextStyle(colors.primary)}>
                   {timeFormatted}
                 </span>
                 <svg 
@@ -193,10 +193,7 @@ export default function EndGameMessage({
                 <motion.div 
                   className={endGameMessageStyles.tomorrowMessage}
                   style={{ color: `var(--color-${colors.primary})` }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.6, delay: 2.0 }}
+                  {...endGameMessageAnimations.tomorrowMessage}
                 >
                   {t('game.endGame.comeBackTomorrow')}
                 </motion.div>
@@ -209,7 +206,7 @@ export default function EndGameMessage({
       {/* Answer Details Modal */}
       <AnswerDetailsModal
         isOpen={isAnswerModalOpen}
-        onClose={() => setIsAnswerModalOpen(false)}
+        onClose={handleCloseModal}
         answer={correctAnswer}
       />
     </>

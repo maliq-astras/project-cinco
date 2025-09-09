@@ -1,3 +1,3 @@
 export { default } from './LoadingAnimation';
-export { useLoadingAnimation } from './useLoadingAnimation';
-export * from './LoadingAnimation.styles'; 
+export { useLoadingAnimation } from './hooks';
+export * from './helpers'; 

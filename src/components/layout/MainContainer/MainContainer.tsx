@@ -11,9 +11,7 @@ import {
 } from '@/components';
 import GameContentRenderer from '../GameContentRenderer';
 import { getHeaderComponent } from './helpers';
-import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useWrongAnswerOverlay } from '../../ui/WrongAnswerOverlay/useWrongAnswerOverlay';
 import { useScreenSizeValidation } from '@/hooks/ui/useScreenSizeValidation';
 import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
 
@@ -44,7 +42,6 @@ export default function MainContainer() {
   } = useMainContainer();
   
   const { isLanguageSwitching } = useLanguage();
-  const wrongAnswerOverlay = useWrongAnswerOverlay({ maxGuesses: 5 });
   const { isScreenTooSmall, isActualMobileDevice } = useScreenSizeValidation(isNarrow);
   
   // CONDITIONAL RENDERING WITH EARLY RETURN (AFTER ALL HOOKS)
@@ -102,12 +99,7 @@ export default function MainContainer() {
           )}
           
           {/* Wrong Answer Overlay */}
-          <WrongAnswerOverlay
-            isVisible={wrongAnswerOverlay.isVisible}
-            wrongGuessCount={wrongAnswerOverlay.wrongGuessCount}
-            maxGuesses={wrongAnswerOverlay.maxGuesses}
-            onAnimationComplete={wrongAnswerOverlay.onAnimationComplete}
-          />
+          <WrongAnswerOverlay maxGuesses={5} />
           
           {/* Language Switch Loader */}
           <LanguageSwitchLoader isVisible={isLanguageSwitching} />

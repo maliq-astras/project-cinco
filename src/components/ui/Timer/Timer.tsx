@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTimer } from './useTimer';
-import { timerStyles } from './Timer.styles';
+import { useTimer } from './hooks';
+import { timerStyles } from './helpers';
 
 interface TimerProps {
   seconds: number;

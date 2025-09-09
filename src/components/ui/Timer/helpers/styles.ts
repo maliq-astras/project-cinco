@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import styles from './Timer.module.css';
+import styles from '../Timer.module.css';
 
 export const timerStyles = {
   // Static styles from CSS module
@@ -63,4 +63,4 @@ export const timerStyles = {
         : 'none'
     };
   }
-} as const; 
+} as const;

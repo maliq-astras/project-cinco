@@ -1,9 +1,8 @@
-import styles from './IconContainer.module.css';
+import styles from '../IconContainer.module.css';
 
 /**
- * Extracted Tailwind classes for icon components
+ * Extracted styles for icon components
  */
-
 export const iconContainerStyles = {
   // Static styles from CSS modules
   container: styles.container,
@@ -37,4 +36,4 @@ export const iconImageStyles = {
   hidden: {
     opacity: 0.7
   }
-}; 
+};

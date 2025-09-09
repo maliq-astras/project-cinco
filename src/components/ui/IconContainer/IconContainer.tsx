@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useIconContainer } from './hooks/useIconContainer';
-import { iconContainerStyles } from './IconContainer.styles';
+import { useIconContainer } from './hooks';
+import { iconContainerStyles } from './helpers';
 
 interface IconContainerProps {
   factType: string;
