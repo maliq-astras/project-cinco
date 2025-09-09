@@ -1,10 +1,11 @@
 import React, { forwardRef } from 'react';
 import Autocomplete from '../Autocomplete';
 import GuessProgressBar from '../GuessProgressBar';
-import { useAutoGrowTextarea } from './hooks/useAutoGrowTextarea';
 import styles from './InputBar.module.css';
-import { useInputBar, InputBarHandle } from './hooks/useInputBar';
+import { useInputBarOrchestrator } from './hooks';
+import { InputBarHandle } from './hooks/useInputBarLogic';
 import { CategoryType } from '@/types';
+import { getContainerStyle, getTextareaStyle, getSubmitButtonStyle } from './helpers';
 
 interface InputBarProps {
   inputValue: string;
@@ -14,7 +15,10 @@ interface InputBarProps {
   colors: { primary: string };
   hasSuggestionSelected: boolean;
   setHasSuggestionSelected: (selected: boolean) => void;
-  gameState: any;
+  gameState: {
+    challenge?: { category: CategoryType };
+    guesses?: Array<{ guess: string }>;
+  };
   isAutocompleteEnabled: boolean;
   setHasUserInput: (hasInput: boolean) => void;
 }
@@ -44,8 +48,9 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
     handleInputChange,
     handleKeyDown,
     responsiveValues
-  } = useInputBar({
+  } = useInputBarOrchestrator({
     ref,
+    inputValue,
     setInputValue,
     setHasSuggestionSelected,
     setHasUserInput,
@@ -53,18 +58,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
     onSubmit
   });
 
-  // Auto-grow textarea functionality with responsive max height
-  const maxHeight = responsiveValues.inputBarHeight * 2; // Allow input to grow to 2x the base height
-  useAutoGrowTextarea(
-    inputRef as unknown as React.RefObject<HTMLTextAreaElement>,
-    textareaShellRef,
-    inputValue,
-    { maxHeightPx: maxHeight }
-  );
-
-  const responsiveContainerStyle = {
-    gap: `${responsiveValues.spacing * 0.5}px`
-  };
+  const responsiveContainerStyle = getContainerStyle(responsiveValues.spacing);
 
   return (
     <div className={styles.container} style={responsiveContainerStyle}>
@@ -78,24 +72,14 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
             primaryColor={colors.primary}
             isVisible={isAutocompleteEnabled && !isInputDisabled() && inputValue.length >= 2}
             inputRef={inputRef}
-            previousGuesses={gameState.guesses?.map((g: any) => g.guess) || []}
+            previousGuesses={gameState.guesses?.map((g) => g.guess) || []}
             onSelectionChange={setHasSuggestionSelected}
           />
           <textarea
             id="game-input"
             ref={inputRef}
             className={`${styles.inputBase} ${isInputDisabled() ? styles.inputDisabled : styles.inputEnabled} ${styles.hideScrollbar} ${styles.inputPosition}`}
-            style={{
-              "--theme-color": `var(--color-${colors.primary})`,
-              transitionProperty: "height, transform",
-              transitionDuration: "200ms", 
-              transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-              willChange: "height, transform",
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "translateY(0)",
-              overflowY: "hidden"
-            }}
+            style={getTextareaStyle(colors.primary)}
             disabled={isInputDisabled()}
             autoComplete="off"
             value={inputValue}
@@ -107,11 +91,7 @@ const InputBar = forwardRef<InputBarHandle, InputBarProps>(({
           <button
             type="submit"
             className={styles.submitButton}
-            style={{
-              color: `var(--color-${colors.primary})`,
-              backgroundColor: `var(--color-${colors.primary}10)`,
-              opacity: isInputDisabled() || !inputValue.trim() ? 0.5 : 1
-            }}
+            style={getSubmitButtonStyle(colors.primary, isInputDisabled() || !inputValue.trim())}
             disabled={isInputDisabled() || !inputValue.trim()}
           >
             ENTER

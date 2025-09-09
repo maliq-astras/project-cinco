@@ -1,32 +1,20 @@
 import { useMemo } from 'react';
-import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useGuessProgress } from './useGuessProgress';
 import { getGradientBackground, getBottomShadowStyle } from '../helpers';
 import styles from '../GuessProgressBar.module.css';
 
-interface UseGuessProgressBarProps {
-  maxGuesses?: number;
+interface UseGuessProgressBarLogicProps {
+  maxGuesses: number;
+  animatedCount: number;
+  isShaking: boolean;
 }
 
-/**
- * Comprehensive hook for the GuessProgressBar component that encapsulates all logic
- */
-export function useGuessProgressBar({
-  maxGuesses = 5
-}: UseGuessProgressBarProps = {}) {
-  // Access state from the store
-  const guesses = useGameStore(state => state.gameState.guesses);
+export function useGuessProgressBarLogic({
+  maxGuesses,
+  animatedCount,
+  isShaking
+}: UseGuessProgressBarLogicProps) {
   const { colors } = useTheme();
-  
-  const { 
-    wrongGuessCount,
-    animatedCount,
-    isShaking
-  } = useGuessProgress({
-    guesses,
-    maxGuesses
-  });
   
   // Pulse animation for when bar is full
   const pulseAnimation = {
@@ -73,21 +61,10 @@ export function useGuessProgressBar({
   }, [maxGuesses, animatedCount]);
   
   return {
-    // State
-    wrongGuessCount,
-    animatedCount,
-    isShaking,
-    maxGuesses,
-    
-    // Animation properties
     pulseAnimation,
-    
-    // Styles
     gradientStyle,
     shadowStyle,
     barClassName,
-    
-    // Data
     segments
   };
-} 
+}

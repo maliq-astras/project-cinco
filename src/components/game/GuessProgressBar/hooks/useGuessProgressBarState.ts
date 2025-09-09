@@ -1,23 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { UserGuess } from '@/types';
 
-interface UseGuessProgressProps {
+interface UseGuessProgressBarStateProps {
   guesses: UserGuess[];
   maxGuesses: number;
-  onShakeComplete?: () => void;
 }
 
-export function useGuessProgress({
+export function useGuessProgressBarState({
   guesses,
-  maxGuesses,
-  onShakeComplete
-}: UseGuessProgressProps) {
+  maxGuesses
+}: UseGuessProgressBarStateProps) {
   const wrongGuesses = guesses.filter(guess => !guess.isCorrect && !guess.isFinalFiveGuess);
   const wrongGuessCount = wrongGuesses.length;
   
   const [animatedCount, setAnimatedCount] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const prevWrongGuessCount = useRef(0);
+
   useEffect(() => {
     if (wrongGuessCount > animatedCount) {
       const timer = setTimeout(() => {
@@ -26,26 +25,12 @@ export function useGuessProgress({
       return () => clearTimeout(timer);
     }
   }, [wrongGuessCount, animatedCount, maxGuesses]);
-  
-  useEffect(() => {
-    if (wrongGuessCount > prevWrongGuessCount.current) {
-      setIsShaking(true);
-      
-      setTimeout(() => {
-        setIsShaking(false);
-        if (onShakeComplete) {
-          onShakeComplete();
-        }
-      }, 500);
-    }
-    
-    prevWrongGuessCount.current = wrongGuessCount;
-  }, [wrongGuessCount, onShakeComplete]);
 
   return {
-    wrongGuesses,
     wrongGuessCount,
     animatedCount,
-    isShaking
+    isShaking,
+    setIsShaking,
+    prevWrongGuessCount
   };
-} 
+}

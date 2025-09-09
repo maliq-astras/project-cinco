@@ -1,7 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useGameButtons } from './useGameButtons';
+import { useGameButtons } from './hooks';
+import { 
+  getButtonAnimationProps,
+  getDisabledButtonAnimationProps,
+  getTooltipAnimationProps,
+  getButtonHoverProps,
+  getButtonTapProps,
+  getButtonContainerStyle
+} from './helpers';
 import styles from './GameButtons.module.css';
 
 interface GameButtonsProps {
@@ -12,7 +20,7 @@ interface GameButtonsProps {
   isTouchDevice: boolean;
 }
 
-export default function GameButtons({
+const GameButtons = React.memo(function GameButtons({
   colors,
   isSkipDisabled,
   handleSkip,
@@ -20,30 +28,20 @@ export default function GameButtons({
   isTouchDevice
 }: GameButtonsProps) {
   const { t } = useTranslation();
-  const {
-    controlsRef,
-    buttonAnimation,
-    disabledButtonAnimation,
-    tooltipAnimation
-  } = useGameButtons();
+  const { controlsRef } = useGameButtons();
 
   return (
     <div 
       ref={controlsRef}
       id="game-controls-right" 
       className={styles.container}
-      style={{
-        '--button-color': `var(--color-${colors.primary})`,
-        '--button-active-bg': `var(--color-${colors.primary}20)`,
-        '--divider-color': `var(--color-${colors.primary}40)`,
-        '--tooltip-color': `var(--color-${colors.primary})`
-      } as React.CSSProperties}
+      style={getButtonContainerStyle(colors.primary)}
     >
       <motion.button 
         className={styles.controlButton}
-        {...buttonAnimation}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        {...getButtonAnimationProps()}
+        whileHover={getButtonHoverProps(false)}
+        whileTap={getButtonTapProps(false)}
         aria-label={t('ui.buttons.info')}
       >
         <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,9 +53,9 @@ export default function GameButtons({
       <div className="relative">
         <motion.button 
           className={`${styles.controlButton} ${isSkipConfirmActive ? styles.active : ''}`}
-          {...(isSkipDisabled() ? disabledButtonAnimation : buttonAnimation)}
-          whileHover={isSkipDisabled() ? {} : { scale: 1.05 }}
-          whileTap={isSkipDisabled() ? {} : { scale: 0.95 }}
+          {...(isSkipDisabled() ? getDisabledButtonAnimationProps() : getButtonAnimationProps())}
+          whileHover={getButtonHoverProps(isSkipDisabled())}
+          whileTap={getButtonTapProps(isSkipDisabled())}
           onClick={handleSkip}
           disabled={isSkipDisabled()}
           aria-label={isSkipConfirmActive ? t('ui.buttons.confirm_skip') : t('ui.buttons.skip')}
@@ -75,7 +73,7 @@ export default function GameButtons({
       </div>
       {isSkipConfirmActive && (
         <motion.div
-          {...tooltipAnimation}
+          {...getTooltipAnimationProps()}
           className={styles.skipTooltip}
         >
           {isTouchDevice ? t('ui.buttons.confirm_skip_mobile') : t('ui.buttons.confirm_skip')}
@@ -84,4 +82,8 @@ export default function GameButtons({
       )}
     </div>
   );
-}
+});
+
+GameButtons.displayName = 'GameButtons';
+
+export default GameButtons;

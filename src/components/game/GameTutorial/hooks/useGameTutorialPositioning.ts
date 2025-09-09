@@ -1,113 +1,28 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useGameStore } from '@/store/gameStore';
-import { useDOMRefs } from '@/providers/DOMRefsProvider';
-import { useResponsive } from '@/hooks/responsive';
+import { useCallback } from 'react';
+import { isMobileLayout } from '@/constants/breakpoints';
 
-interface TutorialStep {
-  target: string;
-  title: string;
-  description: string;
-  textPosition: 'left' | 'right' | 'top' | 'bottom';
-}
-
-const createTutorialSteps = (hardMode: boolean, t: any): TutorialStep[] => [
-  {
-    target: 'header-area',
-    title: t('tutorial.steps.welcome.title'),
-    description: t('tutorial.steps.welcome.description'),
-    textPosition: 'right',
-  },
-  {
-    target: 'category-title',
-    title: t('tutorial.steps.category.title'),
-    description: t('tutorial.steps.category.description'),
-    textPosition: 'right',
-  },
-  {
-    target: 'facts-area',
-    title: t('tutorial.steps.factCards.title'),
-    description: t('tutorial.steps.factCards.description'),
-    textPosition: 'right',
-  },
-  {
-    target: 'bubble-grid',
-    title: t('tutorial.steps.hiddenFacts.title'),
-    description: t('tutorial.steps.hiddenFacts.description'),
-    textPosition: 'left',
-  },
-  {
-    target: 'bubble-0',
-    title: t('tutorial.steps.revealFacts.title'),
-    description: t('tutorial.steps.revealFacts.description', 'Drag any bubble to the card area to reveal its fact! Start with this one to begin your journey.'),
-    textPosition: 'right',
-  },
-  {
-    target: 'game-input',
-    title: t('tutorial.steps.guesses.title'),
-    description: t('tutorial.steps.guesses.description'),
-    textPosition: 'top',
-  },
-  {
-    target: 'game-timer',
-    title: t('tutorial.steps.timeLimit.title'),
-    description: hardMode 
-      ? t('tutorial.steps.timeLimit.description.hard')
-      : t('tutorial.steps.timeLimit.description.normal'),
-    textPosition: 'top',
-  },
-  {
-    target: 'game-progress',
-    title: t('tutorial.steps.guessLimit.title'),
-    description: t('tutorial.steps.guessLimit.description'),
-    textPosition: 'top',
-  },
-  {
-    target: 'game-controls-right',
-    title: t('tutorial.steps.tools.title'),
-    description: t('tutorial.steps.tools.description'),
-    textPosition: 'top',
-  }
-];
-
-interface UseGameTutorialProps {
+interface UseGameTutorialPositioningProps {
   isOpen: boolean;
-  onClose: () => void;
+  currentStep: number;
+  tutorialSteps: Array<{ target: string }>;
+  getElement: (id: string) => HTMLElement | null;
+  width: number;
+  height: number;
+  setSpotlightStyles: (styles: { top: string; left: string; width: string; height: string }) => void;
+  setTextBoxStyles: (styles: { top: string; left: string; width: string }) => void;
 }
 
-export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
-  const { t } = useTranslation('common');
-  const { colors } = useTheme();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [spotlightStyles, setSpotlightStyles] = useState({
-    top: '0px',
-    left: '0px',
-    width: '0px',
-    height: '0px'
-  });
-  const [textBoxStyles, setTextBoxStyles] = useState({
-    top: '0px',
-    left: '0px',
-    width: '0px'
-  });
-
-  const hardMode = useGameStore(state => state.hardMode);
-  const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
-  const tutorialSteps = createTutorialSteps(hardMode, t);
-  const { registerElement, unregisterElement, getElement } = useDOMRefs();
-  const { 
-    width, 
-    height, 
-  } = useResponsive();
-  useEffect(() => {
-    setTutorialOpen(isOpen);
-    
-    if (!isOpen) {
-      setCurrentStep(0);
-    }
-  }, [isOpen, setTutorialOpen]);
-
+export const useGameTutorialPositioning = ({
+  isOpen,
+  currentStep,
+  tutorialSteps,
+  getElement,
+  width,
+  height,
+  setSpotlightStyles,
+  setTextBoxStyles
+}: UseGameTutorialPositioningProps) => {
+  
   const updatePositions = useCallback(() => {
     if (isOpen) {
       const currentTarget = tutorialSteps[currentStep].target;
@@ -116,7 +31,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
       if (element) {
         const rect = element.getBoundingClientRect();
         const textPadding = 24;
-        const { isMobileLayout } = require('@/constants/breakpoints');
         const isMobile = isMobileLayout(width, height);
         const navigationHeight = 120;
         const viewportHeight = height;
@@ -124,7 +38,6 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         if (currentTarget === 'header-area') {
           const logoWidth = rect.width; 
           const logoHeight = Math.min(150, rect.height * 0.6); 
-          
           const centerY = rect.top + rect.height / 2;
           
           setSpotlightStyles({
@@ -210,7 +123,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
           }
         }
 
-        // Calculate text box position - below for most elements, above for bubble grid
+        // Calculate text box position
         const textBoxWidth = isMobile ? Math.min(width - 32, 400) : 300;
         let textTop;
         let textLeft = rect.left + (rect.width - textBoxWidth) / 2;
@@ -218,10 +131,7 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         if (currentTarget === 'bubble-grid' || currentTarget === 'bubble-0') {
           textTop = Math.max(16, rect.top - 200 - textPadding);
         } else if (currentTarget === 'facts-area') {
-          textTop = Math.max(
-            rect.bottom + 100, 
-            16 
-          );
+          textTop = Math.max(rect.bottom + 100, 16);
         } else {
           textTop = Math.min(
             rect.bottom + textPadding * 2,
@@ -244,35 +154,9 @@ export const useGameTutorial = ({ isOpen, onClose }: UseGameTutorialProps) => {
         });
       }
     }
-  }, [isOpen, currentStep, tutorialSteps, getElement, width, height]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      updatePositions();
-    }, 50);
-    
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [currentStep, isOpen, updatePositions]);
-
-  const handleClick = () => {
-    if (currentStep < tutorialSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      onClose();
-    }
-  };
+  }, [isOpen, currentStep, tutorialSteps, getElement, width, height, setSpotlightStyles, setTextBoxStyles]);
 
   return {
-    currentStep,
-    spotlightStyles,
-    textBoxStyles,
-    colors,
-    tutorialSteps,
-    handleClick,
-    continueText: currentStep === tutorialSteps.length - 1 
-      ? t('tutorial.navigation.finish')
-      : t('tutorial.navigation.continue')
+    updatePositions
   };
-}; 
+};

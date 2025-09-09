@@ -1,8 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Inter } from 'next/font/google';
-import { useGameTutorial } from './useGameTutorial';
-import { getOverlayMaskStyle, getSpotlightStyle } from './helpers';
+import { useGameTutorial } from './hooks';
+import { 
+  getOverlayMaskStyle, 
+  getSpotlightStyle,
+  getTextBoxStyle,
+  getTitleStyle,
+  getProgressDotStyle,
+  getTextBoxAnimationProps,
+  getTitleAnimationProps,
+  getDescriptionAnimationProps,
+  getProgressContainerAnimationProps
+} from './helpers';
 import { useTheme } from '@/contexts/ThemeContext';
 import styles from './GameTutorial.module.css';
 
@@ -13,7 +23,7 @@ interface GameTutorialProps {
   onClose: () => void;
 }
 
-export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
+const GameTutorial = React.memo(function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
   const {
     currentStep,
     spotlightStyles,
@@ -48,43 +58,21 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
       <motion.div 
         className={`${inter.className} ${styles.textBox}`}
-        style={{
-          borderColor: `var(--color-${colors.primary})`,
-          boxShadow: darkMode 
-            ? '0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5)' 
-            : '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'
-        }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ 
-          opacity: 1,
-          scale: 1,
-          x: parseFloat(textBoxStyles.left),
-          y: parseFloat(textBoxStyles.top),
-          width: parseFloat(textBoxStyles.width)
-        }}
-        transition={{ 
-          duration: 0.4,
-          ease: [0.4, 0, 0.2, 1],
-          layout: {
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1]
-          }
-        }}
+        style={getTextBoxStyle(colors.primary, darkMode, textBoxStyles)}
+        {...getTextBoxAnimationProps(textBoxStyles)}
         layout
         onClick={(e) => e.stopPropagation()}
       >
         <motion.h3 
           className={styles.textBoxTitle}
-          style={{ color: `var(--color-${colors.primary})` }}
-          layout="position"
-          transition={{ duration: 0.4 }}
+          style={getTitleStyle(colors.primary)}
+          {...getTitleAnimationProps()}
         >
           {currentTutorialStep.title}
         </motion.h3>
         <motion.p 
           className={styles.textBoxDescription}
-          layout="position"
-          transition={{ duration: 0.4 }}
+          {...getDescriptionAnimationProps()}
         >
           {currentTutorialStep.description}
         </motion.p>
@@ -92,15 +80,7 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
 
       <motion.div 
         className={styles.progressContainer}
-        initial={{ opacity: 0 }}
-        animate={{ 
-          opacity: 1,
-          y: 0
-        }}
-        transition={{ 
-          duration: 0.4,
-          ease: [0.4, 0, 0.2, 1]
-        }}
+        {...getProgressContainerAnimationProps()}
       >
         <motion.p 
           className={styles.progressText}
@@ -114,15 +94,15 @@ export default function GameTutorial({ isOpen, onClose }: GameTutorialProps) {
             <motion.div
               key={index}
               className={styles.progressDot}
-              style={{
-                backgroundColor: index === currentStep 
-                  ? `var(--color-${colors.primary})`
-                  : `var(--color-${colors.primary}30)`
-              }}
+              style={getProgressDotStyle(colors.primary, index === currentStep)}
             />
           ))}
         </motion.div>
       </motion.div>
     </div>
   );
-} 
+});
+
+GameTutorial.displayName = 'GameTutorial';
+
+export default GameTutorial; 

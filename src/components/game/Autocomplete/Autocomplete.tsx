@@ -2,8 +2,15 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CategoryType } from '@/types';
-import { useAutocomplete } from './useAutocomplete';
-import { getContainerStyle, getSuggestionStyle } from './helpers';
+import { useAutocomplete } from './hooks';
+import { 
+  getContainerStyle, 
+  getSuggestionStyle
+} from './helpers/styles';
+import {
+  getContainerAnimationProps,
+  getSuggestionAnimationProps
+} from './helpers/animations';
 import styles from './Autocomplete.module.css';
 
 interface AutocompleteProps {
@@ -17,7 +24,7 @@ interface AutocompleteProps {
   onSelectionChange?: (hasSelection: boolean) => void;
 }
 
-const Autocomplete: React.FC<AutocompleteProps> = ({
+const Autocomplete = React.memo(function Autocomplete({
   category,
   query,
   onSuggestionClick,
@@ -26,7 +33,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   inputRef,
   previousGuesses = [],
   onSelectionChange
-}) => {
+}: AutocompleteProps) {
   const {
     suggestions,
     selectedIndex,
@@ -55,26 +62,13 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
         ...getContainerStyle(primaryColor)
       }}
       className={styles.container}
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-      animate={{ 
-        opacity: 1, 
-        y: 0, 
-        scale: 1
-      }}
-      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-      transition={{ 
-        duration: 0.2, 
-        ease: "easeOut"
-      }}
+      {...getContainerAnimationProps()}
     >
       <AnimatePresence>
         {suggestions.map((suggestion, index) => (
           <motion.button
             key={suggestion.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: index * 0.02 }}
+            {...getSuggestionAnimationProps(index)}
             onMouseDown={(e) => {
               e.preventDefault();
               setSuggestions([]);
@@ -101,6 +95,8 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   return typeof window !== 'undefined' 
     ? createPortal(autocompleteContent, document.body)
     : null;
-};
+});
+
+Autocomplete.displayName = 'Autocomplete';
 
 export default Autocomplete;

@@ -1,43 +1,33 @@
-import { FormEvent, useRef, useImperativeHandle, Ref, useState, useEffect, RefObject } from 'react';
+import { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useResponsive } from '@/hooks/responsive';
 import { showToastMessageFromElement } from '@/helpers/uiHelpers';
 import { isDuplicateGuess } from '@/helpers/gameLogic';
-import { InputBarHandle } from '../InputBar';
-import { useResponsive } from '@/hooks/responsive';
 
-export interface GameControlsHandle {
-  focusInput: () => void;
-}
-
-interface UseGameControlsReturn {
-  inputBarRef: RefObject<InputBarHandle | null>;
-  timeRemaining: number;
-  isVictoryAnimationActive: boolean;
-  colors: { primary: string };
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  handleSkip: () => void;
-  getInputPlaceholder: () => string;
-  isInputDisabled: () => boolean;
-  isSkipDisabled: () => boolean;
+interface UseGameControlsLogicProps {
   inputValue: string;
-  setInputValue: (value: string) => void;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
   isSkipConfirmActive: boolean;
-  isTouchDevice: boolean;
-  duplicateErrorRef: RefObject<HTMLDivElement | null>;
-  skipMessageRef: RefObject<HTMLDivElement | null>;
-  responsiveValues: any;
-  breakpoint: string;
-  isLandscape: boolean;
-  isPortrait: boolean;
+  setIsSkipConfirmActive: React.Dispatch<React.SetStateAction<boolean>>;
+  duplicateErrorRef: React.RefObject<HTMLDivElement | null>;
+  skipMessageRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export const useGameControls = (ref: Ref<GameControlsHandle>): UseGameControlsReturn => {
+export const useGameControlsLogic = ({
+  inputValue,
+  setInputValue,
+  isSkipConfirmActive,
+  setIsSkipConfirmActive,
+  duplicateErrorRef,
+  skipMessageRef
+}: UseGameControlsLogicProps) => {
   const { t } = useTranslation();
-  const [inputValue, setInputValue] = useState('');
-  const [isSkipConfirmActive, setIsSkipConfirmActive] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const { colors } = useTheme();
+  const { responsiveValues, breakpoint, isLandscape, isPortrait } = useResponsive();
+  
+  // Game store selectors
   const guesses = useGameStore(state => state.gameState.guesses);
   const timeRemaining = useGameStore(state => state.timeRemaining);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
@@ -46,38 +36,6 @@ export const useGameControls = (ref: Ref<GameControlsHandle>): UseGameControlsRe
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const isProcessingGuess = useGameStore(state => state.isProcessingGuess);
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
-  const { colors } = useTheme();
-  
-  const { 
-    responsiveValues,
-    breakpoint,
-    isLandscape,
-    isPortrait
-  } = useResponsive();
-  const duplicateErrorRef = useRef<HTMLDivElement>(null);
-  const skipMessageRef = useRef<HTMLDivElement>(null);
-  const inputBarRef = useRef<InputBarHandle>(null);
-  useImperativeHandle(ref, () => ({
-    focusInput: () => {
-      if (inputBarRef.current && !isInputDisabled()) {
-        inputBarRef.current.focusInput();
-      }
-    }
-  }));
-
-  useEffect(() => {
-    if (isSkipConfirmActive) {
-      const timer = setTimeout(() => {
-        setIsSkipConfirmActive(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [isSkipConfirmActive]);
-
-  // Detect touch device on mount
-  useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,7 +53,7 @@ export const useGameControls = (ref: Ref<GameControlsHandle>): UseGameControlsRe
     
     useGameStore.setState({ isProcessingGuess: true, hasMadeGuess: true });
     setInputValue('');
-    setHasUserInput(false); 
+    setHasUserInput(false);
     submitGuess(guess);
   };
 
@@ -129,24 +87,20 @@ export const useGameControls = (ref: Ref<GameControlsHandle>): UseGameControlsRe
   };
 
   return {
-    inputBarRef,
+    // Store values
     timeRemaining,
     isVictoryAnimationActive,
     colors,
+    responsiveValues,
+    breakpoint,
+    isLandscape,
+    isPortrait,
+    
+    // Handlers
     handleSubmit,
     handleSkip,
     getInputPlaceholder,
     isInputDisabled,
-    isSkipDisabled,
-    inputValue,
-    setInputValue,
-    isSkipConfirmActive,
-    isTouchDevice,
-    duplicateErrorRef,
-    skipMessageRef,
-    responsiveValues,
-    breakpoint,
-    isLandscape,
-    isPortrait
+    isSkipDisabled
   };
-}; 
+};

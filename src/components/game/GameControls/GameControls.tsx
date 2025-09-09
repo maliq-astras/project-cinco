@@ -4,11 +4,12 @@ import Timer from '../../ui/Timer';
 import InputBar from '../InputBar';
 import GameButtons from '../GameButtons';
 import ToastMessages from '../../ui/ToastMessages';
-import { useGameControls, GameControlsHandle } from './useGameControls';
+import { useGameControls, GameControlsHandle } from './hooks';
+import { getWrapperAnimationProps, getResponsiveContainerStyle } from './helpers';
 import styles from './GameControls.module.css';
 import { useGameStore } from '@/store/gameStore';
 
-const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
+const GameControls = forwardRef<GameControlsHandle, Record<string, never>>((props, ref) => {
   const {
     inputBarRef,
     timeRemaining,
@@ -32,19 +33,11 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
   const setHasUserInput = useGameStore(state => state.setHasUserInput);
   const [hasSuggestionSelected, setHasSuggestionSelected] = useState(false);
 
-  const responsiveContainerStyle = {
-    padding: `0 ${responsiveValues.spacing}px`,
-    paddingTop: `${responsiveValues.spacing}px`,
-    paddingBottom: `${responsiveValues.spacing}px`
-  };
-
   return (
-    <div id="game-controls" className={styles.container} style={responsiveContainerStyle}>
+    <div id="game-controls" className={styles.container} style={getResponsiveContainerStyle(responsiveValues)}>
       <motion.div
         className={styles.wrapper}
-        initial={{ opacity: 1 }}
-        animate={{ opacity: isVictoryAnimationActive ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
+        {...getWrapperAnimationProps(isVictoryAnimationActive)}
       >
         <div className="relative">
           <ToastMessages 
@@ -86,5 +79,7 @@ const GameControls = forwardRef<GameControlsHandle, {}>((props, ref) => {
     </div>
   );
 });
+
+GameControls.displayName = 'GameControls';
 
 export default GameControls; 

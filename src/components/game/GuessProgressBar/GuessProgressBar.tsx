@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGuessProgressBar } from './hooks/useGuessProgressBar';
+import { useGuessProgressBar } from './hooks';
 import styles from './GuessProgressBar.module.css';
 
 /**

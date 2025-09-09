@@ -64,3 +64,33 @@ export function getSpotlightStyle(
     backgroundColor: 'transparent',
   };
 }
+
+/**
+ * Get text box styles for tutorial modal
+ */
+export const getTextBoxStyle = (
+  primaryColor: string,
+  darkMode: boolean,
+  _textBoxStyles: { left: string; top: string; width: string }
+) => ({
+  borderColor: `var(--color-${primaryColor})`,
+  boxShadow: darkMode 
+    ? '0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5)' 
+    : '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)'
+} as React.CSSProperties);
+
+/**
+ * Get title color style
+ */
+export const getTitleStyle = (primaryColor: string) => ({
+  color: `var(--color-${primaryColor})`
+});
+
+/**
+ * Get progress dot style
+ */
+export const getProgressDotStyle = (primaryColor: string, isActive: boolean) => ({
+  backgroundColor: isActive 
+    ? `var(--color-${primaryColor})`
+    : `var(--color-${primaryColor}30)`
+});

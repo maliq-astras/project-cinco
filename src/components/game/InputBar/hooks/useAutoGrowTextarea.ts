@@ -11,7 +11,7 @@ interface UseAutoGrowTextareaOptions {
  * and grows the textarea upward by anchoring it to the bottom of the shell.
  */
 export function useAutoGrowTextarea(
-  textareaRef: React.RefObject<HTMLTextAreaElement>,
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>,
   shellRef: React.RefObject<HTMLDivElement | null>,
   value: string,
   { maxHeightPx = 120 }: UseAutoGrowTextareaOptions = {}

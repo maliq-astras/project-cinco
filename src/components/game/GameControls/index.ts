@@ -1,3 +1,3 @@
 export { default } from './GameControls';
-export { useGameControls } from './useGameControls';
-export type { GameControlsHandle } from './useGameControls'; 
+export { useGameControls } from './hooks';
+export type { GameControlsHandle } from './hooks'; 
