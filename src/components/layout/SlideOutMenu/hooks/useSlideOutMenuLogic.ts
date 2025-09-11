@@ -8,7 +8,6 @@ interface UseSlideOutMenuLogicProps {
 export const useSlideOutMenuLogic = ({ menuItems, onClose }: UseSlideOutMenuLogicProps) => {
   const handleMenuItemClick = (item: MenuItem) => {
     item.onClick();
-    onClose();
   };
 
   return {

@@ -1,3 +1,3 @@
 export { default } from './SettingsPanel';
-export { useSettingsPanel, languages } from './useSettingsPanel';
-export { settingsPanelStyles } from './SettingsPanel.styles'; 
+export { useSettingsPanel } from './hooks';
+export { settingsPanelStyles, languages } from './helpers'; 

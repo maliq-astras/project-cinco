@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Inter } from 'next/font/google';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSettingsPanel } from './useSettingsPanel';
-import { settingsPanelStyles } from './SettingsPanel.styles';
+import { useSettingsPanel } from './hooks';
+import { settingsPanelStyles, settingsPanelAnimations, getMobilePanelStyle, getDesktopPanelStyle, getTitleStyle, getCloseButtonStyle, getToggleSwitchStyle, getToggleDotClass, getLanguageSelectStyle } from './helpers';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/contexts/LanguageContext';
 
@@ -14,9 +14,8 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
+const SettingsPanel = React.memo<SettingsPanelProps>(({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   
   const {
     colors,
@@ -33,8 +32,11 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     toggleHighContrast,
     selectedLanguage,
     handleLanguageChange,
+    handleLanguageSelect,
     isMobile,
-    handleOverlayClick
+    handleOverlayClick,
+    isLanguageDropdownOpen,
+    setIsLanguageDropdownOpen
   } = useSettingsPanel({ isOpen, onClose });
 
   // Toggle switch component with theme color
@@ -42,10 +44,10 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     <button 
       onClick={onToggle}
       className={settingsPanelStyles.toggleSwitchClass}
-      style={settingsPanelStyles.toggleSwitch(isOn, colors.primary, disabled)}
+      style={getToggleSwitchStyle(isOn, colors.primary, disabled)}
       disabled={disabled}
     >
-      <div className={settingsPanelStyles.toggleDot(isOn)}></div>
+      <div className={getToggleDotClass(isOn)}></div>
     </button>
   );
 
@@ -55,14 +57,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
       <div className={settingsPanelStyles.header}>
         <h2 
           className={settingsPanelStyles.titleClass}
-          style={settingsPanelStyles.title(darkMode, colors.primary)}
+          style={getTitleStyle(darkMode, colors.primary)}
         >
           {t('ui.buttons.settings')}
         </h2>
         <button 
           onClick={onClose}
           className={settingsPanelStyles.closeButtonClass}
-          style={settingsPanelStyles.closeButton(darkMode, colors.primary)}
+          style={getCloseButtonStyle(darkMode, colors.primary)}
           aria-label={`${t('ui.buttons.close')} ${t('ui.buttons.settings').toLowerCase()}`}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +82,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           <div className={settingsPanelStyles.languageSelectContainer}>
             <div 
               className={settingsPanelStyles.languageSelectClass}
-              style={settingsPanelStyles.languageSelect(darkMode, colors.primary)}
+              style={getLanguageSelectStyle(darkMode)}
               onClick={() => {
                 setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
               }}
@@ -107,8 +109,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
                       color: selectedLanguage === langCode ? 'white' : 'inherit',
                     }}
                     onClick={() => {
-                      handleLanguageChange({ target: { value: langCode } } as React.ChangeEvent<HTMLSelectElement>);
-                      setIsLanguageDropdownOpen(false);
+                      handleLanguageSelect(langCode);
                     }}
                   >
                     {t(`ui.language.${langCode}`)}
@@ -199,12 +200,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             <motion.div 
               key="mobile-settings"
               className={settingsPanelStyles.mobileContainer}
-              {...settingsPanelStyles.overlayAnimation}
+              {...settingsPanelAnimations.overlay}
             >
               <motion.div
                 className={settingsPanelStyles.mobilePanelClass}
-                style={settingsPanelStyles.mobilePanel(colors.primary)}
-                {...settingsPanelStyles.mobilePanelAnimation}
+                style={getMobilePanelStyle(colors.primary)}
+                {...settingsPanelAnimations.mobilePanel}
               >
                 <div className={settingsPanelStyles.mobileDragIndicator}></div>
                 <div className={`${inter.className} ${settingsPanelStyles.contentContainer}`}>
@@ -230,15 +231,12 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             key="desktop-settings"
             className={settingsPanelStyles.desktopContainer}
             onClick={handleOverlayClick}
-            {...settingsPanelStyles.overlayAnimation}
+            {...settingsPanelAnimations.overlay}
           >
             <motion.div 
               className={`${inter.className} ${settingsPanelStyles.desktopPanelClass}`}
-              style={settingsPanelStyles.desktopPanel(colors.primary)}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              style={getDesktopPanelStyle(colors.primary)}
+              {...settingsPanelAnimations.desktopPanel}
             >
               {settingsContent}
             </motion.div>
@@ -249,6 +247,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
 
     </>
   );
-};
+});
 
+SettingsPanel.displayName = 'SettingsPanel';
 export default SettingsPanel; 

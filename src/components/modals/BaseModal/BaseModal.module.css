@@ -131,26 +131,4 @@
   }
 }
 
-/* Responsive adjustments for landscape orientation */
-@media (orientation: landscape) and (max-height: 600px) {
-  .mobilePanelClass {
-    max-height: 85vh;
-  }
-  
-  .desktopPanelClass {
-    padding: 1.5rem;
-    max-height: 80vh;
-  }
-  
-  .contentContainer {
-    padding: 0.75rem;
-  }
-  
-  .titleClass {
-    font-size: 1.125rem;
-  }
-  
-  .header {
-    margin-bottom: 1rem;
-  }
-}
+
