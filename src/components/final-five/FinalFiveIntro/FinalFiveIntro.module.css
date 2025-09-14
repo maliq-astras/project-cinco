@@ -69,9 +69,20 @@
   margin-bottom: 0.5rem;
 }
 
-.loadingSpinnerIcon {
-  height: 2.5rem;
-  width: 2.5rem;
+.loadingSpinner {
+  border: 3px solid;
+  border-color: var(--spinner-color, currentColor);
+  border-top-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .loadingTextContainer {

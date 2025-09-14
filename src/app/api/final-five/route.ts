@@ -5,6 +5,9 @@ import { Challenge } from '@/types';
 import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
 import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
+import { TIMEOUTS } from '@/constants/timeouts';
+import { createServiceUnavailableResponse, createNotFoundResponse, createInternalErrorResponse } from '@/utils/errorUtils';
+import { logger } from '@/utils/logger';
 
 type FinalFiveRequest = {
   challengeId: string;
@@ -58,7 +61,7 @@ async function fetchChallengeById(challengeId: string, language: string = 'en') 
         }
       );
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Database query timed out')), 15000)
+        setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_HEAVY_QUERY)
       );
       
       challenge = await Promise.race([dbPromise, timeoutPromise]);
@@ -69,7 +72,12 @@ async function fetchChallengeById(challengeId: string, language: string = 'en') 
         setTimeout(() => challengeCache.delete(cacheKey), 5 * 60 * 1000);
       }
     } catch (error) {
-      console.error('Database error:', error);
+      logger.error('Database error in fetchChallengeById', { 
+        component: 'final-five-api',
+        operation: 'fetchChallenge',
+        challengeId,
+        error 
+      });
       return { error: 'Connection error - please try again', status: 503 };
     }
   }
@@ -202,10 +210,10 @@ export async function POST(request: Request) {
     // Fetch the challenge
     const result = await fetchChallengeById(challengeId, language);
     if ('error' in result) {
-      return NextResponse.json(
-        { error: result.error }, 
-        { status: result.status }
-      );
+      if (result.status === 503) {
+        return createServiceUnavailableResponse(result.error);
+      }
+      return createNotFoundResponse('Challenge');
     }
     
     const { challenge } = result;
@@ -241,12 +249,12 @@ export async function POST(request: Request) {
       options: finalOptions
     });
   } catch (error) {
-    console.error('Error fetching Final Five options:', error);
-    // Return a proper error response
-    return NextResponse.json(
-      { error: 'Service unavailable - please try again' }, 
-      { status: 503 }
-    );
+    logger.error('Error fetching Final Five options', { 
+      component: 'final-five-api',
+      operation: 'POST',
+      error 
+    });
+    return createServiceUnavailableResponse();
   }
 }
 
@@ -277,10 +285,10 @@ export async function GET(request: Request) {
     // Fetch the challenge (challengeId is guaranteed to be valid string after validation)
     const result = await fetchChallengeById(challengeId!, language);
     if ('error' in result) {
-      return NextResponse.json(
-        { error: result.error }, 
-        { status: result.status }
-      );
+      if (result.status === 503) {
+        return createServiceUnavailableResponse(result.error);
+      }
+      return createNotFoundResponse('Challenge');
     }
     
     const { challenge } = result;
@@ -326,10 +334,11 @@ export async function GET(request: Request) {
       options: finalOptions
     });
   } catch (error) {
-    console.error('Error fetching Final Five options:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' }, 
-      { status: 500 }
-    );
+    logger.error('Error fetching Final Five options', { 
+      component: 'final-five-api',
+      operation: 'GET',
+      error 
+    });
+    return createInternalErrorResponse();
   }
 }

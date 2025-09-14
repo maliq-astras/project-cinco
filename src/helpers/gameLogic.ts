@@ -1,4 +1,7 @@
 import { Challenge, UserGuess } from '../types';
+import { TIMEOUTS, RETRY_CONFIG } from '@/constants/timeouts';
+import { withRetry, createRetryConfig } from '@/utils/retryUtils';
+import { logger } from '@/utils/logger';
 
 // Constants
 export const MAX_WRONG_GUESSES = 5;
@@ -36,7 +39,7 @@ export async function fetchChallenge(language: string = 'en', retries = 3): Prom
       
       // Create AbortController for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.API_SLOW);
       
       const response = await fetch(`/api/daily-challenge?lang=${language}`, {
         signal: controller.signal
@@ -54,7 +57,12 @@ export async function fetchChallenge(language: string = 'en', retries = 3): Prom
       lastError = error;
       // Only log on final attempt to avoid console spam
       if (attempt === retries) {
-        console.error('Error fetching challenge:', error);
+        logger.error('Error fetching challenge', { 
+          component: 'gameLogic',
+          operation: 'fetchChallenge',
+          attempt,
+          error 
+        });
       }
     }
   }
@@ -76,7 +84,7 @@ export async function verifyGuess(challengeId: string, guess: string, language: 
       
       // Create AbortController for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.API_STANDARD);
       
       const response = await fetch('/api/verify-guess', {
         method: 'POST',
@@ -102,7 +110,12 @@ export async function verifyGuess(challengeId: string, guess: string, language: 
       lastError = error;
       // Only log on final attempt to avoid console spam
       if (attempt === retries) {
-        console.error('Error verifying guess:', error);
+        logger.error('Error verifying guess', { 
+          component: 'gameLogic',
+          operation: 'verifyGuess',
+          attempt,
+          error 
+        });
       }
     }
   }
@@ -124,7 +137,7 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
       
       // Create AbortController for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.API_SLOW);
       
       // If previous guesses are provided, use POST method
       let response;
@@ -165,7 +178,12 @@ export async function fetchFinalFiveOptions(challengeId: string, previousGuesses
       lastError = error;
       // Only log on final attempt to avoid console spam
       if (attempt === retries) {
-        console.error('Error fetching final five options:', error);
+        logger.error('Error fetching final five options', { 
+          component: 'gameLogic',
+          operation: 'fetchFinalFiveOptions',
+          attempt,
+          error 
+        });
       }
     }
   }

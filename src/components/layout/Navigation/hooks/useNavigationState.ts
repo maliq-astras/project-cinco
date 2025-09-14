@@ -21,8 +21,8 @@ interface GameStoreState {
 export const useNavigationState = () => {
   const { colors } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isBugReportModalOpen, setIsBugReportModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   
   // Use our new unified responsive system
   const { 
@@ -58,10 +58,10 @@ export const useNavigationState = () => {
     // Local state
     isDropdownOpen,
     setIsDropdownOpen,
-    isFeedbackModalOpen,
-    setIsFeedbackModalOpen,
     isBugReportModalOpen,
     setIsBugReportModalOpen,
+    isFeedbackModalOpen,
+    setIsFeedbackModalOpen,
     
     // Game store state
     isTutorialOpen,

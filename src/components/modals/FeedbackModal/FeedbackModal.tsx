@@ -1,16 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
-import { feedbackModalStyles } from './FeedbackModal.styles';
+import { useThemeDOM } from '@/hooks/theme';
 import BaseModal from '@/components/modals/BaseModal/BaseModal';
 import ModalNavButton from '@/components/modals/ModalNavButton/ModalNavButton';
-import { useResponsive } from '@/hooks/responsive';
-import { useThemeDOM } from '@/hooks/theme';
-import { useModalForm } from '../BugReportModal/useModalForm';
-import { CategoryType, categoryColorMap, CATEGORY_COLOR_MAPPING } from '../../../types';
-import { getCategoryName } from '../../../helpers/i18nHelpers';
+import { useFeedbackModal } from './hooks';
+import { formatStepLabel, getProgressBarStyle } from './helpers';
+import styles from './FeedbackModal.module.css';
+import { StarRating, DifficultySelector, CategorySelector } from './components';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -19,197 +18,34 @@ interface FeedbackModalProps {
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-
-
-const categoryOptions = Object.values(CategoryType);
-
-const difficultyOptions = [
-  'tooEasy',
-  'somewhatEasy',
-  'justRight',
-  'somewhatChallenging',
-  'tooChallenging',
-];
-
-export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, onClose }) {
   const { t } = useTranslation();
-  const { colors, darkMode } = useTheme();
+  const { colors } = useTheme();
   const { hasClass } = useThemeDOM();
   
-  // Use our new responsive system
-  const { 
-    isMobileMenu
-  } = useResponsive();
-  
-  // Use responsive breakpoint for mobile detection
-  const isMobile = isMobileMenu;
-
-  const steps = [
-    {
-      label: t('feedback.steps.rating'),
-      type: 'rating'
-    },
-    {
-      label: t('feedback.steps.difficulty'),
-      type: 'difficulty'
-    },
-    {
-      label: t('feedback.steps.favoriteCategory'),
-      type: 'favoriteCategory'
-    },
-    {
-      label: t('feedback.steps.leastFavoriteCategory'),
-      type: 'leastFavoriteCategory'
-    }
-  ];
-
-  const initialFormData = {
-    rating: 0,
-    difficulty: 0,
-    favoriteCategory: '',
-    leastFavoriteCategory: ''
-  };
-
-  const handleSubmit = async (formData: any) => {
-    // Here you would typically send the feedback to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    setTimeout(() => {
-      onClose();
-    }, 2000);
-  };
-
   const {
+    // State
+    steps,
+    categoryOptions,
+    difficultyOptions,
+    difficultyHovered,
+    setDifficultyHovered,
+    submitted,
+    
+    // Logic
+    isMobile,
+    getMobileHeight,
+    contentStyle,
+    
+    // Modal form
     step,
     formData,
-    submitted,
     progress,
     handleNext,
     handleBack,
-    handleSelect,
-    handleSecondSelect,
     handleInputChange,
-    isStepValid
-  } = useModalForm({
-    steps,
-    initialFormData,
-    onSubmit: handleSubmit
-  });
-
-  const [difficultyHovered, setDifficultyHovered] = React.useState<number | null>(null);
-
-  const renderStarRating = (value: number, onChange: (value: number) => void) => (
-    <div className="flex justify-center gap-2 mb-6">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          onClick={() => onChange(star)}
-          className="transition-transform duration-150 cursor-pointer focus:outline-none"
-          style={{
-            color: star <= value ? `var(--color-${colors.primary})` : (hasClass('dark') ? '#444' : '#ccc'),
-            fontSize: '2.4rem',
-            transform: 'scale(1)',
-          }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        >
-          ★
-        </button>
-      ))}
-    </div>
-  );
-
-  const renderDifficultySelector = (value: number, onChange: (value: number) => void, hovered: number | null, setHovered: (v: number | null) => void) => {
-    // Bubble sizes: [large, medium, small, medium, large]
-    const sizes = [48, 40, 32, 40, 48];
-    const labelColor = darkMode ? '#fff' : '#111';
-    return (
-      <div className="flex flex-col items-center mb-6 w-full">
-        {isMobile ? (
-          <div className="relative w-full max-w-2xl flex items-center justify-center" style={{paddingBottom: 32}}>
-            {[1, 2, 3, 4, 5].map((idx) => {
-              const isActive = (hovered ? idx === hovered : idx === value);
-              return (
-                <div key={idx} className="flex flex-col items-center relative" style={{marginLeft: idx === 1 ? 0 : 12, marginRight: idx === 5 ? 0 : 12}}>
-                  <button
-                    type="button"
-                    onClick={() => onChange(idx)}
-                    onMouseEnter={() => setHovered(idx)}
-                    onMouseLeave={() => setHovered(null)}
-                    aria-label={t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}
-                    className="transition-all duration-150 focus:outline-none"
-                    style={{
-                      width: sizes[idx - 1],
-                      height: sizes[idx - 1],
-                      borderRadius: '50%',
-                      border: `3px solid var(--color-${colors.primary})`,
-                      background: isActive ? `var(--color-${colors.primary})` : 'transparent',
-                      boxShadow: isActive ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-                      margin: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      outline: 'none',
-                      cursor: 'pointer',
-                      transition: 'background 0.15s, box-shadow 0.15s',
-                    }}
-                  >
-                    {/* For accessibility, visually hidden label */}
-                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}</span>
-                  </button>
-                  {/* Absolutely position Easy/Hard below first/last bubble */}
-                  {idx === 1 && (
-                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[0], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[0] + 6 }}>{t('feedback.difficulty.easy')}</span>
-                  )}
-                  {idx === 5 && (
-                    <span className="text-base font-semibold" style={{ color: labelColor, textAlign: 'center', width: sizes[4], position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: sizes[4] + 6 }}>{t('feedback.difficulty.hard')}</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'right', lineHeight: '44px', height: 48 }}>{t('feedback.difficulty.easy')}</span>
-            <div className="flex gap-6 items-center">
-              {[1, 2, 3, 4, 5].map((idx) => {
-                const isActive = (hovered ? idx === hovered : idx === value);
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => onChange(idx)}
-                    onMouseEnter={() => setHovered(idx)}
-                    onMouseLeave={() => setHovered(null)}
-                    aria-label={t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}
-                    className="transition-all duration-150 focus:outline-none"
-                    style={{
-                      width: sizes[idx - 1],
-                      height: sizes[idx - 1],
-                      borderRadius: '50%',
-                      border: `3px solid var(--color-${colors.primary})`,
-                      background: isActive ? `var(--color-${colors.primary})` : 'transparent',
-                      boxShadow: isActive ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-                      margin: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      outline: 'none',
-                      cursor: 'pointer',
-                      transition: 'background 0.15s, box-shadow 0.15s',
-                    }}
-                  >
-                    {/* For accessibility, visually hidden label */}
-                    <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(1px, 1px, 1px, 1px)' }}>{t(`feedback.difficulty.options.${difficultyOptions[idx - 1]}`)}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <span className="text-base md:text-lg font-semibold flex items-center" style={{ color: labelColor, minWidth: 70, textAlign: 'left', lineHeight: '44px', height: 48 }}>{t('feedback.difficulty.hard')}</span>
-          </div>
-        )}
-      </div>
-    );
-  };
+    isStepValid,
+  } = useFeedbackModal({ isOpen, onClose });
 
   const renderStepContent = () => {
     if (submitted) {
@@ -221,11 +57,11 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
           style={{ height: '100%' }}
         >
           <div className="flex flex-col items-center">
-            <svg className={feedbackModalStyles.successIcon + ' mb-4'} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
+            <svg className={styles.successIcon + ' mb-4'} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <h3 className={feedbackModalStyles.successTitle}>{t('feedback.success.title')}</h3>
-            <p className={feedbackModalStyles.successMessage}>
+            <h3 className={styles.successTitle}>{t('feedback.success.title')}</h3>
+            <p className={styles.successMessage}>
               {t('feedback.success.message')}
             </p>
           </div>
@@ -241,115 +77,44 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className={feedbackModalStyles.stepContainer}
+        className={styles.stepContainer}
       >
         {currentStep.type === 'rating' && (
-          renderStarRating(formData.rating, (value) => handleInputChange(value, 'rating'))
+          <StarRating
+            value={formData.rating}
+            onChange={(value) => handleInputChange(value, 'rating')}
+            primaryColor={colors.primary}
+          />
         )}
 
         {currentStep.type === 'difficulty' && (
-          renderDifficultySelector(
-            formData.difficulty,
-            (value) => handleInputChange(value, 'difficulty'),
-            difficultyHovered,
-            setDifficultyHovered
-          )
+          <DifficultySelector
+            value={formData.difficulty}
+            onChange={(value) => handleInputChange(value, 'difficulty')}
+            hovered={difficultyHovered}
+            setHovered={setDifficultyHovered}
+            isMobile={isMobile}
+            difficultyOptions={difficultyOptions}
+            primaryColor={colors.primary}
+          />
         )}
 
         {currentStep.type === 'favoriteCategory' && (
-          <div className="flex flex-col items-center w-full mb-6">
-            <div className="mb-4 text-center text-base font-medium opacity-80">{t('feedback.category.favoriteInstructions')}</div>
-            <div className="flex flex-wrap gap-3 justify-center w-full max-w-2xl">
-              {categoryOptions.map((option) => {
-                const selected = Array.isArray(formData.favoriteCategory)
-                  ? formData.favoriteCategory.includes(option)
-                  : formData.favoriteCategory === option;
-                const selectedCount = Array.isArray(formData.favoriteCategory)
-                  ? formData.favoriteCategory.length
-                  : formData.favoriteCategory ? 1 : 0;
-                const disabled = !selected && selectedCount >= 3;
-                const colorFamily = CATEGORY_COLOR_MAPPING[option]?.tailwind || 'gray';
-                const colorShade = categoryColorMap[option]?.primary?.split('-')[1] || '400';
-                const borderClass = `border-${colorFamily}-${colorShade}`;
-                const textClass = selected ? 'text-white' : `text-${colorFamily}-${colorShade}`;
-                const bgClass = selected ? `bg-${colorFamily}-${colorShade}` : 'bg-transparent';
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => {
-                      let newSelected;
-                      if (selected) {
-                        newSelected = formData.favoriteCategory.filter((o: string) => o !== option);
-                      } else {
-                        newSelected = Array.isArray(formData.favoriteCategory)
-                          ? [...formData.favoriteCategory, option]
-                          : [option];
-                      }
-                      handleInputChange(newSelected, 'favoriteCategory');
-                    }}
-                    className={`border-2 font-semibold transition-all outline-none px-4 py-2 rounded-xl text-sm md:text-base ${borderClass} ${textClass} ${bgClass}`}
-                    style={{
-                      opacity: disabled ? 0.5 : 1,
-                      cursor: disabled ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-pressed={selected}
-                    disabled={disabled}
-                  >
-                    {getCategoryName(option, t)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <CategorySelector
+            selectedItems={formData.favoriteCategory}
+            onChange={(newSelected) => handleInputChange(newSelected, 'favoriteCategory')}
+            categoryOptions={categoryOptions}
+            instructionKey="feedback.category.favoriteInstructions"
+          />
         )}
 
         {currentStep.type === 'leastFavoriteCategory' && (
-          <div className="flex flex-col items-center w-full mb-6">
-            <div className="mb-4 text-center text-base font-medium opacity-80">{t('feedback.category.leastFavoriteInstructions')}</div>
-            <div className="flex flex-wrap gap-3 justify-center w-full max-w-2xl">
-              {categoryOptions.map((option) => {
-                const selected = Array.isArray(formData.leastFavoriteCategory)
-                  ? formData.leastFavoriteCategory.includes(option)
-                  : formData.leastFavoriteCategory === option;
-                const selectedCount = Array.isArray(formData.leastFavoriteCategory)
-                  ? formData.leastFavoriteCategory.length
-                  : formData.leastFavoriteCategory ? 1 : 0;
-                const disabled = !selected && selectedCount >= 3;
-                const colorFamily = CATEGORY_COLOR_MAPPING[option]?.tailwind || 'gray';
-                const colorShade = categoryColorMap[option]?.primary?.split('-')[1] || '400';
-                const borderClass = `border-${colorFamily}-${colorShade}`;
-                const textClass = selected ? 'text-white' : `text-${colorFamily}-${colorShade}`;
-                const bgClass = selected ? `bg-${colorFamily}-${colorShade}` : 'bg-transparent';
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => {
-                      let newSelected;
-                      if (selected) {
-                        newSelected = formData.leastFavoriteCategory.filter((o: string) => o !== option);
-                      } else {
-                        newSelected = Array.isArray(formData.leastFavoriteCategory)
-                          ? [...formData.leastFavoriteCategory, option]
-                          : [option];
-                      }
-                      handleInputChange(newSelected, 'leastFavoriteCategory');
-                    }}
-                    className={`border-2 font-semibold transition-all outline-none px-4 py-2 rounded-xl text-sm md:text-base ${borderClass} ${textClass} ${bgClass}`}
-                    style={{
-                      opacity: disabled ? 0.5 : 1,
-                      cursor: disabled ? 'not-allowed' : 'pointer',
-                    }}
-                    aria-pressed={selected}
-                    disabled={disabled}
-                  >
-                    {getCategoryName(option, t)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <CategorySelector
+            selectedItems={formData.leastFavoriteCategory}
+            onChange={(newSelected) => handleInputChange(newSelected, 'leastFavoriteCategory')}
+            categoryOptions={categoryOptions}
+            instructionKey="feedback.category.leastFavoriteInstructions"
+          />
         )}
       </motion.div>
     );
@@ -362,19 +127,9 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       title={<span className={righteous.className + ' uppercase'}>FEEDBACK</span>}
       colors={colors}
       className={isMobile ? undefined : "max-w-2xl"}
-      mobileHeight={"90vh"}
+      mobileHeight={getMobileHeight()}
     >
-      <div
-        className={feedbackModalStyles.content}
-        style={{
-          height: isMobile ? '70vh' : 540,
-          minHeight: isMobile ? '70vh' : 540,
-          maxHeight: isMobile ? '70vh' : 540,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div className={styles.content} style={contentStyle}>
         <AnimatePresence mode="wait">
           {submitted ? renderStepContent() : (
             <>
@@ -387,7 +142,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   }
                   style={{ letterSpacing: 1 }}
                 >
-                  {steps[step].label.toUpperCase()}
+                  {formatStepLabel(t(steps[step].label))}
                 </h3>
               </div>
               <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -413,8 +168,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   textSegmentBg={hasClass('dark') ? '#18181b' : 'white'}
                 />
               </div>
-              <div className={feedbackModalStyles.progressContainer} style={{marginTop: 16}}>
-                <div style={feedbackModalStyles.progressBar(colors.primary, progress)} />
+              <div className={styles.progressContainer} style={{marginTop: 16}}>
+                <div style={getProgressBarStyle(colors.primary, progress)} />
               </div>
             </>
           )}
@@ -422,4 +177,4 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       </div>
     </BaseModal>
   );
-}; 
+});

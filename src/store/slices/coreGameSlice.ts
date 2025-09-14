@@ -7,6 +7,8 @@ import {
   verifyGuess as verifyGuessAPI,
   shouldShowFinalFive
 } from '../../helpers/gameLogic';
+import { TIMEOUTS } from '@/constants/timeouts';
+import { logger } from '@/utils/logger';
 
 export interface CoreGameSlice {
   // Core game state
@@ -42,7 +44,6 @@ export interface CoreGameSlice {
   closeFactCard: () => void;
   completeCardAnimation: () => void;
   submitGuess: (guess: string) => Promise<void>;
-  resetGameState: () => void;
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => void;
   clearTodayGameData: () => void;
 }
@@ -342,8 +343,7 @@ export const createCoreGameSlice: StateCreator<
               finalFiveTransitionReason: 'guesses'
             });
 
-            // Prefetch final five options as soon as transition starts
-            get().prefetchFinalFiveOptions();
+            // Final Five options will be fetched when the modal opens
           }, 1500);
           
           return newState;
@@ -356,7 +356,7 @@ export const createCoreGameSlice: StateCreator<
     }
     
     // Create a promise that resolves after 1.5 seconds
-    const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 1500));
+    const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, TIMEOUTS.LOADING_MIN_DURATION));
     
     try {
       // Get the current language from localStorage
@@ -388,6 +388,10 @@ export const createCoreGameSlice: StateCreator<
         };
 
         if (data.isCorrect) {
+          // IMMEDIATELY stop the timer to prevent Final Five from triggering
+          get().setShouldPauseTimer(true);
+          set({ isTimerActive: false });
+          
           // Update streak on successful completion
           get().updateStreak();
           
@@ -420,8 +424,7 @@ export const createCoreGameSlice: StateCreator<
               finalFiveTransitionReason: 'guesses'
             });
 
-            // Prefetch final five options as soon as transition starts
-            get().prefetchFinalFiveOptions();
+            // Final Five options will be fetched when the modal opens
           }, 1500);
           
           return newState;
@@ -442,46 +445,17 @@ export const createCoreGameSlice: StateCreator<
         }, 2000); // Increased from 1500ms to 2000ms to allow bubble animation to complete
       }
     } catch (error) {
-      console.error('Error verifying guess:', error);
+      logger.error('Error verifying guess', { 
+        component: 'coreGameSlice',
+        operation: 'submitGuess',
+        error
+      });
       // Wait for the minimum loading time before resetting processing state
       await minimumLoadingTime;
       set({ isProcessingGuess: false });
     }
   },
   
-  resetGameState: () => {
-    const { isHardModeEnabled, resetTimer } = get();
-    const finalFiveTimeRemaining = isHardModeEnabled ? 5 : 55;
-
-    // Reset the main timer and lock-in hard mode according to current setting
-    resetTimer();
-
-    // Then reset game state flags and ensure timers are idle and Final Five timer is correct
-    set({
-      // Reset core game state
-      gameState: initialGameState,
-      hasSeenClue: false,
-      canRevealNewClue: true,
-      canMakeGuess: false,
-      lastRevealedFactIndex: null,
-      isPendingFinalFiveTransition: false,
-      isProcessingGuess: false,
-      hasMadeGuess: false,
-
-      // Ensure timers are not running after reset
-      isTimerActive: false,
-      shouldPauseTimer: false,
-
-      // Reset Final Five timer baseline (do not start Final Five)
-      finalFiveTimeRemaining,
-
-      // Reset game outcome states
-      gameOutcome: null,
-      isVictoryAnimationActive: false,
-      victoryAnimationStep: null,
-      showGameMessage: false
-    });
-  },
   
   // Today's game data methods
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => {

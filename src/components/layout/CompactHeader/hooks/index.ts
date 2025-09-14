@@ -8,7 +8,12 @@ export const useCompactHeader = () => {
   const state = useCompactHeaderState();
   const events = useCompactHeaderEvents(state);
   useCompactHeaderEffects(state);
-  const logic = useCompactHeaderLogic(events);
+  const logic = useCompactHeaderLogic({
+    openSettings: events.openSettings,
+    openTutorial: events.openTutorial,
+    openBugReportModal: events.openBugReportModal,
+    openFeedbackModal: events.openFeedbackModal
+  });
   const compactSizes = useCompactSizes();
   
   return { 

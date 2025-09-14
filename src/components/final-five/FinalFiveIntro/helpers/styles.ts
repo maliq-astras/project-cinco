@@ -6,6 +6,3 @@ export const getButtonStyle = (primaryColor: string, isTransitioning: boolean): 
   pointerEvents: isTransitioning ? 'none' : 'auto'
 });
 
-export const getSpinnerStyle = (primaryColor: string): React.CSSProperties => ({
-  color: `var(--color-${primaryColor})`
-});

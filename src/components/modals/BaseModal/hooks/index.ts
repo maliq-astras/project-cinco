@@ -12,7 +12,8 @@ interface BaseModalProps {
   };
   className?: string;
   dismissible?: boolean;
-  mobileHeight?: string; 
+  mobileHeight?: string;
+  desktopMaxHeight?: string;
 }
 
 export const useBaseModal = (props: BaseModalProps) => {

@@ -6,6 +6,9 @@ import { Collection } from 'mongodb';
 import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
 import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
+import { TIMEOUTS } from '@/constants/timeouts';
+import { createNotFoundResponse, createInternalErrorResponse } from '@/utils/errorUtils';
+import { logger } from '@/utils/logger';
 
 // Cache the answers for a challenge for 24 hours
 const getChallengeAnswers = unstable_cache(
@@ -21,7 +24,7 @@ const getChallengeAnswers = unstable_cache(
     ) as Promise<{ answer: string | { en: string; es: string } } | null>;
     
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database query timed out')), 10000)
+      setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_QUERY)
     );
     
     const challenge = await Promise.race([dbPromise, timeoutPromise]) as { answer: string | { en: string; es: string } } | null;
@@ -85,10 +88,7 @@ export async function POST(request: Request) {
     
     const answer = await getChallengeAnswers(challengeId, language as 'en' | 'es');
     if (!answer) {
-      return NextResponse.json(
-        { error: 'Challenge not found' }, 
-        { status: 404 }
-      );
+      return createNotFoundResponse('Challenge');
     }
 
     const normalizedGuess = guess.trim().toLowerCase();
@@ -96,10 +96,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ isCorrect });
   } catch (error) {
-    console.error('Error verifying guess:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' }, 
-      { status: 500 }
-    );
+    logger.error('Error verifying guess', { 
+      component: 'verify-guess-api',
+      operation: 'verifyGuess',
+      error 
+    });
+    return createInternalErrorResponse();
   }
 }

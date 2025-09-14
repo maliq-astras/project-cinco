@@ -1,13 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../../contexts/ThemeContext';
-import BaseModal from '../BaseModal/BaseModal';
-import { useModalForm } from './useModalForm';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
-import { useThemeDOM } from '@/hooks/theme';
-import { bugReportModalStyles } from './BugReportModal.styles';
-import { useResponsive } from '@/hooks/responsive';
+import BaseModal from '../BaseModal/BaseModal';
+import { useBugReportModal } from './hooks';
+import { formatStepLabel } from './helpers';
+import styles from './BugReportModal.module.css';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -16,174 +14,49 @@ interface BugReportModalProps {
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
-
-
-const ALL_BUG_TAGS = [
-  'appCrashed',
-  'uiGlitch',
-  'factCardDidntReveal',
-  'bubbleDidntRespond',
-  'guessInputNotWorking',
-  'progressBarIssue',
-  'timerIssue',
-  'skipButtonNotWorking',
-  'finalFiveRoundProblem',
-  'victoryAnimationDidntPlay',
-  'wrongAnswerMarked',
-  'categoryNotLoading',
-  'loadingScreenStuck',
-  'settingsNotSaving',
-  'themeColorIssue',
-  'languageNotSwitching',
-  'tutorialNotWorking',
-  'mobileLandscapeLayoutIssue',
-  'accessibilityIssue',
-  'other',
-];
-const INITIAL_TAGS_SHOWN = 6;
-
-const deviceOptions = [
-  'iphone',
-  'androidPhone',
-  'ipad',
-  'androidTablet',
-  'windowsPC',
-  'mac',
-  'chromebook',
-  'other',
-];
-
 export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
   const { t } = useTranslation();
-  const { colors, darkMode } = useTheme();
-  const { hasClass } = useThemeDOM();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
   
-  // Use our new responsive system
-  const { 
-    isMobileMenu
-  } = useResponsive();
-  
-  // Use responsive breakpoint for mobile detection
-  const isMobile = isMobileMenu;
-
-  // Fix: Add dark mode detection and text segment background here
-  const isDarkMode = hasClass('dark');
-  const textSegmentBg = isDarkMode ? '#18181b' : 'white';
-
-  const [showAllTags, setShowAllTags] = useState(false);
-  const [tagSearch, setTagSearch] = useState('');
-
-  const filteredTags = ALL_BUG_TAGS.filter(tag => tag.toLowerCase().includes(tagSearch.toLowerCase()));
-  const tagsToShow = showAllTags ? filteredTags : filteredTags.slice(0, INITIAL_TAGS_SHOWN);
-  const canShowMore = !showAllTags && filteredTags.length > INITIAL_TAGS_SHOWN;
-  const canShowLess = showAllTags && filteredTags.length > INITIAL_TAGS_SHOWN;
-
-  const steps = [
-    {
-      label: t('bugReport.steps.bugType'),
-      type: 'bugType'
-    },
-    {
-      label: t('bugReport.steps.deviceType'),
-      type: 'deviceType'
-    },
-    {
-      label: t('bugReport.steps.details'),
-      type: 'details'
-    },
-    {
-      label: t('bugReport.steps.file'),
-      type: 'file'
-    }
-  ];
-
-  const initialFormData = {
-    bugType: [],
-    deviceType: '',
-    bugDetails: '',
-    file: null as File | null
-  };
-
-  const handleSubmit = async (formData: any) => {
-    // Here you would typically send the bug report to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    setTimeout(() => {
-      onClose();
-    }, 2000);
-  };
-
   const {
+    // State
+    colors,
+    isMobile,
+    isDarkMode,
+    textSegmentBg,
+    
+    // Form state
     step,
     formData,
     submitted,
-    isDropdownOpen,
-    isSecondDropdownOpen,
     progress,
-    setIsDropdownOpen,
-    setIsSecondDropdownOpen,
+    steps,
+    tagSearch,
+    filteredTags,
+    
+    // Validation
+    isStepValid,
+    
+    // File handling
+    fileInputRef,
+    isDragging,
+    
+    // Event handlers
     handleNext,
     handleBack,
-    handleSelect,
-    handleSecondSelect,
     handleInputChange,
-    isStepValid: originalIsStepValid
-  } = useModalForm({
-    steps,
-    initialFormData,
-    onSubmit: handleSubmit
-  });
-
-  // Override isStepValid for bugType step to require at least one tag
-  const isStepValid = (stepIdx: number) => {
-    const currentStep = steps[stepIdx];
-    if (currentStep.type === 'bugType') {
-      return Array.isArray(formData.bugType) && formData.bugType.length > 0;
-    }
-    if (currentStep.type === 'deviceType') {
-      return !!formData.deviceType;
-    }
-    if (currentStep.type === 'details') {
-      return typeof formData.bugDetails === 'string' && formData.bugDetails.trim().length > 0;
-    }
-    return originalIsStepValid(stepIdx);
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      handleInputChange(file, 'file');
-    }
-  };
-
-  const handleRemoveFile = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-    handleInputChange(null, 'file');
-  };
+    handleTagSearchChange,
+    handleDragEnter,
+    handleDragLeave,
+    handleDragOver,
+    handleDrop,
+    handleRemoveFile,
+    handleFileUpload,
+    
+    // Height calculations
+    getMobileHeight,
+    getDesktopMaxHeight,
+    contentStyle
+  } = useBugReportModal({ isOpen, onClose });
 
   const renderStepContent = () => {
     if (submitted) {
@@ -195,11 +68,11 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
           style={{ height: '100%' }}
         >
           <div className="flex flex-col items-center">
-            <svg className={bugReportModalStyles.successIcon + ' mb-4'} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
+            <svg className={`${styles.successIcon} mb-4`} fill="none" stroke={`var(--color-${colors.primary})`} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            <h3 className={bugReportModalStyles.successTitle}>{t('bugReport.success.title')}</h3>
-            <p className={bugReportModalStyles.successMessage}>
+            <h3 className={styles.successTitle}>{t('bugReport.success.title')}</h3>
+            <p className={styles.successMessage}>
               {t('bugReport.success.message')}
             </p>
           </div>
@@ -215,27 +88,23 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className={bugReportModalStyles.stepContainer}
+        className={styles.stepContainer}
       >
-        {/* Visually hidden label for accessibility only */}
         <label htmlFor={`bug-step-input-${step}`} style={{position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', border: 0}}>
           {currentStep.label}
         </label>
-        {/* No visible label here, only at the top of the modal */}
         {currentStep.type === 'bugType' && (
           <div className="flex flex-col items-center mb-6 mx-auto bug-tag-scrollbar searchbar-fixed"
              style={{ height: 350, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}
           >
-            {/* Search bar */}
             <input
               type="text"
               placeholder="Search..."
               value={tagSearch}
-              onChange={e => setTagSearch(e.target.value)}
+              onChange={handleTagSearchChange}
               className="px-2 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#18181b] text-base focus:outline-none focus:ring-2 focus:ring-primary mx-auto searchbar-fixed"
               style={{ color: isDarkMode ? 'white' : undefined, marginBottom: 32 }}
             />
-            {/* Tag list */}
             <div
               className="flex flex-wrap gap-3 justify-center w-full bug-tag-scrollbar searchbar-fixed"
               style={{ height: 300, overflowY: 'auto', alignContent: 'flex-start' }}
@@ -285,7 +154,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
         )}
         {currentStep.type === 'deviceType' && (
           <div className="flex flex-wrap gap-3 justify-center w-full mt-2">
-            {deviceOptions.map((option) => {
+            {['iphone', 'androidPhone', 'ipad', 'androidTablet', 'windowsPC', 'mac', 'chromebook', 'other'].map((option) => {
               const selected = formData.deviceType === option;
               return (
                 <button
@@ -329,36 +198,36 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
               type="file"
               id={`bug-step-input-${step}`}
               ref={fileInputRef}
-              onChange={(e) => handleInputChange(e.target.files?.[0] || null, 'file')}
+              onChange={(e) => handleFileUpload(e, handleInputChange)}
               className="hidden"
               accept="image/*"
             />
             {!formData.file ? (
               <div
-                className={`${bugReportModalStyles.fileUploadContainer} ${isDragging ? bugReportModalStyles.fileUploadContainerDragging : ''}`}
+                className={`${styles.fileUploadContainer} ${isDragging ? styles.fileUploadContainerDragging : ''}`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragEnter={handleDragEnter}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
+                onDrop={(e) => handleDrop(e, handleInputChange)}
               >
-                <svg className={bugReportModalStyles.fileUploadIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={styles.fileUploadIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-                <p className={bugReportModalStyles.fileUploadText}>
+                <p className={styles.fileUploadText}>
                   {isDragging ? t('bugReport.fileUpload.dropHere') : t('bugReport.fileUpload.clickOrDrag')}
                 </p>
-                <p className={bugReportModalStyles.fileUploadOptional}>{t('bugReport.fileUpload.optional')}</p>
+                <p className={styles.fileUploadOptional}>{t('bugReport.fileUpload.optional')}</p>
               </div>
             ) : (
-              <div className={bugReportModalStyles.filePreviewContainer}>
-                <svg className={bugReportModalStyles.filePreviewIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <div className={styles.filePreviewContainer}>
+                <svg className={styles.filePreviewIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className={bugReportModalStyles.filePreviewText}>{formData.file.name}</span>
+                <span className={styles.filePreviewText}>{formData.file.name}</span>
                 <button
-                  onClick={handleRemoveFile}
-                  className={bugReportModalStyles.filePreviewRemoveButton}
+                  onClick={() => handleRemoveFile(handleInputChange)}
+                  className={styles.filePreviewRemoveButton}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -379,19 +248,10 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
       title={<span className={righteous.className + ' uppercase'}>BUG REPORT</span>}
       colors={colors}
       className={isMobile ? undefined : "max-w-2xl"}
-      mobileHeight={"90vh"}
+      mobileHeight={getMobileHeight()}
+      desktopMaxHeight={getDesktopMaxHeight()}
     >
-      <div
-        className={bugReportModalStyles.content}
-        style={{
-          height: isMobile ? '70vh' : 540,
-          minHeight: isMobile ? '70vh' : 540,
-          maxHeight: isMobile ? '70vh' : 540,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div className={styles.content} style={contentStyle}>
         <AnimatePresence mode="wait">
           {submitted ? renderStepContent() : (
             <>
@@ -404,7 +264,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                   }
                   style={{ letterSpacing: 1 }}
                 >
-                  {steps[step].label.toUpperCase()}
+                  {formatStepLabel(t(steps[step].label))}
                 </h3>
               </div>
               <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0}}>
@@ -428,7 +288,6 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                       overflow: 'hidden',
                     }}
                   >
-                    {/* Arrow segment */}
                     <span style={{
                       background: `var(--color-${colors.primary})`,
                       display: 'flex',
@@ -444,7 +303,6 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                         <path d="M14 5L8 11L14 17" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </span>
-                    {/* Text segment */}
                     <span style={{
                       flex: 1,
                       textAlign: 'center',
@@ -481,7 +339,6 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                   }}
                   disabled={steps[step].type === 'file' ? false : !isStepValid(step)}
                 >
-                  {/* Text segment */}
                   <span style={{
                     flex: 1,
                     textAlign: 'center',
@@ -498,7 +355,6 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                     borderBottomLeftRadius: 8,
                     marginRight: 2,
                   }}>{(steps[step].type === 'file' && !formData.file) ? t('bugReport.navigation.skip') : t('bugReport.navigation.next')}</span>
-                  {/* Arrow segment */}
                   <span style={{
                     background: `var(--color-${colors.primary})`,
                     display: 'flex',
@@ -515,8 +371,14 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                   </span>
                 </button>
               </div>
-              <div className={bugReportModalStyles.progressContainer} style={{marginTop: 16}}>
-                <div style={bugReportModalStyles.progressBar(colors.primary, progress)} />
+              <div className={styles.progressContainer} style={{marginTop: 16}}>
+                <div style={{
+                  width: `${progress}%`,
+                  backgroundColor: `var(--color-${colors.primary})`,
+                  height: '100%',
+                  borderRadius: '9999px',
+                  transition: 'width 0.3s ease-in-out'
+                }} />
               </div>
             </>
           )}

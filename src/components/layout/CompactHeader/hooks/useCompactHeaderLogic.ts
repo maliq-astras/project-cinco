@@ -6,15 +6,15 @@ import { generateMenuItems } from '../helpers';
 interface UseCompactHeaderLogicParams {
   openSettings: () => void;
   openTutorial: () => void;
-  openFeedbackModal: () => void;
   openBugReportModal: () => void;
+  openFeedbackModal: () => void;
 }
 
 export const useCompactHeaderLogic = ({
   openSettings,
   openTutorial,
-  openFeedbackModal,
-  openBugReportModal
+  openBugReportModal,
+  openFeedbackModal
 }: UseCompactHeaderLogicParams) => {
   const { colors } = useTheme();
   const challenge = useGameStore(state => state.gameState.challenge);
@@ -34,10 +34,10 @@ export const useCompactHeaderLogic = ({
       gameState,
       openSettings,
       openTutorial,
-      openFeedbackModal,
-      openBugReportModal
+      openBugReportModal,
+      openFeedbackModal
     }), 
-    [gameState, openSettings, openTutorial, openFeedbackModal, openBugReportModal]
+    [gameState, openSettings, openTutorial, openBugReportModal, openFeedbackModal]
   );
 
   return {

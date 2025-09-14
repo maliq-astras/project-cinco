@@ -14,7 +14,8 @@ import {
   getMenuItemAnimationProps,
   getBackdropStyle,
   getMenuTitleStyle,
-  getCloseButtonStyle
+  getCloseButtonStyle,
+  getMenuItemIcon
 } from './helpers';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
@@ -86,9 +87,10 @@ const SlideOutMenu = React.memo(function SlideOutMenu({
                   >
                     <button
                       onClick={() => handleMenuItemClick(item)}
-                      className={`${righteous.className} w-full text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white font-normal uppercase tracking-wide`}
+                      className={`${righteous.className} w-full text-left p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white font-normal uppercase tracking-wide flex items-center gap-3`}
                       aria-label={item.ariaLabel ? t(item.ariaLabel) : t(item.label)}
                     >
+                      {getMenuItemIcon(item.icon, `var(--color-${colors.primary})`, 20)}
                       {t(item.label)}
                     </button>
                   </motion.li>

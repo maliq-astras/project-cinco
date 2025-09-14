@@ -78,10 +78,7 @@ export const createTimerSlice: StateCreator<
           isPendingFinalFiveTransition: true // Prevent further interactions
         });
 
-        // Prefetch final five options as soon as transition starts
-        // This is a good time to prefetch because we know no more guesses will be made
-        // Prefetch final five silently
-        get().prefetchFinalFiveOptions();
+        // Final Five options will be fetched when the modal opens
       } else {
         set({ timeRemaining: timeRemaining - 1 });
       }

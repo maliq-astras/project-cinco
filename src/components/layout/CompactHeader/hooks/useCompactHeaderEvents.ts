@@ -3,14 +3,14 @@ import { useGameStore } from '@/store/gameStore';
 
 interface UseCompactHeaderEventsParams {
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsFeedbackModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsBugReportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsFeedbackModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useCompactHeaderEvents = ({
   setIsMenuOpen,
-  setIsFeedbackModalOpen,
-  setIsBugReportModalOpen
+  setIsBugReportModalOpen,
+  setIsFeedbackModalOpen
 }: UseCompactHeaderEventsParams) => {
   const setSettingsPanelOpen = useGameStore((state) => state.setSettingsPanelOpen);
   const setTutorialOpen = useGameStore((state) => state.setTutorialOpen);
@@ -37,15 +37,15 @@ export const useCompactHeaderEvents = ({
     setIsMenuOpen(false);
   }, [setTutorialOpen, setIsMenuOpen]);
 
-  const openFeedbackModal = useCallback(() => {
-    setIsFeedbackModalOpen(true);
-    setIsMenuOpen(false);
-  }, [setIsFeedbackModalOpen, setIsMenuOpen]);
-
   const openBugReportModal = useCallback(() => {
     setIsBugReportModalOpen(true);
     setIsMenuOpen(false);
   }, [setIsBugReportModalOpen, setIsMenuOpen]);
+
+  const openFeedbackModal = useCallback(() => {
+    setIsFeedbackModalOpen(true);
+    setIsMenuOpen(false);
+  }, [setIsFeedbackModalOpen, setIsMenuOpen]);
 
   return {
     toggleMenu,
@@ -53,7 +53,7 @@ export const useCompactHeaderEvents = ({
     closeSettings,
     closeTutorial,
     openTutorial,
-    openFeedbackModal,
-    openBugReportModal
+    openBugReportModal,
+    openFeedbackModal
   };
 };

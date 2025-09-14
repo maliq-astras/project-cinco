@@ -23,7 +23,19 @@ export const getMobilePanelStyle = (primaryColor: string, mobileHeight: string =
 export const getMobilePanelClass = () => 
   styles.mobilePanelClass;
 
-export const getDesktopPanelStyle = (primaryColor: string): CSSProperties => ({
-  border: `2px solid var(--color-${primaryColor})`,
-  maxHeight: '90vh'
-});
+export const getDesktopPanelStyle = (primaryColor: string, customMaxHeight?: string): CSSProperties => {
+  // If custom max height is provided, use it
+  if (customMaxHeight) {
+    return {
+      border: `2px solid var(--color-${primaryColor})`,
+      maxHeight: customMaxHeight
+    };
+  }
+  
+  // Default behavior for FeedbackModal and other modals
+  const isSmallHeight = typeof window !== 'undefined' && window.innerHeight < 715;
+  return {
+    border: `2px solid var(--color-${primaryColor})`,
+    maxHeight: isSmallHeight ? '95vh' : '90vh'
+  };
+};

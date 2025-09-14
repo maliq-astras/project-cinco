@@ -7,4 +7,5 @@ export interface MenuItem {
   onClick: () => void;
   showArrow?: boolean;
   ariaLabel?: string;
+  icon?: 'settings' | 'help' | 'feedback' | 'bug';
 }

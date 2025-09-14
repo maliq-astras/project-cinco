@@ -18,7 +18,8 @@ interface BaseModalProps {
   };
   className?: string;
   dismissible?: boolean;
-  mobileHeight?: string; 
+  mobileHeight?: string;
+  desktopMaxHeight?: string; // New prop for custom desktop max height
 }
 
 const BaseModal = React.memo<BaseModalProps>(({ 
@@ -29,7 +30,8 @@ const BaseModal = React.memo<BaseModalProps>(({
   colors,
   className,
   dismissible = true,
-  mobileHeight = '75vh'
+  mobileHeight = '75vh',
+  desktopMaxHeight // New prop
 }) => {
   const { 
     isMobile, 
@@ -44,7 +46,8 @@ const BaseModal = React.memo<BaseModalProps>(({
     colors, 
     className, 
     dismissible, 
-    mobileHeight 
+    mobileHeight,
+    desktopMaxHeight
   });
 
   const modalContent = (() => {
@@ -115,7 +118,7 @@ const BaseModal = React.memo<BaseModalProps>(({
           >
             <motion.div 
               className={`${inter.className} ${baseModalStyles.desktopPanelClass} ${className || 'max-w-2xl'}`}
-              style={getDesktopPanelStyle(colors.primary)}
+              style={getDesktopPanelStyle(colors.primary, desktopMaxHeight)}
               {...baseModalAnimations.desktopPanel}
             >
               {title && (

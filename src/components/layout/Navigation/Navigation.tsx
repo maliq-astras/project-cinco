@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import GameTutorial from '../../game/GameTutorial';
 import SettingsPanel from '../../modals/SettingsPanel';
 import NavDropdownMenu from '../NavDropdownMenu';
-import FeedbackModal from '@/components/modals/FeedbackModal';
-import BugReportModal from '@/components/modals/BugReportModal';
+import BugReportModal from '../../modals/BugReportModal';
+import FeedbackModal from '../../modals/FeedbackModal';
 import { useNavigation } from './hooks';
 import styles from './Navigation.module.css';
 import { 
@@ -28,15 +28,15 @@ const Navigation = React.memo(function Navigation({ headerEntranceComplete = fal
     isDropdownOpen,
     isTutorialOpen,
     isSettingsOpen,
-    isFeedbackModalOpen,
     isBugReportModalOpen,
+    isFeedbackModalOpen,
     dropdownRef,
     hardMode,
     isHardModeEnabled,
     responsiveValues,
-    setIsFeedbackModalOpen,
-    setIsBugReportModalOpen,
     setIsDropdownOpen,
+    setIsBugReportModalOpen,
+    setIsFeedbackModalOpen,
     navigationAnimation,
     navClasses,
     menuItems,
@@ -130,15 +130,16 @@ const Navigation = React.memo(function Navigation({ headerEntranceComplete = fal
         onClose={closeSettings}
       />
       
+      <BugReportModal 
+        isOpen={isBugReportModalOpen}
+        onClose={() => setIsBugReportModalOpen(false)}
+      />
+      
       <FeedbackModal 
         isOpen={isFeedbackModalOpen}
         onClose={() => setIsFeedbackModalOpen(false)}
       />
       
-      <BugReportModal 
-        isOpen={isBugReportModalOpen}
-        onClose={() => setIsBugReportModalOpen(false)}
-      />
     </>
   );
 });

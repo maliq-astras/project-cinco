@@ -20,10 +20,10 @@ interface UseNavigationLogicProps {
   isDropdownOpen: boolean;
   headerEntranceComplete: boolean;
   setTutorialOpen: (value: boolean) => void;
-  setIsBugReportModalOpen: (value: boolean) => void;
-  setIsFeedbackModalOpen: (value: boolean) => void;
   setIsDropdownOpen: (value: boolean) => void;
   setSettingsPanelOpen: (value: boolean) => void;
+  setIsBugReportModalOpen: (value: boolean) => void;
+  setIsFeedbackModalOpen: (value: boolean) => void;
 }
 
 export const useNavigationLogic = ({
@@ -36,10 +36,10 @@ export const useNavigationLogic = ({
   isDropdownOpen,
   headerEntranceComplete,
   setTutorialOpen,
-  setIsBugReportModalOpen,
-  setIsFeedbackModalOpen,
   setIsDropdownOpen,
-  setSettingsPanelOpen
+  setSettingsPanelOpen,
+  setIsBugReportModalOpen,
+  setIsFeedbackModalOpen
 }: UseNavigationLogicProps) => {
   // Animation object from constants
   const navigationAnimation = ANIMATIONS.NAVIGATION;
@@ -49,6 +49,16 @@ export const useNavigationLogic = ({
 
   // Only show How to Play during active gameplay (not during Final Five or game over)
   const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
+
+  const openBugReportModal = () => {
+    setIsBugReportModalOpen(true);
+    setIsDropdownOpen(false);
+  };
+  
+  const openFeedbackModal = () => {
+    setIsFeedbackModalOpen(true);
+    setIsDropdownOpen(false);
+  };
 
   // Define all menu items
   const allMenuItems: MenuItem[] = [
@@ -63,19 +73,13 @@ export const useNavigationLogic = ({
     },
     { 
       label: 'ui.navigation.reportBug', 
-      onClick: () => {
-        setIsBugReportModalOpen(true);
-        setIsDropdownOpen(false);
-      },
+      onClick: openBugReportModal,
       showArrow: false,
       ariaLabel: 'ui.navigation.reportBug'
     },
     { 
       label: 'ui.navigation.feedback', 
-      onClick: () => {
-        setIsFeedbackModalOpen(true);
-        setIsDropdownOpen(false);
-      },
+      onClick: openFeedbackModal,
       showArrow: false,
       ariaLabel: 'ui.navigation.feedback'
     },

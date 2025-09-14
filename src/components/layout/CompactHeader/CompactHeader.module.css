@@ -34,13 +34,17 @@
   font-family: 'Righteous', cursive;
 }
 
-.rightSection {
-  position: absolute; 
-  right: 1rem; 
-  top: 0.375rem; 
+.topControls {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem; 
+  justify-content: space-between;
+  align-items: center;
+  padding: 0rem 1rem;
+  width: 100%;
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .hamburgerButton {
@@ -50,6 +54,13 @@
   color: hsl(var(--primary));
   margin-top: -0.275rem; 
   margin-right: -0.65rem; 
+}
+
+.settingsButton {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  color: hsl(var(--primary));
 }
 
 .hamburgerIcon {
@@ -99,7 +110,6 @@
   color: rgb(255 255 255);
   text-transform: uppercase;
   white-space: nowrap;
-  margin-top: 0.125rem; 
 }
 
 @media (min-width: 640px) {

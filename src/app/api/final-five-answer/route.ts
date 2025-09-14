@@ -3,6 +3,9 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
 import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
+import { TIMEOUTS } from '@/constants/timeouts';
+import { createNotFoundResponse, createServiceUnavailableResponse } from '@/utils/errorUtils';
+import { logger } from '@/utils/logger';
 
 // Cache for challenge answers to reduce database load
 const answerCache = new Map<string, string>();
@@ -66,13 +69,13 @@ export async function POST(request: Request) {
       ) as Promise<ChallengeWithAnswer | null>;
       
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Database query timed out')), 15000)
+        setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_HEAVY_QUERY)
       );
       
       const challenge = await Promise.race([dbPromise, timeoutPromise]) as ChallengeWithAnswer | null;
       
       if (!challenge) {
-        return NextResponse.json({ error: 'Challenge not found' }, { status: 404 });
+        return createNotFoundResponse('Challenge');
       }
       
       // Get the answer in the requested language
@@ -85,7 +88,7 @@ export async function POST(request: Request) {
       }
       
       if (!fetchedAnswer) {
-        return NextResponse.json({ error: 'Answer not found for language' }, { status: 404 });
+        return createNotFoundResponse('Answer for language');
       }
       
       answer = fetchedAnswer;
@@ -97,10 +100,11 @@ export async function POST(request: Request) {
       
     return NextResponse.json({ answer });
   } catch (error) {
-    console.error('Error fetching answer:', error);
-    return NextResponse.json(
-      { error: 'Service unavailable - please try again' }, 
-      { status: 503 }
-    );
+    logger.error('Error fetching answer', { 
+      component: 'final-five-answer-api',
+      operation: 'fetchAnswer',
+      error 
+    });
+    return createServiceUnavailableResponse();
   }
 } 

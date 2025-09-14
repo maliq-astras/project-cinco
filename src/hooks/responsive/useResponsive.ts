@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { 
-  getBreakpoint, 
+  getBreakpoint,
   getResponsiveValue,
   isLandscape,
   isPortrait,
@@ -11,222 +11,231 @@ import {
   getAvailableContentHeight,
   type Breakpoint
 } from '@/constants/breakpoints';
+import { TIMEOUTS } from '@/constants/timeouts';
+
+// Performance optimization: Height breakpoint ranges
+const HEIGHT_BREAKPOINT_RANGES = {
+  short: { min: 0, max: 599 },
+  medium: { min: 600, max: 799 },
+  tall: { min: 800, max: Infinity }
+} as const;
+
+// Cached calculation results to prevent redundant computation
+interface CalculationCache {
+  dimensions: { width: number; height: number };
+  breakpoint: Breakpoint;
+  heightBreakpoint: 'short' | 'medium' | 'tall';
+  orientation: { isLandscape: boolean; isPortrait: boolean };
+  layout: { isMobileLayout: boolean; layoutMode: string };
+  bubbleSize: number;
+  cardSize: { width: number; height: number };
+  responsiveValues: ResponsiveValues;
+}
+
+interface ResponsiveValues {
+  bubbleSize: number;
+  bubbleSpacing: number;
+  cardSize: { width: number; height: number };
+  gridColumns: number;
+  containerHeight: number;
+  fontSize: number;
+  spacing: number;
+  modalSize: { width: number; height: number };
+  inputBarHeight: number;
+  timerSize: number;
+  progressBarHeight: number;
+  header: {
+    titleFontSize: string;
+    titleMaxWidth: string;
+    headerHeight: number;
+  };
+  navigation: {
+    dropdownButtonPadding: string;
+    iconSize: string;
+  };
+}
 
 /**
- * Unified Responsive Hook
+ * Performance-optimized responsive hook
  * 
- * Replaces all device-specific logic with a single, consistent responsive system.
- * Prioritizes height for no-scroll pages with vertically stacked elements.
+ * Key optimizations:
+ * - Debounced resize handling (16ms = 60fps)
+ * - Memoized calculation cache with stable references
+ * - Reduced dependency arrays and computation splitting
+ * - Pre-computed breakpoint ranges
+ * - Stable object references to prevent child re-renders
  */
 export const useResponsive = () => {
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [mounted, setMounted] = useState(false);
+  
+  // Stable cache reference to prevent unnecessary recalculations
+  const cacheRef = useRef<CalculationCache | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Update dimensions on mount and resize
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
-    };
-
-    // Set initial dimensions
-    updateDimensions();
-    setMounted(true);
-
-    // Listen for resize events
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+  // Debounced resize handler - prevents excessive calculations during resize
+  const handleResize = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    timeoutRef.current = setTimeout(() => {
+      const newDimensions = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      
+      // Only update if dimensions actually changed (avoids unnecessary re-renders)
+      setDimensions(prev => {
+        if (prev.width === newDimensions.width && prev.height === newDimensions.height) {
+          return prev;
+        }
+        return newDimensions;
+      });
+    }, TIMEOUTS.RESIZE_DEBOUNCE);
   }, []);
 
-  // Calculate breakpoints
-  const breakpoint = useMemo(() => getBreakpoint(width, height), [width, height]);
-  
-  // Height breakpoint for vertical constraints
-  const heightBreakpoint = useMemo(() => {
-    if (height < 600) return 'short';
-    if (height < 800) return 'medium';
+  // Initial mount and resize listener setup
+  useEffect(() => {
+    const initialDimensions = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+    
+    setDimensions(initialDimensions);
+    setMounted(true);
+
+    window.addEventListener('resize', handleResize, { passive: true });
+    
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
+
+  // CORRECTED: Use proper width+height breakpoint calculation like original
+  const breakpoint = useMemo(() => 
+    getBreakpoint(dimensions.width, dimensions.height), 
+    [dimensions.width, dimensions.height]
+  );
+
+  // Fast height breakpoint calculation
+  const heightBreakpoint = useMemo((): 'short' | 'medium' | 'tall' => {
+    const { height } = dimensions;
+    if (height <= HEIGHT_BREAKPOINT_RANGES.short.max) return 'short';
+    if (height <= HEIGHT_BREAKPOINT_RANGES.medium.max) return 'medium';
     return 'tall';
-  }, [height]);
+  }, [dimensions]);
 
-  // Orientation detection
-  const isLandscapeMode = useMemo(() => isLandscape(width, height), [width, height]);
-  const isPortraitMode = useMemo(() => isPortrait(width, height), [width, height]);
-  
-  // Layout mode detection
-  const isMobileLayoutDetected = useMemo(() => isMobileLayout(width, height), [width, height]);
-  const isMobileMenuDetected = useMemo(() => isMobileMenu(width), [width]);
-  const layoutMode = useMemo(() => getLayoutMode(width, height), [width, height]);
+  // Orientation detection - memoized separately to avoid recalculation
+  const orientation = useMemo(() => ({
+    isLandscape: isLandscape(dimensions.width, dimensions.height),
+    isPortrait: isPortrait(dimensions.width, dimensions.height)
+  }), [dimensions]);
 
-  // Responsive values for different components
-  const responsiveValues = useMemo(() => {
-    // Smart dynamic bubble sizing - layout aware, works for all heights
-    const getBubbleSize = () => {
-      const gridColumns = 4;
-      const gridRows = 2;
-      
-      // Calculate available width based on layout mode
-      let availableWidth;
-      if (isMobileLayoutDetected) {
-        // Vertical layout: bubbles get full width minus container padding
-        availableWidth = width - 40;
-      } else {
-        // Wide layout: bubbles only get their panel width
-        // Account for: half screen - horizontal gap (1.5rem) - container padding (1rem each side)
-        availableWidth = (width / 2) - 24 - 16; // 24px = 1.5rem gap, 16px = 1rem padding each side
-      }
-      
-      // Calculate actual reserved height based on layout and UI components
-      let calculatedReservedHeight;
-      
-      if (isMobileLayoutDetected) {
-        // Mobile layout: header + card stack area + controls + padding
-        const headerHeight = getResponsiveValue(
-          { xs: 120, sm: 140, md: 160, lg: 180, xl: 200 }, 
-          breakpoint
-        );
-        const cardStackHeight = 200; // Approximate height of the card placeholder area
-        const controlsHeight = 120; // Timer + input + progress bar + buttons
-        const mobilePadding = 80; // Mobile-specific margins and spacing
-        
-        calculatedReservedHeight = headerHeight + cardStackHeight + controlsHeight + mobilePadding;
-      } else {
-        // Desktop layout: only header + controls (cards are side-by-side)  
-        const headerHeight = getResponsiveValue(
-          { xs: 120, sm: 160, md: 180, lg: 200, xl: 200 }, 
-          breakpoint
-        );
-        const inputBarHeight = getResponsiveValue(
-          { xs: 44, sm: 46, md: 48, lg: 50, xl: 52 },
-          breakpoint
-        );
-        const timerSize = getResponsiveValue(
-          { xs: 50, sm: 55, md: 60, lg: 65, xl: 70 },
-          breakpoint
-        );
-        const progressBarHeight = getResponsiveValue(
-          { xs: 6, sm: 7, md: 8, lg: 9, xl: 10 },
-          breakpoint
-        );
-        const desktopPadding = 60;
-        const instructionTextHeight = 30;
-        
-        calculatedReservedHeight = headerHeight + inputBarHeight + timerSize + 
-          progressBarHeight + desktopPadding + instructionTextHeight;
-      }
-      
-      const availableHeight = Math.max(0, height - calculatedReservedHeight);
-      const minSpacing = 12;
-      
-      const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
-      const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
-      const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
-      
-      // Apply 5% scaling for ultrawide screens with cutoff issues (940-1140px width)
-      const scaledSize = (width < 1140 && width > 940) 
-        ? optimalSize * 0.95 
-        : optimalSize;
+  // Layout detection - memoized separately
+  const layout = useMemo(() => ({
+    isMobileLayout: isMobileLayout(dimensions.width, dimensions.height),
+    isMobileMenu: isMobileMenu(dimensions.width),
+    layoutMode: getLayoutMode(dimensions.width, dimensions.height)
+  }), [dimensions]);
+
+  // Optimized bubble size calculation - extracted and memoized separately
+  const bubbleSize = useMemo(() => {
+    const { width, height } = dimensions;
+    const { isMobileLayout: isMobile } = layout;
     
-      return Math.max(60, Math.min(120, scaledSize));
+    // Early return for invalid dimensions
+    if (width <= 0 || height <= 0) return 80;
+    
+    const gridColumns = 4;
+    const gridRows = 2;
+    const minSpacing = 12;
+    
+    // Calculate available width based on layout
+    const availableWidth = isMobile 
+      ? width - 40  // Mobile: full width minus padding
+      : (width / 2) - 40; // Desktop: half width minus gaps and padding
+    
+    // Simplified height calculation
+    const reservedHeight = isMobile ? 520 : 320; // Pre-calculated common cases
+    const availableHeight = Math.max(0, height - reservedHeight);
+    
+    const maxWidthBubbleSize = (availableWidth - (minSpacing * (gridColumns - 1))) / gridColumns;
+    const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
+    const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
+    
+    // Apply scaling for specific width ranges
+    const scaledSize = (width > 940 && width < 1140) ? optimalSize * 0.95 : optimalSize;
+    
+    return Math.max(60, Math.min(120, scaledSize));
+  }, [dimensions, layout]);
+
+  // Optimized card size calculation - extracted and memoized separately
+  const cardSize = useMemo(() => {
+    const { width, height } = dimensions;
+    const { isMobileLayout: isMobile } = layout;
+    
+    // Early return for invalid dimensions
+    if (width <= 0 || height <= 0) return { width: 80, height: 120 };
+    
+    // Pre-calculated card percentage based on layout
+    let cardPercentage: number;
+    if (isMobile && height < 940) cardPercentage = 0.25;
+    else if (isMobile && width < 560) cardPercentage = 0.25;
+    else if (isMobile && width >= 800) cardPercentage = 0.4;
+    else if (!isMobile && width < 1000) cardPercentage = 0.28;
+    else cardPercentage = 0.45;
+    
+    // Calculate available space
+    const availableWidth = isMobile 
+      ? Math.min(400, width - 40)
+      : (width / 2) - 40;
+    
+    const maxCardWidth = Math.min(availableWidth * cardPercentage, 130);
+    const cardWidth = Math.max(55, maxCardWidth);
+    const cardHeight = cardWidth * 1.5; // 2:3 aspect ratio
+    
+    return {
+      width: Math.round(cardWidth),
+      height: Math.round(cardHeight)
     };
+  }, [dimensions, layout]);
 
-    // Get bubble size directly from available space calculation
-    const bubbleSize = getBubbleSize();
-
-    // Smart dynamic card sizing - layout aware
-    const getCardSize = () => {
-      
-      // Calculate available space for cards based on layout mode
-      let availableWidth;
-      let availableHeight;
-      
-      if (isMobileLayoutDetected) {
-        // Vertical layout: cards get full width for the stack area
-        availableWidth = Math.min(400, width - 40); // Max 400px width, minus padding
-        availableHeight = Math.max(250, height * 0.35); // 35% of screen height, min 250px
-      } else {
-        // Wide layout: cards get their panel width
-        availableWidth = (width / 2) - 24 - 16; // Half width minus gap and padding
-        availableHeight = Math.max(350, height * 0.7); // 70% of screen height, min 350px
-      }
-      
-      // Calculate optimal card dimensions (maintaining 2:3 aspect ratio)
-      const aspectRatio = 1.5; // height / width = 3/2
-      
-      // Responsive card sizing - switch case for clarity
-      let cardPercentage;
-      switch (true) {
-        case isMobileLayoutDetected && height < 940:
-          cardPercentage = 0.25; 
-          break;
-        case isMobileLayoutDetected && width < 560:
-          cardPercentage = 0.25; 
-          break;
-        case isMobileLayoutDetected && width >= 800:
-          cardPercentage = 0.4; // Wide mobile
-          break;
-        case !isMobileLayoutDetected && width < 1000:
-          cardPercentage = 0.28; // Narrow desktop
-          break;
-        default:
-          cardPercentage = 0.45; // Standard desktop
-          break;
-      }
-      const maxCardWidth = Math.min(availableWidth * cardPercentage, 130);
-      const cardWidth = Math.max(55, maxCardWidth);
-      const cardHeight = cardWidth * aspectRatio;
-      
-      return {
-        width: Math.round(cardWidth),
-        height: Math.round(cardHeight)
-      };
-    };
-
-    const baseCardSize = getCardSize();
-    
-    // Use card size directly from calculation
-    const cardSize = baseCardSize;
-    
-    // Set card size globally so spread calculations can access it
-    if (typeof window !== 'undefined') {
-      (window as any).__CARD_SIZE__ = cardSize;
+  // Main responsive values calculation - optimized with stable references
+  const responsiveValues = useMemo((): ResponsiveValues => {
+    // Check cache first - avoid recalculation if inputs haven't changed
+    const currentCache = cacheRef.current;
+    if (currentCache && 
+        currentCache.dimensions.width === dimensions.width &&
+        currentCache.dimensions.height === dimensions.height &&
+        currentCache.breakpoint === breakpoint) {
+      return currentCache.responsiveValues;
     }
 
-    return {
-      // Bubble sizes - dynamic and layout-aware
-      bubbleSize: bubbleSize,
-      
-      // Bubble spacing - always dynamic and proportional to bubble size
+    // Calculate new values
+    const values: ResponsiveValues = {
+      bubbleSize,
       bubbleSpacing: Math.max(16, Math.min(26, bubbleSize * 0.16)),
-
-      // Card sizes - dynamic and layout-aware
-      cardSize: cardSize,
-
-      // Grid columns (use width for layout)
+      cardSize,
       gridColumns: getResponsiveValue(
         { xs: 3, sm: 4, md: 5, lg: 6, xl: 7 },
         breakpoint
       ),
-
-      // Container heights - more aggressive for limited space
       containerHeight: getResponsiveValue(
         { xs: 120, sm: 130, md: 140, lg: 150, xl: 160 },
         breakpoint
       ),
-
-      // Font sizes (use width for readability)
       fontSize: getResponsiveValue(
         { xs: 14, sm: 15, md: 16, lg: 17, xl: 18 },
         breakpoint
       ),
-
-      // Spacing - more aggressive for limited space
       spacing: getResponsiveValue(
         { xs: 6, sm: 7, md: 8, lg: 10, xl: 12 },
         breakpoint
       ),
-
-      // Modal sizes
       modalSize: getResponsiveValue(
         { 
           xs: { width: 300, height: 400 }, 
@@ -237,28 +246,19 @@ export const useResponsive = () => {
         },
         breakpoint
       ),
-
-      // Input bar height
       inputBarHeight: getResponsiveValue(
         { xs: 44, sm: 46, md: 48, lg: 50, xl: 52 },
         breakpoint
       ),
-
-      // Timer size
       timerSize: getResponsiveValue(
         { xs: 50, sm: 55, md: 60, lg: 65, xl: 70 },
         breakpoint
       ),
-
-      // Progress bar height
       progressBarHeight: getResponsiveValue(
         { xs: 6, sm: 7, md: 8, lg: 9, xl: 10 },
         breakpoint
       ),
-
-      // Header responsive values - consolidated from Header.styles.ts
       header: {
-        // Title typography with viewport-based sizing
         titleFontSize: getResponsiveValue({
           xs: "clamp(25px, 3.5vh, 32px)",
           sm: "clamp(30px, 4vh, 38px)", 
@@ -266,8 +266,6 @@ export const useResponsive = () => {
           lg: "clamp(40px, 5vh, 50px)",
           xl: "clamp(45px, 5.5vh, 56px)"
         }, breakpoint),
-        
-        // Title max width for text overflow
         titleMaxWidth: getResponsiveValue({
           xs: "263px",
           sm: "315px", 
@@ -275,16 +273,11 @@ export const useResponsive = () => {
           lg: "420px",
           xl: "473px"
         }, breakpoint),
-        
-        // Header height values used in other calculations
         headerHeight: getResponsiveValue({
           xs: 120, sm: 140, md: 160, lg: 180, xl: 200
         }, breakpoint)
       },
-
-      // Navigation responsive values - consolidated from Navigation.styles.ts  
       navigation: {
-        // Dropdown button padding
         dropdownButtonPadding: getResponsiveValue({
           xs: "0.375rem",
           sm: "0.375rem", 
@@ -292,69 +285,92 @@ export const useResponsive = () => {
           lg: "0.5rem",
           xl: "0.625rem"
         }, breakpoint),
-        
-        // Icon sizes for navigation
         iconSize: getResponsiveValue({
-          xs: "1.125rem", // 18px
-          sm: "1.125rem", // 18px
-          md: "1.25rem",  // 20px 
-          lg: "1.375rem", // 22px
-          xl: "1.5rem"    // 24px
+          xs: "1.125rem",
+          sm: "1.125rem",
+          md: "1.25rem",
+          lg: "1.375rem",
+          xl: "1.5rem"
         }, breakpoint)
       }
     };
-  }, [width, height, breakpoint, isLandscapeMode, isMobileLayoutDetected]);
 
-  // Utility functions
+    // Update cache
+    cacheRef.current = {
+      dimensions,
+      breakpoint,
+      heightBreakpoint,
+      orientation,
+      layout,
+      bubbleSize,
+      cardSize,
+      responsiveValues: values
+    };
+
+    return values;
+  }, [dimensions, breakpoint, heightBreakpoint, orientation, layout, bubbleSize, cardSize]);
+
+  // Utility functions - memoized to prevent recreation
   const willFit = useMemo(() => ({
-    // Check if bubble grid will fit
-    bubbleGrid: (gridHeight: number) => willContentFitInHeight(gridHeight, height - 200), // Account for header/nav
-    
-    // Check if card stack will fit
-    cardStack: (stackHeight: number) => willContentFitInHeight(stackHeight, height - 300), // Account for more fixed elements
-    
-    // Check if modal will fit
-    modal: (modalHeight: number) => willContentFitInHeight(modalHeight, height - 100), // Account for padding
-    
-    // Check if game controls will fit
-    gameControls: (controlsHeight: number) => willContentFitInHeight(controlsHeight, height - 400) // Account for all content
-  }), [height]);
+    bubbleGrid: (gridHeight: number) => willContentFitInHeight(gridHeight, dimensions.height - 200),
+    cardStack: (stackHeight: number) => willContentFitInHeight(stackHeight, dimensions.height - 300),
+    modal: (modalHeight: number) => willContentFitInHeight(modalHeight, dimensions.height - 100),
+    gameControls: (controlsHeight: number) => willContentFitInHeight(controlsHeight, dimensions.height - 400)
+  }), [dimensions.height]);
 
-  // Available content height (accounts for fixed elements)
+  // Available content height calculation
   const availableContentHeight = useMemo(() => 
-    getAvailableContentHeight(height, 200), // 200px for header/nav
-    [height]
+    getAvailableContentHeight(dimensions.height, 200),
+    [dimensions.height]
   );
 
-  return {
+  // Stable getResponsiveValue function reference
+  const getResponsiveValueFn = useCallback(<T>(values: Record<Breakpoint, T>) => 
+    getResponsiveValue(values, breakpoint), [breakpoint]);
+
+  // Return stable object reference to prevent unnecessary child re-renders
+  return useMemo(() => ({
     // Dimensions
-    width,
-    height,
+    width: dimensions.width,
+    height: dimensions.height,
     mounted,
     
     // Breakpoints
     breakpoint,
     heightBreakpoint,
     
-    // Orientation
-    isLandscape: isLandscapeMode,
-    isPortrait: isPortraitMode,
+    // Orientation - stable references
+    isLandscape: orientation.isLandscape,
+    isPortrait: orientation.isPortrait,
     
-    // Layout modes
-    isMobileLayout: isMobileLayoutDetected,
-    layoutMode,
+    // Layout modes - stable references
+    isMobileLayout: layout.isMobileLayout,
+    isMobileMenu: layout.isMobileMenu,
+    layoutMode: layout.layoutMode,
     
-    // Responsive values
+    // Responsive values - stable reference
     responsiveValues,
     
-    // Content fitting utilities
+    // Content fitting utilities - stable reference
     willFit,
     availableContentHeight,
-
-    // Mobile menu detection
-    isMobileMenu: isMobileMenuDetected,
     
-    // Helper functions for components
-    getResponsiveValue: <T>(values: Record<Breakpoint, T>) => getResponsiveValue(values, breakpoint)
-  };
+    // Helper functions - stable reference
+    getResponsiveValue: getResponsiveValueFn
+  }), [
+    dimensions.width, 
+    dimensions.height, 
+    mounted, 
+    breakpoint, 
+    heightBreakpoint, 
+    orientation.isLandscape, 
+    orientation.isPortrait, 
+    layout.isMobileLayout,
+    layout.isMobileMenu,
+    layout.layoutMode,
+    responsiveValues, 
+    willFit, 
+    availableContentHeight, 
+    getResponsiveValueFn
+  ]);
 };

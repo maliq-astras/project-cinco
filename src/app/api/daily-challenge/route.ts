@@ -5,6 +5,9 @@ import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
 import { validateInput, VALIDATION_RULES } from '@/middleware/validation';
 import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
+import { TIMEOUTS } from '@/constants/timeouts';
+import { createValidationErrorResponse, createNotFoundResponse, createInternalErrorResponse } from '@/utils/errorUtils';
+import { logger } from '@/utils/logger';
 
 // Initialize database indexes
 export async function initializeIndexes() {
@@ -38,7 +41,7 @@ const getDailyChallenge = unstable_cache(
     );
     
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database query timed out')), 10000)
+      setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_QUERY)
     );
     
     const challenge = await Promise.race([dbPromise, timeoutPromise]) as Challenge | null;
@@ -61,19 +64,13 @@ export async function GET(request: Request) {
     // Validate language parameter
     const languageError = validateInput(language, VALIDATION_RULES.language);
     if (languageError) {
-      return NextResponse.json(
-        { error: `Invalid language: ${languageError}` },
-        { status: 400 }
-      );
+      return createValidationErrorResponse([`language: ${languageError}`]);
     }
     
     const challenge = await getDailyChallenge();
     
     if (!challenge) {
-      return NextResponse.json(
-        { error: 'No challenge found for today' }, 
-        { status: 404 }
-      );
+      return createNotFoundResponse('Challenge for today');
     }
 
     // Return the challenge without answer and alternatives
@@ -90,10 +87,11 @@ export async function GET(request: Request) {
       }))
     });
   } catch (error) {
-    console.error('Error fetching daily challenge:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' }, 
-      { status: 500 }
-    );
+    logger.error('Error fetching daily challenge', { 
+      component: 'daily-challenge-api',
+      operation: 'fetchChallenge',
+      error 
+    });
+    return createInternalErrorResponse();
   }
 }
