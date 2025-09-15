@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import BaseModal from '../BaseModal/BaseModal';
+import IconButton from '@/components/ui/IconButton';
 import { useBugReportModal } from './hooks';
 import { formatStepLabel } from './helpers';
 import styles from './BugReportModal.module.css';
@@ -272,104 +273,18 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
               </div>
               <div className="w-full flex justify-between items-end mt-8" style={{minHeight: 48}}>
                 {step > 0 ? (
-                  <button
+                  <IconButton
+                    icon="prev"
                     onClick={handleBack}
-                    className="flex items-center font-bold transition-colors focus:outline-none"
-                    style={{
-                      minWidth: 100,
-                      height: 36,
-                      borderRadius: 10,
-                      background: textSegmentBg,
-                      color: `var(--color-${colors.primary})`,
-                      border: `2px solid var(--color-${colors.primary})`,
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
-                      display: 'flex',
-                      padding: 0,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <span style={{
-                      background: `var(--color-${colors.primary})`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '100%',
-                      width: 36,
-                      borderTopLeftRadius: 8,
-                      borderBottomLeftRadius: 8,
-                      marginRight: 2,
-                    }}>
-                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M14 5L8 11L14 17" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
-                    <span style={{
-                      flex: 1,
-                      textAlign: 'center',
-                      fontWeight: 700,
-                      letterSpacing: 1,
-                      fontSize: 14,
-                      color: `var(--color-${colors.primary})`,
-                      background: textSegmentBg,
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderTopRightRadius: 8,
-                      borderBottomRightRadius: 8,
-                    }}>{t('bugReport.navigation.prev')}</span>
-                  </button>
+                    ariaLabel={t('bugReport.navigation.prev')}
+                  />
                 ) : <span />}
-                <button
+                <IconButton
+                  icon={step === steps.length - 1 ? "done" : "next"}
                   onClick={handleNext}
-                  className="flex items-center font-bold transition-colors focus:outline-none"
-                  style={{
-                    minWidth: 100,
-                    height: 36,
-                    borderRadius: 10,
-                    background: textSegmentBg,
-                    color: `var(--color-${colors.primary})`,
-                    border: `2px solid var(--color-${colors.primary})`,
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
-                    display: 'flex',
-                    padding: 0,
-                    overflow: 'hidden',
-                    opacity: steps[step].type === 'file' ? 1 : (!isStepValid(step) ? 0.5 : 1),
-                    cursor: steps[step].type === 'file' ? 'pointer' : (!isStepValid(step) ? 'not-allowed' : 'pointer'),
-                  }}
                   disabled={steps[step].type === 'file' ? false : !isStepValid(step)}
-                >
-                  <span style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    fontWeight: 700,
-                    letterSpacing: 1,
-                    fontSize: 14,
-                    color: `var(--color-${colors.primary})`,
-                    background: textSegmentBg,
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderTopLeftRadius: 8,
-                    borderBottomLeftRadius: 8,
-                    marginRight: 2,
-                  }}>{(steps[step].type === 'file' && !formData.file) ? t('bugReport.navigation.skip') : t('bugReport.navigation.next')}</span>
-                  <span style={{
-                    background: `var(--color-${colors.primary})`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
-                    width: 36,
-                    borderTopRightRadius: 8,
-                    borderBottomRightRadius: 8,
-                  }}>
-                    <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path d="M8 5L14 11L8 17" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </button>
+                  ariaLabel={(steps[step].type === 'file' && !formData.file) ? t('bugReport.navigation.skip') : t('bugReport.navigation.next')}
+                />
               </div>
               <div className={styles.progressContainer} style={{marginTop: 16}}>
                 <div style={{

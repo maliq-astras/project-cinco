@@ -22,50 +22,22 @@ const ModalNavButton: React.FC<ModalNavButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={styles.button}
-      style={{
-        background: textSegmentBg,
-        color: `var(--color-${primaryColor})`,
-        borderColor: `var(--color-${primaryColor})`,
-      }}
       disabled={disabled}
+      style={{ 
+        background: 'transparent', 
+        border: 'none', 
+        padding: 0,
+        cursor: disabled ? 'not-allowed' : 'pointer'
+      }}
+      aria-label={label}
     >
-      {/* Arrow segment (left for prev, right for next) */}
-      {isNext ? null : (
-        <span 
-          className={`${styles.arrowSegment} ${styles.arrowSegmentPrev}`}
-          style={{
-            background: `var(--color-${primaryColor})`,
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M14 5L8 11L14 17" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </span>
-      )}
-      {/* Text segment */}
-      <span 
-        className={`${styles.textSegment} ${isNext ? styles.textSegmentNext : styles.textSegmentPrev}`}
-        style={{
-          color: `var(--color-${primaryColor})`,
-          background: textSegmentBg,
-        }}
-      >
-        {label}
-      </span>
-      {/* Arrow segment (right for next) */}
-      {isNext ? (
-        <span 
-          className={`${styles.arrowSegment} ${styles.arrowSegmentNext}`}
-          style={{
-            background: `var(--color-${primaryColor})`,
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M8 5L14 11L8 17" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </span>
-      ) : null}
+      <img 
+        src={isNext ? "/icons/next.svg" : "/icons/prev.svg"} 
+        width="32" 
+        height="32" 
+        alt={isNext ? "Next" : "Previous"}
+        style={{ opacity: disabled ? 0.5 : 1 }}
+      />
     </button>
   );
 };

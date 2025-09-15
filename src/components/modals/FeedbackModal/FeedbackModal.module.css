@@ -140,6 +140,27 @@
   transition: all 0.2s;
 }
 
+.navButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.navButton:disabled {
+  cursor: not-allowed;
+}
+
+.navButtonIcon {
+  width: 40px;
+  height: 40px;
+  transition: opacity 0.2s;
+}
+
+.navButton:disabled .navButtonIcon {
+  opacity: 0.5;
+}
+
 .secondaryButton {
   background-color: rgb(229 231 235);
   color: rgb(31 41 55);

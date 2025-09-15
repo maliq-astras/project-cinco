@@ -33,14 +33,14 @@ export const useAutocompleteLogic = ({
   const { language } = useLanguage();
   const { responsiveValues, width, height, breakpoint } = useResponsive();
 
-  const getSuggestions = useCallback((searchQuery: string) => {
+  const getSuggestions = useCallback(async (searchQuery: string) => {
     if (!searchQuery || searchQuery.length < 2) {
       setSuggestions([]);
       return;
     }
 
     try {
-      const suggestionTexts = getAutocompleteSuggestions(
+      const suggestionTexts = await getAutocompleteSuggestions(
         category,
         searchQuery,
         5,

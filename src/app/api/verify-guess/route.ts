@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge } from '@/types';
+import { Challenge, CategoryType } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
 import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
@@ -8,10 +8,11 @@ import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { createNotFoundResponse, createInternalErrorResponse } from '@/utils/errorUtils';
+import { normalizeGuess, Language } from '@/helpers/autocompleteHelper';
 import { logger } from '@/utils/logger';
 
-// Cache the answers for a challenge for 24 hours
-const getChallengeAnswers = unstable_cache(
+// Cache the challenge data for 24 hours
+const getChallengeData = unstable_cache(
   async (challengeId: string, language: 'en' | 'es') => {
     const { db } = await connectToDatabase();
     
@@ -20,14 +21,14 @@ const getChallengeAnswers = unstable_cache(
     // Add timeout to prevent hanging queries
     const dbPromise = challengesCollection.findOne(
       { challengeId },
-      { projection: { _id: 0, answer: 1 } }
-    ) as Promise<{ answer: string | { en: string; es: string } } | null>;
+      { projection: { _id: 0, answer: 1, category: 1 } }
+    ) as Promise<{ answer: string | { en: string; es: string }, category: CategoryType } | null>;
     
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_QUERY)
     );
     
-    const challenge = await Promise.race([dbPromise, timeoutPromise]) as { answer: string | { en: string; es: string } } | null;
+    const challenge = await Promise.race([dbPromise, timeoutPromise]) as { answer: string | { en: string; es: string }, category: CategoryType } | null;
 
     if (!challenge) return null;
 
@@ -36,9 +37,12 @@ const getChallengeAnswers = unstable_cache(
       ? challenge.answer
       : challenge.answer[language] || challenge.answer.en;
 
-    return answer.toLowerCase();
+    return {
+      answer: answer.toLowerCase(),
+      category: challenge.category
+    };
   },
-  ['challenge-answers'],
+  ['challenge-data'],
   { revalidate: 86400 } // Cache for 24 hours
 );
 
@@ -86,13 +90,19 @@ export async function POST(request: Request) {
       return createValidationResponse(errors);
     }
     
-    const answer = await getChallengeAnswers(challengeId, language as 'en' | 'es');
-    if (!answer) {
+    const challengeData = await getChallengeData(challengeId, language as 'en' | 'es');
+    if (!challengeData) {
       return createNotFoundResponse('Challenge');
     }
 
-    const normalizedGuess = guess.trim().toLowerCase();
-    const isCorrect = normalizedGuess === answer;
+    // Normalize the user's guess using autocomplete data
+    const normalizedGuess = await normalizeGuess(
+      challengeData.category,
+      guess.trim(),
+      language as Language
+    );
+
+    const isCorrect = normalizedGuess.toLowerCase() === challengeData.answer;
 
     return NextResponse.json({ isCorrect });
   } catch (error) {

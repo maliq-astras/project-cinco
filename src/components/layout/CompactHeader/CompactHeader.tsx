@@ -118,7 +118,8 @@ const CompactHeader: React.FC<CompactHeaderProps> = React.memo(({ headerEntrance
                   className={`${styles.categoryTitle} ${righteous.className}`}
                   style={{
                     fontSize: compactSizes.titleFontSize,
-                    maxWidth: compactSizes.titleMaxWidth
+                    maxWidth: compactSizes.titleMaxWidth,
+                    color: `var(--color-${colors.primary})`
                   }}
                   initial={ANIMATIONS.CATEGORY_TITLE.initial}
                   animate={headerEntranceComplete ? ANIMATIONS.CATEGORY_TITLE.animate : ANIMATIONS.CATEGORY_TITLE.initial}

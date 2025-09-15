@@ -1,95 +1,34 @@
 import { CategoryType } from '@/types';
 
-// Language-specific imports - NEW CLEAN STRUCTURE
-import { animalsSuggestions as animalsEn } from '@/data/autocomplete/animals/suggestions/en.js';
-import { animalsNormalization as animalsDataEn } from '@/data/autocomplete/animals/normalization/en.js';
-import { animalsSuggestions as animalsEs } from '@/data/autocomplete/animals/suggestions/es.js';
-import { animalsNormalization as animalsDataEs } from '@/data/autocomplete/animals/normalization/es.js';
-
-import { athletesSuggestions as athletesEn } from '@/data/autocomplete/athletes/suggestions/en.js';
-import { athletesNormalization as athletesDataEn } from '@/data/autocomplete/athletes/normalization/en.js';
-import { athletesSuggestions as athletesEs } from '@/data/autocomplete/athletes/suggestions/es.js';
-import { athletesNormalization as athletesDataEs } from '@/data/autocomplete/athletes/normalization/es.js';
-
-import { booksSuggestions as booksEn } from '@/data/autocomplete/books/suggestions/en.js';
-import { booksNormalization as booksDataEn } from '@/data/autocomplete/books/normalization/en.js';
-import { booksSuggestions as booksEs } from '@/data/autocomplete/books/suggestions/es.js';
-import { booksNormalization as booksDataEs } from '@/data/autocomplete/books/normalization/es.js';
-
-import { countriesSuggestions as countriesEn } from '@/data/autocomplete/countries/suggestions/en.js';
-import { countriesNormalization as countriesDataEn } from '@/data/autocomplete/countries/normalization/en.js';
-import { countriesSuggestions as countriesEs } from '@/data/autocomplete/countries/suggestions/es.js';
-import { countriesNormalization as countriesDataEs } from '@/data/autocomplete/countries/normalization/es.js';
-
-import { companiesSuggestions as companiesEn } from '@/data/autocomplete/companies/suggestions/en.js';
-import { companiesNormalization as companiesDataEn } from '@/data/autocomplete/companies/normalization/en.js';
-import { companiesSuggestions as companiesEs } from '@/data/autocomplete/companies/suggestions/es.js';
-import { companiesNormalization as companiesDataEs } from '@/data/autocomplete/companies/normalization/es.js';
-
-import { historySuggestions as historyEn } from '@/data/autocomplete/history/suggestions/en.js';
-import { historyNormalization as historyDataEn } from '@/data/autocomplete/history/normalization/en.js';
-import { historySuggestions as historyEs } from '@/data/autocomplete/history/suggestions/es.js';
-import { historyNormalization as historyDataEs } from '@/data/autocomplete/history/normalization/es.js';
-
-import { moviesSuggestions as moviesEn } from '@/data/autocomplete/movies/suggestions/en.js';
-import { moviesNormalization as moviesDataEn } from '@/data/autocomplete/movies/normalization/en.js';
-import { moviesSuggestions as moviesEs } from '@/data/autocomplete/movies/suggestions/es.js';
-import { moviesNormalization as moviesDataEs } from '@/data/autocomplete/movies/normalization/es.js';
-
-import { musiciansSuggestions as musiciansEn } from '@/data/autocomplete/musicians/suggestions/en.js';
-import { musiciansNormalization as musiciansDataEn } from '@/data/autocomplete/musicians/normalization/en.js';
-import { musiciansSuggestions as musiciansEs } from '@/data/autocomplete/musicians/suggestions/es.js';
-import { musiciansNormalization as musiciansDataEs } from '@/data/autocomplete/musicians/normalization/es.js';
-
-import { tvShowsSuggestions as tvShowsEn } from '@/data/autocomplete/tv-shows/suggestions/en.js';
-import { tvShowsNormalization as tvShowsDataEn } from '@/data/autocomplete/tv-shows/normalization/en.js';
-import { tvShowsSuggestions as tvShowsEs } from '@/data/autocomplete/tv-shows/suggestions/es.js';
-import { tvShowsNormalization as tvShowsDataEs } from '@/data/autocomplete/tv-shows/normalization/es.js';
-
 // Language type
 export type Language = 'en' | 'es';
 
-// New structure: category -> language -> { suggestions: string[], data: Record<string, string[]> }
-const newCategorySuggestions: Partial<Record<CategoryType, Record<Language, { suggestions: string[], data: Record<string, string[]> }>>> = {
-  [CategoryType.ANIMALS]: {
-    en: { suggestions: animalsEn, data: animalsDataEn },
-    es: { suggestions: animalsEs, data: animalsDataEs }
-  },
-  [CategoryType.ATHLETES]: {
-    en: { suggestions: athletesEn, data: athletesDataEn },
-    es: { suggestions: athletesEs, data: athletesDataEs }
-  },
-  [CategoryType.BOOKS]: {
-    en: { suggestions: booksEn, data: booksDataEn },
-    es: { suggestions: booksEs, data: booksDataEs }
-  },
-  [CategoryType.COUNTRIES]: {
-    en: { suggestions: countriesEn, data: countriesDataEn },
-    es: { suggestions: countriesEs, data: countriesDataEs }
-  },
-  [CategoryType.COMPANIES]: {
-    en: { suggestions: companiesEn, data: companiesDataEn },
-    es: { suggestions: companiesEs, data: companiesDataEs }
-  },
-  [CategoryType.HISTORY]: {
-    en: { suggestions: historyEn, data: historyDataEn },
-    es: { suggestions: historyEs, data: historyDataEs }
-  },
-  [CategoryType.MOVIES]: {
-    en: { suggestions: moviesEn, data: moviesDataEn },
-    es: { suggestions: moviesEs, data: moviesDataEs }
-  },
-  [CategoryType.MUSICIANS]: {
-    en: { suggestions: musiciansEn, data: musiciansDataEn },
-    es: { suggestions: musiciansEs, data: musiciansDataEs }
-  },
-  [CategoryType.TV_SHOWS]: {
-    en: { suggestions: tvShowsEn, data: tvShowsDataEn },
-    es: { suggestions: tvShowsEs, data: tvShowsDataEs }
-  }
-};
+// Dynamic import cache to avoid repeated imports
+const importCache = new Map<string, Promise<any>>();
 
-// All categories now use the new structure - no legacy needed
+/**
+ * Dynamically import autocomplete data for a specific category and language
+ */
+async function importAutocompleteData(category: CategoryType, language: Language) {
+  const cacheKey = `${category}-${language}`;
+  
+  if (importCache.has(cacheKey)) {
+    return importCache.get(cacheKey);
+  }
+
+  const categoryName = category.toLowerCase().replace('_', '-');
+  
+  const importPromise = Promise.all([
+    import(`@/data/autocomplete/${categoryName}/suggestions/${language}.js`),
+    import(`@/data/autocomplete/${categoryName}/normalization/${language}.js`)
+  ]).then(([suggestionsModule, normalizationModule]) => ({
+    suggestions: suggestionsModule[`${categoryName.replace('-', '')}Suggestions`] || suggestionsModule.default,
+    data: normalizationModule[`${categoryName.replace('-', '')}Normalization`] || normalizationModule.default
+  }));
+
+  importCache.set(cacheKey, importPromise);
+  return importPromise;
+}
 
 /**
  * Get autocomplete suggestions for a specific category and query
@@ -100,65 +39,68 @@ const newCategorySuggestions: Partial<Record<CategoryType, Record<Language, { su
  * @param language - Language for suggestions (default: 'en')
  * @returns Array of matching suggestions
  */
-export function getAutocompleteSuggestions(
+export async function getAutocompleteSuggestions(
   category: CategoryType,
   query: string,
   maxSuggestions: number = 5,
   previousGuesses: string[] = [],
   language: Language = 'en'
-): string[] {
-  // Get suggestions from the new structure
-  const categoryData = newCategorySuggestions[category]?.[language];
-  const suggestions = categoryData?.suggestions || [];
-  
-  // Normalize the query for case-insensitive matching
-  const normalizedQuery = query.toLowerCase().trim();
-  
-  // Return empty array if query is too short
-  if (normalizedQuery.length < 2) {
-    return [];
-  }
-  
-  // Normalize previous guesses for comparison
-  const normalizedPreviousGuesses = previousGuesses.map(guess => 
-    guess.toLowerCase().trim()
-  );
-  
-  // Filter suggestions based on query and exclude previous guesses
-  const filteredSuggestions = suggestions.filter(suggestion => {
-    const normalizedSuggestion = suggestion.toLowerCase().trim();
+): Promise<string[]> {
+  try {
+    const { suggestions } = await importAutocompleteData(category, language);
     
-    // Check if already guessed
-    if (normalizedPreviousGuesses.includes(normalizedSuggestion)) {
-      return false;
+    // Normalize the query for case-insensitive matching
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    // Return empty array if query is too short
+    if (normalizedQuery.length < 2) {
+      return [];
     }
     
-    // Check if suggestion contains the query
-    return normalizedSuggestion.includes(normalizedQuery);
-  });
-  
-  // Sort by relevance (exact matches first, then starts with, then contains)
-  const sortedSuggestions = filteredSuggestions.sort((a, b) => {
-    const aNorm = a.toLowerCase();
-    const bNorm = b.toLowerCase();
+    // Normalize previous guesses for comparison
+    const normalizedPreviousGuesses = previousGuesses.map(guess => 
+      guess.toLowerCase().trim()
+    );
     
-    // Exact match (case insensitive)
-    if (aNorm === normalizedQuery && bNorm !== normalizedQuery) return -1;
-    if (bNorm === normalizedQuery && aNorm !== normalizedQuery) return 1;
+    // Filter suggestions based on query and exclude previous guesses
+    const filteredSuggestions = suggestions.filter((suggestion: string) => {
+      const normalizedSuggestion = suggestion.toLowerCase().trim();
+      
+      // Check if already guessed
+      if (normalizedPreviousGuesses.includes(normalizedSuggestion)) {
+        return false;
+      }
+      
+      // Check if suggestion contains the query
+      return normalizedSuggestion.includes(normalizedQuery);
+    });
     
-    // Starts with query
-    const aStartsWith = aNorm.startsWith(normalizedQuery);
-    const bStartsWith = bNorm.startsWith(normalizedQuery);
+    // Sort by relevance (exact matches first, then starts with, then contains)
+    const sortedSuggestions = filteredSuggestions.sort((a: string, b: string) => {
+      const aNorm = a.toLowerCase();
+      const bNorm = b.toLowerCase();
+      
+      // Exact match (case insensitive)
+      if (aNorm === normalizedQuery && bNorm !== normalizedQuery) return -1;
+      if (bNorm === normalizedQuery && aNorm !== normalizedQuery) return 1;
+      
+      // Starts with query
+      const aStartsWith = aNorm.startsWith(normalizedQuery);
+      const bStartsWith = bNorm.startsWith(normalizedQuery);
+      
+      if (aStartsWith && !bStartsWith) return -1;
+      if (bStartsWith && !aStartsWith) return 1;
+      
+      // Alphabetical order for similar relevance
+      return a.localeCompare(b);
+    });
     
-    if (aStartsWith && !bStartsWith) return -1;
-    if (bStartsWith && !aStartsWith) return 1;
-    
-    // Alphabetical order for similar relevance
-    return a.localeCompare(b);
-  });
-  
-  // Return limited number of suggestions
-  return sortedSuggestions.slice(0, maxSuggestions);
+    // Return limited number of suggestions
+    return sortedSuggestions.slice(0, maxSuggestions);
+  } catch (error) {
+    console.error('Error loading autocomplete data:', error);
+    return [];
+  }
 }
 
 /**
@@ -168,39 +110,38 @@ export function getAutocompleteSuggestions(
  * @param language - Language for normalization (default: 'en')
  * @returns Normalized guess that should match database format, or original guess if no normalization available
  */
-export function normalizeGuess(
+export async function normalizeGuess(
   category: CategoryType,
   userGuess: string,
   language: Language = 'en'
-): string {
-  // Get normalization data from the new structure
-  const categoryData = newCategorySuggestions[category]?.[language];
-  if (!categoryData) {
-    return userGuess; // Return original if no normalization available
-  }
-  
-  const { data } = categoryData;
-  const normalizedInput = userGuess.toLowerCase().trim();
-  
-  // Check if the exact guess exists as a key in the normalization data (canonical name)
-  const exactMatch = Object.keys(data).find(key => 
-    key.toLowerCase() === normalizedInput
-  );
-  if (exactMatch) {
-    return exactMatch; // Return the canonical name if user typed it exactly
-  }
-  
-  // If not, iterate through the normalization data to find variations
-  for (const canonicalName in data) {
-    const variations = data[canonicalName];
-    if (Array.isArray(variations) && variations.some(variation => 
-      variation.toLowerCase().trim() === normalizedInput
-    )) {
-      return canonicalName; // Return the canonical name if a variation matches
+): Promise<string> {
+  try {
+    const { data } = await importAutocompleteData(category, language);
+    const normalizedInput = userGuess.toLowerCase().trim();
+    
+    // Check if the exact guess exists as a key in the normalization data (canonical name)
+    const exactMatch = Object.keys(data).find((key: string) => 
+      key.toLowerCase().trim() === normalizedInput
+    );
+    if (exactMatch) {
+      return exactMatch; // Return the canonical name if user typed it exactly
     }
+    
+    // If not, iterate through the normalization data to find variations
+    for (const canonicalName in data) {
+      const variations = data[canonicalName];
+      if (Array.isArray(variations) && variations.some((variation: string) => 
+        variation.toLowerCase().trim() === normalizedInput
+      )) {
+        return canonicalName; // Return the canonical name if a variation matches
+      }
+    }
+    
+    return userGuess; // Return original if no match found
+  } catch (error) {
+    console.error('Error loading normalization data:', error);
+    return userGuess;
   }
-  
-  return userGuess; // Return original if no match found
 }
 
 /**
@@ -209,9 +150,13 @@ export function normalizeGuess(
  * @param language - Language to check (default: 'en')
  * @returns Boolean indicating if suggestions are available
  */
-export function hasAutocompleteSuggestions(category: CategoryType, language: Language = 'en'): boolean {
-  const categoryData = newCategorySuggestions[category]?.[language];
-  return categoryData ? categoryData.suggestions.length > 0 : false;
+export async function hasAutocompleteSuggestions(category: CategoryType, language: Language = 'en'): Promise<boolean> {
+  try {
+    const { suggestions } = await importAutocompleteData(category, language);
+    return Array.isArray(suggestions) && suggestions.length > 0;
+  } catch (error) {
+    return false;
+  }
 }
 
 /**
@@ -220,9 +165,13 @@ export function hasAutocompleteSuggestions(category: CategoryType, language: Lan
  * @param language - Language to check (default: 'en')
  * @returns Number of available suggestions
  */
-export function getSuggestionCount(category: CategoryType, language: Language = 'en'): number {
-  const categoryData = newCategorySuggestions[category]?.[language];
-  return categoryData ? categoryData.suggestions.length : 0;
+export async function getSuggestionCount(category: CategoryType, language: Language = 'en'): Promise<number> {
+  try {
+    const { suggestions } = await importAutocompleteData(category, language);
+    return Array.isArray(suggestions) ? suggestions.length : 0;
+  } catch (error) {
+    return 0;
+  }
 }
 
 /**
@@ -232,24 +181,29 @@ export function getSuggestionCount(category: CategoryType, language: Language = 
  * @param language - Language for suggestions (default: 'en')
  * @returns Array of random suggestions
  */
-export function getRandomSuggestions(
+export async function getRandomSuggestions(
   category: CategoryType,
   sampleSize: number = 10,
   language: Language = 'en'
-): string[] {
-  const categoryData = newCategorySuggestions[category]?.[language];
-  const suggestions = categoryData?.suggestions || [];
-  
-  if (suggestions.length <= sampleSize) {
-    return [...suggestions];
+): Promise<string[]> {
+  try {
+    const { suggestions } = await importAutocompleteData(category, language);
+    
+    if (!Array.isArray(suggestions) || suggestions.length <= sampleSize) {
+      return [...(suggestions || [])];
+    }
+    
+    // Fisher-Yates shuffle algorithm to get random sample
+    const shuffled = [...suggestions];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    return shuffled.slice(0, sampleSize);
+  } catch (error) {
+    console.error('Error loading suggestions:', error);
+    return [];
   }
-  
-  // Fisher-Yates shuffle algorithm to get random sample
-  const shuffled = [...suggestions];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  
-  return shuffled.slice(0, sampleSize);
 }
+

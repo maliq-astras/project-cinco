@@ -47,8 +47,8 @@ export const ANIMATIONS = {
 
   // Navigation
   NAVIGATION: {
-    initial: { opacity: 0, scale: 0.8, rotate: -90 },
-    animate: { opacity: 1, scale: 1, rotate: 0 },
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
     transition: { duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }
   },
 

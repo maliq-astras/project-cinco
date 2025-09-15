@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemeDOM } from '@/hooks/theme';
 import BaseModal from '@/components/modals/BaseModal/BaseModal';
-import ModalNavButton from '@/components/modals/ModalNavButton/ModalNavButton';
+import IconButton from '@/components/ui/IconButton';
 import { useFeedbackModal } from './hooks';
 import { formatStepLabel, getProgressBarStyle } from './helpers';
 import styles from './FeedbackModal.module.css';
@@ -150,22 +150,17 @@ export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, o
               </div>
               <div className="w-full flex justify-between items-end mt-8" style={{minHeight: 48}}>
                 {step > 0 ? (
-                  <ModalNavButton
-                    direction="prev"
-                    label={t('feedback.navigation.prev')}
+                  <IconButton
+                    icon="prev"
                     onClick={handleBack}
-                    disabled={false}
-                    primaryColor={colors.primary}
-                    textSegmentBg={hasClass('dark') ? '#18181b' : 'white'}
+                    ariaLabel={t('feedback.navigation.prev')}
                   />
                 ) : <span />}
-                <ModalNavButton
-                  direction="next"
-                  label={step === steps.length - 1 ? t('feedback.navigation.submit') : t('feedback.navigation.next')}
+                <IconButton
+                  icon={step === steps.length - 1 ? "done" : "next"}
                   onClick={handleNext}
                   disabled={!isStepValid(step)}
-                  primaryColor={colors.primary}
-                  textSegmentBg={hasClass('dark') ? '#18181b' : 'white'}
+                  ariaLabel={step === steps.length - 1 ? t('feedback.navigation.submit') : t('feedback.navigation.next')}
                 />
               </div>
               <div className={styles.progressContainer} style={{marginTop: 16}}>

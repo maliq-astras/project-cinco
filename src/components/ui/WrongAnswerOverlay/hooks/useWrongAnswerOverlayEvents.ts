@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useResponsive } from '@/hooks/responsive';
 
 interface UseWrongAnswerOverlayEventsProps {
   isVisible: boolean;
@@ -25,12 +26,16 @@ export function useWrongAnswerOverlayEvents({
 }: UseWrongAnswerOverlayEventsProps) {
   // Show overlay when actual wrong guess count increases (but display total count)
   useEffect(() => {
+    // Only trigger if we have a new wrong guess (actualWrongGuessCount increased)
     if (actualWrongGuessCount > previousWrongGuessCount.current && totalWrongGuessCount <= maxGuesses) {
       // Check if the most recent guess was actually wrong (not a skip)
       const lastGuess = guesses[guesses.length - 1];
       const wasLastGuessActuallyWrong = lastGuess && !lastGuess.isCorrect && !lastGuess.isFinalFiveGuess && lastGuess.guess !== "___SKIPPED___";
       
       if (wasLastGuessActuallyWrong) {
+        // Update previous count IMMEDIATELY to prevent retriggering
+        previousWrongGuessCount.current = actualWrongGuessCount;
+        
         setCurrentWrongGuessCount(totalWrongGuessCount); // Display total including skips
         setIsVisible(true);
         
@@ -39,13 +44,10 @@ export function useWrongAnswerOverlayEvents({
           setIsVisible(false);
         }, 3000);
         
-        // Update the previous count to track actual wrong guesses
-        previousWrongGuessCount.current = actualWrongGuessCount;
-        
         return () => clearTimeout(timer);
       }
     }
-  }, [actualWrongGuessCount, totalWrongGuessCount, maxGuesses, guesses, previousWrongGuessCount, setCurrentWrongGuessCount, setIsVisible]);
+  }, [actualWrongGuessCount, totalWrongGuessCount, maxGuesses, guesses, setCurrentWrongGuessCount, setIsVisible]);
 
   // Trigger shake animation after modal appears
   useEffect(() => {
@@ -57,4 +59,5 @@ export function useWrongAnswerOverlayEvents({
       return () => clearTimeout(timer);
     }
   }, [isVisible, setModalAnimation]);
+
 }

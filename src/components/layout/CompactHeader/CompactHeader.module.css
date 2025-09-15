@@ -16,7 +16,6 @@
 .leftSection {
   display: flex;
   align-items: center;
-  padding-top: 0.25rem; 
 }
 
 .logoContainer {
@@ -30,13 +29,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 1rem;
-  color: hsl(var(--primary));
   font-family: 'Righteous', cursive;
 }
 
 .topControls {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 0rem 1rem;
   width: 100%;
@@ -110,6 +108,7 @@
   color: rgb(255 255 255);
   text-transform: uppercase;
   white-space: nowrap;
+  margin-right: auto;
 }
 
 @media (min-width: 640px) {

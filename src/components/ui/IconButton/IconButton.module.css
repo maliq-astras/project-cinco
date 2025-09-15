@@ -1,0 +1,21 @@
+.iconButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+}
+
+.iconButtonImage {
+  width: 40px;
+  height: 40px;
+  transition: opacity 0.2s;
+}
+
+.iconButton:disabled .iconButtonImage {
+  opacity: 0.3 !important;
+  filter: grayscale(1) !important;
+}
