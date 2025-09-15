@@ -12,6 +12,7 @@ import {
 } from '@/components';
 import DropZoneIndicator from '../../cards/DropZoneIndicator';
 import { GameState, GameOutcome } from '@/types';
+import type { GameControlsHandle } from '../../game/GameControls';
 import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
 import styles from './GameContent.module.css';
 import { useGameContent } from './hooks';
@@ -30,7 +31,7 @@ interface GameContentProps {
   isFinalFiveActive: boolean;
   isAlreadyPlayedScenario: boolean;
   isVictoryAnimationActive: boolean;
-  gameControlsRef: React.RefObject<any>;
+  gameControlsRef: React.RefObject<GameControlsHandle | null>;
 }
 
 const GameContent: React.FC<GameContentProps> = React.memo(({

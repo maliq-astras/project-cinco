@@ -6,7 +6,7 @@ interface FeedbackModalEventsProps {
 }
 
 export const useFeedbackModalEvents = (props: FeedbackModalEventsProps) => {
-  const handleSubmit = useCallback(async (formData: any) => {
+  const handleSubmit = useCallback(async () => {
     // Here you would typically send the feedback to your backend
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
     props.setSubmitted(true);

@@ -21,7 +21,7 @@ interface CardTransitionProps {
    * Easing function for the transition
    * Default: "easeInOut"
    */
-  ease?: string;
+  ease?: "linear" | "easeIn" | "easeOut" | "easeInOut" | "circIn" | "circOut" | "circInOut" | "backIn" | "backOut" | "backInOut" | "anticipate" | [number, number, number, number];
 }
 
 /**
@@ -31,7 +31,7 @@ export function useCardTransition({
   isDrawingFromSource,
   isReturning,
   customDuration,
-  ease = "easeInOut"
+  ease = "easeInOut" as const
 }: CardTransitionProps) {
   // Calculate base duration based on animation type
   const baseDuration = isDrawingFromSource || isReturning ? 0.7 : 0.3;
@@ -42,7 +42,7 @@ export function useCardTransition({
   // Memoize transition settings to prevent unnecessary re-renders
   const cardTransition = useMemo(() => ({
     duration,
-    ease: ease as any
+    ease
   }), [duration, ease]);
   
   return cardTransition;

@@ -15,6 +15,7 @@ import DropZoneIndicator from '@/components/cards/DropZoneIndicator';
 import styles from './MobileGameContent.module.css';
 import { shouldShowContextLine, shouldShowGameInstructions, shouldShowGameControls } from '@/utils/layout';
 import { useMobileGameContent } from './hooks';
+import { GameControlsHandle } from '@/components/game/GameControls/hooks';
 
 interface MobileGameContentProps {
   gameState: GameState;
@@ -30,7 +31,7 @@ interface MobileGameContentProps {
   isAlreadyPlayedScenario: boolean;
   isVictoryAnimationActive: boolean;
   isTabletLandscape: boolean;
-  gameControlsRef: React.RefObject<any>;
+  gameControlsRef: React.RefObject<GameControlsHandle>;
 }
 
 const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
@@ -45,7 +46,6 @@ const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({
   gameControlsRef
 }) => {
   const {
-    colors,
     isDragging,
     dropZoneRef,
     animations,

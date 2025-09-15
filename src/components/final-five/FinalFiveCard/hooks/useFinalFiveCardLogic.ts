@@ -1,4 +1,5 @@
 import { useResponsive } from '@/hooks/responsive';
+import { ResponsiveValues } from '@/types/responsive';
 import { useFinalFiveCardState } from './useFinalFiveCardState';
 import { useFinalFiveCardEvents } from './useFinalFiveCardEvents';
 import { useFinalFiveCardStyles } from './useFinalFiveCardStyles';
@@ -30,7 +31,7 @@ interface UseFinalFiveCardReturn {
   heightBreakpoint: string;
   isLandscape: boolean;
   isPortrait: boolean;
-  responsiveValues: Record<string, any>;
+  responsiveValues: ResponsiveValues;
 }
 
 export function useFinalFiveCard({

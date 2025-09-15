@@ -6,7 +6,7 @@ interface Step {
 }
 
 interface FormData {
-  [key: string]: any;
+  [key: string]: string | string[] | number | File | null | undefined;
 }
 
 interface UseModalFormProps {

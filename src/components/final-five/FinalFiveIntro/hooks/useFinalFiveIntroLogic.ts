@@ -2,6 +2,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useResponsive } from '@/hooks/responsive';
+import { ResponsiveValues } from '@/types/responsive';
 import { useFinalFiveIntroState } from './useFinalFiveIntroState';
 import { useFinalFiveIntroEffects } from './useFinalFiveIntroEffects';
 import { useFinalFiveIntroActions } from './useFinalFiveIntroActions';
@@ -25,7 +26,7 @@ interface UseFinalFiveIntroReturn {
   heightBreakpoint: string;
   isLandscape: boolean;
   isPortrait: boolean;
-  responsiveValues: Record<string, any>;
+  responsiveValues: ResponsiveValues;
 }
 
 export const useFinalFiveIntro = ({ reason, onStart }: UseFinalFiveIntroProps): UseFinalFiveIntroReturn => {

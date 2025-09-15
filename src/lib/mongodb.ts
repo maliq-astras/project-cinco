@@ -20,6 +20,7 @@ const options: MongoClientOptions = {
 
 // Global type for MongoDB client
 declare global {
+  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
@@ -71,7 +72,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Cache the database connection
-let cachedDb: any = null;
+let cachedDb: ReturnType<MongoClient['db']> | null = null;
 
 export async function connectToDatabase() {
   if (cachedDb) {

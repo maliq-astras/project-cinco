@@ -1,5 +1,20 @@
 // Re-export navigation types
 export * from './navigation';
+export * from './responsive';
+
+// Store types
+import type { CoreGameSlice } from '../store/slices/coreGameSlice';
+import type { TimerSlice } from '../store/slices/timerSlice';
+import type { FinalFiveSlice } from '../store/slices/finalFiveSlice';
+import type { UISlice } from '../store/slices/uiSlice';
+import type { StreakSlice } from '../store/slices/streakSlice';
+
+export interface GameStore extends 
+  CoreGameSlice, 
+  TimerSlice, 
+  FinalFiveSlice, 
+  UISlice, 
+  StreakSlice {}
 
 // Define game outcome types
 export type GameOutcome = 'standard-win' | 'final-five-win' | 'loss-final-five-wrong' | 'loss-final-five-time' | 'loss-time';

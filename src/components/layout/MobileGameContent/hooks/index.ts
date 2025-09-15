@@ -2,6 +2,7 @@ import { useMobileGameContentState } from './useMobileGameContentState';
 import { useMobileGameContentEvents } from './useMobileGameContentEvents';
 import { useMobileGameContentLogic } from './useMobileGameContentLogic';
 import { GameState, GameOutcome } from '@/types';
+import type { GameControlsHandle } from '../../../game/GameControls';
 
 interface UseMobileGameContentProps {
   gameState: GameState;
@@ -17,7 +18,7 @@ interface UseMobileGameContentProps {
   isAlreadyPlayedScenario: boolean;
   isVictoryAnimationActive: boolean;
   isTabletLandscape: boolean;
-  gameControlsRef: React.RefObject<any>;
+  gameControlsRef: React.RefObject<GameControlsHandle | null>;
 }
 
 export const useMobileGameContent = (props: UseMobileGameContentProps) => {

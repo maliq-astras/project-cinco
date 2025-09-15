@@ -7,7 +7,7 @@ interface UseEndGameMessageStateProps {
 }
 
 export const useEndGameMessageState = ({ 
-  outcome, 
+  outcome: _outcome, 
   correctAnswer 
 }: UseEndGameMessageStateProps) => {
   const [actualCorrectAnswer, setActualCorrectAnswer] = useState(correctAnswer);

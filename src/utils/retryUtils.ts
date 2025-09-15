@@ -19,7 +19,7 @@ export const withRetry = async <T>(
   operation: () => Promise<T>,
   config: RetryConfig
 ): Promise<T> => {
-  let lastError: any;
+  let lastError: unknown;
   
   for (let attempt = 0; attempt < config.attempts; attempt++) {
     try {

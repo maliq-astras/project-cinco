@@ -1,10 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGameStore } from '@/store/gameStore';
 import { GameState } from '@/helpers/gameLogic';
-import { useDOMRefs } from '@/providers/DOMRefsProvider';
 import { useResponsive } from '@/hooks/responsive';
-import { MenuItem } from '@/types/navigation';
 
 interface GameStoreState {
   gameState: GameState;
@@ -30,9 +28,9 @@ export const useNavigationState = () => {
     heightBreakpoint, 
     isLandscape, 
     isPortrait,
-    responsiveValues,
     willFit,
-    availableContentHeight
+    availableContentHeight,
+    responsiveValues
   } = useResponsive();
   
   // Use state from gameStore instead of local state
@@ -84,8 +82,8 @@ export const useNavigationState = () => {
     heightBreakpoint,
     isLandscape,
     isPortrait,
-    responsiveValues,
     willFit,
-    availableContentHeight
+    availableContentHeight,
+    responsiveValues
   };
 }; 

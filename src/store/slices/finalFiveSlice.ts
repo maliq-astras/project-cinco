@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
-import { UserGuess, GameOutcome } from '../../types/index';
+import { UserGuess } from '../../types/index';
+import type { GameStore } from '../../types';
 import { verifyGuess as verifyGuessAPI } from '../../helpers/gameLogic';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
@@ -14,6 +15,7 @@ export interface FinalFiveSlice {
   isFinalFiveCompleted: boolean;
   showFinalFiveTransition: boolean;
   finalFiveTransitionReason: 'time' | 'guesses' | null;
+  isFetchingFinalFiveOptions: boolean;
   finalFiveError: string | null;
   
   // Actions
@@ -27,25 +29,24 @@ export interface FinalFiveSlice {
 }
 
 export const createFinalFiveSlice: StateCreator<
-  any,
+  GameStore,
   [],
   [],
   FinalFiveSlice
-> = (set, get, api) => ({
+> = (set, get, _api) => ({
   // Initial state
   finalFiveTimeRemaining: 55, // Will be set to 5 in hard mode when game starts
   isFinalFiveActive: false,
   isFinalFiveCompleted: false,
   showFinalFiveTransition: false,
   finalFiveTransitionReason: null,
+  isFetchingFinalFiveOptions: false,
   finalFiveError: null,
   
   // Actions
   decrementFinalFiveTimer: () => {
     const { 
       finalFiveTimeRemaining, 
-      isFinalFiveActive, 
-      hardMode, 
       shouldPauseTimer,
       isProcessingGuess
     } = get();
@@ -117,7 +118,7 @@ export const createFinalFiveSlice: StateCreator<
       }
       
       // Success: Update state with options and show Final Five
-      set((state: any) => ({
+      set((state: GameStore) => ({
         gameState: { 
           ...state.gameState, 
           finalFiveOptions: data.options 
@@ -143,7 +144,7 @@ export const createFinalFiveSlice: StateCreator<
   },
   
   selectFinalFiveOption: async (option: string) => {
-    const { gameState, finalFiveTimeRemaining } = get();
+    const { gameState } = get();
     
     if (!gameState.challenge) return;
     
@@ -213,10 +214,12 @@ export const createFinalFiveSlice: StateCreator<
             const numberOfTries = currentState.gameState.guesses.length + 1; // +1 for the current guess
             const initialTime = currentState.hardMode ? 55 : 300;
             const timeSpent = initialTime - currentState.timeRemaining;
-            get().saveTodayGameData('loss-final-five-wrong', correctAnswer, numberOfTries, timeSpent, currentState.gameState.challenge);
+            if (currentState.gameState.challenge) {
+              get().saveTodayGameData('loss-final-five-wrong', correctAnswer, numberOfTries, timeSpent, currentState.gameState.challenge);
+            }
             
             // Add both guesses to the state and set Final Five completed
-            set((state: any) => ({
+            set((state: GameStore) => ({
               gameState: {
                 ...state.gameState,
                 guesses: [...state.gameState.guesses, newGuess, correctGuess],
@@ -242,10 +245,12 @@ export const createFinalFiveSlice: StateCreator<
             const numberOfTries = currentState.gameState.guesses.length + 1; // +1 for the current guess
             const initialTime = currentState.hardMode ? 55 : 300;
             const timeSpent = initialTime - currentState.timeRemaining;
-            get().saveTodayGameData('loss-final-five-wrong', option, numberOfTries, timeSpent, currentState.gameState.challenge);
+            if (currentState.gameState.challenge) {
+              get().saveTodayGameData('loss-final-five-wrong', option, numberOfTries, timeSpent, currentState.gameState.challenge);
+            }
             
             // If we can't get the correct answer, just add the incorrect guess
-            set((state: any) => ({
+            set((state: GameStore) => ({
               gameState: {
                 ...state.gameState,
                 guesses: [...state.gameState.guesses, newGuess],
@@ -262,7 +267,7 @@ export const createFinalFiveSlice: StateCreator<
       }
       
       // If we have a correct guess, just add it to the state and mark Final Five as completed
-      set((state: any) => ({
+      set((state: GameStore) => ({
         gameState: {
           ...state.gameState,
           guesses: [...state.gameState.guesses, newGuess],
@@ -286,10 +291,12 @@ export const createFinalFiveSlice: StateCreator<
         
         // Save today's game data for full endgame experience on refresh
         const numberOfTries = get().gameState.guesses.length;
-        const { hardMode, gameState, timeRemaining } = get();
+        const { hardMode, timeRemaining } = get();
         const initialTime = hardMode ? 55 : 300;
         const timeSpent = initialTime - timeRemaining;
-        get().saveTodayGameData('final-five-win', option, numberOfTries, timeSpent, gameState.challenge);
+        if (gameState.challenge) {
+          get().saveTodayGameData('final-five-win', option, numberOfTries, timeSpent, gameState.challenge);
+        }
         
         set({
           isVictoryAnimationActive: true,
@@ -316,7 +323,7 @@ export const createFinalFiveSlice: StateCreator<
   },
   
   closeFinalFive: () => {
-    set((state: any) => ({
+    set((state: GameStore) => ({
       isFinalFiveActive: false,
       isFinalFiveCompleted: false, // Reset completion state when closing
       victoryAnimationStep: state.gameOutcome !== null ? 'summary' : null,
@@ -376,7 +383,7 @@ export const createFinalFiveSlice: StateCreator<
     // If we have at least 5 options after filtering, update the options
     if (filteredOptions.length >= 5) {
       // keep silent
-      set((state: any) => ({
+      set((state: GameStore) => ({
         gameState: {
           ...state.gameState,
           finalFiveOptions: filteredOptions

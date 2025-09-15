@@ -4,7 +4,12 @@ import { CategoryType } from '@/types';
 export type Language = 'en' | 'es';
 
 // Dynamic import cache to avoid repeated imports
-const importCache = new Map<string, Promise<any>>();
+interface AutocompleteData {
+  suggestions: string[];
+  data: Record<string, string[]>;
+}
+
+const importCache = new Map<string, Promise<AutocompleteData>>();
 
 /**
  * Dynamically import autocomplete data for a specific category and language
@@ -154,7 +159,7 @@ export async function hasAutocompleteSuggestions(category: CategoryType, languag
   try {
     const { suggestions } = await importAutocompleteData(category, language);
     return Array.isArray(suggestions) && suggestions.length > 0;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -169,7 +174,7 @@ export async function getSuggestionCount(category: CategoryType, language: Langu
   try {
     const { suggestions } = await importAutocompleteData(category, language);
     return Array.isArray(suggestions) ? suggestions.length : 0;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }

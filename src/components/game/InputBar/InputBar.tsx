@@ -16,8 +16,8 @@ interface InputBarProps {
   hasSuggestionSelected: boolean;
   setHasSuggestionSelected: (selected: boolean) => void;
   gameState: {
-    challenge?: { category: CategoryType };
-    guesses?: Array<{ guess: string }>;
+    challenge: { category: CategoryType } | null;
+    guesses: Array<{ guess: string }>;
   };
   isAutocompleteEnabled: boolean;
   setHasUserInput: (hasInput: boolean) => void;

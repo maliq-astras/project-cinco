@@ -17,11 +17,11 @@ interface UseStreakDisplayLogicProps {
 
 export const useStreakDisplayLogic = ({
   shouldAnimate,
-  animatedDays,
+  animatedDays: _animatedDays,
   setAnimatedDays,
   hasAnimated,
   setHasAnimated,
-  showCurrentDaySymbol,
+  showCurrentDaySymbol: _showCurrentDaySymbol,
   setShowCurrentDaySymbol
 }: UseStreakDisplayLogicProps) => {
   const { colors } = useTheme();

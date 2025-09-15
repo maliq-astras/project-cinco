@@ -32,7 +32,7 @@ export const useBugReportModal = (props: BugReportModalProps) => {
 
   // Custom handleInputChange for proper typing
   const handleInputChange = (value: string | string[] | number | File | null, field: string) => {
-    modalForm.handleInputChange(value as any, field);
+    modalForm.handleInputChange(value, field);
   };
 
   return {

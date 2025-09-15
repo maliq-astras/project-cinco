@@ -120,7 +120,7 @@ export function calculateCardReturnPositionFromElements(
  * @param defaultCategory Default category to use if none is provided
  * @returns Normalized category string
  */
-export function normalizeCategory(category: string | any, defaultCategory: string = 'countries'): string {
+export function normalizeCategory(category: string | number | null | undefined, defaultCategory: string = 'countries'): string {
   if (!category) {
     return defaultCategory;
   }

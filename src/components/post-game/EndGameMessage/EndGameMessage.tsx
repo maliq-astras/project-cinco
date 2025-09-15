@@ -62,11 +62,6 @@ export default function EndGameMessage({
         {capitalizeAnswer(displayAnswer)}
       </span>
     );
-    const finalFiveSpan = (
-      <span style={getAnswerTextStyle(colors.primary)} className={righteous.className}>
-        FINAL 5
-      </span>
-    );
 
     switch(type) {
       case 'standard-win':
@@ -90,11 +85,33 @@ export default function EndGameMessage({
           answer: '{{answer}}' 
         }).split('{{answer}}');
         
+        // Function to render text with FINAL 5 styling
+        const renderWithFinalFiveStyling = (text: string) => {
+          if (!text.includes('FINAL 5')) return text;
+          
+          const parts = text.split('FINAL 5');
+          return (
+            <>
+              {parts[0]}
+              <span 
+                style={{ 
+                  fontFamily: righteous.style.fontFamily,
+                  color: `var(--color-${colors.primary})`,
+                  fontWeight: 400
+                }}
+              >
+                FINAL 5
+              </span>
+              {parts[1]}
+            </>
+          );
+        };
+        
         return (
           <div>
-            {finalFiveWinParts[0]}
+            {renderWithFinalFiveStyling(finalFiveWinParts[0])}
             {answerSpan}
-            {finalFiveWinParts[1]}
+            {renderWithFinalFiveStyling(finalFiveWinParts[1])}
           </div>
         );
       case 'loss-final-five-wrong':

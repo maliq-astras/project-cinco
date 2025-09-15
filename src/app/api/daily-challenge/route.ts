@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge, Fact, CategoryType } from '@/types';
+import { Challenge } from '@/types';
 import { unstable_cache } from 'next/cache';
 import { Collection } from 'mongodb';
 import { validateInput, VALIDATION_RULES } from '@/middleware/validation';
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
     }
 
     // Return the challenge without answer and alternatives
-    const { answer, alternatives, ...challengeWithoutAnswers } = challenge;
+    const { ...challengeWithoutAnswers } = challenge;
 
     // Return the challenge with facts content in the requested language
     return NextResponse.json({

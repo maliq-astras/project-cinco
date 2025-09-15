@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+import type { GameStore } from '../../types';
 
 export interface UISlice {
   // UI and animation states
@@ -31,11 +32,11 @@ export interface UISlice {
 }
 
 export const createUISlice: StateCreator<
-  any,
+  GameStore,
   [],
   [],
   UISlice
-> = (set, get, api) => ({
+> = (set, get, _api) => ({
   // Initial state
   hoveredFact: null,
   viewingFact: null,

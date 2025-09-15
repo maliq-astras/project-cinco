@@ -2,13 +2,19 @@ import { useMemo } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { ANIMATIONS } from '@/constants/animations';
 import { getResponsiveLayoutClass, getSmartScalingStyle, shouldUseMobileLayout } from '../helpers';
-import { GameOutcome } from '@/types';
+import { GameOutcome, GameState, UserGuess } from '@/types';
 
 interface UseMainContainerLogicProps {
-  victoryAnimationStep: any;
+  victoryAnimationStep: 'bubbles' | 'summary' | 'cards' | null;
   gameOutcome: GameOutcome | null;
-  gameState: any;
-  todayGameData: any;
+  gameState: GameState;
+  todayGameData: {
+    outcome: GameOutcome;
+    correctAnswer: string;
+    numberOfTries: number;
+    timeSpent: number;
+    completionDate: string;
+  } | null;
   hardMode: boolean;
   timeRemaining: number;
   breakpoint: string;
@@ -70,7 +76,7 @@ export const useMainContainerLogic = ({
       };
     }
     
-    const correctGuess = gameState.guesses.find((g: any) => g.isCorrect);
+    const correctGuess = gameState.guesses.find((g: UserGuess) => g.isCorrect);
     let correctAnswer = correctGuess?.guess || '';
 
     if (!correctAnswer && gameState.finalFiveOptions && gameState.finalFiveOptions.length > 0) {

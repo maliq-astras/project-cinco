@@ -1,18 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { createCoreGameSlice, CoreGameSlice } from './slices/coreGameSlice';
-import { createTimerSlice, TimerSlice } from './slices/timerSlice';
-import { createFinalFiveSlice, FinalFiveSlice } from './slices/finalFiveSlice';
-import { createUISlice, UISlice } from './slices/uiSlice';
-import { createStreakSlice, StreakSlice } from './slices/streakSlice';
-
-// Combined store interface
-interface GameStore extends 
-  CoreGameSlice, 
-  TimerSlice, 
-  FinalFiveSlice, 
-  UISlice, 
-  StreakSlice {}
+import { createCoreGameSlice } from './slices/coreGameSlice';
+import { createTimerSlice } from './slices/timerSlice';
+import { createFinalFiveSlice } from './slices/finalFiveSlice';
+import { createUISlice } from './slices/uiSlice';
+import { createStreakSlice } from './slices/streakSlice';
+import type { GameStore } from '../types';
 
 export const useGameStore = create<GameStore>()(
   persist(
@@ -38,17 +31,18 @@ export const useGameStore = create<GameStore>()(
         todayGameData: state.todayGameData,
         todayChallenge: state.todayChallenge
       }),
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState: unknown, version: number) => {
         // Migration from version 0 to 1: convert boolean[] to new format
         if (version === 0) {
-          const oldCompletions = persistedState.weeklyCompletions;
+          const state = persistedState as Partial<GameStore>;
+          const oldCompletions = state.weeklyCompletions;
           if (Array.isArray(oldCompletions) && oldCompletions.length === 7) {
             // Convert boolean array to new format
-            const newCompletions = oldCompletions.map((completed: boolean) => 
-              completed ? 'completed' : null
+            const newCompletions = oldCompletions.map((completed: unknown) => 
+              (typeof completed === 'boolean' && completed) ? 'completed' : null
             );
             return {
-              ...persistedState,
+              ...(persistedState as Record<string, unknown>),
               weeklyCompletions: newCompletions
             };
           }

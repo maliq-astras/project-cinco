@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+import type { GameStore } from '../../types';
 
 export interface StreakSlice {
   // Streak tracking
@@ -15,11 +16,11 @@ export interface StreakSlice {
 }
 
 export const createStreakSlice: StateCreator<
-  any,
+  GameStore,
   [],
   [],
   StreakSlice
-> = (set, get, api) => ({
+> = (set, get, _api) => ({
   // Initial state
   currentStreak: 0,
   weeklyCompletions: [null, null, null, null, null, null, null], // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]

@@ -1,12 +1,13 @@
 import { useMemo, useCallback } from 'react';
 import { calculateCardPosition, getCardAnimationVariants } from '../helpers';
+import { ResponsiveValues } from '@/types/responsive';
 
 interface UseFactCardStackComputationsProps {
   revealedFacts: number[];
   viewingFact: number | null;
   isReturningToStack: boolean;
   isCardAnimatingOut: boolean;
-  responsiveValues: Record<string, any>;
+  responsiveValues: ResponsiveValues;
   hoveredCardIndex: number | null;
   isCardReturning: boolean;
   isInitialRender: boolean;

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Challenge } from '@/types';
 
 /**
@@ -128,8 +128,6 @@ export function useChallenge(language: string = 'en') {
  * Custom hook to verify a guess
  */
 export function useVerifyGuess() {
-  const queryClient = useQueryClient();
-  
   return useMutation({
     mutationFn: verifyGuessWithApi,
     // On success, invalidate any relevant queries

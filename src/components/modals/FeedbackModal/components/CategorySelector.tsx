@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
-  calculateSelectedCount, 
   isItemSelected, 
   canSelectMoreItems, 
   getCategoryButtonStyle,
@@ -46,7 +45,6 @@ export const CategorySelector = React.memo<CategorySelectorProps>(({
       <div className="flex flex-wrap gap-3 justify-center w-full max-w-2xl">
         {categoryOptions.map((option) => {
           const selected = isItemSelected(option, selectedItems);
-          const selectedCount = calculateSelectedCount(selectedItems);
           const disabled = !selected && !canSelectMoreItems(selectedItems, maxItems);
           const styles = getCategoryButtonStyle(option, selected, disabled);
           

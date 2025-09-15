@@ -2,8 +2,8 @@ export interface LogContext {
   component?: string;
   operation?: string;
   attempt?: number;
-  error?: any;
-  [key: string]: any;
+  error?: unknown;
+  [key: string]: unknown;
 }
 
 export const logger = {

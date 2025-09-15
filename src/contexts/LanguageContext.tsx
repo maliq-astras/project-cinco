@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
-import i18n from '../i18n/config';
 
 // Define supported languages and coming soon languages
 export const SUPPORTED_LANGUAGES = ['en', 'es'];
@@ -20,10 +19,6 @@ interface LanguageContextType {
 // Create context with default values
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// LanguageProvider props
-interface LanguageProviderProps {
-  children: ReactNode;
-}
 
 /**
  * Language Provider component
@@ -43,9 +38,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
   const [isLanguageSwitching, setIsLanguageSwitching] = useState(false);
   const { i18n } = useTranslation();
-  const { hasMadeGuess } = useGameStore();
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
-  const shouldPauseTimer = useGameStore(state => state.shouldPauseTimer);
   const setShouldPauseTimer = useGameStore(state => state.setShouldPauseTimer);
 
   useEffect(() => {
@@ -102,10 +95,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  // Check if language is supported
-  const isSupportedLanguage = (lang: string) => {
-    return SUPPORTED_LANGUAGES.includes(lang);
-  };
 
   // Context value
   const value = {

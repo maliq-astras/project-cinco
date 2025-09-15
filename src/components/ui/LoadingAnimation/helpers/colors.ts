@@ -90,7 +90,7 @@ export const getColorFromDocument = (colorClass: string, isBrowser: boolean, get
 };
 
 export const getThemeAdjustedPrimaryColor = (
-  currentColor: any,
+  currentColor: { primary: string },
   darkMode: boolean,
   highContrastMode: boolean,
   isBrowser: boolean,

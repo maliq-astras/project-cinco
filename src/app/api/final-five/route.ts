@@ -1,7 +1,6 @@
 // src/app/api/final-five/route.ts
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
-import { Challenge } from '@/types';
 import { validateInput, VALIDATION_RULES, createValidationResponse } from '@/middleware/validation';
 import { checkRateLimit, RATE_LIMITS } from '@/middleware/rateLimit';
 import { validateRequestSize, SIZE_LIMITS } from '@/middleware/requestSize';
@@ -14,6 +13,14 @@ type FinalFiveRequest = {
   previousGuesses?: string[];
   language?: 'en' | 'es';
 };
+
+type Challenge = {
+  challengeId: string;
+  answer: string | Record<string, string>;
+  alternatives: string[] | Record<string, string[]>;
+  category: string;
+};
+
 
 // Initialize database indexes
 export async function initializeIndexes() {
@@ -30,7 +37,7 @@ export async function initializeIndexes() {
 initializeIndexes().catch(console.error);
 
 // Cache for challenge data to reduce database load
-const challengeCache = new Map<string, any>();
+const challengeCache = new Map<string, Challenge>();
 
 /**
  * Fetches a challenge by ID with caching
@@ -92,7 +99,7 @@ async function fetchChallengeById(challengeId: string, language: string = 'en') 
 /**
  * Get the localized answer and alternatives from a challenge
  */
-function getLocalizedChallengeContent(challenge: any, language: string = 'en') {
+function getLocalizedChallengeContent(challenge: Challenge, language: string = 'en') {
   // Get the answer in the requested language
   const answer = typeof challenge.answer === 'string' 
     ? challenge.answer 

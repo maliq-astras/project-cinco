@@ -138,16 +138,13 @@ export const useResponsive = () => {
       
       // Calculate available space for cards based on layout mode
       let availableWidth;
-      let availableHeight;
       
       if (isMobileLayoutDetected) {
         // Vertical layout: cards get full width for the stack area
         availableWidth = Math.min(400, width - 40); // Max 400px width, minus padding
-        availableHeight = Math.max(250, height * 0.35); // 35% of screen height, min 250px
       } else {
         // Wide layout: cards get their panel width
         availableWidth = (width / 2) - 24 - 16; // Half width minus gap and padding
-        availableHeight = Math.max(350, height * 0.7); // 70% of screen height, min 350px
       }
       
       // Calculate optimal card dimensions (maintaining 2:3 aspect ratio)
@@ -189,7 +186,7 @@ export const useResponsive = () => {
     
     // Set card size globally so spread calculations can access it
     if (typeof window !== 'undefined') {
-      (window as any).__CARD_SIZE__ = cardSize;
+      (window as Window & { __CARD_SIZE__?: { width: number; height: number } }).__CARD_SIZE__ = cardSize;
     }
 
     return {

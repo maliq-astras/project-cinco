@@ -94,12 +94,15 @@ const getColorHSL = (colorClass: string): string => {
 };
 
 // Helper function to convert tailwind color class to RGB values
-const getColorRGB = (colorClass: string): string => {
+const getColorRGB = (
+  colorClass: string, 
+  isBrowser: boolean, 
+  hasClass: (className: string) => boolean, 
+  getCSSProperty: (varName: string) => string
+): string => {
   // If we're in high contrast mode, check if this color has a high contrast variable
-  const { isBrowser, hasClass, getCSSProperty } = useThemeDOM();
   
   if (isBrowser && hasClass('high-contrast')) {
-    const isDarkMode = hasClass('dark');
     const matches = colorClass.match(/([a-z]+)-(\d+)/);
     
     if (matches && matches[1] && matches[2]) {
@@ -233,7 +236,7 @@ export const ThemeProvider: React.FC<{
   const [highContrastMode, setHighContrastMode] = useState(false);
   
   // Use the theme DOM hook
-  const { isBrowser, addClass, removeClass, setCSSProperty } = useThemeDOM();
+  const { isBrowser, addClass, removeClass, setCSSProperty, hasClass, getCSSProperty } = useThemeDOM();
 
   // Load saved preferences from localStorage on mount
   useEffect(() => {
@@ -255,7 +258,7 @@ export const ThemeProvider: React.FC<{
   useEffect(() => {
     if (initialCategory && isBrowser) {
       const baseColors = categoryColorMap[initialCategory];
-      const primaryRGB = getColorRGB(baseColors.primary);
+      const primaryRGB = getColorRGB(baseColors.primary, isBrowser, hasClass, getCSSProperty);
       
       setCSSProperty('--primary-color', baseColors.primary);
       setCSSProperty('--color-' + baseColors.primary, `rgb(${primaryRGB})`);
@@ -354,9 +357,9 @@ export const ThemeProvider: React.FC<{
     setCSSProperty('--accent', accentHSL);
 
     // Set RGB variants for rgba() usage
-    const primaryRGB = getColorRGB(updatedColors.primary);
-    const secondaryRGB = getColorRGB(updatedColors.secondary);
-    const accentRGB = getColorRGB(updatedColors.accent);
+    const primaryRGB = getColorRGB(updatedColors.primary, isBrowser, hasClass, getCSSProperty);
+    const secondaryRGB = getColorRGB(updatedColors.secondary, isBrowser, hasClass, getCSSProperty);
+    const accentRGB = getColorRGB(updatedColors.accent, isBrowser, hasClass, getCSSProperty);
     
     setCSSProperty('--primary-rgb', primaryRGB);
     setCSSProperty('--secondary-rgb', secondaryRGB);
@@ -371,8 +374,8 @@ export const ThemeProvider: React.FC<{
     setCSSProperty('--color-' + updatedColors.primary, `rgb(${primaryRGB})`);
     setCSSProperty('--color-' + updatedColors.secondary, `rgb(${secondaryRGB})`);
     setCSSProperty('--color-' + updatedColors.accent, `rgb(${accentRGB})`);
-    setCSSProperty('--color-' + updatedColors.light, `rgb(${getColorRGB(updatedColors.light)})`);
-    setCSSProperty('--color-' + updatedColors.dark, `rgb(${getColorRGB(updatedColors.dark)})`);
+    setCSSProperty('--color-' + updatedColors.light, `rgb(${getColorRGB(updatedColors.light, isBrowser, hasClass, getCSSProperty)})`);
+    setCSSProperty('--color-' + updatedColors.dark, `rgb(${getColorRGB(updatedColors.dark, isBrowser, hasClass, getCSSProperty)})`);
   };
   
   // Determine colors based on the challenge category
@@ -493,9 +496,9 @@ export const ThemeProvider: React.FC<{
       setCSSProperty('--accent', accentHSL);
       
       // Set RGB variants for rgba() usage
-      const primaryRGB = getColorRGB(colors.primary);
-      const secondaryRGB = getColorRGB(colors.secondary);
-      const accentRGB = getColorRGB(colors.accent);
+      const primaryRGB = getColorRGB(colors.primary, isBrowser, hasClass, getCSSProperty);
+      const secondaryRGB = getColorRGB(colors.secondary, isBrowser, hasClass, getCSSProperty);
+      const accentRGB = getColorRGB(colors.accent, isBrowser, hasClass, getCSSProperty);
       
       setCSSProperty('--primary-rgb', primaryRGB);
       setCSSProperty('--secondary-rgb', secondaryRGB);
@@ -510,8 +513,8 @@ export const ThemeProvider: React.FC<{
       setCSSProperty('--color-' + colors.primary, `rgb(${primaryRGB})`);
       setCSSProperty('--color-' + colors.secondary, `rgb(${secondaryRGB})`);
       setCSSProperty('--color-' + colors.accent, `rgb(${accentRGB})`);
-      setCSSProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light)})`);
-      setCSSProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark)})`);
+      setCSSProperty('--color-' + colors.light, `rgb(${getColorRGB(colors.light, isBrowser, hasClass, getCSSProperty)})`);
+      setCSSProperty('--color-' + colors.dark, `rgb(${getColorRGB(colors.dark, isBrowser, hasClass, getCSSProperty)})`);
       
       // Apply additional CSS variable for dark mode specific styling
       if (darkMode) {

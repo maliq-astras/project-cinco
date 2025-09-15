@@ -9,7 +9,7 @@ import { getWrapperAnimationProps, getResponsiveContainerStyle } from './helpers
 import styles from './GameControls.module.css';
 import { useGameStore } from '@/store/gameStore';
 
-const GameControls = forwardRef<GameControlsHandle, Record<string, never>>((props, ref) => {
+const GameControls = forwardRef<GameControlsHandle>((_, ref) => {
   const {
     inputBarRef,
     timeRemaining,

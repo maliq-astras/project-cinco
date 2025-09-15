@@ -4,13 +4,26 @@ import { useTheme } from '../../../../contexts/ThemeContext';
 import { useThemeDOM } from '@/hooks/theme';
 import { calculateMobileHeight, calculateContentHeight } from '../helpers';
 
-interface BugReportModalLogicProps {
-  steps: any[];
-  initialFormData: any;
-  handleSubmit: (formData: any) => Promise<void>;
+interface BugReportFormData {
+  bugType?: string[];
+  deviceType?: string;
+  bugDetails?: string;
+  file?: File | null;
 }
 
-export const useBugReportModalLogic = (props: BugReportModalLogicProps) => {
+interface BugReportStep {
+  id: string;
+  title: string;
+  isValid?: boolean;
+}
+
+interface BugReportModalLogicProps {
+  steps: BugReportStep[];
+  initialFormData: BugReportFormData;
+  handleSubmit: (formData: BugReportFormData) => Promise<void>;
+}
+
+export const useBugReportModalLogic = (_props: BugReportModalLogicProps) => {
   const { isMobileMenu, width, height, heightBreakpoint } = useResponsive();
   const { colors } = useTheme();
   const { hasClass } = useThemeDOM();

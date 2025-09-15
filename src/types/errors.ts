@@ -1,7 +1,7 @@
 export interface StandardErrorResponse {
   error: string;
   code: string;
-  details?: any;
+  details?: unknown;
   retryable: boolean;
 }
 

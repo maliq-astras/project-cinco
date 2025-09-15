@@ -1,6 +1,8 @@
+import { Challenge } from '@/types';
+
 interface GenerateBubbleMessageParams {
   hoveredFact: number | null;
-  challenge: any;
+  challenge: Challenge | null;
   revealedFacts: number[];
   isGameOver: boolean;
   isFinalFiveActive: boolean;

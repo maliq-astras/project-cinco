@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import CompactHeader from '@/components/layout/CompactHeader';
 import Header from '@/components/layout/Header';
 import Navigation from '@/components/layout/Navigation';

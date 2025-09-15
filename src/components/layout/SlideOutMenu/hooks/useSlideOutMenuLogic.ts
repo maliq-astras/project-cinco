@@ -5,7 +5,7 @@ interface UseSlideOutMenuLogicProps {
   onClose: () => void;
 }
 
-export const useSlideOutMenuLogic = ({ menuItems, onClose }: UseSlideOutMenuLogicProps) => {
+export const useSlideOutMenuLogic = ({ menuItems: _menuItems, onClose: _onClose }: UseSlideOutMenuLogicProps) => {
   const handleMenuItemClick = (item: MenuItem) => {
     item.onClick();
   };

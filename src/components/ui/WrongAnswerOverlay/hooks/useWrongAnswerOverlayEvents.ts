@@ -1,12 +1,17 @@
 import { useEffect } from 'react';
-import { useResponsive } from '@/hooks/responsive';
+
+interface Guess {
+  isCorrect: boolean;
+  isFinalFiveGuess: boolean;
+  guess: string;
+}
 
 interface UseWrongAnswerOverlayEventsProps {
   isVisible: boolean;
   actualWrongGuessCount: number;
   totalWrongGuessCount: number;
   maxGuesses: number;
-  guesses: any[];
+  guesses: Guess[];
   previousWrongGuessCount: React.MutableRefObject<number>;
   setCurrentWrongGuessCount: (count: number) => void;
   setIsVisible: (visible: boolean) => void;

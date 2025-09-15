@@ -1,9 +1,10 @@
 import { useMemo, type CSSProperties } from 'react';
+import { ResponsiveValues } from '@/types/responsive';
 
 interface UseFactCardStackContainerStylesProps {
   height: number;
   isLandscape: boolean;
-  responsiveValues: Record<string, any>;
+  responsiveValues: ResponsiveValues;
   isDesktopLayout: boolean;
 }
 

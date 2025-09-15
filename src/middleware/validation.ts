@@ -9,7 +9,7 @@ export interface ValidationRules {
   maxArrayLength?: number;
 }
 
-export function validateInput(value: any, rules: ValidationRules): string | null {
+export function validateInput(value: unknown, rules: ValidationRules): string | null {
   if (rules.required && (!value || value === '')) {
     return 'Field is required';
   }

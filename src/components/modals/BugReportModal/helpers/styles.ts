@@ -24,7 +24,6 @@ export const getDeviceButtonStyle = (
 
 export const getFileUploadContainerStyle = (
   isDragging: boolean,
-  primaryColor: string
 ): string => {
   const baseClasses = 'w-full border-2 dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center cursor-pointer transition-all duration-200';
   

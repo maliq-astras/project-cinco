@@ -31,9 +31,9 @@ export const useEndGameMessageLogic = ({
   timeSpent,
   actualCorrectAnswer,
   setActualCorrectAnswer,
-  isSearchingCorrectAnswer,
+  isSearchingCorrectAnswer: _isSearchingCorrectAnswer,
   setIsSearchingCorrectAnswer,
-  showTomorrowMessage,
+  showTomorrowMessage: _showTomorrowMessage,
   setShowTomorrowMessage
 }: UseEndGameMessageLogicProps) => {
   const { colors } = useTheme();

@@ -2,13 +2,26 @@ import { useMemo } from 'react';
 import { useResponsive } from '@/hooks/responsive';
 import { calculateMobileHeight, calculateContentHeight } from '../helpers';
 
-interface FeedbackModalLogicProps {
-  steps: any[];
-  initialFormData: any;
-  handleSubmit: (formData: any) => Promise<void>;
+interface FeedbackFormData {
+  rating?: number;
+  difficulty?: number;
+  favoriteCategory?: string[];
+  leastFavoriteCategory?: string[];
 }
 
-export const useFeedbackModalLogic = (props: FeedbackModalLogicProps) => {
+interface FeedbackStep {
+  id: string;
+  title: string;
+  isValid?: boolean;
+}
+
+interface FeedbackModalLogicProps {
+  steps: FeedbackStep[];
+  initialFormData: FeedbackFormData;
+  handleSubmit: (formData: FeedbackFormData) => Promise<void>;
+}
+
+export const useFeedbackModalLogic = (_props: FeedbackModalLogicProps) => {
   const { isMobileMenu, width, height, heightBreakpoint } = useResponsive();
   
   // Use responsive system for mobile detection

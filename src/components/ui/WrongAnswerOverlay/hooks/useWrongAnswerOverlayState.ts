@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { UserGuess } from '@/types';
 
@@ -6,7 +6,7 @@ interface UseWrongAnswerOverlayStateProps {
   maxGuesses: number;
 }
 
-export function useWrongAnswerOverlayState({ maxGuesses }: UseWrongAnswerOverlayStateProps) {
+export function useWrongAnswerOverlayState({ maxGuesses: _maxGuesses }: UseWrongAnswerOverlayStateProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [currentWrongGuessCount, setCurrentWrongGuessCount] = useState(0);
   const [modalAnimation, setModalAnimation] = useState("visible");

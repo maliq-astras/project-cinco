@@ -44,7 +44,7 @@ export const getMessageData = (
   }
 };
 
-export const formatTimeSpent = (timeSpent: number, t: (key: string, options?: any) => string): string => {
+export const formatTimeSpent = (timeSpent: number, t: (key: string, options?: Record<string, unknown>) => string): string => {
   const minutes = Math.floor(timeSpent / 60);
   const seconds = timeSpent % 60;
   return t('game.endGame.timeSpent', { minutes, seconds });

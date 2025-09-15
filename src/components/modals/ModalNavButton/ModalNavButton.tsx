@@ -1,13 +1,10 @@
 import React from 'react';
-import styles from './ModalNavButton.module.css';
 
 interface ModalNavButtonProps {
   direction: 'next' | 'prev';
   label: string;
   onClick: () => void;
   disabled?: boolean;
-  primaryColor: string;
-  textSegmentBg: string;
 }
 
 const ModalNavButton: React.FC<ModalNavButtonProps> = ({
@@ -15,8 +12,6 @@ const ModalNavButton: React.FC<ModalNavButtonProps> = ({
   label,
   onClick,
   disabled = false,
-  primaryColor,
-  textSegmentBg,
 }) => {
   const isNext = direction === 'next';
   return (

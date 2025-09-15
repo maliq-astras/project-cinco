@@ -9,7 +9,7 @@ interface BugReportModalEventsProps {
 }
 
 export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
-  const handleSubmit = useCallback(async (formData: any) => {
+  const handleSubmit = useCallback(async () => {
     // Here you would typically send the bug report to your backend
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
     props.setSubmitted(true);
@@ -35,7 +35,7 @@ export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
     e.stopPropagation();
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent, handleInputChange: (value: any, field: string) => void) => {
+  const handleDrop = useCallback((e: React.DragEvent, handleInputChange: (value: string | string[] | number | File | null, field: string) => void) => {
     e.preventDefault();
     e.stopPropagation();
     props.setIsDragging(false);
@@ -46,7 +46,7 @@ export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
     }
   }, [props]);
 
-  const handleRemoveFile = useCallback((handleInputChange: (value: any, field: string) => void) => {
+  const handleRemoveFile = useCallback((handleInputChange: (value: string | string[] | number | File | null, field: string) => void) => {
     if (props.fileInputRef.current) {
       props.fileInputRef.current.value = '';
     }
@@ -57,7 +57,7 @@ export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
     props.setTagSearch(e.target.value);
   }, [props]);
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>, handleInputChange: (value: any, field: string) => void) => {
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>, handleInputChange: (value: string | string[] | number | File | null, field: string) => void) => {
     const file = e.target.files?.[0] || null;
     handleInputChange(file, 'file');
   }, []);

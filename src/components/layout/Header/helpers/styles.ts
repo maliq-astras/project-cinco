@@ -1,10 +1,10 @@
-// Remove the ResponsiveValues import since it's not exported
 import styles from '../Header.module.css';
+import { ResponsiveValues } from '@/types/responsive';
 
 /**
  * Generate dynamic title styling based on responsive values and primary color
  */
-export const getTitleStyle = (responsiveValues: any, primaryColor: string): React.CSSProperties => ({
+export const getTitleStyle = (responsiveValues: ResponsiveValues, primaryColor: string): React.CSSProperties => ({
   fontSize: responsiveValues.header.titleFontSize,
   lineHeight: 1,
   color: `var(--color-${primaryColor})`,

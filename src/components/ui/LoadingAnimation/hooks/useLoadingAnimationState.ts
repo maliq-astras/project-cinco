@@ -6,7 +6,7 @@ interface UseLoadingAnimationStateProps {
   finalCategory: string;
 }
 
-export const useLoadingAnimationState = ({ finalCategory }: UseLoadingAnimationStateProps) => {
+export const useLoadingAnimationState = ({ finalCategory: _finalCategory }: UseLoadingAnimationStateProps) => {
   const [mounted, setMounted] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);

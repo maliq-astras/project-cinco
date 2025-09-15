@@ -5,7 +5,7 @@ export const createErrorResponse = (
   message: string,
   code: ErrorCode,
   status: number,
-  details?: any,
+  details?: unknown,
   retryable: boolean = false
 ): NextResponse => {
   const errorResponse: StandardErrorResponse = {

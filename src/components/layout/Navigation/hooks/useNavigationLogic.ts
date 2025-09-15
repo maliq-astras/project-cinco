@@ -7,10 +7,11 @@ import {
   getSettingsIconAnimationProps
 } from '../helpers';
 import { MenuItem } from '@/types/navigation';
+import { ResponsiveValues } from '@/types/responsive';
 
 interface UseNavigationLogicProps {
   breakpoint: string;
-  responsiveValues: any;
+  responsiveValues: ResponsiveValues;
   colors: {
     primary: string;
   };
@@ -28,8 +29,6 @@ interface UseNavigationLogicProps {
 
 export const useNavigationLogic = ({
   breakpoint,
-  responsiveValues,
-  colors,
   isGameOver,
   isFinalFiveActive,
   showFinalFiveTransition,

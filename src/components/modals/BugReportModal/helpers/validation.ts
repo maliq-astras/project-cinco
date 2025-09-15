@@ -1,4 +1,10 @@
-export const validateStep = (stepType: string, formData: any): boolean => {
+interface BugReportFormData {
+  bugType?: string[];
+  deviceType?: string;
+  bugDetails?: string;
+}
+
+export const validateStep = (stepType: string, formData: BugReportFormData): boolean => {
   switch (stepType) {
     case 'bugType':
       return Array.isArray(formData.bugType) && formData.bugType.length > 0;

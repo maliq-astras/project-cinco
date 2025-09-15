@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const parseMessageWithFinalFive = (message: string, colors: { primary: string }, righteous: any) => {
+export const parseMessageWithFinalFive = (message: string, colors: { primary: string }, righteous: { className: string }) => {
   return message.split('FINAL 5').map((part, i, arr) => (
     React.createElement(React.Fragment, { key: i }, 
       part,

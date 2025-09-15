@@ -5,7 +5,7 @@ interface UseEndGameMessageEventsProps {
 
 export const useEndGameMessageEvents = ({
   setIsAnswerModalOpen,
-  correctAnswer
+  correctAnswer: _correctAnswer
 }: UseEndGameMessageEventsProps) => {
   const handleAnswerClick = () => {
     setIsAnswerModalOpen(true);

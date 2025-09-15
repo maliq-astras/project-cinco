@@ -1,7 +1,8 @@
 import { MenuItem } from '@/types/navigation';
+import { GameState } from '@/types';
 
 interface GenerateMenuItemsParams {
-  gameState: any;
+  gameState: GameState;
   openSettings: () => void;
   openTutorial: () => void;
   openBugReportModal: () => void;

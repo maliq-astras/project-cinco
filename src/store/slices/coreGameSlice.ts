@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
-import { UserGuess, GameOutcome } from '../../types/index';
+import { UserGuess, GameOutcome, Challenge } from '../../types/index';
+import type { GameStore } from '../../types';
 import { 
   initialGameState, 
   GameState,
@@ -29,7 +30,7 @@ export interface CoreGameSlice {
     timeSpent: number;
     completionDate: string; // ISO date string
   } | null;
-  todayChallenge: any | null; // Store the challenge data for AnswerDetailsModal
+  todayChallenge: Challenge | null; // Store the challenge data for AnswerDetailsModal
   
   // Victory animation states
   isVictoryAnimationActive: boolean;
@@ -44,16 +45,16 @@ export interface CoreGameSlice {
   closeFactCard: () => void;
   completeCardAnimation: () => void;
   submitGuess: (guess: string) => Promise<void>;
-  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => void;
+  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => void;
   clearTodayGameData: () => void;
 }
 
 export const createCoreGameSlice: StateCreator<
-  any,
+  GameStore,
   [],
   [],
   CoreGameSlice
-> = (set, get, api) => ({
+> = (set, get, _api) => ({
   // Initial state
   gameState: initialGameState,
   hasSeenClue: false,
@@ -90,7 +91,7 @@ export const createCoreGameSlice: StateCreator<
         
         // Use saved game data if available for full endgame experience
         if (todayGameData && todayChallenge) {
-          set((state: any) => ({
+          set((state: GameStore) => ({
             gameState: {
               ...state.gameState,
               loading: false,
@@ -106,13 +107,10 @@ export const createCoreGameSlice: StateCreator<
         }
         
         // Fallback to basic status if no saved data (shouldn't happen with new system)
-        const today = new Date();
-        const dayOfWeek = today.getDay();
-        
         // Determine the game outcome based on today's status
         const gameOutcome = 'standard-win'; // Default fallback
         
-        set((state: any) => ({
+        set((state: GameStore) => ({
           gameState: {
             ...state.gameState,
             loading: false,
@@ -132,7 +130,7 @@ export const createCoreGameSlice: StateCreator<
         localStorage.setItem('lastActiveCategory', JSON.stringify(challenge.category));
       }
       
-      set((state: any) => ({
+      set((state: GameStore) => ({
         gameState: {
           ...state.gameState,
           loading: false,
@@ -140,7 +138,7 @@ export const createCoreGameSlice: StateCreator<
         }
       }));
     } catch (error) {
-      set((state: any) => ({
+      set((state: GameStore) => ({
         gameState: {
           ...state.gameState,
           loading: false,
@@ -194,7 +192,7 @@ export const createCoreGameSlice: StateCreator<
         
         // Then update the revealed facts list after a delay
         setTimeout(() => {
-          set((state: any) => {
+          set((state: GameStore) => {
             // Limit to maximum 5 cards
             let newRevealedFacts;
             if (state.gameState.revealedFacts.length >= 5) {
@@ -280,7 +278,7 @@ export const createCoreGameSlice: StateCreator<
         const newRevealedFacts = gameState.revealedFacts.filter((index: number) => index !== currentViewingFact);
         
         // Update the state with the reordered facts
-        set((state: any) => ({
+        set((state: GameStore) => ({
           gameState: {
             ...state.gameState,
             revealedFacts: [...newRevealedFacts, currentViewingFact]
@@ -316,7 +314,7 @@ export const createCoreGameSlice: StateCreator<
         timestamp: new Date()
       };
       
-      set((state: any) => {
+      set((state: GameStore) => {
         const newGuesses = [...state.gameState.guesses, newGuess];
         const newState = {
           gameState: {
@@ -340,7 +338,7 @@ export const createCoreGameSlice: StateCreator<
           setTimeout(() => {
             set({
               showFinalFiveTransition: true,
-              finalFiveTransitionReason: 'guesses'
+              finalFiveTransitionReason: 'guesses',
             });
 
             // Final Five options will be fetched when the modal opens
@@ -374,7 +372,7 @@ export const createCoreGameSlice: StateCreator<
         timestamp: new Date()
       };
       
-      set((state: any) => {
+      set((state: GameStore) => {
         const newGuesses = [...state.gameState.guesses, newGuess];
         const newState = {
           gameState: {
@@ -400,7 +398,9 @@ export const createCoreGameSlice: StateCreator<
           const { hardMode, gameState, timeRemaining } = get();
           const initialTime = hardMode ? 55 : 300;
           const timeSpent = initialTime - timeRemaining;
-          get().saveTodayGameData('standard-win', guess, numberOfTries, timeSpent, gameState.challenge);
+          if (gameState.challenge) {
+            get().saveTodayGameData('standard-win', guess, numberOfTries, timeSpent, gameState.challenge);
+          }
           
           return {
             ...newState,
@@ -421,7 +421,7 @@ export const createCoreGameSlice: StateCreator<
           setTimeout(() => {
             set({
               showFinalFiveTransition: true,
-              finalFiveTransitionReason: 'guesses'
+              finalFiveTransitionReason: 'guesses',
             });
 
             // Final Five options will be fetched when the modal opens
@@ -458,7 +458,7 @@ export const createCoreGameSlice: StateCreator<
   
   
   // Today's game data methods
-  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: any) => {
+  saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => {
     const today = new Date().toISOString().split('T')[0];
     
     set({

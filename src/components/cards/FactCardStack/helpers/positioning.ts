@@ -15,8 +15,12 @@ export function calculateFanAngle(cardCount: number): number {
  * @param breakpoint Current responsive breakpoint
  * @returns Spread factor for horizontal positioning
  */
+interface GlobalWindow extends Window {
+  __CARD_SIZE__?: { width: number; height: number };
+}
+
 export function calculateSpreadFactor(cardCount: number): number {
-  const cardSize = (window as any).__CARD_SIZE__ || { width: 120 }; 
+  const cardSize = (window as GlobalWindow).__CARD_SIZE__ || { width: 120 }; 
   
   let spreadPercentage;
   if (cardCount === 2) {
@@ -51,8 +55,8 @@ export function calculateCardPosition(
   breakpoint: string
 ) {
   const centerIndex = Math.floor(cardCount / 2);
-  const fanAngle = calculateFanAngle(cardCount, breakpoint);
-  const spreadFactor = calculateSpreadFactor(cardCount, breakpoint);
+  const fanAngle = calculateFanAngle(cardCount);
+  const spreadFactor = calculateSpreadFactor(cardCount);
   
   const baseRotation = (index - centerIndex) * fanAngle;
   const baseTranslateX = (index - centerIndex) * spreadFactor;

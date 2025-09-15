@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+import type { GameStore } from '../../types';
 
 export interface TimerSlice {
   // Timer state
@@ -19,11 +20,11 @@ export interface TimerSlice {
 }
 
 export const createTimerSlice: StateCreator<
-  any,
+  GameStore,
   [],
   [],
   TimerSlice
-> = (set, get, api) => ({
+> = (set, get, _api) => ({
   // Initial state
   timeRemaining: 300, // 5 minutes in normal mode
   isTimerActive: false,

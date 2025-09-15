@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Challenge } from '@/types';
 import { generateBubbleMessage, getBubbleTextClassName } from '../helpers';
 
 interface UseBubbleContextLogicParams {
-  challenge: any;
+  challenge: Challenge | null;
   hoveredFact: number | null;
   revealedFacts: number[];
   isGameOver: boolean;

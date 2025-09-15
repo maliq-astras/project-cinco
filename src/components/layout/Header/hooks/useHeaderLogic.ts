@@ -1,13 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { getCategoryName } from '@/helpers/i18nHelpers';
+import { Challenge } from '@/types';
+import { ResponsiveValues } from '@/types/responsive';
 import { getTitleStyle, getResponsiveClasses, getLogoAnimationProps, getTitleAnimationProps } from '../helpers';
 
 interface UseHeaderLogicProps {
   colors: {
     primary: string;
   };
-  challenge: any;
-  responsiveValues: any;
+  challenge: Challenge | null;
+  responsiveValues: ResponsiveValues;
   breakpoint: string;
   headerEntranceComplete: boolean;
 }

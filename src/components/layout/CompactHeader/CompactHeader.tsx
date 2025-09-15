@@ -33,7 +33,6 @@ const CompactHeader: React.FC<CompactHeaderProps> = React.memo(({ headerEntrance
     toggleMenu,
     menuItems,
     isSettingsOpen,
-    openSettings,
     closeSettings,
     isTutorialOpen,
     closeTutorial,

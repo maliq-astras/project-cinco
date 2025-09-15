@@ -2,16 +2,19 @@ import { useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
+import { ResponsiveValues } from '@/types/responsive';
+import { GameState } from '@/types';
+import type { GameControlsHandle } from '../../../game/GameControls';
 
 interface UseMainContainerEventsProps {
   mounted: boolean;
-  responsiveValues: any;
+  responsiveValues: ResponsiveValues;
   shouldFocusInput: boolean;
-  gameControlsRef: React.RefObject<any>;
+  gameControlsRef: React.RefObject<GameControlsHandle | null>;
   setShouldFocusInput: (value: boolean) => void;
   setScaleFactor: (factor: number) => void;
   isTimerActive: boolean;
-  gameState: any;
+  gameState: GameState;
   resetTimer: () => void;
   isHardModeEnabled: boolean;
   timeRemaining: number;

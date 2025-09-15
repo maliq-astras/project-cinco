@@ -134,7 +134,7 @@ export const getColorRGBFromParams = (
   
   // If the color isn't directly in the map, try to derive it
   if (!colorMap[colorClass]) {
-    const [colorName, shade] = colorClass.split('-');
+    const [colorName] = colorClass.split('-');
     // Try different shades if the exact one isn't available
     const alternativeShades = ['600', '500', '400', '700'];
     for (const altShade of alternativeShades) {

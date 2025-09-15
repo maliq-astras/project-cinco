@@ -1,6 +1,7 @@
 import { useGameContentState } from './useGameContentState';
 import { useGameContentLogic } from './useGameContentLogic';
 import { GameState, GameOutcome } from '@/types';
+import type { GameControlsHandle } from '../../../game/GameControls';
 
 interface UseGameContentProps {
   gameState: GameState;
@@ -15,7 +16,7 @@ interface UseGameContentProps {
   isFinalFiveActive: boolean;
   isAlreadyPlayedScenario: boolean;
   isVictoryAnimationActive: boolean;
-  gameControlsRef: React.RefObject<any>;
+  gameControlsRef: React.RefObject<GameControlsHandle | null>;
 }
 
 export const useGameContent = (props: UseGameContentProps) => {

@@ -31,7 +31,6 @@ const SettingsPanel = React.memo<SettingsPanelProps>(({ isOpen, onClose }) => {
     isHighContrast,
     toggleHighContrast,
     selectedLanguage,
-    handleLanguageChange,
     handleLanguageSelect,
     isMobile,
     handleOverlayClick,

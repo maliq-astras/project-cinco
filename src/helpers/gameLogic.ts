@@ -1,6 +1,5 @@
 import { Challenge, UserGuess } from '../types';
-import { TIMEOUTS, RETRY_CONFIG } from '@/constants/timeouts';
-import { withRetry, createRetryConfig } from '@/utils/retryUtils';
+import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
 
 // Constants

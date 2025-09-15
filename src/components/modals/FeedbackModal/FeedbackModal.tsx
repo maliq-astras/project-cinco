@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useThemeDOM } from '@/hooks/theme';
 import BaseModal from '@/components/modals/BaseModal/BaseModal';
 import IconButton from '@/components/ui/IconButton';
 import { useFeedbackModal } from './hooks';
@@ -21,7 +20,6 @@ const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, onClose }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { hasClass } = useThemeDOM();
   
   const {
     // State
