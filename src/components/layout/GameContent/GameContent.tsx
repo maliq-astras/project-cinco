@@ -153,12 +153,16 @@ const GameContent: React.FC<GameContentProps> = React.memo(({
             </div>
           )}
 
-          {/* Game Controls - hide for already-played scenarios and during victory animation */}
-          {shouldShowGameControls(showGameMessage, isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) && (
-            <div className={styles.gameControlsWrapper}>
+          {/* Game Controls - maintain space even when hidden to prevent layout shift */}
+          <div className={styles.gameControlsWrapper}>
+            {shouldShowGameControls(showGameMessage, isFinalFiveActive, isAlreadyPlayedScenario, isVictoryAnimationActive) ? (
               <GameControls ref={gameControlsRef} />
-            </div>
-          )}
+            ) : (
+              <div style={{ height: 'var(--game-controls-height, 200px)', visibility: 'hidden' }}>
+                <GameControls ref={gameControlsRef} />
+              </div>
+            )}
+          </div>
         </motion.div>
       </div>
     </motion.div>
