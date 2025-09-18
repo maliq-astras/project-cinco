@@ -18,7 +18,7 @@ interface UseFinalFiveModalEffectsProps {
   startTimer: boolean;
   finalFiveTimeRemaining: number;
   decrementFinalFiveTimer: () => void;
-  setFlippedCards: (flippedCards: boolean[]) => void;
+  setFlippedCards: (flippedCards: boolean[] | ((prev: boolean[]) => boolean[])) => void;
   setAllCardsFlipped: (allCardsFlipped: boolean) => void;
   setStartTimer: (startTimer: boolean) => void;
   setCorrectAnswer: (correctAnswer: string | null) => void;
@@ -26,7 +26,7 @@ interface UseFinalFiveModalEffectsProps {
   setAnimationComplete: (animationComplete: boolean) => void;
   setShowContinueButton: (showContinueButton: boolean) => void;
   setTimerReachedZero: (timerReachedZero: boolean) => void;
-  setVerifyRetryCount: (verifyRetryCount: number) => void;
+  setVerifyRetryCount: (verifyRetryCount: number | ((prev: number) => number)) => void;
   setLoadingStage: (loadingStage: 'verifying' | 'determining' | 'slow' | null) => void;
 }
 
@@ -200,7 +200,9 @@ export function useFinalFiveModalEffects({
                       const numberOfTries = currentState.gameState.guesses.length;
                       const initialTime = currentState.hardMode ? 55 : 300;
                       const timeSpent = initialTime - currentState.timeRemaining;
-                      useGameStore.getState().saveTodayGameData('loss-final-five-time', data.answer, numberOfTries, timeSpent, currentState.gameState.challenge);
+                      if (currentState.gameState.challenge) {
+                        useGameStore.getState().saveTodayGameData('loss-final-five-time', data.answer, numberOfTries, timeSpent, currentState.gameState.challenge);
+                      }
 
                       useGameStore.setState(state => ({
                         ...state,

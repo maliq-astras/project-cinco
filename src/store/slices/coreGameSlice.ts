@@ -1,8 +1,8 @@
 import { StateCreator } from 'zustand';
 import { UserGuess, GameOutcome, Challenge } from '../../types/index';
 import type { GameStore } from '../../types';
-import { 
-  initialGameState, 
+import {
+  initialGameState,
   GameState,
   fetchChallenge as fetchChallengeAPI,
   verifyGuess as verifyGuessAPI,
@@ -10,6 +10,7 @@ import {
 } from '../../helpers/gameLogic';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
+import { storage, STORAGE_KEYS, isGameDataCurrent, clearStaleGameData, updateChallengeDate } from '@/utils/localStorage';
 
 export interface CoreGameSlice {
   // Core game state
@@ -47,6 +48,8 @@ export interface CoreGameSlice {
   submitGuess: (guess: string) => Promise<void>;
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => void;
   clearTodayGameData: () => void;
+  loadGameData: () => void;
+  saveGameData: () => void;
 }
 
 export const createCoreGameSlice: StateCreator<
@@ -203,12 +206,19 @@ export const createCoreGameSlice: StateCreator<
               newRevealedFacts = [...state.gameState.revealedFacts, factIndex];
             }
             
-            return {
+            const updatedState = {
               gameState: {
                 ...state.gameState,
                 revealedFacts: newRevealedFacts
               }
             };
+
+            // Save to localStorage after state update
+            setTimeout(() => {
+              get().saveGameData();
+            }, 100);
+
+            return updatedState;
           });
         }, 1000); // Delay to allow the flip animation to complete
       }
@@ -237,13 +247,13 @@ export const createCoreGameSlice: StateCreator<
   },
   
   closeFactCard: () => {
-    const { 
+    const {
       isTimerActive,
-      hasSeenClue, 
+      hasSeenClue,
       resetTimer,
       startTimer
     } = get();
-    
+
     set({
       isCardAnimatingOut: true,
       isReturningToStack: true,
@@ -251,7 +261,7 @@ export const createCoreGameSlice: StateCreator<
       // Signal that we should focus the input after animation completes
       shouldFocusInput: true
     });
-    
+
     // Start timer and lock in hard mode when first fact card is closed
     if (!isTimerActive && !hasSeenClue) {
       resetTimer();
@@ -454,13 +464,16 @@ export const createCoreGameSlice: StateCreator<
       await minimumLoadingTime;
       set({ isProcessingGuess: false });
     }
+
+    // Save game state after guess
+    get().saveGameData();
   },
   
   
   // Today's game data methods
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => {
     const today = new Date().toISOString().split('T')[0];
-    
+
     set({
       todayGameData: {
         outcome,
@@ -471,6 +484,9 @@ export const createCoreGameSlice: StateCreator<
       },
       todayChallenge: challenge
     });
+
+    // Save to localStorage
+    get().saveGameData();
   },
   
   clearTodayGameData: () => {
@@ -478,5 +494,111 @@ export const createCoreGameSlice: StateCreator<
       todayGameData: null,
       todayChallenge: null
     });
+  },
+
+  loadGameData: () => {
+    clearStaleGameData();
+
+    if (isGameDataCurrent()) {
+      const savedState = storage.get(STORAGE_KEYS.GAME_STATE, {} as Partial<GameStore>);
+
+      if (Object.keys(savedState).length > 0) {
+        set(savedState);
+
+        // SMART STATE RECOVERY: Use reveals vs guesses to determine correct state
+        const { gameState } = get();
+        const revealsCount = gameState.revealedFacts.length;
+        const guessesCount = gameState.guesses.length;
+
+        // Clear any stuck view state
+        const updatedState: Partial<GameStore> = {
+          viewingFact: null,
+          cardSourcePosition: null,
+          isDrawingFromStack: false,
+          isReturningToStack: false
+        };
+
+        // Restore timer if it was saved in game state
+        if (savedState.timeRemaining !== undefined) {
+          // Calculate elapsed time if timer was active
+          if (savedState.isTimerActive && savedState.timerStartTime) {
+            const now = Date.now();
+            const elapsed = Math.floor((now - savedState.timerStartTime) / 1000);
+            const adjustedTime = Math.max(0, savedState.timeRemaining - elapsed);
+
+            updatedState.timeRemaining = adjustedTime;
+            updatedState.isTimerActive = adjustedTime > 0;
+            updatedState.timerStartTime = savedState.timerStartTime;
+          }
+        }
+
+        // SMART LOGIC: Determine what user should be able to do
+        if (revealsCount === guessesCount) {
+          // Equal reveals and guesses = user should reveal next fact
+          updatedState.canRevealNewClue = true;
+          updatedState.canMakeGuess = false;
+        } else if (revealsCount > guessesCount) {
+          // More reveals than guesses = user should make a guess
+          updatedState.canRevealNewClue = false;
+          updatedState.canMakeGuess = true;
+        } else {
+          // This shouldn't happen, but default to revealing
+          updatedState.canRevealNewClue = true;
+          updatedState.canMakeGuess = false;
+        }
+
+        set(updatedState);
+      }
+    }
+  },
+
+  saveGameData: () => {
+    const {
+      gameState,
+      hasSeenClue,
+      canRevealNewClue,
+      canMakeGuess,
+      lastRevealedFactIndex,
+      isPendingFinalFiveTransition,
+      isProcessingGuess,
+      hasMadeGuess,
+      todayGameData,
+      todayChallenge,
+      isVictoryAnimationActive,
+      victoryAnimationStep,
+      gameOutcome,
+      showGameMessage
+    } = get();
+
+    // Update challenge date tracker
+    updateChallengeDate();
+
+    // Include timer data in main game state
+    const { timeRemaining, isTimerActive, timerStartTime } = get();
+
+    // Save current state
+    storage.set(STORAGE_KEYS.GAME_STATE, {
+      gameState,
+      hasSeenClue,
+      canRevealNewClue,
+      canMakeGuess,
+      lastRevealedFactIndex,
+      isPendingFinalFiveTransition,
+      isProcessingGuess,
+      hasMadeGuess,
+      todayGameData,
+      todayChallenge,
+      isVictoryAnimationActive,
+      victoryAnimationStep,
+      gameOutcome,
+      showGameMessage,
+      // Include timer data
+      timeRemaining,
+      isTimerActive,
+      timerStartTime
+    });
+
+    // Also save timer data
+    get().saveTimerData();
   }
 });

@@ -5,16 +5,28 @@ import { capitalizeAnswer } from '@/helpers/gameLogic';
 import { getFactIcon } from '@/helpers/iconHelpers';
 import { answerDetailsModalStyles } from './styles';
 import { Quicksand } from 'next/font/google';
+import { Challenge, ThemeColors } from '@/types';
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
+interface Dimensions {
+  videoWidth: number;
+  videoHeight: number;
+  squareSize: number;
+  rectHeight: number;
+  gridGap: number;
+  gridWidth: number;
+  gridHeight: number;
+  isMobileLayout: boolean;
+}
+
 interface RenderingHelpers {
   answer: string;
-  challenge: any;
-  dimensions: any;
+  challenge: Challenge;
+  dimensions: Dimensions;
   factTypes: string[];
   category: string;
-  colors: any;
+  colors: ThemeColors;
   placeholderFacts: string[];
   language: string;
   useTopDownLayout: boolean;
@@ -156,7 +168,7 @@ export const createRenderingHelpers = (props: RenderingHelpers) => {
           ...answerDetailsModalStyles.detailContent(useTopDownLayout, dimensions)
         }}
       >
-        {challenge?.expanded?.[factTypes[selectedFact]]?.[language] || placeholderFacts[selectedFact]}
+        {challenge?.expanded?.[factTypes[selectedFact]]?.[language as 'en' | 'es'] || placeholderFacts[selectedFact]}
       </div>
       
       <div style={{ 

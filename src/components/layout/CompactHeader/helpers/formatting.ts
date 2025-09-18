@@ -22,25 +22,25 @@ export const generateMenuItems = ({
       label: 'ui.buttons.settings',
       onClick: openSettings,
       showArrow: false,
-      icon: 'settings'
+      icon: 'settings' as const
     },
     ...(gameState.isGameOver ? [] : [{
       label: 'ui.navigation.howToPlay',
       onClick: openTutorial,
       showArrow: false,
-      icon: 'help'
+      icon: 'help' as const
     }]),
     {
       label: 'ui.navigation.feedback',
       onClick: openFeedbackModal,
       showArrow: false,
-      icon: 'feedback'
+      icon: 'feedback' as const
     },
     {
       label: 'ui.navigation.reportBug',
       onClick: openBugReportModal,
       showArrow: false,
-      icon: 'bug'
+      icon: 'bug' as const
     }
   ];
 };

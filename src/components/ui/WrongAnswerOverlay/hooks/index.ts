@@ -25,7 +25,7 @@ export function useWrongAnswerOverlay({ maxGuesses }: UseWrongAnswerOverlayProps
     actualWrongGuessCount,
     totalWrongGuessCount,
     maxGuesses,
-    guesses,
+    _guesses: guesses.map(g => ({ ...g, isFinalFiveGuess: g.isFinalFiveGuess || false })),
     previousWrongGuessCount,
     setCurrentWrongGuessCount,
     setIsVisible,

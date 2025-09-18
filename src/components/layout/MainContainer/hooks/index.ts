@@ -17,6 +17,7 @@ export const useMainContainer = () => {
     isNarrow: state.isNarrow
   });
 
+
   // Events hook for side effects
   useMainContainerEvents({
     mounted: state.mounted,
@@ -31,7 +32,8 @@ export const useMainContainer = () => {
     isHardModeEnabled: state.isHardModeEnabled,
     timeRemaining: state.timeRemaining,
     decrementTimer: state.decrementTimer,
-    fetchChallenge: state.fetchChallenge
+    fetchChallenge: state.fetchChallenge,
+    shouldPauseTimer: state.shouldPauseTimer
   });
 
   // Handle loading complete with proper state setters
@@ -62,6 +64,8 @@ export const useMainContainer = () => {
     breakpoint: state.breakpoint,
     isNarrow: state.isNarrow,
     startFinalFive: state.startFinalFive,
+    isResumeModalOpen: state.isResumeModalOpen,
+    setResumeModalOpen: state.setResumeModalOpen,
     
     // Logic results
     isTabletLandscape: logic.isTabletLandscape,

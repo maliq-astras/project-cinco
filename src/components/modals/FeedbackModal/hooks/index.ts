@@ -29,7 +29,7 @@ export const useFeedbackModal = (props: FeedbackModalProps) => {
 
   // Custom handleInputChange that supports arrays for categories
   const handleInputChange = (value: string | string[] | number, field: string) => {
-    modalForm.handleInputChange(value, field);
+    modalForm.handleInputChange(value as string | number | File | null, field);
   };
 
   return {

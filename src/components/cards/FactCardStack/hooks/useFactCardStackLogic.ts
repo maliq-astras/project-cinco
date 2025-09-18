@@ -55,7 +55,7 @@ export function useFactCardStack() {
     isInitialRender: cardStackHook.isInitialRender,
     breakpoint,
     isVictoryAnimationActive,
-    victoryAnimationStep,
+    victoryAnimationStep: victoryAnimationStep || '',
     getResponsiveValue,
     isCardClickable
   });

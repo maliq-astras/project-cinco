@@ -159,10 +159,10 @@ export type CategoryFactTypeMap = {
   [CategoryType.TV_SHOWS]: TvShowFactType;
 }
 
-// Create a generic Fact interface
+// Create a generic Fact interface that matches Challenge.facts structure
 export interface Fact<T extends CategoryType> {
   category: T;
-  factType: CategoryFactTypeMap[T];
+  factType: string; // Flexible fact type for real challenges
   content: {
     en: string;
     es: string;
@@ -174,7 +174,14 @@ export interface Challenge {
   challengeId: string;
   date: string;
   category: CategoryType;
-  facts: Fact<CategoryType>[];
+  facts: Array<{
+    category: CategoryType;
+    factType: string; // Flexible fact type for real challenges
+    content: {
+      en: string;
+      es: string;
+    } | string;
+  }>;
   expanded?: Record<string, { en: string; es: string }>;
   answer: {
     en: string;
@@ -186,6 +193,13 @@ export interface Challenge {
   alternatives: {
     en: string[];
     es: string[];
+  };
+  metadata?: {
+    imageUrl?: string;
+    citation?: string;
+    expanded?: Record<string, { en: string; es: string }>;
+    source?: string;
+    importedAt?: string;
   };
 }
 

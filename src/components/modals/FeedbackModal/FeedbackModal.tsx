@@ -79,7 +79,7 @@ export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, o
       >
         {currentStep.type === 'rating' && (
           <StarRating
-            value={formData.rating}
+            value={formData.rating as number}
             onChange={(value) => handleInputChange(value, 'rating')}
             primaryColor={colors.primary}
           />
@@ -87,7 +87,7 @@ export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, o
 
         {currentStep.type === 'difficulty' && (
           <DifficultySelector
-            value={formData.difficulty}
+            value={formData.difficulty as number}
             onChange={(value) => handleInputChange(value, 'difficulty')}
             hovered={difficultyHovered}
             setHovered={setDifficultyHovered}
@@ -99,7 +99,7 @@ export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, o
 
         {currentStep.type === 'favoriteCategory' && (
           <CategorySelector
-            selectedItems={formData.favoriteCategory}
+            selectedItems={formData.favoriteCategory as string[]}
             onChange={(newSelected) => handleInputChange(newSelected, 'favoriteCategory')}
             categoryOptions={categoryOptions}
             instructionKey="feedback.category.favoriteInstructions"
@@ -108,7 +108,7 @@ export default React.memo<FeedbackModalProps>(function FeedbackModal({ isOpen, o
 
         {currentStep.type === 'leastFavoriteCategory' && (
           <CategorySelector
-            selectedItems={formData.leastFavoriteCategory}
+            selectedItems={formData.leastFavoriteCategory as string[]}
             onChange={(newSelected) => handleInputChange(newSelected, 'leastFavoriteCategory')}
             categoryOptions={categoryOptions}
             instructionKey="feedback.category.leastFavoriteInstructions"

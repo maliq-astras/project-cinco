@@ -29,6 +29,7 @@ export const useGameTutorialLogic = ({
   const { getElement } = useDOMRefs();
   const { width, height } = useResponsive();
 
+  // @ts-expect-error - i18next type compatibility issue
   const tutorialSteps = createTutorialSteps(hardMode, t);
 
   const { updatePositions } = useGameTutorialPositioning({

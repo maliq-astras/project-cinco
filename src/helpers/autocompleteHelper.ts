@@ -52,7 +52,8 @@ export async function getAutocompleteSuggestions(
   language: Language = 'en'
 ): Promise<string[]> {
   try {
-    const { suggestions } = await importAutocompleteData(category, language);
+    const autocompleteData = await importAutocompleteData(category, language);
+    const { suggestions } = autocompleteData || { suggestions: [] };
     
     // Normalize the query for case-insensitive matching
     const normalizedQuery = query.toLowerCase().trim();
@@ -121,7 +122,8 @@ export async function normalizeGuess(
   language: Language = 'en'
 ): Promise<string> {
   try {
-    const { data } = await importAutocompleteData(category, language);
+    const autocompleteData = await importAutocompleteData(category, language);
+    const { data } = autocompleteData || { data: [] };
     const normalizedInput = userGuess.toLowerCase().trim();
     
     // Check if the exact guess exists as a key in the normalization data (canonical name)
@@ -157,7 +159,8 @@ export async function normalizeGuess(
  */
 export async function hasAutocompleteSuggestions(category: CategoryType, language: Language = 'en'): Promise<boolean> {
   try {
-    const { suggestions } = await importAutocompleteData(category, language);
+    const autocompleteData = await importAutocompleteData(category, language);
+    const { suggestions } = autocompleteData || { suggestions: [] };
     return Array.isArray(suggestions) && suggestions.length > 0;
   } catch {
     return false;
@@ -172,7 +175,8 @@ export async function hasAutocompleteSuggestions(category: CategoryType, languag
  */
 export async function getSuggestionCount(category: CategoryType, language: Language = 'en'): Promise<number> {
   try {
-    const { suggestions } = await importAutocompleteData(category, language);
+    const autocompleteData = await importAutocompleteData(category, language);
+    const { suggestions } = autocompleteData || { suggestions: [] };
     return Array.isArray(suggestions) ? suggestions.length : 0;
   } catch {
     return 0;
@@ -192,7 +196,8 @@ export async function getRandomSuggestions(
   language: Language = 'en'
 ): Promise<string[]> {
   try {
-    const { suggestions } = await importAutocompleteData(category, language);
+    const autocompleteData = await importAutocompleteData(category, language);
+    const { suggestions } = autocompleteData || { suggestions: [] };
     
     if (!Array.isArray(suggestions) || suggestions.length <= sampleSize) {
       return [...(suggestions || [])];

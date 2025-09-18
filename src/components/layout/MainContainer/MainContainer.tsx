@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { useMainContainer } from './hooks';
+import { useGameStore } from '@/store/gameStore';
 import styles from './MainContainer.module.css';
-import { 
-  FactCard, 
-  LoadingAnimation, 
+import {
+  FactCard,
+  LoadingAnimation,
   WrongAnswerOverlay,
   LanguageSwitchLoader
 } from '@/components';
+import ResumeGameModal from '@/components/modals/ResumeGameModal';
 import GameContentRenderer from '../GameContentRenderer';
 import { getHeaderComponent } from './helpers';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -38,7 +40,9 @@ export default function MainContainer() {
     fadeInAnimation,
     responsiveLayoutClass,
     smartScalingStyle,
-    needsMobileLayout
+    needsMobileLayout,
+    isResumeModalOpen,
+    setResumeModalOpen
   } = useMainContainer();
   
   const { isLanguageSwitching } = useLanguage();
@@ -105,6 +109,18 @@ export default function MainContainer() {
           <LanguageSwitchLoader isVisible={isLanguageSwitching} />
         </>
       )}
+
+      {/* Resume Game Modal */}
+      <ResumeGameModal
+        isOpen={isResumeModalOpen}
+        onResume={() => {
+          setResumeModalOpen(false);
+          // Resume timer by unpausing and reactivating it
+          const store = useGameStore.getState();
+          store.setShouldPauseTimer(false);
+          store.startTimer();
+        }}
+      />
     </div>
   );
 } 

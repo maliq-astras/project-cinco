@@ -129,7 +129,7 @@ export const useAnswerDetailsModalLogic = (
 
   const renderingHelpers = createRenderingHelpers({
     answer,
-    challenge: data.challenge,
+    challenge: data.challenge!,
     dimensions,
     factTypes: data.factTypes,
     category: data.category,

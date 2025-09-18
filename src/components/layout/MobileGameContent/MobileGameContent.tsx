@@ -31,7 +31,7 @@ interface MobileGameContentProps {
   isAlreadyPlayedScenario: boolean;
   isVictoryAnimationActive: boolean;
   isTabletLandscape: boolean;
-  gameControlsRef: React.RefObject<GameControlsHandle>;
+  gameControlsRef: React.RefObject<GameControlsHandle | null>;
 }
 
 const MobileGameContent: React.FC<MobileGameContentProps> = React.memo(({

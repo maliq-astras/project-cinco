@@ -123,7 +123,8 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                 >No tags found</span>
               )}
               {filteredTags.map((option) => {
-                const selected = formData.bugType.includes(option);
+                const bugTypeArray = Array.isArray(formData.bugType) ? formData.bugType : [];
+                const selected = bugTypeArray.includes(option);
                 return (
                   <button
                     key={option}
@@ -131,9 +132,9 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                     onClick={() => {
                       let newSelected;
                       if (selected) {
-                        newSelected = formData.bugType.filter((o: string) => o !== option);
+                        newSelected = bugTypeArray.filter((o: string) => o !== option);
                       } else {
-                        newSelected = [...formData.bugType, option];
+                        newSelected = [...bugTypeArray, option];
                       }
                       handleInputChange(newSelected, 'bugType');
                     }}
@@ -181,7 +182,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
           <>
             <textarea
               id={`bug-step-input-${step}`}
-              value={formData.bugDetails}
+              value={typeof formData.bugDetails === 'string' ? formData.bugDetails : ''}
               onChange={(e) => handleInputChange(e.target.value.slice(0, 400), 'bugDetails')}
               maxLength={400}
               className="block mx-auto w-[95vw] h-48 md:h-64 resize-none px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800/50 dark:text-white"
@@ -189,7 +190,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
               placeholder={t('bugReport.details.placeholder')}
             />
             <div className="text-xs text-gray-400 mt-2 w-full max-w-2xl md:max-w-3xl mx-auto text-right">
-              {formData.bugDetails.length}/400
+              {(formData.bugDetails && typeof formData.bugDetails === 'string' ? formData.bugDetails.length : 0)}/400
             </div>
           </>
         )}
@@ -225,7 +226,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                 <svg className={styles.filePreviewIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className={styles.filePreviewText}>{formData.file.name}</span>
+                <span className={styles.filePreviewText}>{formData.file && typeof formData.file === 'object' && 'name' in formData.file ? (formData.file as File).name : 'File'}</span>
                 <button
                   onClick={() => handleRemoveFile(handleInputChange)}
                   className={styles.filePreviewRemoveButton}

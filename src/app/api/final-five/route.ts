@@ -23,19 +23,7 @@ type Challenge = {
 
 
 // Initialize database indexes
-export async function initializeIndexes() {
-  const { db } = await connectToDatabase();
-  
-  // Create indexes if they don't exist
-  await db.collection('challenges').createIndex(
-    { challengeId: 1 }, 
-    { unique: true, name: 'challengeId_1' }
-  );
-}
-
-// Initialize indexes on startup
-initializeIndexes().catch(console.error);
-
+// Database indexes are initialized elsewhere to avoid Next.js route validation issues
 // Cache for challenge data to reduce database load
 const challengeCache = new Map<string, Challenge>();
 
@@ -71,7 +59,7 @@ async function fetchChallengeById(challengeId: string, language: string = 'en') 
         setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_HEAVY_QUERY)
       );
       
-      challenge = await Promise.race([dbPromise, timeoutPromise]);
+      challenge = await Promise.race([dbPromise, timeoutPromise]) as Challenge;
       
       if (challenge) {
         // Cache the result for 5 minutes

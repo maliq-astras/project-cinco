@@ -3,16 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Righteous } from 'next/font/google';
 import { useEndGameMessage } from './hooks';
 import { GameOutcome } from './helpers';
-import { 
-  endGameMessageAnimations, 
-  endGameMessageStyles, 
-  getAnswerTextStyle, 
-  getConfettiPieceStyle, 
-  getTimeDisplayTextStyle 
+import {
+  endGameMessageAnimations,
+  endGameMessageStyles,
+  getAnswerTextStyle,
+  getConfettiPieceStyle,
+  getTimeDisplayTextStyle
 } from './helpers';
 import { capitalizeAnswer } from '@/helpers/gameLogic';
 import AnswerDetailsModal from '@/components/modals/AnswerDetailsModal';
 import StreakDisplay from '@/components/post-game/StreakDisplay';
+import { useCountdown } from '@/hooks/useCountdown';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 
@@ -23,9 +24,9 @@ interface EndGameMessageProps {
   timeSpent: number;
 }
 
-export default function EndGameMessage({ 
-  outcome, 
-  correctAnswer, 
+export default function EndGameMessage({
+  outcome,
+  correctAnswer,
   numberOfTries = 0,
   timeSpent
 }: EndGameMessageProps) {
@@ -44,6 +45,8 @@ export default function EndGameMessage({
     handleCloseModal,
     getAnswerAriaLabel
   } = useEndGameMessage({ outcome, correctAnswer, numberOfTries, timeSpent });
+
+  const { formatCountdown } = useCountdown();
 
   const getMessage = () => {
     const { type, displayAnswer, numberOfTries: tries } = messageData;
@@ -212,7 +215,7 @@ export default function EndGameMessage({
                   style={{ color: `var(--color-${colors.primary})` }}
                   {...endGameMessageAnimations.tomorrowMessage}
                 >
-                  {t('game.endGame.comeBackTomorrow')}
+                  Come back in {formatCountdown()} for a new challenge!
                 </motion.div>
               )}
             </AnimatePresence>

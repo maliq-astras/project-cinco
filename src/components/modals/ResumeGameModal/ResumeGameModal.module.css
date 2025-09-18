@@ -1,0 +1,92 @@
+/**
+ * CSS Module for ResumeGameModal - Static styles only
+ * Uses CSS Grid for proper layout structure
+ */
+
+/* Main overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+}
+
+/* Modal container */
+.modal {
+  background-color: white;
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin: 1rem;
+  display: grid;
+  grid-template-rows: 25% 1fr 25%;
+  gap: 2rem;
+  align-items: center;
+}
+
+:global(.dark) .modal {
+  background-color: rgb(31 41 55);
+}
+
+/* Logo section */
+.headerSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Timer section - perfectly centered */
+.timerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.timeLabel {
+  font-weight: 500;
+  color: rgb(107 114 128);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+:global(.dark) .timeLabel {
+  color: rgb(156 163 175);
+}
+
+.timeDisplay {
+  font-weight: bold;
+  line-height: 1;
+  font-family: 'Iceberg', cursive;
+}
+
+/* Button section */
+.buttonSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resumeButton {
+  border-radius: 0.75rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resumeButton:hover {
+  transform: scale(1.05);
+}
+
+.resumeButton:active {
+  transform: scale(0.95);
+}
+

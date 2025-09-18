@@ -5,11 +5,12 @@ interface BugReportModalProps {
   onClose: () => void;
 }
 
-interface FormData {
+interface BugReportFormData {
   bugType: string[];
   deviceType: string;
   bugDetails: string;
   file: File | null;
+  [key: string]: string | string[] | number | File | null | undefined;
 }
 
 const ALL_BUG_TAGS = [
@@ -55,24 +56,32 @@ export const useBugReportModalState = (props: BugReportModalProps) => {
 
   const steps = useMemo(() => [
     {
+      id: 'bugType',
+      title: 'bugReport.steps.bugType',
       label: 'bugReport.steps.bugType',
       type: 'bugType'
     },
     {
+      id: 'deviceType',
+      title: 'bugReport.steps.deviceType',
       label: 'bugReport.steps.deviceType',
       type: 'deviceType'
     },
     {
+      id: 'details',
+      title: 'bugReport.steps.details',
       label: 'bugReport.steps.details',
       type: 'details'
     },
     {
+      id: 'file',
+      title: 'bugReport.steps.file',
       label: 'bugReport.steps.file',
       type: 'file'
     }
   ], []);
 
-  const initialFormData: FormData = useMemo(() => ({
+  const initialFormData: BugReportFormData = useMemo(() => ({
     bugType: [],
     deviceType: '',
     bugDetails: '',

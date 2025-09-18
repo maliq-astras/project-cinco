@@ -5,7 +5,7 @@ interface TutorialStep {
   textPosition: 'left' | 'right' | 'top' | 'bottom';
 }
 
-export const createTutorialSteps = (hardMode: boolean, t: (key: string, options?: string | Record<string, unknown>) => string): TutorialStep[] => [
+export const createTutorialSteps = (hardMode: boolean, t: (key: string, fallback?: string) => string): TutorialStep[] => [
   {
     target: 'header-area',
     title: t('tutorial.steps.welcome.title'),

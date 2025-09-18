@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useResponsive } from '@/hooks/responsive';
@@ -8,10 +8,12 @@ import type { GameControlsHandle } from '@/components/game/GameControls';
 export function useMainContainerState() {
   // Game store state
   const gameState = useGameStore(state => state.gameState);
+  const hasSeenClue = useGameStore(state => state.hasSeenClue);
   const viewingFact = useGameStore(state => state.viewingFact);
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
   const decrementTimer = useGameStore(state => state.decrementTimer);
   const isTimerActive = useGameStore(state => state.isTimerActive);
+  const shouldPauseTimer = useGameStore(state => state.shouldPauseTimer);
   const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
@@ -27,6 +29,8 @@ export function useMainContainerState() {
   const setShouldFocusInput = useGameStore(state => state.setShouldFocusInput);
   const setScaleFactor = useGameStore(state => state.setScaleFactor);
   const todayGameData = useGameStore(state => state.todayGameData);
+  const isResumeModalOpen = useGameStore(state => state.isResumeModalOpen);
+  const setResumeModalOpen = useGameStore(state => state.setResumeModalOpen);
 
   // Theme state
   const { colors } = useTheme();
@@ -45,6 +49,15 @@ export function useMainContainerState() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [headerEntranceComplete, setHeaderEntranceComplete] = useState(false);
   const [gameEntranceComplete, setGameEntranceComplete] = useState(false);
+
+  // Sync loading states with game progress
+  useEffect(() => {
+    if (hasSeenClue && gameState.challenge) {
+      setLoadingComplete(true);
+      setHeaderEntranceComplete(true);
+      setGameEntranceComplete(true);
+    }
+  }, [hasSeenClue, gameState.challenge]);
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -56,10 +69,12 @@ export function useMainContainerState() {
   return {
     // Game state
     gameState,
+    hasSeenClue,
     viewingFact,
     fetchChallenge,
     decrementTimer,
     isTimerActive,
+    shouldPauseTimer,
     isFinalFiveActive,
     victoryAnimationStep,
     isVictoryAnimationActive,
@@ -75,6 +90,8 @@ export function useMainContainerState() {
     setShouldFocusInput,
     setScaleFactor,
     todayGameData,
+    isResumeModalOpen,
+    setResumeModalOpen,
     
     // Theme
     colors,

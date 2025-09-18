@@ -6,11 +6,12 @@ interface FeedbackModalProps {
   onClose: () => void;
 }
 
-interface FormData {
+interface FeedbackFormData {
   rating: number;
   difficulty: number;
   favoriteCategory: string[];
   leastFavoriteCategory: string[];
+  [key: string]: string | string[] | number | File | null | undefined;
 }
 
 const categoryOptions = Object.values(CategoryType);
@@ -29,24 +30,32 @@ export const useFeedbackModalState = (props: FeedbackModalProps) => {
 
   const steps = useMemo(() => [
     {
+      id: 'rating',
+      title: 'feedback.steps.rating',
       label: 'feedback.steps.rating',
       type: 'rating'
     },
     {
+      id: 'difficulty',
+      title: 'feedback.steps.difficulty',
       label: 'feedback.steps.difficulty',
       type: 'difficulty'
     },
     {
+      id: 'favoriteCategory',
+      title: 'feedback.steps.favoriteCategory',
       label: 'feedback.steps.favoriteCategory',
       type: 'favoriteCategory'
     },
     {
+      id: 'leastFavoriteCategory',
+      title: 'feedback.steps.leastFavoriteCategory',
       label: 'feedback.steps.leastFavoriteCategory',
       type: 'leastFavoriteCategory'
     }
   ], []);
 
-  const initialFormData: FormData = useMemo(() => ({
+  const initialFormData: FeedbackFormData = useMemo(() => ({
     rating: 0,
     difficulty: 0,
     favoriteCategory: [],

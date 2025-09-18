@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useLogo } from './hooks';
 import styles from './Logo.module.css';
 
@@ -22,9 +23,11 @@ const Logo = React.memo<LogoProps>(({
   });
   
   return (
-    <img 
+    <Image
       src={logoSrc}
       alt="Fact 5"
+      width={typeof width === 'number' ? width : 100}
+      height={typeof height === 'number' ? height : 40}
       className={`${styles.logo} ${logoClassName}`}
       style={{
         width: logoWidth || 'auto',

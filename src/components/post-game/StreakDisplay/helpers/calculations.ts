@@ -1,6 +1,8 @@
+import { getEasternDayOfWeek } from '@/utils/easternTime';
+
 export const getDayNames = (language?: string): string[] => {
   const currentLang = language || (typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en');
-  
+
   if (currentLang === 'es') {
     return ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
   } else {
@@ -20,7 +22,7 @@ export const shouldShowStreak = (
 };
 
 export const getCurrentDay = (): number => {
-  return new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+  return getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, etc. (Eastern Time)
 };
 
 export const shouldShowSymbol = (

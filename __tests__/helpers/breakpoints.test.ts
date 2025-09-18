@@ -2,14 +2,14 @@
  * Tests for unified breakpoint system
  */
 
-import { 
-  getBreakpoint, 
-  isBreakpointOrAbove, 
+import {
+  getBreakpoint,
+  isBreakpointOrAbove,
   isBreakpointBelow,
   isLandscape,
   isPortrait,
   getOrientationResponsiveValue
-} from '../../src/helpers/breakpoints';
+} from '@/constants/breakpoints';
 
 describe('Unified Breakpoint System', () => {
   describe('getBreakpoint', () => {

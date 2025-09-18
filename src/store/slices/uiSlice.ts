@@ -17,6 +17,7 @@ export interface UISlice {
   // Panel and modal states
   isSettingsPanelOpen: boolean;
   isTutorialOpen: boolean;
+  isResumeModalOpen: boolean;
   
   // Autocomplete settings
   isAutocompleteEnabled: boolean;
@@ -27,6 +28,7 @@ export interface UISlice {
   setScaleFactor: (factor: number) => void;
   setSettingsPanelOpen: (isOpen: boolean) => void;
   setTutorialOpen: (isOpen: boolean) => void;
+  setResumeModalOpen: (isOpen: boolean) => void;
   setAutocompleteEnabled: (enabled: boolean) => void;
   setHasUserInput: (hasInput: boolean) => void;
 }
@@ -51,6 +53,7 @@ export const createUISlice: StateCreator<
   // Panel and modal states
   isSettingsPanelOpen: false,
   isTutorialOpen: false,
+  isResumeModalOpen: false,
   
   // Autocomplete settings
   isAutocompleteEnabled: false, // Default to disabled, like dark mode
@@ -69,10 +72,16 @@ export const createUISlice: StateCreator<
   setSettingsPanelOpen: (isOpen: boolean) => set({ isSettingsPanelOpen: isOpen }),
   setTutorialOpen: (isOpen: boolean) => {
     // Always set both states to the same value
-    set({ 
+    set({
       isTutorialOpen: isOpen,
     });
     // Also pause/unpause timer through dependency
+    get().setShouldPauseTimer(isOpen);
+  },
+
+  setResumeModalOpen: (isOpen: boolean) => {
+    set({ isResumeModalOpen: isOpen });
+    // Pause timer when resume modal is open
     get().setShouldPauseTimer(isOpen);
   }
 });

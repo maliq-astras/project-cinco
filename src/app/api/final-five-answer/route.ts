@@ -14,21 +14,7 @@ type ChallengeWithAnswer = {
   answer: string | { [key: string]: string };
 };
 
-// Initialize database indexes
-export async function initializeIndexes() {
-  const { db } = await connectToDatabase();
-  
-  // Create indexes if they don't exist
-  await db.collection('challenges').createIndex(
-    { challengeId: 1 }, 
-    { unique: true, name: 'challengeId_1' }
-  );
-  
-  console.log('Final-five-answer indexes initialized');
-}
-
-// Initialize indexes on startup
-initializeIndexes().catch(console.error);
+// Database indexes are initialized elsewhere to avoid Next.js route validation issues
 
 export async function POST(request: Request) {
   try {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useChallenge } from '@/hooks/api';
@@ -14,6 +14,7 @@ interface UseMainContainerEventsProps {
   setShouldFocusInput: (value: boolean) => void;
   setScaleFactor: (factor: number) => void;
   isTimerActive: boolean;
+  shouldPauseTimer: boolean;
   gameState: GameState;
   resetTimer: () => void;
   isHardModeEnabled: boolean;
@@ -30,6 +31,7 @@ export const useMainContainerEvents = ({
   setShouldFocusInput,
   setScaleFactor,
   isTimerActive,
+  shouldPauseTimer,
   gameState,
   resetTimer,
   isHardModeEnabled,
@@ -38,6 +40,15 @@ export const useMainContainerEvents = ({
   fetchChallenge
 }: UseMainContainerEventsProps) => {
   const { language } = useLanguage();
+
+  // Check if store has been hydrated
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    // Small delay to ensure Zustand hydration completes
+    const timer = setTimeout(() => setHasHydrated(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
   
   // Fetch challenge using React Query
   const { data: challenge } = useChallenge(language);
@@ -58,38 +69,40 @@ export const useMainContainerEvents = ({
         setShouldFocusInput(false);
       }, 100);
     }
-  }, [shouldFocusInput, setShouldFocusInput]);
+  }, [shouldFocusInput, setShouldFocusInput, gameControlsRef]);
 
-  // Initialize the timer based on hard mode setting
+  // Initialize the timer based on hard mode setting (only for fresh games)
   useEffect(() => {
-    if (!isTimerActive && !gameState.isGameOver) {
+    const { hasSeenClue: persistedHasSeenClue } = useGameStore.getState();
+    if (hasHydrated && !isTimerActive && !gameState.isGameOver && !persistedHasSeenClue) {
       resetTimer();
     }
-  }, [isHardModeEnabled, isTimerActive, gameState.isGameOver, resetTimer]);
+  }, [hasHydrated, isHardModeEnabled, gameState.isGameOver, resetTimer, isTimerActive]);
 
-  // Update game state when challenge data is fetched
+  // Update game state when challenge data is fetched (only for fresh games)
   useEffect(() => {
-    if (challenge) {
+    const { hasSeenClue: persistedHasSeenClue } = useGameStore.getState();
+    if (hasHydrated && challenge && !persistedHasSeenClue && !gameState.isGameOver) {
       fetchChallenge(language);
     }
-  }, [challenge, language, fetchChallenge]);
+  }, [hasHydrated, challenge, language, fetchChallenge, gameState.isGameOver]);
 
   // Handle the timer
   useEffect(() => {
-    if (isTimerActive && !gameState.isGameOver) {
+    if (isTimerActive && !gameState.isGameOver && !shouldPauseTimer) {
       const timer = setInterval(() => {
         const currentTimeRemaining = useGameStore.getState().timeRemaining;
-        
+
         if (currentTimeRemaining > 0 && !useGameStore.getState().gameState.isGameOver) {
           decrementTimer();
         } else {
           clearInterval(timer);
         }
       }, 1000);
-      
+
       return () => clearInterval(timer);
     }
-  }, [isTimerActive, timeRemaining, decrementTimer, gameState.isGameOver]);
+  }, [isTimerActive, shouldPauseTimer, timeRemaining, decrementTimer, gameState.isGameOver]);
 
   return {};
 };

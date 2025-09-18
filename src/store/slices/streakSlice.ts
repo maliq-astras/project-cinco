@@ -1,5 +1,7 @@
 import { StateCreator } from 'zustand';
 import type { GameStore } from '../../types';
+import { getEasternDateString, getEasternDayOfWeek, getEasternTime } from '@/utils/easternTime';
+import { storage, STORAGE_KEYS } from '@/utils/localStorage';
 
 export interface StreakSlice {
   // Streak tracking
@@ -13,6 +15,8 @@ export interface StreakSlice {
   resetWeeklyStreak: () => void;
   updateMissedDays: () => void;
   hasPlayedToday: () => boolean;
+  loadStreakData: () => void;
+  saveStreakData: () => void;
 }
 
 export const createStreakSlice: StateCreator<
@@ -21,7 +25,7 @@ export const createStreakSlice: StateCreator<
   [],
   StreakSlice
 > = (set, get, _api) => ({
-  // Initial state
+  // Initial state - will be overridden by loadStreakData
   currentStreak: 0,
   weeklyCompletions: [null, null, null, null, null, null, null], // [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
   lastCompletionDate: null,
@@ -30,10 +34,9 @@ export const createStreakSlice: StateCreator<
   updateStreak: () => {
     // First, mark any missed days before processing current day
     get().updateMissedDays();
-    
-    const now = new Date();
-    const today = now.toISOString().split('T')[0]; // Get YYYY-MM-DD format
-    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    const today = getEasternDateString(); // Get Eastern Time YYYY-MM-DD format
+    const dayOfWeek = getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
     
     const { lastCompletionDate, weeklyCompletions, currentStreak } = get();
     
@@ -55,9 +58,10 @@ export const createStreakSlice: StateCreator<
       return;
     }
     
-    // Check if this is consecutive from yesterday
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
+    // Check if this is consecutive from yesterday (Eastern Time)
+    const easternTime = getEasternTime();
+    const yesterday = new Date(easternTime);
+    yesterday.setDate(easternTime.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
     
     const newWeeklyCompletions = [...weeklyCompletions];
@@ -92,6 +96,9 @@ export const createStreakSlice: StateCreator<
       lastCompletionDate: today,
       currentStreak: newStreak
     });
+
+    // Save to localStorage
+    get().saveStreakData();
   },
   
   resetWeeklyStreak: () => {
@@ -99,15 +106,17 @@ export const createStreakSlice: StateCreator<
       weeklyCompletions: [null, null, null, null, null, null, null],
       currentStreak: 0
     });
+
+    // Save to localStorage
+    get().saveStreakData();
   },
   
   trackFailedAttempt: () => {
     // First, mark any missed days before processing current day
     get().updateMissedDays();
-    
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const dayOfWeek = now.getDay();
+
+    const today = getEasternDateString();
+    const dayOfWeek = getEasternDayOfWeek();
     
     const { lastCompletionDate, weeklyCompletions } = get();
     
@@ -124,12 +133,14 @@ export const createStreakSlice: StateCreator<
       lastCompletionDate: today,
       currentStreak: 0 // Failed attempts break the streak
     });
+
+    // Save to localStorage
+    get().saveStreakData();
   },
   
   updateMissedDays: () => {
-    const now = new Date();
-    const currentDayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const today = now.toISOString().split('T')[0];
+    const currentDayOfWeek = getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, etc.
+    const today = getEasternDateString();
     
     const { weeklyCompletions, currentStreak, todayGameData } = get();
     const newWeeklyCompletions = [...weeklyCompletions];
@@ -158,12 +169,34 @@ export const createStreakSlice: StateCreator<
         // Only reset streak if today is not completed
         currentStreak: todayCompleted ? Math.max(currentStreak, 1) : 0
       });
+
+      // Save to localStorage
+      get().saveStreakData();
     }
   },
   
   hasPlayedToday: () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getEasternDateString();
     const { lastCompletionDate } = get();
     return lastCompletionDate === today;
+  },
+
+  loadStreakData: () => {
+    const savedData = storage.get(STORAGE_KEYS.STREAK_DATA, {
+      currentStreak: 0,
+      weeklyCompletions: [null, null, null, null, null, null, null],
+      lastCompletionDate: null
+    });
+
+    set(savedData);
+  },
+
+  saveStreakData: () => {
+    const { currentStreak, weeklyCompletions, lastCompletionDate } = get();
+    storage.set(STORAGE_KEYS.STREAK_DATA, {
+      currentStreak,
+      weeklyCompletions,
+      lastCompletionDate
+    });
   }
 });

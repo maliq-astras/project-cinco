@@ -5,19 +5,19 @@ interface Step {
   type: string;
 }
 
-interface FormData {
+interface ModalFormData {
   [key: string]: string | string[] | number | File | null | undefined;
 }
 
 interface UseModalFormProps {
   steps: Step[];
-  initialFormData: FormData;
-  onSubmit: (formData: FormData) => Promise<void>;
+  initialFormData: ModalFormData;
+  onSubmit: (formData: ModalFormData) => Promise<void>;
 }
 
 export const useModalForm = ({ steps, initialFormData, onSubmit }: UseModalFormProps) => {
   const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<ModalFormData>(initialFormData);
   const [submitted, setSubmitted] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSecondDropdownOpen, setIsSecondDropdownOpen] = useState(false);

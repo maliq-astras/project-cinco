@@ -19,36 +19,74 @@ export const useGameStore = create<GameStore>()(
     }),
     {
       name: 'cinco-game-storage', // Unique name for localStorage key
-      version: 1, // Version for handling data migrations
-      partialize: (state) => ({ 
-        // Only persist the hard mode setting and streak data
+      version: 2, // Version for handling data migrations
+      skipHydration: false, // Ensure hydration happens
+      partialize: (state) => ({
+        // Settings and streak data
         isHardModeEnabled: state.isHardModeEnabled,
         isAutocompleteEnabled: state.isAutocompleteEnabled,
         currentStreak: state.currentStreak,
         weeklyCompletions: state.weeklyCompletions,
         lastCompletionDate: state.lastCompletionDate,
-        // Persist today's game data for full endgame experience on refresh
+        // Today's game data for full endgame experience on refresh
         todayGameData: state.todayGameData,
-        todayChallenge: state.todayChallenge
+        todayChallenge: state.todayChallenge,
+        // Persist game state for resuming gameplay
+        gameState: state.gameState,
+        hasSeenClue: state.hasSeenClue,
+        canRevealNewClue: state.canRevealNewClue,
+        canMakeGuess: state.canMakeGuess,
+        lastRevealedFactIndex: state.lastRevealedFactIndex,
+        hasMadeGuess: state.hasMadeGuess,
+        // Persist timer state
+        timeRemaining: state.timeRemaining,
+        isTimerActive: state.isTimerActive,
+        timerStartTime: state.timerStartTime,
+        hardMode: state.hardMode,
+        shouldPauseTimer: state.shouldPauseTimer,
+        // Persist Final Five completion state
+        isFinalFiveCompleted: state.isFinalFiveCompleted
       }),
       migrate: (persistedState: unknown, version: number) => {
+        if (!persistedState || typeof persistedState !== 'object') {
+          return persistedState;
+        }
+
         // Migration from version 0 to 1: convert boolean[] to new format
         if (version === 0) {
-          const state = persistedState as Partial<GameStore>;
+          const state = persistedState as Record<string, unknown>;
           const oldCompletions = state.weeklyCompletions;
           if (Array.isArray(oldCompletions) && oldCompletions.length === 7) {
             // Convert boolean array to new format
-            const newCompletions = oldCompletions.map((completed: unknown) => 
+            const newCompletions = oldCompletions.map((completed: unknown) =>
               (typeof completed === 'boolean' && completed) ? 'completed' : null
             );
             return {
-              ...(persistedState as Record<string, unknown>),
+              ...state,
               weeklyCompletions: newCompletions
             };
           }
         }
+        // Migration from version 1 to 2: add game state persistence
+        if (version <= 1) {
+          // Previous versions didn't persist game state, so keep only the old fields
+          return persistedState;
+        }
         return persistedState;
       },
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          // Check if game is in progress - should NEVER show resume modal if entire game is completed
+          // Game is completed if: main game over AND Final Five completed, OR if there's no time left
+          const isEntireGameCompleted = state.gameState?.isGameOver && state.isFinalFiveCompleted;
+
+          if (state.hasSeenClue && !isEntireGameCompleted && state.timeRemaining > 0) {
+            state.isResumeModalOpen = true;
+            state.shouldPauseTimer = true;
+            state.isTimerActive = false;
+          }
+        }
+      }
     }
   )
 ); 

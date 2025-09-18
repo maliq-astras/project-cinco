@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useGameStore } from '@/store/gameStore';
 
 interface Guess {
   isCorrect: boolean;
@@ -11,7 +12,7 @@ interface UseWrongAnswerOverlayEventsProps {
   actualWrongGuessCount: number;
   totalWrongGuessCount: number;
   maxGuesses: number;
-  guesses: Guess[];
+  _guesses: Guess[];
   previousWrongGuessCount: React.MutableRefObject<number>;
   setCurrentWrongGuessCount: (count: number) => void;
   setIsVisible: (visible: boolean) => void;
@@ -23,36 +24,46 @@ export function useWrongAnswerOverlayEvents({
   actualWrongGuessCount,
   totalWrongGuessCount,
   maxGuesses,
-  guesses,
+  _guesses,
   previousWrongGuessCount,
   setCurrentWrongGuessCount,
   setIsVisible,
   setModalAnimation
 }: UseWrongAnswerOverlayEventsProps) {
+  const isGameOver = useGameStore(state => state.gameState.isGameOver);
+  const hasInitialized = useRef(false);
+
+  // Initialize previousWrongGuessCount on mount to prevent showing overlay for existing guesses
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      // ALWAYS initialize to current count on page refresh to prevent showing overlay
+      // for existing wrong guesses. Overlay should ONLY show for new user input guesses.
+      previousWrongGuessCount.current = actualWrongGuessCount;
+      hasInitialized.current = true;
+    }
+  }, [actualWrongGuessCount]);
+
   // Show overlay when actual wrong guess count increases (but display total count)
   useEffect(() => {
+    // Never show overlay if game is over
+    if (isGameOver) return;
+
     // Only trigger if we have a new wrong guess (actualWrongGuessCount increased)
     if (actualWrongGuessCount > previousWrongGuessCount.current && totalWrongGuessCount <= maxGuesses) {
-      // Check if the most recent guess was actually wrong (not a skip)
-      const lastGuess = guesses[guesses.length - 1];
-      const wasLastGuessActuallyWrong = lastGuess && !lastGuess.isCorrect && !lastGuess.isFinalFiveGuess && lastGuess.guess !== "___SKIPPED___";
-      
-      if (wasLastGuessActuallyWrong) {
-        // Update previous count IMMEDIATELY to prevent retriggering
-        previousWrongGuessCount.current = actualWrongGuessCount;
-        
-        setCurrentWrongGuessCount(totalWrongGuessCount); // Display total including skips
-        setIsVisible(true);
-        
-        // Auto-hide after 3 seconds
-        const timer = setTimeout(() => {
-          setIsVisible(false);
-        }, 3000);
-        
-        return () => clearTimeout(timer);
-      }
+      // Update previous count IMMEDIATELY to prevent retriggering
+      previousWrongGuessCount.current = actualWrongGuessCount;
+
+      setCurrentWrongGuessCount(totalWrongGuessCount); // Display total including skips
+      setIsVisible(true);
+
+      // Auto-hide after 3 seconds
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [actualWrongGuessCount, totalWrongGuessCount, maxGuesses, guesses, setCurrentWrongGuessCount, setIsVisible]);
+  }, [actualWrongGuessCount, totalWrongGuessCount, maxGuesses, isGameOver, setCurrentWrongGuessCount, setIsVisible]);
 
   // Trigger shake animation after modal appears
   useEffect(() => {
