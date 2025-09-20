@@ -22,6 +22,9 @@ export interface CoreGameSlice {
   isPendingFinalFiveTransition: boolean;
   isProcessingGuess: boolean;
   hasMadeGuess: boolean;
+
+  // Game phase tracking
+  isMainGameSectionOver: boolean;
   
   // Today's game data for persistence
   todayGameData: {
@@ -67,6 +70,9 @@ export const createCoreGameSlice: StateCreator<
   isPendingFinalFiveTransition: false,
   isProcessingGuess: false,
   hasMadeGuess: false,
+
+  // Game phase tracking
+  isMainGameSectionOver: false,
   
   // Today's game data for persistence
   todayGameData: null,
@@ -338,12 +344,16 @@ export const createCoreGameSlice: StateCreator<
         };
 
         if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
-          // Immediately set pending state to prevent further interactions
-          set({
+          // Mark main game section as over
+          const updatedState = {
             ...newState,
+            isMainGameSectionOver: true,
             isPendingFinalFiveTransition: true
-          });
-          
+          };
+
+          // Set state immediately
+          set(updatedState);
+
           // Then show the transition after delay
           setTimeout(() => {
             set({
@@ -353,8 +363,8 @@ export const createCoreGameSlice: StateCreator<
 
             // Final Five options will be fetched when the modal opens
           }, 1500);
-          
-          return newState;
+
+          return updatedState;
         }
 
         return newState;
@@ -421,12 +431,16 @@ export const createCoreGameSlice: StateCreator<
         }
 
         if (shouldShowFinalFive(newGuesses) && !isFinalFiveActive && !showFinalFiveTransition) {
-          // Immediately set pending state to prevent further interactions
-          set({
+          // Mark main game section as over
+          const updatedState = {
             ...newState,
+            isMainGameSectionOver: true,
             isPendingFinalFiveTransition: true
-          });
-          
+          };
+
+          // Set state immediately
+          set(updatedState);
+
           // Then show the transition after delay
           setTimeout(() => {
             set({
@@ -436,8 +450,8 @@ export const createCoreGameSlice: StateCreator<
 
             // Final Five options will be fetched when the modal opens
           }, 1500);
-          
-          return newState;
+
+          return updatedState;
         }
 
         return newState;
@@ -506,9 +520,31 @@ export const createCoreGameSlice: StateCreator<
         set(savedState);
 
         // SMART STATE RECOVERY: Use reveals vs guesses to determine correct state
-        const { gameState } = get();
+        const { gameState, lastRevealedFactIndex } = get();
         const revealsCount = gameState.revealedFacts.length;
-        const guessesCount = gameState.guesses.length;
+        const allGuessesCount = gameState.guesses.length;
+        const wrongGuessesCount = gameState.guesses.filter(g => !g.isCorrect && !g.isFinalFiveGuess).length;
+
+        // CRITICAL: Check for inconsistent state (refresh during animation)
+        const hasInconsistentLastRevealed = lastRevealedFactIndex !== null && 
+                                          !gameState.revealedFacts.includes(lastRevealedFactIndex);
+        
+        // CRITICAL: Check if canMakeGuess is true but user shouldn't be able to guess
+        // This happens when user refreshes during card animation
+        const hasInconsistentGuessState = savedState.canMakeGuess && revealsCount <= wrongGuessesCount;
+        
+        const hasInconsistentState = hasInconsistentLastRevealed || hasInconsistentGuessState;
+
+        // DEBUG: Log the state for analysis
+        console.log('🔍 STATE RECOVERY DEBUG:', {
+          revealsCount,
+          allGuessesCount,
+          wrongGuessesCount,
+          lastRevealedFactIndex,
+          revealedFacts: gameState.revealedFacts,
+          hasInconsistentState,
+          guesses: gameState.guesses.map(g => ({ guess: g.guess, isCorrect: g.isCorrect }))
+        });
 
         // Clear any stuck view state
         const updatedState: Partial<GameStore> = {
@@ -532,17 +568,34 @@ export const createCoreGameSlice: StateCreator<
           }
         }
 
+        // DEBUG: Log the state for analysis
+        console.log('🔍 STATE RECOVERY DEBUG:', {
+          revealsCount,
+          allGuessesCount,
+          wrongGuessesCount,
+          savedCanMakeGuess: savedState.canMakeGuess,
+          hasInconsistentLastRevealed,
+          hasInconsistentGuessState,
+          hasInconsistentState
+        });
+
         // SMART LOGIC: Determine what user should be able to do
-        if (revealsCount === guessesCount) {
-          // Equal reveals and guesses = user should reveal next fact
+        if (hasInconsistentState) {
+          // User refreshed during card animation - clear inconsistent state
+          updatedState.lastRevealedFactIndex = null;
           updatedState.canRevealNewClue = true;
           updatedState.canMakeGuess = false;
-        } else if (revealsCount > guessesCount) {
-          // More reveals than guesses = user should make a guess
+          console.log('🔧 FIXED: Inconsistent card state after refresh during animation');
+        } else if (revealsCount === wrongGuessesCount) {
+          // Equal reveals and wrong guesses = user should reveal next fact
+          updatedState.canRevealNewClue = true;
+          updatedState.canMakeGuess = false;
+        } else if (revealsCount > wrongGuessesCount) {
+          // More reveals than wrong guesses = user should make a guess
           updatedState.canRevealNewClue = false;
           updatedState.canMakeGuess = true;
         } else {
-          // This shouldn't happen, but default to revealing
+          // Less reveals than wrong guesses = user should reveal next fact
           updatedState.canRevealNewClue = true;
           updatedState.canMakeGuess = false;
         }

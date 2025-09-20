@@ -26,24 +26,26 @@ export const getTimeUntilEasternMidnight = (): {
   seconds: number;
   totalMs: number;
 } => {
+  // Get current time in Eastern timezone
   const now = new Date();
-  const easternTime = getEasternTime();
+  const easternNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
 
   // Create next Eastern midnight
-  const nextEasternMidnight = new Date(easternTime);
-  nextEasternMidnight.setDate(easternTime.getDate() + 1);
+  const nextEasternMidnight = new Date(easternNow);
+  nextEasternMidnight.setDate(easternNow.getDate() + 1);
   nextEasternMidnight.setHours(0, 0, 0, 0);
 
-  // Convert back to UTC for comparison
-  const nextMidnightUTC = new Date(nextEasternMidnight.toLocaleString("en-US", { timeZone: "UTC" }));
+  // Calculate time difference using Eastern times
+  const timeDiff = nextEasternMidnight.getTime() - easternNow.getTime();
 
-  const timeDiff = nextMidnightUTC.getTime() - now.getTime();
+  // Handle negative values (shouldn't happen, but safety check)
+  const safeDiff = Math.max(0, timeDiff);
 
-  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  const hours = Math.floor(safeDiff / (1000 * 60 * 60));
+  const minutes = Math.floor((safeDiff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((safeDiff % (1000 * 60)) / 1000);
 
-  return { hours, minutes, seconds, totalMs: timeDiff };
+  return { hours, minutes, seconds, totalMs: safeDiff };
 };
 
 export const wasEasternYesterday = (dateString: string): boolean => {

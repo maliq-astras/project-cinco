@@ -77,12 +77,13 @@ export const createTimerSlice: StateCreator<
         }
         
         // Then start the Final Five transition
-        set({ 
+        set({
           timeRemaining: 0,
           showFinalFiveTransition: true,
           finalFiveTransitionReason: 'time',
           isTimerActive: false, // Stop the main timer
-          isPendingFinalFiveTransition: true // Prevent further interactions
+          isPendingFinalFiveTransition: true, // Prevent further interactions
+          isMainGameSectionOver: true // Mark main game section as complete
         });
 
         // Final Five options will be fetched when the modal opens

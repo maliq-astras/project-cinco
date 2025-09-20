@@ -14,7 +14,7 @@ export interface StreakSlice {
   trackFailedAttempt: () => void;
   resetWeeklyStreak: () => void;
   updateMissedDays: () => void;
-  hasPlayedToday: () => boolean;
+  hasPlayedToday: () => boolean | null;
   loadStreakData: () => void;
   saveStreakData: () => void;
 }
@@ -177,8 +177,13 @@ export const createStreakSlice: StateCreator<
   
   hasPlayedToday: () => {
     const today = getEasternDateString();
-    const { lastCompletionDate } = get();
-    return lastCompletionDate === today;
+    const { lastCompletionDate, todayGameData } = get();
+    
+    // Check both streak completion and today's game data
+    const streakCompleted = lastCompletionDate === today;
+    const gameCompleted = todayGameData && todayGameData.completionDate === today;
+    
+    return streakCompleted || gameCompleted;
   },
 
   loadStreakData: () => {

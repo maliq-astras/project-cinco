@@ -5,6 +5,7 @@ import { createTimerSlice } from './slices/timerSlice';
 import { createFinalFiveSlice } from './slices/finalFiveSlice';
 import { createUISlice } from './slices/uiSlice';
 import { createStreakSlice } from './slices/streakSlice';
+import { clearStaleGameData } from '../utils/localStorage';
 import type { GameStore } from '../types';
 
 export const useGameStore = create<GameStore>()(
@@ -28,24 +29,43 @@ export const useGameStore = create<GameStore>()(
         currentStreak: state.currentStreak,
         weeklyCompletions: state.weeklyCompletions,
         lastCompletionDate: state.lastCompletionDate,
+        
         // Today's game data for full endgame experience on refresh
         todayGameData: state.todayGameData,
         todayChallenge: state.todayChallenge,
-        // Persist game state for resuming gameplay
+        
+        // Core game state for resuming gameplay
         gameState: state.gameState,
         hasSeenClue: state.hasSeenClue,
         canRevealNewClue: state.canRevealNewClue,
         canMakeGuess: state.canMakeGuess,
         lastRevealedFactIndex: state.lastRevealedFactIndex,
         hasMadeGuess: state.hasMadeGuess,
-        // Persist timer state
+        isMainGameSectionOver: state.isMainGameSectionOver,
+        isPendingFinalFiveTransition: state.isPendingFinalFiveTransition,
+        
+        // Victory/endgame state
+        isVictoryAnimationActive: state.isVictoryAnimationActive,
+        victoryAnimationStep: state.victoryAnimationStep,
+        gameOutcome: state.gameOutcome,
+        showGameMessage: state.showGameMessage,
+        
+        // Timer state
         timeRemaining: state.timeRemaining,
         isTimerActive: state.isTimerActive,
         timerStartTime: state.timerStartTime,
         hardMode: state.hardMode,
         shouldPauseTimer: state.shouldPauseTimer,
-        // Persist Final Five completion state
-        isFinalFiveCompleted: state.isFinalFiveCompleted
+        
+        // Final Five state
+        isFinalFiveCompleted: state.isFinalFiveCompleted,
+        showFinalFiveTransition: state.showFinalFiveTransition,
+        finalFiveTransitionReason: state.finalFiveTransitionReason,
+        finalFiveTimeRemaining: Math.max(5, state.finalFiveTimeRemaining), // Never less than 5 seconds
+        isFinalFiveActive: state.isFinalFiveActive,
+        
+        // User preferences
+        scaleFactor: state.scaleFactor
       }),
       migrate: (persistedState: unknown, version: number) => {
         if (!persistedState || typeof persistedState !== 'object') {
@@ -75,15 +95,79 @@ export const useGameStore = create<GameStore>()(
         return persistedState;
       },
       onRehydrateStorage: () => (state) => {
-        if (state) {
-          // Check if game is in progress - should NEVER show resume modal if entire game is completed
-          // Game is completed if: main game over AND Final Five completed, OR if there's no time left
-          const isEntireGameCompleted = state.gameState?.isGameOver && state.isFinalFiveCompleted;
+        // CRITICAL: Clear stale game data BEFORE hydration
+        clearStaleGameData();
 
-          if (state.hasSeenClue && !isEntireGameCompleted && state.timeRemaining > 0) {
-            state.isResumeModalOpen = true;
+        if (state) {
+          // CRITICAL: Check if user already completed today before any Final Five logic
+          const today = new Date().toISOString().split('T')[0];
+          const hasCompletedToday = state.todayGameData && state.todayGameData.completionDate === today;
+          
+          if (hasCompletedToday && state.todayGameData) {
+            // User already completed today - force them to endgame view
+            state.showFinalFiveTransition = false;
+            state.isFinalFiveActive = false;
+            state.isMainGameSectionOver = false;
+            state.isPendingFinalFiveTransition = false;
+            state.gameState.isGameOver = true;
+            state.gameOutcome = state.todayGameData.outcome;
+            state.isVictoryAnimationActive = false;
+            state.victoryAnimationStep = state.todayGameData.outcome.includes('win') ? 'summary' : null;
+            state.showGameMessage = true;
             state.shouldPauseTimer = true;
             state.isTimerActive = false;
+            state.isResumeModalOpen = false;
+          } else if (state.showFinalFiveTransition || state.isMainGameSectionOver) {
+            // User was in or heading to Final Five - show transition
+            state.showFinalFiveTransition = true;
+            state.shouldPauseTimer = true;
+            state.isTimerActive = false;
+            state.isResumeModalOpen = false;
+          } else {
+            // CRITICAL: Clear all transient states that could cause conflicts
+            state.viewingFact = null;
+            state.cardSourcePosition = null;
+            state.isDrawingFromStack = false;
+            state.isReturningToStack = false;
+            state.isCardAnimatingOut = false;
+            state.shouldFocusInput = false;
+            state.hoveredFact = null;
+            state.isProcessingGuess = false;
+            state.hasUserInput = false;
+            
+            // Clear modal states (they should reopen naturally if needed)
+            state.isSettingsPanelOpen = false;
+            state.isTutorialOpen = false;
+            
+            // VALIDATE: Fix inconsistent state from refresh during animation
+            const revealsCount = state.gameState?.revealedFacts?.length || 0;
+            const wrongGuessesCount = state.gameState?.guesses?.filter(g => !g.isCorrect && !g.isFinalFiveGuess)?.length || 0;
+            
+            // Fix inconsistent lastRevealedFactIndex
+            const hasInconsistentLastRevealed = state.lastRevealedFactIndex !== null && 
+                state.gameState?.revealedFacts && 
+                !state.gameState.revealedFacts.includes(state.lastRevealedFactIndex);
+            
+            // Fix inconsistent canMakeGuess state (refresh during card animation)
+            const hasInconsistentGuessState = state.canMakeGuess && revealsCount <= wrongGuessesCount;
+            
+            if (hasInconsistentLastRevealed || hasInconsistentGuessState) {
+              console.log('🔧 ZUSTAND FIX: Inconsistent card state detected');
+              state.lastRevealedFactIndex = null;
+              state.canRevealNewClue = true;
+              state.canMakeGuess = false;
+            }
+            
+            // Normal game resume logic
+            const shouldShowResumeModal = state.hasSeenClue &&
+                                         !state.gameState?.isGameOver &&
+                                         state.timeRemaining > 0;
+
+            if (shouldShowResumeModal) {
+              state.isResumeModalOpen = true;
+              state.shouldPauseTimer = true;
+              state.isTimerActive = false;
+            }
           }
         }
       }
