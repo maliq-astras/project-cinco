@@ -5,9 +5,23 @@
 
 export const getEasternTime = (): Date => {
   const now = new Date();
-  // Convert to Eastern Time using Intl API (handles EST/EDT automatically)
-  const easternTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-  return easternTime;
+
+  // Get Eastern Time offset in minutes (handles EST/EDT automatically)
+  const easternFormatter = new Intl.DateTimeFormat('en', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+
+  const easternParts = easternFormatter.formatToParts(now);
+  const easternDateStr = `${easternParts.find(p => p.type === 'year')?.value}-${easternParts.find(p => p.type === 'month')?.value}-${easternParts.find(p => p.type === 'day')?.value}T${easternParts.find(p => p.type === 'hour')?.value}:${easternParts.find(p => p.type === 'minute')?.value}:${easternParts.find(p => p.type === 'second')?.value}`;
+
+  return new Date(easternDateStr);
 };
 
 export const getEasternDateString = (): string => {
@@ -27,15 +41,14 @@ export const getTimeUntilEasternMidnight = (): {
   totalMs: number;
 } => {
   // Get current time in Eastern timezone
-  const now = new Date();
-  const easternNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const easternNow = getEasternTime();
 
-  // Create next Eastern midnight
+  // Create next Eastern midnight by adding one day and setting to start of day
   const nextEasternMidnight = new Date(easternNow);
-  nextEasternMidnight.setDate(easternNow.getDate() + 1);
+  nextEasternMidnight.setDate(nextEasternMidnight.getDate() + 1);
   nextEasternMidnight.setHours(0, 0, 0, 0);
 
-  // Calculate time difference using Eastern times
+  // Calculate time difference
   const timeDiff = nextEasternMidnight.getTime() - easternNow.getTime();
 
   // Handle negative values (shouldn't happen, but safety check)
@@ -52,7 +65,7 @@ export const wasEasternYesterday = (dateString: string): boolean => {
   const easternTime = getEasternTime();
 
   const yesterday = new Date(easternTime);
-  yesterday.setDate(easternTime.getDate() - 1);
+  yesterday.setDate(yesterday.getDate() - 1);
   const easternYesterday = yesterday.toISOString().split('T')[0];
 
   return dateString === easternYesterday;

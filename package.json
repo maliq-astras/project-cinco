@@ -8,9 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:css": "stylelint \"**/*.css\"",
-    "seed": "ts-node -P tsconfig.scripts.json scripts/seed-database.ts",
-    "import-real-challenges": "ts-node -P tsconfig.scripts.json scripts/import-real-challenges.ts",
-    "challenge-rotation": "ts-node -P tsconfig.scripts.json scripts/challenge-rotation-manager.ts"
+    "seed": "ts-node -P tsconfig.scripts.json scripts/seed-database.ts"
   },
   "dependencies": {
     "@lordicon/react": "^1.10.1",
