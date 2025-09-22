@@ -9,6 +9,8 @@ export function useMainContainerState() {
   // Game store state
   const gameState = useGameStore(state => state.gameState);
   const hasSeenClue = useGameStore(state => state.hasSeenClue);
+  const hasSeenTodaysLoadingAnimation = useGameStore(state => state.hasSeenTodaysLoadingAnimation);
+  const setHasSeenTodaysLoadingAnimation = useGameStore(state => state.setHasSeenTodaysLoadingAnimation);
   const viewingFact = useGameStore(state => state.viewingFact);
   const fetchChallenge = useGameStore(state => state.fetchChallenge);
   const decrementTimer = useGameStore(state => state.decrementTimer);
@@ -50,14 +52,14 @@ export function useMainContainerState() {
   const [headerEntranceComplete, setHeaderEntranceComplete] = useState(false);
   const [gameEntranceComplete, setGameEntranceComplete] = useState(false);
 
-  // Sync loading states with game progress
+  // Sync loading states with daily loading animation
   useEffect(() => {
-    if (hasSeenClue && gameState.challenge) {
+    if (hasSeenTodaysLoadingAnimation && gameState.challenge) {
       setLoadingComplete(true);
       setHeaderEntranceComplete(true);
       setGameEntranceComplete(true);
     }
-  }, [hasSeenClue, gameState.challenge]);
+  }, [hasSeenTodaysLoadingAnimation, gameState.challenge]);
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -92,7 +94,9 @@ export function useMainContainerState() {
     todayGameData,
     isResumeModalOpen,
     setResumeModalOpen,
-    
+    hasSeenTodaysLoadingAnimation,
+    setHasSeenTodaysLoadingAnimation,
+
     // Theme
     colors,
     

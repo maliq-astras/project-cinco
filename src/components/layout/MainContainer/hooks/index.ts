@@ -38,12 +38,15 @@ export const useMainContainer = () => {
 
   // Handle loading complete with proper state setters
   const handleLoadingComplete = () => {
+    // Mark that user has seen today's loading animation
+    state.setHasSeenTodaysLoadingAnimation(true);
+
     state.setLoadingComplete(true);
-    
+
     setTimeout(() => {
       state.setHeaderEntranceComplete(true);
     }, 500);
-    
+
     setTimeout(() => {
       state.setGameEntranceComplete(true);
     }, 1200);

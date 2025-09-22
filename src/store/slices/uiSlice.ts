@@ -21,7 +21,10 @@ export interface UISlice {
   
   // Autocomplete settings
   isAutocompleteEnabled: boolean;
-  
+
+  // Daily loading animation state
+  hasSeenTodaysLoadingAnimation: boolean;
+
   // Actions
   setHoveredFact: (factIndex: number | null) => void;
   setShouldFocusInput: (shouldFocus: boolean) => void;
@@ -31,6 +34,7 @@ export interface UISlice {
   setResumeModalOpen: (isOpen: boolean) => void;
   setAutocompleteEnabled: (enabled: boolean) => void;
   setHasUserInput: (hasInput: boolean) => void;
+  setHasSeenTodaysLoadingAnimation: (hasSeen: boolean) => void;
 }
 
 export const createUISlice: StateCreator<
@@ -57,7 +61,10 @@ export const createUISlice: StateCreator<
   
   // Autocomplete settings
   isAutocompleteEnabled: false, // Default to disabled, like dark mode
-  
+
+  // Daily loading animation state
+  hasSeenTodaysLoadingAnimation: false, // Reset daily - user sees loading animation once per day
+
   // Actions
   setHoveredFact: (factIndex: number | null) => set({ hoveredFact: factIndex }),
   setShouldFocusInput: (shouldFocus: boolean) => set({ shouldFocusInput: shouldFocus }),
@@ -83,5 +90,7 @@ export const createUISlice: StateCreator<
     set({ isResumeModalOpen: isOpen });
     // Pause timer when resume modal is open
     get().setShouldPauseTimer(isOpen);
-  }
+  },
+
+  setHasSeenTodaysLoadingAnimation: (hasSeen: boolean) => set({ hasSeenTodaysLoadingAnimation: hasSeen })
 });

@@ -71,16 +71,20 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
               <motion.div
                 className={`${streakDisplayStyles.dayIndicator} border-gray-800`}
                 style={{
-                  backgroundColor: getDayIndicatorStyle(
-                    index, 
-                    currentDay, 
-                    weeklyCompletions, 
-                    colors.primary, 
-                    showCurrentDaySymbol
-                  ),
                   borderColor: `var(--color-${colors.primary})`
                 }}
-                {...streakDisplayAnimations.dayIndicator(shouldAnimate, index, animatedDays)}
+                {...streakDisplayAnimations.dayIndicator(
+                  shouldAnimate,
+                  index,
+                  animatedDays,
+                  getDayIndicatorStyle(
+                    index,
+                    currentDay,
+                    weeklyCompletions,
+                    colors.primary,
+                    showCurrentDaySymbol
+                  )
+                )}
               >
                 {weeklyCompletions[index] === 'completed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
@@ -98,7 +102,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
                     ✖
                   </motion.div>
                 )}
-                {weeklyCompletions[index] === 'missed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
+                {(weeklyCompletions[index] === 'missed' || (weeklyCompletions[index] === null && index < currentDay)) && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
                     className={streakDisplayStyles.checkmark}
                     style={{ color: `var(--color-${colors.dark})` }}

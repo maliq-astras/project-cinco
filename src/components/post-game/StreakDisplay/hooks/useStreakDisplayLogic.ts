@@ -30,7 +30,6 @@ export const useStreakDisplayLogic = ({
   // Get streak data from store
   const currentStreak = useGameStore(state => state.currentStreak);
   const weeklyCompletions = useGameStore(state => state.weeklyCompletions);
-  const updateMissedDays = useGameStore(state => state.updateMissedDays);
 
   // Animation values for the ticking counter
   const motionValue = useMotionValue(0);
@@ -39,15 +38,6 @@ export const useStreakDisplayLogic = ({
   
   // Get current day for enhanced animation
   const currentDay = getCurrentDay();
-
-  // Update missed days when component mounts
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      updateMissedDays();
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, [updateMissedDays]);
 
   // Set initial state based on shouldAnimate
   useEffect(() => {
@@ -108,8 +98,8 @@ export const useStreakDisplayLogic = ({
           return newAnimated;
         });
         
-        // If this day has any state (completed, failed, or missed), animate the next day
-        if (weeklyCompletions[dayIndex] !== null && dayIndex < currentDay) {
+        // Always animate sequentially up to and including current day
+        if (dayIndex < currentDay) {
           animateDay(dayIndex + 1);
         }
       }, dayIndex * 150);

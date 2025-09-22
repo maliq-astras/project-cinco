@@ -1,11 +1,12 @@
 export const streakDisplayAnimations = {
-  dayIndicator: (shouldAnimate: boolean, index: number, animatedDays: boolean[]) => ({
-    initial: { scale: 0 },
-    animate: { 
+  dayIndicator: (shouldAnimate: boolean, index: number, animatedDays: boolean[], finalBackgroundColor: string) => ({
+    initial: { scale: 0, backgroundColor: 'transparent' },
+    animate: {
       scale: animatedDays[index] ? 1 : 0.8,
-      opacity: animatedDays[index] ? 1 : 0.5
+      opacity: animatedDays[index] ? 1 : 0.5,
+      backgroundColor: animatedDays[index] ? finalBackgroundColor : 'transparent'
     },
-    transition: { 
+    transition: {
       duration: 0.3,
       delay: shouldAnimate ? index * 0.1 : 0
     }

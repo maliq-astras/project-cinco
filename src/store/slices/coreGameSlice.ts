@@ -89,9 +89,6 @@ export const createCoreGameSlice: StateCreator<
     try {
       const challenge = await fetchChallengeAPI(language);
       
-      // Update missed days and clear stale data before checking if user has played today
-      get().updateMissedDays();
-      
       // Check if user has already played today
       const hasPlayedToday = get().hasPlayedToday();
       
@@ -196,37 +193,33 @@ export const createCoreGameSlice: StateCreator<
           canRevealNewClue: false,
           lastRevealedFactIndex: factIndex,
           // Enable making a guess after revealing a new fact
-          canMakeGuess: true
+          canMakeGuess: true,
+          // Set hasSeenClue immediately to prevent refresh deadlock
+          hasSeenClue: true
         });
-        
-        // Then update the revealed facts list after a delay
-        setTimeout(() => {
-          set((state: GameStore) => {
-            // Limit to maximum 5 cards
-            let newRevealedFacts;
-            if (state.gameState.revealedFacts.length >= 5) {
-              // Remove the oldest card and add the new one
-              newRevealedFacts = [...state.gameState.revealedFacts.slice(1), factIndex];
-            } else {
-              // Add the new fact to the revealed facts
-              newRevealedFacts = [...state.gameState.revealedFacts, factIndex];
+
+        // Update the revealed facts list immediately (no delay)
+        set((state: GameStore) => {
+          // Limit to maximum 5 cards
+          let newRevealedFacts;
+          if (state.gameState.revealedFacts.length >= 5) {
+            // Remove the oldest card and add the new one
+            newRevealedFacts = [...state.gameState.revealedFacts.slice(1), factIndex];
+          } else {
+            // Add the new fact to the revealed facts
+            newRevealedFacts = [...state.gameState.revealedFacts, factIndex];
+          }
+
+          return {
+            gameState: {
+              ...state.gameState,
+              revealedFacts: newRevealedFacts
             }
-            
-            const updatedState = {
-              gameState: {
-                ...state.gameState,
-                revealedFacts: newRevealedFacts
-              }
-            };
+          };
+        });
 
-            // Save to localStorage after state update
-            setTimeout(() => {
-              get().saveGameData();
-            }, 100);
-
-            return updatedState;
-          });
-        }, 1000); // Delay to allow the flip animation to complete
+        // Save to localStorage immediately to prevent daily reset race condition
+        get().saveGameData();
       }
     }
   },

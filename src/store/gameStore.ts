@@ -5,7 +5,7 @@ import { createTimerSlice } from './slices/timerSlice';
 import { createFinalFiveSlice } from './slices/finalFiveSlice';
 import { createUISlice } from './slices/uiSlice';
 import { createStreakSlice } from './slices/streakSlice';
-import { clearStaleGameData } from '../utils/localStorage';
+import { performDailyReset, shouldMigrateUserData, migrateLegacyUserData } from '../utils/dailyResetManager';
 import type { GameStore } from '../types';
 
 export const useGameStore = create<GameStore>()(
@@ -64,8 +64,8 @@ export const useGameStore = create<GameStore>()(
         finalFiveTimeRemaining: Math.max(5, state.finalFiveTimeRemaining), // Never less than 5 seconds
         isFinalFiveActive: state.isFinalFiveActive,
         
-        // User preferences
-        scaleFactor: state.scaleFactor
+        // Daily UI state
+        hasSeenTodaysLoadingAnimation: state.hasSeenTodaysLoadingAnimation
       }),
       migrate: (persistedState: unknown, version: number) => {
         if (!persistedState || typeof persistedState !== 'object') {
@@ -95,10 +95,18 @@ export const useGameStore = create<GameStore>()(
         return persistedState;
       },
       onRehydrateStorage: () => (state) => {
-        // CRITICAL: Clear stale game data BEFORE hydration
-        clearStaleGameData();
-
         if (state) {
+          // Check for legacy data migration
+          if (shouldMigrateUserData()) {
+            const migratedData = migrateLegacyUserData();
+            Object.assign(state, migratedData);
+          }
+
+          // Perform daily reset if it's a new Eastern Time day
+          const resetData = performDailyReset(state);
+          if (Object.keys(resetData).length > 0) {
+            Object.assign(state, resetData);
+          }
           // CRITICAL: Check if user already completed today before any Final Five logic
           const today = new Date().toISOString().split('T')[0];
           const hasCompletedToday = state.todayGameData && state.todayGameData.completionDate === today;
@@ -138,25 +146,6 @@ export const useGameStore = create<GameStore>()(
             // Clear modal states (they should reopen naturally if needed)
             state.isSettingsPanelOpen = false;
             state.isTutorialOpen = false;
-            
-            // VALIDATE: Fix inconsistent state from refresh during animation
-            const revealsCount = state.gameState?.revealedFacts?.length || 0;
-            const wrongGuessesCount = state.gameState?.guesses?.filter(g => !g.isCorrect && !g.isFinalFiveGuess)?.length || 0;
-            
-            // Fix inconsistent lastRevealedFactIndex
-            const hasInconsistentLastRevealed = state.lastRevealedFactIndex !== null && 
-                state.gameState?.revealedFacts && 
-                !state.gameState.revealedFacts.includes(state.lastRevealedFactIndex);
-            
-            // Fix inconsistent canMakeGuess state (refresh during card animation)
-            const hasInconsistentGuessState = state.canMakeGuess && revealsCount <= wrongGuessesCount;
-            
-            if (hasInconsistentLastRevealed || hasInconsistentGuessState) {
-              console.log('🔧 ZUSTAND FIX: Inconsistent card state detected');
-              state.lastRevealedFactIndex = null;
-              state.canRevealNewClue = true;
-              state.canMakeGuess = false;
-            }
             
             // Normal game resume logic
             const shouldShowResumeModal = state.hasSeenClue &&

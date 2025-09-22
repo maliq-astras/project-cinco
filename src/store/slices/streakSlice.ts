@@ -13,7 +13,6 @@ export interface StreakSlice {
   updateStreak: () => void;
   trackFailedAttempt: () => void;
   resetWeeklyStreak: () => void;
-  updateMissedDays: () => void;
   hasPlayedToday: () => boolean | null;
   loadStreakData: () => void;
   saveStreakData: () => void;
@@ -32,9 +31,6 @@ export const createStreakSlice: StateCreator<
   
   // Streak tracking methods
   updateStreak: () => {
-    // First, mark any missed days before processing current day
-    get().updateMissedDays();
-
     const today = getEasternDateString(); // Get Eastern Time YYYY-MM-DD format
     const dayOfWeek = getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
     
@@ -112,8 +108,6 @@ export const createStreakSlice: StateCreator<
   },
   
   trackFailedAttempt: () => {
-    // First, mark any missed days before processing current day
-    get().updateMissedDays();
 
     const today = getEasternDateString();
     const dayOfWeek = getEasternDayOfWeek();
@@ -138,42 +132,6 @@ export const createStreakSlice: StateCreator<
     get().saveStreakData();
   },
   
-  updateMissedDays: () => {
-    const currentDayOfWeek = getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, etc.
-    const today = getEasternDateString();
-    
-    const { weeklyCompletions, currentStreak, todayGameData } = get();
-    const newWeeklyCompletions = [...weeklyCompletions];
-    let hasChanges = false;
-    
-    // Clear today's game data if it's from a previous day
-    if (todayGameData && todayGameData.completionDate !== today) {
-      get().clearTodayGameData();
-    }
-    
-    // Mark all days from Sunday to yesterday as missed if they're null
-    for (let i = 0; i < currentDayOfWeek; i++) {
-      if (newWeeklyCompletions[i] === null) {
-        newWeeklyCompletions[i] = 'missed';
-        hasChanges = true;
-      }
-    }
-    
-    // Only update the weeklyCompletions if there were changes
-    // Don't reset streak if today is already completed
-    if (hasChanges) {
-      const todayCompleted = newWeeklyCompletions[currentDayOfWeek] === 'completed';
-      
-      set({
-        weeklyCompletions: newWeeklyCompletions,
-        // Only reset streak if today is not completed
-        currentStreak: todayCompleted ? Math.max(currentStreak, 1) : 0
-      });
-
-      // Save to localStorage
-      get().saveStreakData();
-    }
-  },
   
   hasPlayedToday: () => {
     const today = getEasternDateString();
