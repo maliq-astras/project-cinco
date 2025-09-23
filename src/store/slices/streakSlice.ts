@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import type { GameStore } from '../../types';
-import { getEasternDateString, getEasternDayOfWeek, getEasternTime } from '@/utils/easternTime';
+// Eastern time utilities no longer needed - using challenge date directly
 import { storage, STORAGE_KEYS } from '@/utils/localStorage';
 
 export interface StreakSlice {
@@ -31,14 +31,23 @@ export const createStreakSlice: StateCreator<
   
   // Streak tracking methods
   updateStreak: () => {
-    const today = getEasternDateString(); // Get Eastern Time YYYY-MM-DD format
-    const dayOfWeek = getEasternDayOfWeek(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    // Use the current challenge's date to prevent timezone manipulation
+    const { gameState } = get();
+    const challengeDate = gameState?.challenge?.date;
+    
+    if (!challengeDate) {
+      return; // No challenge loaded, can't update streak
+    }
+    
+    // Calculate day of week from challenge date
+    const challengeDateObj = new Date(challengeDate + 'T12:00:00.000Z');
+    const dayOfWeek = challengeDateObj.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
     
     const { lastCompletionDate, weeklyCompletions, currentStreak } = get();
     
-    // Check if already completed today
-    if (lastCompletionDate === today) {
-      return; // Already completed today
+    // Check if already completed this challenge
+    if (lastCompletionDate === challengeDate) {
+      return; // Already completed this challenge
     }
     
     // Check if it's a new week (Sunday) - reset if so
@@ -48,17 +57,26 @@ export const createStreakSlice: StateCreator<
       
       set({
         weeklyCompletions: newWeeklyCompletions,
-        lastCompletionDate: today,
+        lastCompletionDate: challengeDate,
         currentStreak: 1
       });
       return;
     }
     
     // Check if this is consecutive from yesterday (Eastern Time)
-    const easternTime = getEasternTime();
-    const yesterday = new Date(easternTime);
-    yesterday.setDate(easternTime.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const currentDate = new Date();
+    const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
+    
+    // Format yesterday's date using Eastern timezone
+    const easternFormatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    
+    const yesterdayStr = easternFormatter.format(yesterday);
     
     const newWeeklyCompletions = [...weeklyCompletions];
     newWeeklyCompletions[dayOfWeek] = 'completed';
@@ -89,7 +107,7 @@ export const createStreakSlice: StateCreator<
     
     set({
       weeklyCompletions: newWeeklyCompletions,
-      lastCompletionDate: today,
+      lastCompletionDate: challengeDate,
       currentStreak: newStreak
     });
 
@@ -108,15 +126,23 @@ export const createStreakSlice: StateCreator<
   },
   
   trackFailedAttempt: () => {
-
-    const today = getEasternDateString();
-    const dayOfWeek = getEasternDayOfWeek();
+    // Use the current challenge's date to prevent timezone manipulation
+    const { gameState } = get();
+    const challengeDate = gameState?.challenge?.date;
+    
+    if (!challengeDate) {
+      return; // No challenge loaded, can't track failure
+    }
+    
+    // Calculate day of week from challenge date
+    const challengeDateObj = new Date(challengeDate + 'T12:00:00.000Z');
+    const dayOfWeek = challengeDateObj.getDay();
     
     const { lastCompletionDate, weeklyCompletions } = get();
     
-    // Check if already completed or failed today
-    if (lastCompletionDate === today) {
-      return; // Already processed today
+    // Check if already completed or failed this challenge
+    if (lastCompletionDate === challengeDate) {
+      return; // Already processed this challenge
     }
     
     const newWeeklyCompletions = [...weeklyCompletions];
@@ -124,7 +150,7 @@ export const createStreakSlice: StateCreator<
     
     set({
       weeklyCompletions: newWeeklyCompletions,
-      lastCompletionDate: today,
+      lastCompletionDate: challengeDate,
       currentStreak: 0 // Failed attempts break the streak
     });
 
@@ -134,12 +160,16 @@ export const createStreakSlice: StateCreator<
   
   
   hasPlayedToday: () => {
-    const today = getEasternDateString();
-    const { lastCompletionDate, todayGameData } = get();
+    const { gameState, lastCompletionDate, todayGameData } = get();
+    const currentChallengeDate = gameState?.challenge?.date;
     
-    // Check both streak completion and today's game data
-    const streakCompleted = lastCompletionDate === today;
-    const gameCompleted = todayGameData && todayGameData.completionDate === today;
+    if (!currentChallengeDate) {
+      return null; // No challenge loaded
+    }
+    
+    // Check both streak completion and today's game data for current challenge
+    const streakCompleted = lastCompletionDate === currentChallengeDate;
+    const gameCompleted = todayGameData && todayGameData.completionDate === currentChallengeDate;
     
     return streakCompleted || gameCompleted;
   },

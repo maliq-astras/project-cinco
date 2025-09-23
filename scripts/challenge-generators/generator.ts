@@ -7,11 +7,20 @@ export interface ChallengeGenerator {
   getData(): any[];
 }
 
-// Helper function to create date strings
+// Helper function to create date strings using Eastern timezone
 export function getDateString(baseDate: Date, daysFromBase: number): string {
   const date = new Date(baseDate);
   date.setDate(date.getDate() + daysFromBase);
-  return date.toISOString().split('T')[0];
+  
+  // Format using Eastern timezone
+  const easternFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  
+  return easternFormatter.format(date);
 }
 
 // Helper to shuffle arrays (for alternatives)

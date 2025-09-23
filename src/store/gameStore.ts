@@ -6,6 +6,7 @@ import { createFinalFiveSlice } from './slices/finalFiveSlice';
 import { createUISlice } from './slices/uiSlice';
 import { createStreakSlice } from './slices/streakSlice';
 import { performDailyReset, shouldMigrateUserData, migrateLegacyUserData } from '../utils/dailyResetManager';
+import { getEasternDateString } from '../utils/easternTime';
 import type { GameStore } from '../types';
 
 export const useGameStore = create<GameStore>()(
@@ -107,11 +108,11 @@ export const useGameStore = create<GameStore>()(
           if (Object.keys(resetData).length > 0) {
             Object.assign(state, resetData);
           }
-          // CRITICAL: Check if user already completed today before any Final Five logic
-          const today = new Date().toISOString().split('T')[0];
-          const hasCompletedToday = state.todayGameData && state.todayGameData.completionDate === today;
+          // CRITICAL: Check if user already completed current challenge before any Final Five logic
+          const currentChallengeDate = getEasternDateString(); // Current Eastern date
+          const hasCompletedCurrentChallenge = state.todayGameData && state.todayGameData.completionDate === currentChallengeDate;
           
-          if (hasCompletedToday && state.todayGameData) {
+          if (hasCompletedCurrentChallenge && state.todayGameData) {
             // User already completed today - force them to endgame view
             state.showFinalFiveTransition = false;
             state.isFinalFiveActive = false;
@@ -157,6 +158,13 @@ export const useGameStore = create<GameStore>()(
               state.shouldPauseTimer = true;
               state.isTimerActive = false;
             }
+          }
+
+          // TIMER FIX: Check for timer state corruption after hydration
+          if (state.hasSeenClue && !state.isTimerActive && !state.gameState?.isGameOver && state.timeRemaining > 0 && !hasCompletedCurrentChallenge) {
+            state.isTimerActive = true;
+            state.shouldPauseTimer = false;
+            state.timerStartTime = Date.now();
           }
         }
       }

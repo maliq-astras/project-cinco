@@ -203,11 +203,20 @@ function assignDates(challengeFiles: Array<{ filePath: string; category: Categor
   // Create smart category rotation
   const smartOrder = createSmartRotation(challengeFiles);
 
-  // Assign sequential dates using proper timezone
+  // Assign sequential dates using Eastern timezone
   smartOrder.forEach((_, index) => {
-    const challengeDate = new Date(startDate);
-    challengeDate.setDate(startDate.getDate() + index);
-    dates.push(challengeDate.toISOString().split('T')[0]);
+    const baseDate = new Date();
+    baseDate.setDate(baseDate.getDate() + index);
+    
+    // Format each date using Eastern timezone
+    const easternFormatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    
+    dates.push(easternFormatter.format(baseDate));
   });
 
   return dates;

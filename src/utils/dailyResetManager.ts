@@ -19,6 +19,14 @@ const isNewDay = (): boolean => {
 };
 
 /**
+ * Check if current game data is for a different challenge date
+ */
+const isNewChallenge = (currentState: GameStore): boolean => {
+  const currentDate = getEasternDateString();
+  return !!(currentState.todayGameData && currentState.todayGameData.completionDate !== currentDate);
+};
+
+/**
  * Get initial/default game state for a fresh game
  */
 const getInitialGameState = () => ({
@@ -102,37 +110,30 @@ const extractUserData = (state: GameStore) => ({
  * @returns Partial state update (empty object if no reset needed)
  */
 export const performDailyReset = (currentState: GameStore): Partial<GameStore> => {
-  if (!isNewDay()) {
+  // Reset if it's a new day OR if completion data is for a different challenge
+  if (!isNewDay() && !isNewChallenge(currentState)) {
     return {}; // No reset needed
   }
 
-  console.log('🌅 DAILY RESET: New Eastern Time day detected');
-  console.log('📅 Transitioning to fresh game state while preserving user data');
-
   // Extract user data to preserve
   const preservedUserData = extractUserData(currentState);
-
-  console.log('💾 PRESERVING USER DATA:', {
-    currentStreak: preservedUserData.currentStreak,
-    weeklyCompletions: preservedUserData.weeklyCompletions,
-    lastCompletionDate: preservedUserData.lastCompletionDate,
-    isHardModeEnabled: preservedUserData.isHardModeEnabled,
-    isAutocompleteEnabled: preservedUserData.isAutocompleteEnabled
-  });
 
   // Get fresh game state
   const freshGameState = getInitialGameState();
 
   // Update the stored date to current Eastern date
-  const currentDate = getEasternDateString();
-  storage.set(STORAGE_KEYS.LAST_CHALLENGE_DATE, currentDate);
-
-  console.log('✅ DAILY RESET COMPLETE: Fresh game state with preserved user data');
+  const newDate = getEasternDateString();
+  storage.set(STORAGE_KEYS.LAST_CHALLENGE_DATE, newDate);
 
   // Return combined fresh game state + preserved user data
   return {
     ...freshGameState,
-    ...preservedUserData
+    ...preservedUserData,
+    // Ensure timer is properly reset during daily transitions
+    isTimerActive: false,
+    shouldPauseTimer: false,
+    timeRemaining: preservedUserData.isHardModeEnabled ? 60 : 300,
+    timerStartTime: null
   };
 };
 
@@ -151,8 +152,6 @@ export const shouldMigrateUserData = (): boolean => {
  * Only preserves user settings and streak data, discards game state
  */
 export const migrateLegacyUserData = (): Partial<GameStore> => {
-  console.log('🔄 MIGRATING LEGACY USER DATA');
-
   // Extract legacy streak data if it exists
   const legacyStreakData = storage.get(STORAGE_KEYS.STREAK_DATA, {
     currentStreak: 0,
@@ -164,9 +163,6 @@ export const migrateLegacyUserData = (): Partial<GameStore> => {
   storage.remove(STORAGE_KEYS.STREAK_DATA);
   storage.remove(STORAGE_KEYS.GAME_STATE);
   storage.remove(STORAGE_KEYS.TIMER_DATA);
-
-  console.log('🧹 CLEANED UP LEGACY STORAGE KEYS');
-  console.log('💾 MIGRATED USER DATA:', legacyStreakData);
 
   return legacyStreakData;
 };

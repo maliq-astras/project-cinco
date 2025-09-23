@@ -10,7 +10,7 @@ import {
 } from '../../helpers/gameLogic';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
-import { storage, STORAGE_KEYS, isGameDataCurrent, clearStaleGameData, updateChallengeDate } from '@/utils/localStorage';
+import { storage, STORAGE_KEYS, updateChallengeDate } from '@/utils/localStorage';
 
 export interface CoreGameSlice {
   // Core game state
@@ -51,7 +51,6 @@ export interface CoreGameSlice {
   submitGuess: (guess: string) => Promise<void>;
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => void;
   clearTodayGameData: () => void;
-  loadGameData: () => void;
   saveGameData: () => void;
 }
 
@@ -264,6 +263,13 @@ export const createCoreGameSlice: StateCreator<
     // Start timer and lock in hard mode when first fact card is closed
     if (!isTimerActive && !hasSeenClue) {
       resetTimer();
+      startTimer();
+    }
+    
+    // Handle edge case where hasSeenClue=true but timer isn't active
+    // This can happen after daily resets or state corruption
+    const { gameState: currentGameState, timeRemaining: currentTimeRemaining } = get();
+    if (!isTimerActive && hasSeenClue && !currentGameState.isGameOver && currentTimeRemaining > 0) {
       startTimer();
     }
   },
@@ -479,7 +485,8 @@ export const createCoreGameSlice: StateCreator<
   
   // Today's game data methods
   saveTodayGameData: (outcome: GameOutcome, correctAnswer: string, numberOfTries: number, timeSpent: number, challenge: Challenge) => {
-    const today = new Date().toISOString().split('T')[0];
+    // Use the challenge's date as completion date to prevent timezone manipulation issues
+    const completionDate = challenge.date;
 
     set({
       todayGameData: {
@@ -487,7 +494,7 @@ export const createCoreGameSlice: StateCreator<
         correctAnswer,
         numberOfTries,
         timeSpent,
-        completionDate: today
+        completionDate
       },
       todayChallenge: challenge
     });
@@ -501,101 +508,6 @@ export const createCoreGameSlice: StateCreator<
       todayGameData: null,
       todayChallenge: null
     });
-  },
-
-  loadGameData: () => {
-    clearStaleGameData();
-
-    if (isGameDataCurrent()) {
-      const savedState = storage.get(STORAGE_KEYS.GAME_STATE, {} as Partial<GameStore>);
-
-      if (Object.keys(savedState).length > 0) {
-        set(savedState);
-
-        // SMART STATE RECOVERY: Use reveals vs guesses to determine correct state
-        const { gameState, lastRevealedFactIndex } = get();
-        const revealsCount = gameState.revealedFacts.length;
-        const allGuessesCount = gameState.guesses.length;
-        const wrongGuessesCount = gameState.guesses.filter(g => !g.isCorrect && !g.isFinalFiveGuess).length;
-
-        // CRITICAL: Check for inconsistent state (refresh during animation)
-        const hasInconsistentLastRevealed = lastRevealedFactIndex !== null && 
-                                          !gameState.revealedFacts.includes(lastRevealedFactIndex);
-        
-        // CRITICAL: Check if canMakeGuess is true but user shouldn't be able to guess
-        // This happens when user refreshes during card animation
-        const hasInconsistentGuessState = savedState.canMakeGuess && revealsCount <= wrongGuessesCount;
-        
-        const hasInconsistentState = hasInconsistentLastRevealed || hasInconsistentGuessState;
-
-        // DEBUG: Log the state for analysis
-        console.log('🔍 STATE RECOVERY DEBUG:', {
-          revealsCount,
-          allGuessesCount,
-          wrongGuessesCount,
-          lastRevealedFactIndex,
-          revealedFacts: gameState.revealedFacts,
-          hasInconsistentState,
-          guesses: gameState.guesses.map(g => ({ guess: g.guess, isCorrect: g.isCorrect }))
-        });
-
-        // Clear any stuck view state
-        const updatedState: Partial<GameStore> = {
-          viewingFact: null,
-          cardSourcePosition: null,
-          isDrawingFromStack: false,
-          isReturningToStack: false
-        };
-
-        // Restore timer if it was saved in game state
-        if (savedState.timeRemaining !== undefined) {
-          // Calculate elapsed time if timer was active
-          if (savedState.isTimerActive && savedState.timerStartTime) {
-            const now = Date.now();
-            const elapsed = Math.floor((now - savedState.timerStartTime) / 1000);
-            const adjustedTime = Math.max(0, savedState.timeRemaining - elapsed);
-
-            updatedState.timeRemaining = adjustedTime;
-            updatedState.isTimerActive = adjustedTime > 0;
-            updatedState.timerStartTime = savedState.timerStartTime;
-          }
-        }
-
-        // DEBUG: Log the state for analysis
-        console.log('🔍 STATE RECOVERY DEBUG:', {
-          revealsCount,
-          allGuessesCount,
-          wrongGuessesCount,
-          savedCanMakeGuess: savedState.canMakeGuess,
-          hasInconsistentLastRevealed,
-          hasInconsistentGuessState,
-          hasInconsistentState
-        });
-
-        // SMART LOGIC: Determine what user should be able to do
-        if (hasInconsistentState) {
-          // User refreshed during card animation - clear inconsistent state
-          updatedState.lastRevealedFactIndex = null;
-          updatedState.canRevealNewClue = true;
-          updatedState.canMakeGuess = false;
-          console.log('🔧 FIXED: Inconsistent card state after refresh during animation');
-        } else if (revealsCount === wrongGuessesCount) {
-          // Equal reveals and wrong guesses = user should reveal next fact
-          updatedState.canRevealNewClue = true;
-          updatedState.canMakeGuess = false;
-        } else if (revealsCount > wrongGuessesCount) {
-          // More reveals than wrong guesses = user should make a guess
-          updatedState.canRevealNewClue = false;
-          updatedState.canMakeGuess = true;
-        } else {
-          // Less reveals than wrong guesses = user should reveal next fact
-          updatedState.canRevealNewClue = true;
-          updatedState.canMakeGuess = false;
-        }
-
-        set(updatedState);
-      }
-    }
   },
 
   saveGameData: () => {

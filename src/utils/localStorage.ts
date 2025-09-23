@@ -16,7 +16,20 @@ export const storage = {
 
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
+      if (!item) return defaultValue;
+      
+      // Handle string values that might be double-encoded
+      if (typeof defaultValue === 'string') {
+        // For string defaults, try to parse but fall back to raw value
+        try {
+          const parsed = JSON.parse(item);
+          return (typeof parsed === 'string' ? parsed : item) as T;
+        } catch {
+          return item as T;
+        }
+      }
+      
+      return JSON.parse(item);
     } catch (error) {
       console.warn(`Failed to parse localStorage item ${key}:`, error);
       return defaultValue;
@@ -27,7 +40,9 @@ export const storage = {
     if (typeof window === 'undefined') return;
 
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      // Handle string values directly to avoid double JSON encoding
+      const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+      window.localStorage.setItem(key, stringValue);
     } catch (error) {
       console.warn(`Failed to save to localStorage ${key}:`, error);
     }
@@ -61,27 +76,9 @@ export const isGameDataCurrent = (): boolean => {
   return storedDate === currentDate;
 };
 
-// Clear game data when new challenge is available
-// NOTE: This function is deprecated in favor of the centralized daily reset manager
-// It's kept for backward compatibility but should not be used for new reset logic
-export const clearStaleGameData = (): void => {
-  console.log('⚠️  DEPRECATED: clearStaleGameData() called - use dailyResetManager instead');
-
-  if (!isGameDataCurrent()) {
-    console.log('🗑️ LEGACY RESET: Clearing stale data using old system');
-
-    // Clear legacy manual localStorage keys only
-    storage.remove(STORAGE_KEYS.GAME_STATE);
-    storage.remove('factfive_timer_data');
-    storage.remove(STORAGE_KEYS.STREAK_DATA);
-    storage.remove(STORAGE_KEYS.TIMER_DATA);
-
-    // Update challenge date tracker
-    updateChallengeDate();
-
-    console.log('✅ LEGACY RESET COMPLETE');
-  }
-};
+// REMOVED: clearStaleGameData() - deprecated function eliminated
+// All daily reset logic is now handled by dailyResetManager.ts
+// This function was causing potential conflicts with the new centralized system
 
 // Update challenge date tracker
 export const updateChallengeDate = (): void => {

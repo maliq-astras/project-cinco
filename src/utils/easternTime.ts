@@ -6,7 +6,7 @@
 export const getEasternTime = (): Date => {
   const now = new Date();
 
-  // Get Eastern Time offset in minutes (handles EST/EDT automatically)
+  // Get Eastern Time using proper timezone conversion
   const easternFormatter = new Intl.DateTimeFormat('en', {
     timeZone: 'America/New_York',
     year: 'numeric',
@@ -19,14 +19,33 @@ export const getEasternTime = (): Date => {
   });
 
   const easternParts = easternFormatter.formatToParts(now);
-  const easternDateStr = `${easternParts.find(p => p.type === 'year')?.value}-${easternParts.find(p => p.type === 'month')?.value}-${easternParts.find(p => p.type === 'day')?.value}T${easternParts.find(p => p.type === 'hour')?.value}:${easternParts.find(p => p.type === 'minute')?.value}:${easternParts.find(p => p.type === 'second')?.value}`;
-
-  return new Date(easternDateStr);
+  
+  // Extract the parts
+  const year = parseInt(easternParts.find(p => p.type === 'year')?.value || '0');
+  const month = parseInt(easternParts.find(p => p.type === 'month')?.value || '0') - 1; // Month is 0-indexed
+  const day = parseInt(easternParts.find(p => p.type === 'day')?.value || '0');
+  const hour = parseInt(easternParts.find(p => p.type === 'hour')?.value || '0');
+  const minute = parseInt(easternParts.find(p => p.type === 'minute')?.value || '0');
+  const second = parseInt(easternParts.find(p => p.type === 'second')?.value || '0');
+  
+  // Create a Date object that represents the Eastern time
+  // Note: This creates a local Date object with Eastern time values
+  return new Date(year, month, day, hour, minute, second);
 };
 
 export const getEasternDateString = (): string => {
-  const easternTime = getEasternTime();
-  return easternTime.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const now = new Date();
+  
+  // Get Eastern date directly using Intl.DateTimeFormat
+  const easternFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  
+  // This returns YYYY-MM-DD format directly
+  return easternFormatter.format(now);
 };
 
 export const getEasternDayOfWeek = (): number => {
@@ -62,12 +81,20 @@ export const getTimeUntilEasternMidnight = (): {
 };
 
 export const wasEasternYesterday = (dateString: string): boolean => {
-  const easternTime = getEasternTime();
-
-  const yesterday = new Date(easternTime);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const easternYesterday = yesterday.toISOString().split('T')[0];
-
+  // Get yesterday's date in Eastern Time
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  
+  // Format yesterday's date using Eastern timezone
+  const easternFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  
+  const easternYesterday = easternFormatter.format(yesterday);
   return dateString === easternYesterday;
 };
 
