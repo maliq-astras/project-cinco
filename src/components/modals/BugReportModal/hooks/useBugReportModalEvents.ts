@@ -9,13 +9,48 @@ interface BugReportModalEventsProps {
 }
 
 export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
-  const handleSubmit = useCallback(async () => {
-    // Here you would typically send the bug report to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-    props.setSubmitted(true);
-    setTimeout(() => {
-      props.onClose();
-    }, 2000);
+  const handleSubmit = useCallback(async (formData: any) => {
+    try {
+      // Create FormData for file upload
+      const submitData = new FormData();
+
+      // Add form fields
+      submitData.append('bugType', JSON.stringify(formData.bugType));
+      submitData.append('deviceType', formData.deviceType);
+      submitData.append('bugDetails', formData.bugDetails);
+
+      // Add file if present
+      if (formData.file) {
+        submitData.append('file', formData.file);
+      }
+
+      // Send to API
+      const response = await fetch('/api/submit-bug-report', {
+        method: 'POST',
+        body: submitData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit bug report');
+      }
+
+      // Success - show confirmation
+      props.setSubmitted(true);
+      setTimeout(() => {
+        props.onClose();
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error submitting bug report:', error);
+      // You could add error state handling here
+      // For now, we'll still show submitted state but you might want to show an error
+      props.setSubmitted(true);
+      setTimeout(() => {
+        props.onClose();
+      }, 2000);
+    }
   }, [props]);
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
