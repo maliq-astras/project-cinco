@@ -2,19 +2,19 @@
 export const calculateMobileHeight = (width: number, height: number, heightBreakpoint: 'short' | 'medium' | 'tall') => {
   // Super narrow phones (under 375px) need more height due to layout constraints
   if (width < 375) {
-    return '98vh';
+    return '98dvh';
   }
-  
+
   // Regular width phones use height-based calculation
   switch (heightBreakpoint) {
     case 'short': // 0-599px
-      return '98vh';
-    case 'medium': // 600-799px  
-      return '98vh';
+      return '98dvh';
+    case 'medium': // 600-799px
+      return '98dvh';
     case 'tall': // 800+px
-      return '75vh';
+      return '75dvh';
     default:
-      return '80vh';
+      return '80dvh';
   }
 };
 

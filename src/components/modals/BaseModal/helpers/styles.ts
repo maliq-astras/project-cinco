@@ -12,7 +12,7 @@ export const baseModalStyles = {
   closeButtonClass: styles.closeButtonClass
 } as const;
 
-export const getMobilePanelStyle = (primaryColor: string, mobileHeight: string = '75vh'): CSSProperties => ({
+export const getMobilePanelStyle = (primaryColor: string, mobileHeight: string = '75dvh'): CSSProperties => ({
   borderTop: `4px solid var(--color-${primaryColor})`,
   borderLeft: `1px solid var(--color-${primaryColor})`,
   borderRight: `1px solid var(--color-${primaryColor})`,
@@ -36,6 +36,6 @@ export const getDesktopPanelStyle = (primaryColor: string, customMaxHeight?: str
   const isSmallHeight = typeof window !== 'undefined' && window.innerHeight < 715;
   return {
     border: `2px solid var(--color-${primaryColor})`,
-    maxHeight: isSmallHeight ? '95vh' : '90vh'
+    maxHeight: isSmallHeight ? '95dvh' : '90dvh'
   };
 };

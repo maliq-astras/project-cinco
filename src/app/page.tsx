@@ -16,7 +16,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="h-screen bg-gray-50 dark:bg-black overflow-hidden">
+    <main className="h-screen-dvh bg-gray-50 dark:bg-black overflow-hidden">
       <QueryClientProvider>
         <LanguageProvider>
           <ThemeProvider>

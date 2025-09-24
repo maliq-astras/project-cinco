@@ -10,7 +10,7 @@ interface BaseModalProps {
 }
 
 export const useBaseModalState = (props: BaseModalProps) => {
-  const { isOpen, title, colors, dismissible = true, mobileHeight = '75vh' } = props;
+  const { isOpen, title, colors, dismissible = true, mobileHeight = '75dvh' } = props;
 
   return {
     isOpen,

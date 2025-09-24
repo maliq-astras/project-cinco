@@ -22,9 +22,9 @@ export const answerDetailsModalStyles = {
   // 2 states: top/down (mobile) vs side/side (desktop) 
   content: (useTopDownLayout: boolean) => {
     if (useTopDownLayout) {
-      return "flex flex-col gap-4 items-center justify-start overflow-hidden w-full px-4 py-4 max-h-[95vh]";
+      return "flex flex-col gap-4 items-center justify-start overflow-hidden w-full px-4 py-4 max-h-[95dvh]";
     } else {
-      return "flex flex-row gap-8 items-center justify-center overflow-hidden w-full px-8 py-8 max-h-[90vh]";
+      return "flex flex-row gap-8 items-center justify-center overflow-hidden w-full px-8 py-8 max-h-[90dvh]";
     }
   },
   

@@ -30,7 +30,7 @@ const BaseModal = React.memo<BaseModalProps>(({
   colors,
   className,
   dismissible = true,
-  mobileHeight = '75vh',
+  mobileHeight = '75dvh',
   desktopMaxHeight // New prop
 }) => {
   const { 

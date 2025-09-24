@@ -37,8 +37,9 @@ html, body {
   overscroll-behavior: none;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  height: 100%;
+  overflow: hidden; /* Prevent all scrolling */
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Match the container's dynamic height */
   width: 100%;
 }
 
@@ -197,12 +198,19 @@ textarea,
   -ms-overflow-style: none; /* IE/Edge */
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
-  height: 100vh;
+  height: 100vh; /* Fallback for older browsers */
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scroll-snap-type-y::-webkit-scrollbar {
   display: none;
+}
+
+/* Custom dynamic viewport height class */
+.h-screen-dvh {
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Dynamic viewport height */
 }
 
 /* Also hide scrollbar on the main container */

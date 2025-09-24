@@ -279,11 +279,11 @@ export const useResponsive = () => {
       ),
       header: {
         titleFontSize: getResponsiveValue({
-          xs: "clamp(25px, 3.5vh, 32px)",
-          sm: "clamp(30px, 4vh, 38px)", 
-          md: "clamp(35px, 4.5vh, 44px)",
-          lg: "clamp(40px, 5vh, 50px)",
-          xl: "clamp(45px, 5.5vh, 56px)"
+          xs: "clamp(25px, 3.5dvh, 32px)",
+          sm: "clamp(30px, 4dvh, 38px)",
+          md: "clamp(35px, 4.5dvh, 44px)",
+          lg: "clamp(40px, 5dvh, 50px)",
+          xl: "clamp(45px, 5.5dvh, 56px)"
         }, breakpoint),
         titleMaxWidth: getResponsiveValue({
           xs: "263px",

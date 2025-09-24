@@ -48,8 +48,8 @@ export const useBugReportModalLogic = (_props: BugReportModalLogicProps) => {
   // Custom desktop height logic for BugReport
   const getDesktopMaxHeight = useMemo(() => {
     return () => {
-      if (typeof window === 'undefined') return '90vh';
-      return window.innerHeight < 715 ? '100vh' : '90vh';
+      if (typeof window === 'undefined') return '90dvh';
+      return window.innerHeight < 715 ? '100dvh' : '90dvh';
     };
   }, []);
 
