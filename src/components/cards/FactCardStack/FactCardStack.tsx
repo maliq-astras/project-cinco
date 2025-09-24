@@ -6,6 +6,7 @@ import FactCardBack from '../FactCardBack';
 import { useFactCardStack } from './hooks';
 import { getCardPosition } from './helpers';
 import styles from './FactCardStack.module.css';
+import { ANIMATIONS } from '@/constants/animations';
 
 const FactCardStack = React.memo(() => {
   const {
@@ -23,11 +24,12 @@ const FactCardStack = React.memo(() => {
     containerStyles,
     onCardClicked,
     isCardClickable,
-    getCardVariants
+    getCardVariants,
+    isResizing
   } = useFactCardStack();
 
   return (
-    <div 
+    <motion.div
       className={styles.container}
       style={containerStyles.main}
       onMouseMove={handleMouseMove}
@@ -36,6 +38,8 @@ const FactCardStack = React.memo(() => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       ref={stackRef}
+      animate={isResizing ? ANIMATIONS.RESIZE_FADE_OUT.animate : ANIMATIONS.RESIZE_FADE_IN.animate}
+      transition={isResizing ? ANIMATIONS.RESIZE_FADE_OUT.transition : ANIMATIONS.RESIZE_FADE_IN.transition}
     >
       <motion.div 
         className={styles.innerContainer}
@@ -79,7 +83,7 @@ const FactCardStack = React.memo(() => {
           })}
         </AnimatePresence>
       </motion.div>
-    </div>
+    </motion.div>
   );
 });
 

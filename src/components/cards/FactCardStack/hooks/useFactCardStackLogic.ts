@@ -18,10 +18,12 @@ export function useFactCardStack() {
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   const victoryAnimationStep = useGameStore(state => state.victoryAnimationStep);
   
-  const { 
+  const {
     responsiveValues,
     breakpoint,
-    getResponsiveValue
+    getResponsiveValue,
+    width,
+    isResizing
   } = useResponsive();
   
   const { registerElement, unregisterElement } = useDOMRefs();
@@ -57,7 +59,8 @@ export function useFactCardStack() {
     isVictoryAnimationActive,
     victoryAnimationStep: victoryAnimationStep || '',
     getResponsiveValue,
-    isCardClickable
+    isCardClickable,
+    screenWidth: width
   });
 
   // Side effects
@@ -93,6 +96,7 @@ export function useFactCardStack() {
     isCardClickable,
     getCardVariants,
     responsiveValues,
-    breakpoint
+    breakpoint,
+    isResizing
   };
 } 

@@ -16,6 +16,7 @@ interface UseFactCardStackComputationsProps {
   victoryAnimationStep: string;
   getResponsiveValue: (values: Record<string, number>) => number;
   isCardClickable: (factIndex: number) => boolean;
+  screenWidth: number;
 }
 
 /**
@@ -36,7 +37,8 @@ export function useFactCardStackComputations({
   isVictoryAnimationActive,
   victoryAnimationStep,
   getResponsiveValue,
-  isCardClickable
+  isCardClickable,
+  screenWidth
 }: UseFactCardStackComputationsProps) {
 
   const visibleStackFacts = useMemo(() => {
@@ -61,11 +63,13 @@ export function useFactCardStackComputations({
   const getCardVariants = useCallback((factIndex: number, index: number) => {
     const isHovered = hoveredCardIndex === index && isCardClickable(factIndex);
     const cardPosition = calculateCardPosition(
-      index, 
-      visibleStackFacts.length, 
-      isHovered, 
+      index,
+      visibleStackFacts.length,
+      isHovered,
       hoveredCardIndex,
-      breakpoint
+      breakpoint,
+      responsiveValues.cardSize.width,
+      screenWidth
     );
     
     const getHoverTranslateY = () => {
@@ -125,7 +129,7 @@ export function useFactCardStackComputations({
     };
   }, [
     hoveredCardIndex,
-    isCardReturning, 
+    isCardReturning,
     isInitialRender,
     visibleStackFacts.length,
     breakpoint,
@@ -133,7 +137,9 @@ export function useFactCardStackComputations({
     isVictoryAnimationActive,
     victoryAnimationStep,
     getResponsiveValue,
-    isCardClickable
+    isCardClickable,
+    responsiveValues.cardSize.width,
+    screenWidth
   ]);
 
   return {

@@ -21,11 +21,12 @@ export const useFactBubbleGridLogic = ({ totalSlots }: UseFactBubbleGridLogicPro
   const revealedFacts = useGameStore(state => state.gameState.revealedFacts);
   const isVictoryAnimationActive = useGameStore(state => state.isVictoryAnimationActive);
   
-  const { 
+  const {
     responsiveValues,
     willFit,
     availableContentHeight,
-    layoutMode
+    layoutMode,
+    isResizing
   } = useResponsive();
 
   const remainingFactsCount = useMemo(() => {
@@ -95,6 +96,7 @@ export const useFactBubbleGridLogic = ({ totalSlots }: UseFactBubbleGridLogicPro
     responsiveValues,
     willFit,
     availableContentHeight,
-    layoutMode
+    layoutMode,
+    isResizing
   };
 };

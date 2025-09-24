@@ -68,6 +68,7 @@ interface ResponsiveValues {
 export const useResponsive = () => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [mounted, setMounted] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
   
   // Stable cache reference to prevent unnecessary recalculations
   const cacheRef = useRef<CalculationCache | null>(null);
@@ -75,23 +76,31 @@ export const useResponsive = () => {
 
   // Debounced resize handler - prevents excessive calculations during resize
   const handleResize = useCallback(() => {
+    setIsResizing(true);
+
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       const newDimensions = {
         width: window.innerWidth,
         height: window.innerHeight
       };
-      
+
       // Only update if dimensions actually changed (avoids unnecessary re-renders)
       setDimensions(prev => {
         if (prev.width === newDimensions.width && prev.height === newDimensions.height) {
+          setIsResizing(false);
           return prev;
         }
         return newDimensions;
       });
+
+      // Reset resizing state after a short delay to allow for fade-in
+      setTimeout(() => {
+        setIsResizing(false);
+      }, 200);
     }, TIMEOUTS.RESIZE_DEBOUNCE);
   }, []);
 
@@ -167,8 +176,18 @@ export const useResponsive = () => {
     const maxHeightBubbleSize = (availableHeight - (minSpacing * (gridRows - 1))) / gridRows;
     const optimalSize = Math.min(maxWidthBubbleSize, maxHeightBubbleSize);
     
-    // Apply scaling for specific width ranges
-    const scaledSize = (width > 940 && width < 1140) ? optimalSize * 0.95 : optimalSize;
+    // Apply scaling for specific ranges
+    let scaledSize = optimalSize;
+
+    // Existing width-based scaling (unchanged)
+    if (width > 940 && width < 1140) {
+      scaledSize *= 0.95;
+    }
+
+    // Conservative height-based scaling for problematic range
+    if (height > 700 && height < 790) {
+      scaledSize *= 0.95;
+    }
     
     return Math.max(60, Math.min(120, scaledSize));
   }, [dimensions, layout]);
@@ -334,7 +353,8 @@ export const useResponsive = () => {
     width: dimensions.width,
     height: dimensions.height,
     mounted,
-    
+    isResizing,
+
     // Breakpoints
     breakpoint,
     heightBreakpoint,
@@ -358,19 +378,20 @@ export const useResponsive = () => {
     // Helper functions - stable reference
     getResponsiveValue: getResponsiveValueFn
   }), [
-    dimensions.width, 
-    dimensions.height, 
-    mounted, 
-    breakpoint, 
-    heightBreakpoint, 
-    orientation.isLandscape, 
-    orientation.isPortrait, 
+    dimensions.width,
+    dimensions.height,
+    mounted,
+    isResizing,
+    breakpoint,
+    heightBreakpoint,
+    orientation.isLandscape,
+    orientation.isPortrait,
     layout.isMobileLayout,
     layout.isMobileMenu,
     layout.layoutMode,
-    responsiveValues, 
-    willFit, 
-    availableContentHeight, 
+    responsiveValues,
+    willFit,
+    availableContentHeight,
     getResponsiveValueFn
   ]);
 };

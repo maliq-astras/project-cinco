@@ -45,6 +45,16 @@ export const ANIMATIONS = {
     transition: { duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
   },
 
+  // Resize transitions
+  RESIZE_FADE_OUT: {
+    animate: { opacity: 0 },
+    transition: { duration: 0.15, ease: [0.4, 0, 1, 1] }
+  },
+  RESIZE_FADE_IN: {
+    animate: { opacity: 1 },
+    transition: { duration: 0.15, delay: 0.05, ease: [0, 0, 0.2, 1] }
+  },
+
   // Navigation
   NAVIGATION: {
     initial: { opacity: 0 },

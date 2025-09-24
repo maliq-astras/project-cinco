@@ -17,7 +17,7 @@ export const useFactBubbleGrid = () => {
   return {
     // State
     bubbleGridRef: state.bubbleGridRef,
-    
+
     // Logic
     gridItems: logic.gridItems,
     remainingFactsCount: logic.remainingFactsCount,
@@ -27,6 +27,7 @@ export const useFactBubbleGrid = () => {
     responsiveValues: logic.responsiveValues,
     willFit: logic.willFit,
     availableContentHeight: logic.availableContentHeight,
-    layoutMode: logic.layoutMode
+    layoutMode: logic.layoutMode,
+    isResizing: logic.isResizing
   };
 };

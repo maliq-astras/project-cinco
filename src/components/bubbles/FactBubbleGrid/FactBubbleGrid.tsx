@@ -5,13 +5,14 @@ import FactBubble from '../FactBubble';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './FactBubbleGrid.module.css';
 import { useFactBubbleGrid } from './hooks';
-import { 
-  getContainerStyle, 
-  getGridTransformStyle, 
-  isSingleRowLayout, 
-  getGridHeight, 
-  calculateGridScale 
+import {
+  getContainerStyle,
+  getGridTransformStyle,
+  isSingleRowLayout,
+  getGridHeight,
+  calculateGridScale
 } from './helpers';
+import { ANIMATIONS } from '@/constants/animations';
 
 const FactBubbleGrid = React.memo(() => {
   const {
@@ -24,7 +25,8 @@ const FactBubbleGrid = React.memo(() => {
     willFit,
     availableContentHeight,
     remainingFactsCount,
-    layoutMode
+    layoutMode,
+    isResizing
   } = useFactBubbleGrid();
 
   const containerStyle = getContainerStyle(
@@ -41,8 +43,13 @@ const FactBubbleGrid = React.memo(() => {
   const gridTransformStyle = getGridTransformStyle(gridScale);
 
   return (
-    <div className={styles.container} style={containerStyle}>
-      <div 
+    <motion.div
+      className={styles.container}
+      style={containerStyle}
+      animate={isResizing ? ANIMATIONS.RESIZE_FADE_OUT.animate : ANIMATIONS.RESIZE_FADE_IN.animate}
+      transition={isResizing ? ANIMATIONS.RESIZE_FADE_OUT.transition : ANIMATIONS.RESIZE_FADE_IN.transition}
+    >
+      <div
         ref={bubbleGridRef}
         id="bubble-grid"
         className={`${styles.grid} ${isSingleRow ? styles.singleRow : styles.doubleRow}`}
@@ -81,7 +88,7 @@ const FactBubbleGrid = React.memo(() => {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 });
 

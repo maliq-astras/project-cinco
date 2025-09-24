@@ -15,27 +15,34 @@ export function calculateFanAngle(cardCount: number): number {
  * @param breakpoint Current responsive breakpoint
  * @returns Spread factor for horizontal positioning
  */
-interface GlobalWindow extends Window {
-  __CARD_SIZE__?: { width: number; height: number };
-}
 
-export function calculateSpreadFactor(cardCount: number): number {
-  const cardSize = (window as GlobalWindow).__CARD_SIZE__ || { width: 120 }; 
-  
+export function calculateSpreadFactor(cardCount: number, cardWidth: number, screenWidth?: number): number {
+  // Get base spread percentage based on card count
   let spreadPercentage;
   if (cardCount === 2) {
-    spreadPercentage = 0.80; 
+    spreadPercentage = 0.80;
   } else if (cardCount === 3) {
-    spreadPercentage = 0.75; 
+    spreadPercentage = 0.75;
   } else if (cardCount === 4) {
-    spreadPercentage = 0.70; 
+    spreadPercentage = 0.70;
   } else {
-    spreadPercentage = 0.65; 
+    spreadPercentage = 0.65;
   }
-  
-  const spread = Math.round(cardSize.width * spreadPercentage);
-  
-  return Math.max(20, spread);
+
+  // Apply mobile adjustment for tighter spacing on smaller screens
+  if (screenWidth && screenWidth < 400) {
+    spreadPercentage *= 0.85; // Reduce spacing on very small screens
+  }
+
+  const calculatedSpread = Math.round(cardWidth * spreadPercentage);
+
+  // Ensure minimum spacing for touch accessibility (at least 30% of card width, minimum 20px)
+  const minSpacing = Math.max(20, cardWidth * 0.3);
+
+  // Ensure maximum spacing doesn't exceed card width (prevents overly spread cards)
+  const maxSpacing = cardWidth * 1.0;
+
+  return Math.max(minSpacing, Math.min(maxSpacing, calculatedSpread));
 }
 
 /**
@@ -45,18 +52,22 @@ export function calculateSpreadFactor(cardCount: number): number {
  * @param isHovered Whether this card is hovered
  * @param hoveredIndex Index of the currently hovered card
  * @param breakpoint Current responsive breakpoint
+ * @param cardWidth Width of the card for spacing calculations
+ * @param screenWidth Screen width for mobile adjustments (optional)
  * @returns Position, rotation, scale and other styling properties
  */
 export function calculateCardPosition(
-  index: number, 
-  cardCount: number, 
-  isHovered: boolean, 
+  index: number,
+  cardCount: number,
+  isHovered: boolean,
   hoveredIndex: number | null,
-  breakpoint: string
+  breakpoint: string,
+  cardWidth: number,
+  screenWidth?: number
 ) {
   const centerIndex = Math.floor(cardCount / 2);
   const fanAngle = calculateFanAngle(cardCount);
-  const spreadFactor = calculateSpreadFactor(cardCount);
+  const spreadFactor = calculateSpreadFactor(cardCount, cardWidth, screenWidth);
   
   const baseRotation = (index - centerIndex) * fanAngle;
   const baseTranslateX = (index - centerIndex) * spreadFactor;
