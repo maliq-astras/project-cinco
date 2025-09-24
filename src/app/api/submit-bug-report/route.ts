@@ -3,12 +3,6 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-interface BugReportData {
-  bugType: string[];
-  deviceType: string;
-  bugDetails: string;
-  file?: File | null;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (bugTypeRaw) {
       try {
         bugType = JSON.parse(bugTypeRaw);
-      } catch (e) {
+      } catch {
         bugType = [bugTypeRaw];
       }
     }

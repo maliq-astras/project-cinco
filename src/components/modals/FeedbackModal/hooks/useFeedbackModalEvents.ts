@@ -6,7 +6,7 @@ interface FeedbackModalEventsProps {
 }
 
 export const useFeedbackModalEvents = (props: FeedbackModalEventsProps) => {
-  const handleSubmit = useCallback(async (formData: any) => {
+  const handleSubmit = useCallback(async (formData: { rating: number; difficulty: string; favoriteCategory: string; leastFavoriteCategory: string }) => {
     try {
       // Send to API
       const response = await fetch('/api/submit-feedback', {

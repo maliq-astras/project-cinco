@@ -9,7 +9,7 @@ interface BugReportModalEventsProps {
 }
 
 export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
-  const handleSubmit = useCallback(async (formData: any) => {
+  const handleSubmit = useCallback(async (formData: { bugType: string[]; deviceType: string; bugDetails: string; file?: File | null }) => {
     try {
       // Create FormData for file upload
       const submitData = new FormData();
