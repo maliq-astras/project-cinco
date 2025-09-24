@@ -6,7 +6,7 @@ interface FeedbackModalEventsProps {
 }
 
 export const useFeedbackModalEvents = (props: FeedbackModalEventsProps) => {
-  const handleSubmit = useCallback(async (formData: { rating: number; difficulty: string; favoriteCategory: string; leastFavoriteCategory: string }) => {
+  const handleSubmit = useCallback(async (formData: { rating?: number; difficulty?: number; favoriteCategory?: string[]; leastFavoriteCategory?: string[] }) => {
     try {
       // Send to API
       const response = await fetch('/api/submit-feedback', {
@@ -15,10 +15,10 @@ export const useFeedbackModalEvents = (props: FeedbackModalEventsProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          rating: formData.rating,
-          difficulty: formData.difficulty,
-          favoriteCategory: formData.favoriteCategory,
-          leastFavoriteCategory: formData.leastFavoriteCategory,
+          rating: formData.rating || 0,
+          difficulty: formData.difficulty || 0,
+          favoriteCategory: formData.favoriteCategory || [],
+          leastFavoriteCategory: formData.leastFavoriteCategory || [],
         }),
       });
 
