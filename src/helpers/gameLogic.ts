@@ -1,6 +1,7 @@
 import { Challenge, UserGuess } from '../types';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
+import { getUserIdentifier } from '@/utils/sessionId';
 
 // Constants
 export const MAX_WRONG_GUESSES = 5;
@@ -85,10 +86,14 @@ export async function verifyGuess(challengeId: string, guess: string, language: 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.API_STANDARD);
       
+      // Get session ID for rate limiting
+      const sessionId = getUserIdentifier();
+      
       const response = await fetch('/api/verify-guess', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Session-ID': sessionId
         },
         body: JSON.stringify({
           challengeId,

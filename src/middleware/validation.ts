@@ -56,7 +56,7 @@ export const VALIDATION_RULES = {
   challengeId: {
     required: true,
     maxLength: 100,
-    pattern: /^[a-zA-Z0-9\-_]+$/ // Only alphanumeric, hyphens, underscores
+    pattern: /^[a-zA-Z0-9\-_\s]+$/ // Allow alphanumeric, hyphens, underscores, and spaces
   },
   guess: {
     required: true,

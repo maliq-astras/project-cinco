@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     if (rateLimitResponse) return rateLimitResponse;
 
     // Request size validation
-    const sizeResponse = await validateRequestSize(request, SIZE_LIMITS.SMALL);
+    const sizeResponse = await validateRequestSize(request, SIZE_LIMITS.MEDIUM);
     if (sizeResponse) return sizeResponse;
 
     const { challengeId, guess, language = 'en' } = await request.json();

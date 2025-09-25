@@ -117,10 +117,10 @@ export function checkRateLimit(
   request: Request,
   config: RateLimitConfig
 ): NextResponse | null {
-  // Skip rate limiting in development
-  if (process.env.NODE_ENV === 'development') {
-    return null;
-  }
+  // Skip rate limiting in development (temporarily enabled for testing)
+  // if (process.env.NODE_ENV === 'development') {
+  //   return null;
+  // }
 
   // Get the best available user identifier
   const identifier = getUserIdentifier(request);
@@ -148,9 +148,9 @@ export function checkRateLimit(
 export const RATE_LIMITS = {
   // Game guesses: Allow normal gameplay, block rapid-fire abuse
   GUESS: { 
-    windowMs: 2 * 60 * 1000, // 2 minutes (shorter window catches abuse faster)
-    maxRequests: process.env.NODE_ENV === 'development' ? 100 : 15, // 15 guesses per 2 min = plenty for gameplay
-    burstLimit: process.env.NODE_ENV === 'development' ? 50 : 5, // Max 5 rapid guesses in 30 seconds
+    windowMs: 5 * 60 * 1000, // 5 minutes - generous for normal gameplay
+    maxRequests: process.env.NODE_ENV === 'development' ? 100 : 50, // 50 guesses per 5 min - plenty for gameplay
+    burstLimit: process.env.NODE_ENV === 'development' ? 50 : 15, // 15 rapid guesses in 30 seconds - allow retry logic
     burstWindowMs: 30 * 1000 // 30 second burst window
   },
   
