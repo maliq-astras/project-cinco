@@ -70,7 +70,8 @@ const FinalFiveModal = React.memo(() => {
             style={{ backgroundColor: themeColor }}
             onClick={() => {
               resetFinalFiveError();
-              triggerFinalFive();
+              // Add a small delay to prevent rapid clicking and rate limit issues
+              setTimeout(() => triggerFinalFive(), 500);
             }}
           >
             {t('ui.buttons.tryAgain')}

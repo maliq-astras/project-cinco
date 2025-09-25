@@ -4,6 +4,7 @@ import type { GameStore } from '../../types';
 import { verifyGuess as verifyGuessAPI } from '../../helpers/gameLogic';
 import { TIMEOUTS } from '@/constants/timeouts';
 import { logger } from '@/utils/logger';
+import { getUserIdentifier } from '@/utils/sessionId';
 
 // Prevent multiple simultaneous Final Five requests
 let finalFiveRequestInProgress = false;
@@ -96,9 +97,13 @@ export const createFinalFiveSlice: StateCreator<
         .map((g: UserGuess) => g.guess);
         
       // Single, simple API call with 8-second timeout
+      const sessionId = getUserIdentifier();
       const response = await fetch('/api/final-five', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-ID': sessionId // Add session ID for rate limiting
+        },
         body: JSON.stringify({
           challengeId: gameState.challenge.challengeId,
           previousGuesses,
@@ -108,6 +113,12 @@ export const createFinalFiveSlice: StateCreator<
       });
       
       if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limit error - provide specific message
+          const errorData = await response.json().catch(() => ({}));
+          const retryAfter = errorData.retryAfter || 300; // 5 minutes default
+          throw new Error(`RATE_LIMIT:Too many requests. Please wait ${Math.ceil(retryAfter / 60)} minutes before trying again.`);
+        }
         throw new Error(`API error: ${response.status}`);
       }
       
@@ -128,13 +139,28 @@ export const createFinalFiveSlice: StateCreator<
       }));
       
     } catch (error) {
-      logger.error('Final Five fetch failed', { 
-      component: 'finalFiveSlice',
-      operation: 'triggerFinalFive',
-      error
-    });
-      set({ 
-        finalFiveError: 'Could not load Final Five. Please refresh and try again.',
+      logger.error('Final Five fetch failed', {
+        component: 'finalFiveSlice',
+        operation: 'triggerFinalFive',
+        error
+      });
+
+      // Check if this is a rate limit error
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const isRateLimitError = errorMessage.includes('RATE_LIMIT:');
+
+      let finalFiveError: string;
+      if (isRateLimitError) {
+        // Extract the user-friendly message after the prefix
+        finalFiveError = errorMessage.replace('RATE_LIMIT:', '');
+      } else if (errorMessage.includes('429')) {
+        finalFiveError = 'Too many requests. Please wait a few minutes before trying again.';
+      } else {
+        finalFiveError = 'Could not load Final Five. Please refresh and try again.';
+      }
+
+      set({
+        finalFiveError,
         showFinalFiveTransition: false,
         isFinalFiveActive: true
       });

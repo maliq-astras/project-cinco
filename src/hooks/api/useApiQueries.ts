@@ -1,11 +1,17 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Challenge } from '@/types';
+import { getUserIdentifier } from '@/utils/sessionId';
 
 /**
  * Fetches a challenge from the API
  */
 async function fetchChallengeFromApi(language: string = 'en'): Promise<Challenge> {
-  const response = await fetch(`/api/daily-challenge?lang=${language}`);
+  const sessionId = getUserIdentifier();
+  const response = await fetch(`/api/daily-challenge?lang=${language}`, {
+    headers: {
+      'X-Session-ID': sessionId
+    }
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch challenge');
   }
@@ -16,16 +22,18 @@ async function fetchChallengeFromApi(language: string = 'en'): Promise<Challenge
 /**
  * Verifies a guess with the API
  */
-async function verifyGuessWithApi(params: { 
-  challengeId: string; 
+async function verifyGuessWithApi(params: {
+  challengeId: string;
   guess: string;
   language: string;
 }): Promise<{ isCorrect: boolean }> {
   const { challengeId, guess, language } = params;
+  const sessionId = getUserIdentifier();
   const response = await fetch('/api/verify-guess', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'X-Session-ID': sessionId
     },
     body: JSON.stringify({
       challengeId,
@@ -33,11 +41,11 @@ async function verifyGuessWithApi(params: {
       language
     }),
   });
-  
+
   if (!response.ok) {
     throw new Error('Failed to verify guess');
   }
-  
+
   return await response.json();
 }
 
@@ -65,12 +73,18 @@ async function fetchFinalFiveOptionsFromApi(params: {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
       
+      // Get session ID for rate limiting
+      const sessionId = getUserIdentifier();
+
       // If previous guesses are provided, use POST method
       let response;
       if (previousGuesses && previousGuesses.length > 0) {
         response = await fetch('/api/final-five', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Session-ID': sessionId
+          },
           body: JSON.stringify({
             challengeId,
             previousGuesses,
@@ -81,6 +95,9 @@ async function fetchFinalFiveOptionsFromApi(params: {
       } else {
         // Otherwise use GET method
         response = await fetch(`/api/final-five?id=${challengeId}&lang=${language}`, {
+          headers: {
+            'X-Session-ID': sessionId
+          },
           signal: controller.signal
         });
       }

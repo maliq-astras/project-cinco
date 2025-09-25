@@ -76,6 +76,43 @@ const rateLimiter = new RateLimiter();
 // Cleanup old entries every 5 minutes
 setInterval(() => rateLimiter.cleanup(), 5 * 60 * 1000);
 
+/**
+ * Get the best available user identifier for rate limiting
+ * Priority: Session ID > IP + User-Agent hash > IP > unknown
+ */
+function getUserIdentifier(request: Request): string {
+  // First priority: Session ID from headers
+  const sessionId = request.headers.get('x-session-id');
+  if (sessionId && sessionId.length > 5 && !sessionId.includes('temp_')) {
+    return `session_${sessionId}`;
+  }
+
+  // Second priority: IP + User-Agent hash (for users without session storage)
+  const forwarded = request.headers.get('x-forwarded-for');
+  const ip = forwarded ? forwarded.split(',')[0].trim() : null;
+  const userAgent = request.headers.get('user-agent');
+
+  if (ip && userAgent) {
+    // Create a simple hash of IP + User-Agent for better uniqueness
+    let hash = 0;
+    const combined = ip + '|' + userAgent;
+    for (let i = 0; i < combined.length; i++) {
+      const char = combined.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return `ip_hash_${Math.abs(hash).toString(36)}`;
+  }
+
+  // Third priority: IP only
+  if (ip && ip !== '127.0.0.1' && ip !== 'localhost') {
+    return `ip_${ip}`;
+  }
+
+  // Last resort: unknown bucket (this should be rare now)
+  return 'unknown';
+}
+
 export function checkRateLimit(
   request: Request,
   config: RateLimitConfig
@@ -85,14 +122,22 @@ export function checkRateLimit(
     return null;
   }
 
-  // Use IP address as identifier (in production, consider user ID)
-  const forwarded = request.headers.get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
-  
-  if (rateLimiter.isRateLimited(ip, config)) {
+  // Get the best available user identifier
+  const identifier = getUserIdentifier(request);
+
+  if (rateLimiter.isRateLimited(identifier, config)) {
     return NextResponse.json(
-      { error: 'Too many requests. Please try again later.' },
-      { status: 429 }
+      {
+        error: 'Too many requests. Please try again later.',
+        retryAfter: Math.ceil(config.windowMs / 1000) // Seconds until reset
+      },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil(config.windowMs / 1000).toString(),
+          'X-RateLimit-Reset': (Date.now() + config.windowMs).toString()
+        }
+      }
     );
   }
 
@@ -110,10 +155,11 @@ export const RATE_LIMITS = {
   },
   
   // Final Five: Allow multiple attempts, block automation
-  FINAL_FIVE: { 
+  // TEMPORARY: Increased limits to handle multiple users in shared IP buckets
+  FINAL_FIVE: {
     windowMs: 5 * 60 * 1000, // 5 minutes (Final Five session duration)
-    maxRequests: process.env.NODE_ENV === 'development' ? 50 : 12, // 12 per 5 min = multiple Final Five attempts
-    burstLimit: process.env.NODE_ENV === 'development' ? 20 : 3, // Max 3 rapid Final Five requests in 30 seconds
+    maxRequests: process.env.NODE_ENV === 'development' ? 100 : 50, // 50 per 5 min - accommodate multiple users
+    burstLimit: process.env.NODE_ENV === 'development' ? 30 : 15, // 15 rapid requests - handle retry logic + multiple users
     burstWindowMs: 30 * 1000 // 30 second burst window
   },
   
