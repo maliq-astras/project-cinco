@@ -3,7 +3,7 @@
     "en": "Ladybug",
     "es": "Mariquita"
   },
-  "imageUrl": "[Cloudinary URL for ladybug stock photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525385/ladybug_ivfkiy.jpg",
   "citation": "Photo by Vincent van Zalinge on Unsplash",
  "facts": {
     "Habitat": {
@@ -11,8 +11,8 @@
       "es": "Me encuentro en todos los continentes excepto la Antártida, prosperando en diversos ambientes desde praderas y bosques hasta ciudades, desiertos e incluso regiones montañosas altas hasta 3,600 pies de elevación."
     },
     "Diet": {
-      "en": "During my larval stage, I consume up to 350-400 helpings of a specific small insect.",
-      "es": "Durante mi etapa larval, consumo hasta 350-400 porciones de un insecto pequeño específico."
+      "en": "During my larval stage, I consume up to 350-400 helpings of aphids.",
+      "es": "Durante mi etapa larval, consumo hasta 350-400 porciones de áfidos."
     },
     "Physical Characteristics": {
       "en": "My wings have tape spring-like veins that provide rigidity during flight and allow for compact origami-like folding.",

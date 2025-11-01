@@ -3,16 +3,16 @@
     "en": "Albert Einstein",
     "es": "Albert Einstein"
   },
-  "imageUrl": "[Cloudinary URL for Einstein portrait]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525786/einstein_wtvyd1.jpg",
   "citation": "Image via Wikimedia Commons",
   "facts": {
     "Occupation": {
-      "en": "I worked as a tutor, technical assistant at a patent office, and university lecturer before revolutionizing our understanding of the physical universe.",
-      "es": "Trabajé como tutor, asistente técnico en una oficina de patentes y profesor universitario antes de revolucionar nuestra comprensión del universo físico."
+      "en": "I worked as a tutor, technical assistant at a patent office, and university lecturer before my revolutionary career that produced Nobel Prize-winning work.",
+      "es": "Trabajé como tutor, asistente técnico en una oficina de patentes y profesor universitario antes de mi carrera revolucionaria que produjo trabajo premiado con el Nobel."
     },
     "Early Life": {
-      "en": "Despite popular myths about my academic performance, I mastered differential and integral calculus before age fifteen and taught myself advanced mathematics.",
-      "es": "A pesar de los mitos populares sobre mi rendimiento académico, dominé el cálculo diferencial e integral antes de los quince años y me enseñé matemáticas avanzadas."
+      "en": "Despite popular myths about my poor academic performance, I mastered differential and integral calculus before age fifteen and taught myself advanced mathematics.",
+      "es": "A pesar de los mitos populares sobre mi rendimiento académico pobre, dominé el cálculo diferencial e integral antes de los quince años y me enseñé matemáticas avanzadas."
     },
     "Nationality": {
       "en": "I renounced my original citizenship in 1896 to avoid military service, remained stateless for five years, then became Swiss before later acquiring American citizenship.",

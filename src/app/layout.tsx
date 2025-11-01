@@ -56,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* 
+        {/*
           Theme initialization script - runs before React hydration to prevent FOUC
           This is necessary boilerplate code for Next.js theme management
           The suppressHydrationWarning is required because this script modifies the DOM
@@ -68,7 +68,7 @@ export default function RootLayout({
                 // Initialize theme from localStorage before hydration
                 var darkMode = localStorage.getItem('darkMode');
                 var highContrastMode = localStorage.getItem('highContrastMode');
-                
+
                 // Apply dark mode if enabled
                 if (darkMode === 'true') {
                   document.documentElement.classList.add('dark');
@@ -76,7 +76,7 @@ export default function RootLayout({
                   document.documentElement.style.setProperty('background-color', '#000', 'important');
                   document.documentElement.style.setProperty('color', '#fff', 'important');
                 }
-                
+
                 // Apply high contrast mode if enabled
                 if (highContrastMode === 'true') {
                   document.documentElement.classList.add('high-contrast');

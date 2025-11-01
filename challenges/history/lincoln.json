@@ -3,7 +3,7 @@
     "en": "Abraham Lincoln",
     "es": "Abraham Lincoln"
   },
-  "imageUrl": "[Cloudinary URL for Lincoln portrait]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525794/lincoln_d7vdzk.jpg",
   "citation": "Frank Schulenberg, CC BY-SA 4.0",
   "facts": {
     "Occupation": {
@@ -23,8 +23,8 @@
       "es": "Mis decisiones durante la guerra expandieron permanentemente el poder federal, cambiando fundamentalmente el equilibrio entre la autoridad estatal y nacional en América."
     },
     "Physical Appearance": {
-      "en": "I was the tallest person to hold the office of President of the United States, beating second place by one centimeter according to height records.",
-      "es": "Fui la persona más alta en ocupar el cargo de Presidente de los Estados Unidos, superando al segundo lugar por un centímetro según los registros de altura."
+      "en": "I am the tallest person to have held the office of President of the United States, beating second place by one centimeter according to height records.",
+      "es": "Soy la persona más alta que ha ocupado el cargo de Presidente de los Estados Unidos, superando al segundo lugar por un centímetro según los registros de altura."
     },
     "Famous Quotes": {
       "en": "I declared that 'a house divided against itself cannot stand,' adapting a biblical phrase to describe a national crisis in 1858.",

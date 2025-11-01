@@ -3,20 +3,20 @@
     "en": "Cheetah",
     "es": "Guepardo"
   },
-  "imageUrl": "https://your-cloudinary-url.com/animals/cheetah.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525334/cheetah_flwkv0.jpg",
   "citation": "Photo by Jean Wimmerlin on Unsplash",
   "facts": {
     "Habitat": {
-      "en": "I thrive in open grasslands and savannas where I can see for miles, though some of my populations have adapted to semi-arid scrublands,rocky foothills and desert plateaus on rare occasion.",
-      "es": "Prospero en praderas abiertas y sabanas donde puedo ver por kilómetros, aunque algunas de mis poblaciones se han adaptado a matorrales semiáridos, colinas rocosas y mesetas desérticas en ocasiones raras."
+      "en": "I thrive in open African grasslands and savannas where I can see for miles, though some of my populations have adapted to semi-arid scrublands,rocky foothills and desert plateaus in Asia.",
+      "es": "Prospero en praderas abiertas y sabanas Africanas donde puedo ver por kilómetros, aunque algunas de mis poblaciones se han adaptado a matorrales semiáridos, colinas rocosas y mesetas desérticas en Asia."
     },
     "Diet": {
       "en": "Unlike most carnivores that hunt at dawn or dusk, I hunt in full daylight. My keen vision can spot prey, like gazelles, from as far as 3 kilometers away.",
       "es": "A diferencia de la mayoría de los carnívoros que cazan al amanecer o al atardecer, yo cazo a plena luz del día. Mi aguda visión puede detectar presas, como gacelas, a 3 kilómetros de distancia."
     },
     "Physical Characteristics": {
-      "en": "My semi-retractable claws function more like cleats than weapons, providing crucial traction during pursuit rather than serving as tools for killing prey.",
-      "es": "Mis garras semi-retráctiles funcionan más como tacos que como armas, proporcionando tracción crucial durante la persecución en lugar de servir como herramientas para matar presas."
+      "en": "My semi-retractable claws function more like cleats than weapons, providing crucial traction during the pursuit of prey.",
+      "es": "Mis garras semi-retráctiles funcionan más como tacos que como armas, proporcionando tracción crucial durante la persecución de presas."
     },
     "Evolutionary History": {
       "en": "I am the only living species in the genus Acinonyx, making my kind part of a distinct & solitary branch of the animal kingdom.",
@@ -35,8 +35,8 @@
       "es": "Akbar el Grande del Imperio Mogol poseía más de 9,000 de mi especie durante sus 49 años de reinado. Esta práctica llevó a una disminución de la población de mi especie en el medio silvestre, especialmente en el sur de Asia."
     },
     "Wildcard": {
-      "en": "My central nervous system has evolved a unique head stabilization mechanism that keeps my eyes fixed on prey during the hunt, regardless of how my body moves.",
-      "es": "Mi sistema nervioso central ha desarrollado un mecanismo único de estabilización de cabeza que mantiene mis ojos fijos en la presa durante la caza, independientemente de cómo se mueve mi cuerpo."
+      "en": "My central nervous system has evolved a unique head stabilization mechanism that keeps my eyes fixed on prey during the hunt.",
+      "es": "Mi sistema nervioso central ha desarrollado un mecanismo único de estabilización de cabeza que mantiene mis ojos fijos en la presa durante la caza."
     }
   },
   "expanded": {

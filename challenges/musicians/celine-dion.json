@@ -3,7 +3,7 @@
     "en": "Celine Dion",
     "es": "Celine Dion"
   },
-  "imageUrl": "[Cloudinary URL for Celine Dion performance photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525571/celine-dion_taftev.jpg",
   "citation": "Anirudh Koul, CC BY 2.0",
   "facts": {
     "Genre": {
@@ -15,12 +15,12 @@
       "es": "Creciendo como la decimocuarta hija en nuestra casa, mi madre literalmente tuvo que usar un cajón de la cómoda como mi cuna porque nos habíamos quedado sin cualquier otro espacio para dormir."
     },
     "Iconic Song": {
-      "en": "My 1997 hit, which served as a major film's theme song, won both an Academy Award and Grammy for Record of the Year.",
-      "es": "Mi éxito de 1997, que sirvió como tema principal de una película importante, ganó tanto un Premio de la Academia como un Grammy al Disco del Año."
+      "en": "My 1997 hit, which served as a major film's theme song, won both an Academy Award for Best Original Song and Grammy for Record of the Year.",
+      "es": "Mi éxito de 1997, que sirvió como tema principal de una película importante, ganó un Premio de la Academia a la Mejor Canción Original y un Grammy a la Grabación del Año."
     },
     "Debut": {
-      "en": "My manager was so convinced of my talent that he mortgaged his entire house to finance my first album when I was just 13 years old.",
-      "es": "Mi mánager estaba tan convencido de mi talento que hipotecó toda su casa para financiar mi primer álbum cuando tenía solo 13 años."
+      "en": "My manager was so convinced of my talent that he mortgaged his house to finance my first album when I was just 13 years old.",
+      "es": "Mi mánager estaba tan convencido de mi talento que hipotecó su casa para financiar mi primer álbum cuando tenía solo 13 años."
     },
     "Achievements": {
       "en": "I am one of only six artists in music history to receive the Chopard Diamond Award, which requires selling over 100 million albums.",

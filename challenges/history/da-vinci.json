@@ -3,7 +3,7 @@
     "en": "Leonardo da Vinci",
     "es": "Leonardo da Vinci"
   },
-  "imageUrl": "[Cloudinary URL for Leonardo da Vinci portrait]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525789/da-vinci_efpnu8.jpg",
   "citation": "Rjcastillo, CC BY-SA 4.0",
   "facts": {
     "Occupation": {

@@ -3,12 +3,12 @@
     "en": "Sloth",
     "es": "Perezoso"
   },
-  "imageUrl": "https://your-cloudinary-url.com/animals/sloth.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1748641708/sloth_rhgc9w.jpg",
   "citation": "Photo by Javier Mazzeo on Unsplash",
   "facts": {
     "Habitat": {
-      "en": "I spend my life 15-30 meters above the ground in the continuous canopy of tropical and cloud forests, rarely descending to the forest floor except once weekly for a very specific purpose.",
-      "es": "Paso mi vida entre 15-30 metros sobre el suelo en el dosel continuo de bosques tropicales y nubosos, raramente descendiendo al suelo del bosque excepto una vez por semana para un propósito muy específico."
+      "en": "I spend my life 15-30 meters above the ground in the continuous canopy of tropical and cloud forests, spending 95% of my life hanging from branches between 15-30 meters above the ground.",
+      "es": "Paso mi vida entre 15-30 metros sobre el suelo en el dosel continuo de bosques tropicales y nubosos, pasando el 95% de mi vida colgando de ramas entre 15-30 metros sobre el suelo."
     },
     "Diet": {
       "en": "My highly specialized digestive system takes up to a month to process a single meal of leaves, and I can lose up to a third of my body weight during a single bowel movement.",
@@ -23,7 +23,7 @@
       "es": "Mis ancestros incluían gigantes terrestres del tamaño de elefantes modernos que vagaban por América del Norte hasta que los humanos llegaron al continente hace unos 11,000 años."
     },
     "Social Behavior": {
-      "en": "Both males and females of my species use specialized anal glands to mark tree branches with chemical messages that communicate individual identity, health status, and territorial boundaries to other members of my species.",
+      "en": "Both males and females of my kind use specialized anal glands to mark tree branches with chemical messages that communicate individual identity, health status, and territorial boundaries to other members of my species.",
       "es": "Tanto los machos como las hembras de mi especie usan glándulas anales especializadas para marcar ramas de árboles con mensajes químicos que comunican identidad individual, estado de salud y límites territoriales a otros miembros de mi especie."
     },
     "Reproduction": {

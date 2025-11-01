@@ -3,7 +3,7 @@
     "en": "Brazil",
     "es": "Brasil"
   },
-  "imageUrl": "https://cloudinary.com/stock-photo-brazil-landscape",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525514/brazil_szhcyb.jpg",
   "citation": "Photo by F Cary Snyder on Unsplash",
   "facts": {
     "Language(s)": {
@@ -35,8 +35,8 @@
       "es": "Limito con todos los países sudamericanos excepto dos, compartiendo fronteras con 10 naciones diferentes."
     },
     "Wildcard": {
-      "en": "I am home to the largest population of Japanese descendants outside Japan itself—over 2 million people.",
-      "es": "Soy hogar de la población más grande de descendientes japoneses fuera del propio Japón—más de 2 millones de personas."
+      "en": "I am home to one of the largest populations of Japanese descendants outside Japan itself—over 2 million people.",
+      "es": "Soy hogar de una de las poblaciones más grandes de descendientes japoneses fuera del propio Japón—más de 2 millones de personas."
     }
   },
   "expanded": {

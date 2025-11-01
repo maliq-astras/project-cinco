@@ -3,7 +3,7 @@
     "en": "Cristiano Ronaldo",
     "es": "Cristiano Ronaldo"
   },
-  "imageUrl": "[Cloudinary URL for Cristiano Ronaldo action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525633/ronaldo_l4uamh.jpg",
   "citation": "Ruben Ortega, CC BY-SA 4.0",
   "facts": {
     "Personal Life": {
@@ -19,15 +19,15 @@
       "es": "Durante los años 2010, mi mayor rival y yo fuimos los únicos dos jugadores en reclamar el premio individual más prestigioso del fútbol hasta 2018, definiendo toda una década del deporte."
     },
     "Nationality": {
-      "en": "I was born on the Portuguese island of Madeira, a remote autonomous region located 560 miles southwest of mainland Portugal in the Atlantic Ocean.",
-      "es": "Nací en la isla portuguesa de Madeira, una región autónoma remota ubicada a 560 millas al suroeste de Portugal continental en el Océano Atlántico."
+      "en": "I was born on the island of Madeira, a remote autonomous region located 560 miles southwest of mainland Portugal in the Atlantic Ocean.",
+      "es": "Nací en la isla de Madeira, una región autónoma remota ubicada a 560 millas al suroeste de Portugal continental en el Océano Atlántico."
     },
     "Physique": {
       "en": "At 6'2\" and 187 pounds with 7-10% body fat, I possess an unusually imposing physical frame for my position, combining height typically seen in defenders with the agility of an attacking player.",
       "es": "Con 6'2\" y 187 libras con 7-10% de grasa corporal, poseo una estructura física inusualmente imponente para mi posición, combinando la altura típicamente vista en defensores con la agilidad de un jugador ofensivo."
     },
     "Stats": {
-      "en": "I became the first player in football history to score over 800 official goals across all competitions for both club and country combined.",
+      "en": "I became the first player in football history to score over 800 official goals across all competitions for both club and country.",
       "es": "Me convertí en el primer jugador en la historia del fútbol en anotar más de 800 goles oficiales en todas las competiciones tanto para club como para país combinados."
     },
     "Achievements": {

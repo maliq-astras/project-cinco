@@ -3,7 +3,7 @@
     "en": "Orangutan",
     "es": "Orangután"
   },
-  "imageUrl": "https://res.cloudinary.com/fact5/image/upload/v1/animals/orangutan.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525400/orangutan_lkwa89.jpg",
   "citation": "Photo by Dan Dennison Unsplash",
   "facts": {
     "Habitat": {
@@ -15,12 +15,12 @@
       "es": "Poseo mapas mentales de mi territorio que rastrean los horarios de maduración de cientos de árboles frutales diferentes, permitiéndome planificar rutas eficientes de forrajeo con meses de anticipación."
     },
     "Physical Characteristics": {
-      "en": "My arm span can reach 2.3 meters while standing only 1.4 meters tall—giving me the most extreme arm-to-body ratio of any species in my taxonomic order",
-      "es": "Mi envergadura puede alcanzar los 2.3 metros mientras mido solo 1.4 metros de altura, lo que me da la proporción brazo-cuerpo más extrema de cualquier especie dentro de mi orden taxonómico."
+      "en": "My arm span can reach 2.3 meters while standing only 1.4 meters tall—giving me the most extreme arm-to-body ratio of any primate species",
+      "es": "Mi envergadura puede alcanzar los 2.3 metros mientras mido solo 1.4 metros de altura, lo que me da la proporción brazo-cuerpo más extrema de cualquier especie de primates."
     },
     "Evolutionary History": {
-      "en": "My ancestors were once widespread across Asia from China to Java, but climate shifts during the Pleistocene isolated my lineage to just two islands.",
-      "es": "Mis ancestros una vez estuvieron ampliamente distribuidos a través de Asia desde China hasta Java, pero los cambios climáticos durante el Pleistoceno aislaron mi linaje a solo dos islas."
+      "en": "My ancestors were once widespread across Asia from China to Java, but climate shifts during the Pleistocene isolated my lineage to just two islands in Borneo and Sumatra.",
+      "es": "Mis ancestros una vez estuvieron ampliamente distribuidos a través de Asia desde China hasta Java, pero los cambios climáticos durante el Pleistoceno aislaron mi linaje a solo dos islas en Borneo y Sumatra."
     },
     "Social Behavior": {
       "en": "I maintain a semi-solitary lifestyle where mothers and offspring form the only lasting social bonds, with adults actively avoiding each other except during mating.",

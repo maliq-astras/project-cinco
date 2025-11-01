@@ -3,12 +3,12 @@
     "en": "Naomi Osaka",
     "es": "Naomi Osaka"
   },
-  "imageUrl": "[Cloudinary URL for Naomi Osaka action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525631/naomi-osaka_f0nv3o.jpg",
   "citation": "Peter Menzel, CC BY-SA 2.0",
   "facts": {
     "Personal Life": {
-      "en": "I was homeschooled throughout my teenage years to accommodate my tennis training schedule, and despite growing up primarily in the United States, I understand Japanese well but prefer to speak English in public settings.",
-      "es": "Recibí educación en casa durante mis años de adolescencia para acomodar mi horario de entrenamiento de tenis, y a pesar de crecer principalmente en Estados Unidos, entiendo bien el japonés pero prefiero hablar inglés en entornos públicos."
+      "en": "I was homeschooled throughout my teenage years to accommodate my tennis training schedule.",
+      "es": "Recibí educación en casa durante mis años de adolescencia para acomodar mi horario de entrenamiento de tenis."
     },
     "Affiliations": {
       "en": "I have been coached by Wim Fissette since 2019, who previously guided Kim Clijsters to multiple Grand Slam victories and world number one rankings.",

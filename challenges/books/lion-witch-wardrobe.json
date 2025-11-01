@@ -3,7 +3,7 @@
     "en": "The Lion, the Witch and the Wardrobe",
     "es": "El León, la Bruja y el Armario"
   },
-  "imageUrl": "https://res.cloudinary.com/demo/image/upload/v1/samples/books/lion-witch-wardrobe-cover.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525667/lion-witch-wardrobe_wku1aq.jpg",
   "citation": "Photo by Jacob Diehl on Unsplash",
   "facts": {
     "Author": {
@@ -15,8 +15,8 @@
       "es": "Mi ilustradora fue elegida por mi autor después de que vio su arte del dragón para 'Farmer Giles of Ham' de Tolkien."
     },
     "Characters": {
-      "en": "My protagonists were originally named Ann, Martin, Rose and Peter in my author's 1939 manuscript.",
-      "es": "Mis protagonistas originalmente se llamaban Ann, Martin, Rose y Peter en el manuscrito de 1939 de mi autor."
+      "en": "My protagonists were originally named Ann, Martin, Rose and Peter in my original 1939 manuscript.",
+      "es": "Mis protagonistas originalmente se llamaban Ann, Martin, Rose y Peter en el manuscrito original de 1939."
     },
     "Genre": {
       "en": "I am classified as a portal fantasy, a specific subgenre of fantasy that blends distinct worlds.",
@@ -27,8 +27,8 @@
       "es": "Fui publicada el 16 de octubre de 1950 y soy la primera novela en publicarse de mi serie a pesar de ser cronológicamente la segunda."
     },
     "Plot": {
-      "en": "My central narrative includes a sequence that parallels the story of Jesus, though my author insisted I was 'supposal' rather than deliberate allegory.",
-      "es": "Mi narrativa central incluye una secuencia que es paralela a la historia de Jesús, aunque mi autor insistió en que yo era 'suposición' en lugar de alegoría deliberada."
+      "en": "My central narrative includes a sequence that parallels the story of Jesus, though my author insisted it was 'supposition' rather than deliberate allegory.",
+      "es": "Mi narrativa central incluye una secuencia que es paralela a la historia de Jesús, aunque mi autor insistió en que era 'suposición' en lugar de alegoría deliberada."
     },
     "Quote": {
       "en": "\"Safe? … Who said anything about safe? 'Course he isn't safe. But he's good. He's the King, I tell you.\"",

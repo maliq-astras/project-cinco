@@ -3,12 +3,12 @@
     "en": "Derek Jeter",
     "es": "Derek Jeter"
   },
-  "imageUrl": "[Cloudinary URL for Derek Jeter action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525632/Jeter_wdgeun.jpg",
   "citation": "Kowarski, CC BY 2.0",
   "facts": {
     "Personal Life": {
-      "en": "I saw dogs as threats my entire life after watching the movie Cujo as a child, until my future wife gave me an Italian Mastiff named Kane for Christmas, which finally helped me overcome this lifelong fear.",
-      "es": "Vie a los perros como amenazas toda mi vida después de ver la película Cujo cuando era niño, hasta que mi futura esposa me dio un mastín italiano llamado Kane para Navidad, lo que finalmente me ayudó a superar este miedo de toda la vida."
+      "en": "I saw dogs as threats my entire life after watching the movie Cujo as a child, until my wife gave me an Italian Mastiff named Kane for Christmas, which finally helped me overcome this lifelong fear.",
+      "es": "Vie a los perros como amenazas toda mi vida después de ver la película Cujo cuando era niño, hasta que mi esposa me dio un mastín italiano llamado Kane para Navidad, lo que finalmente me ayudó a superar este miedo de toda la vida."
     },
     "Affiliations": {
       "en": "I was signed to the Jordan Brand from 1999 until my retirement, becoming the longest-tenured signature athlete for the sneaker company outside of Michael Jordan himself.",
@@ -27,8 +27,8 @@
       "es": "Con 6 pies 3 pulgadas de altura, era considerado relativamente alto para mi posición, lo que contribuyó tanto a las críticas de mi rango defensivo como a los elogios por mi habilidad para completar jugadas dobles."
     },
     "Stats": {
-      "en": "I hold the record for most postseason games played with 158 appearances, accumulating more postseason hits than any player in history with exactly 200.",
-      "es": "Tengo el récord de más juegos de postemporada jugados con 158 apariciones, acumulando más hits de postemporada que cualquier jugador en la historia con exactamente 200."
+      "en": "I hold the MLB record for most postseason games played with 158 appearances, accumulating more postseason hits than any player in history with exactly 200.",
+      "es": "Tengo el récord de las Grandes Ligas de más juegos de postemporada jugados con 158 apariciones, acumulando más hits de postemporada que cualquier jugador en la historia con exactamente 200."
     },
     "Achievements": {
       "en": "I achieved the rare distinction of receiving 396 out of 397 possible votes in my first year of Hall of Fame eligibility, earning 99.7 percent and the second-highest voting percentage in history.",

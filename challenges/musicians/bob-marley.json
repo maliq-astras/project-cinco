@@ -3,7 +3,7 @@
     "en": "Bob Marley",
     "es": "Bob Marley"
   },
-  "imageUrl": "[Cloudinary URL for Bob Marley performance photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525570/bob-marley_ed9wcb.jpg",
   "citation": "Eddie Mallin, CC BY-SA 2.0",
   "facts": {
     "Genre": {

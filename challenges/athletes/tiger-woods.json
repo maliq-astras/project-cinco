@@ -3,12 +3,12 @@
     "en": "Tiger Woods",
     "es": "Tiger Woods"
   },
-  "imageUrl": "[Cloudinary URL for Tiger Woods action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525637/tiger-woods_znuzte.jpg",
   "citation": "KA Sports Photos, CC BY-SA 2.0",
   "facts": {
     "Personal Life": {
-      "en": "I was named after a Vietnamese soldier who saved my father's life during the Vietnam War, though I later legally changed my first name from my birth name.",
-      "es": "Fui nombrado en honor a un soldado vietnamita que salvó la vida de mi padre durante la Guerra de Vietnam, aunque luego cambié legalmente mi primer nombre de mi nombre de nacimiento."
+      "en": "“Most know me by a nickname inspired by a Vietnamese soldier who befriended my father during the Vietnam War.”",
+      "es": "“La mayoría me conoce por un apodo inspirado en un soldado vietnamita que se hizo amigo de mi padre durante la Guerra de Vietnam.”"
     },
     "Affiliations": {
       "en": "I turned professional at age 20 and signed with Nike for $40 million over five years, making it the largest endorsement deal for any athlete at that time.",
@@ -27,16 +27,16 @@
       "es": "Midiendo 6'1\" y pesando 185 libras, desarrollé uno de los swings más atléticos y poderosos de mi deporte a pesar de carecer del físico masivo de muchos jugadores de poder modernos."
     },
     "Stats": {
-      "en": "I held the number one ranking for a record 683 weeks total, including a consecutive streak of 281 weeks that lasted over five years.",
-      "es": "Mantuve el ranking número uno por un récord total de 683 semanas, incluyendo una racha consecutiva de 281 semanas que duró más de cinco años."
+      "en": "I held the number one ranking in my sport for a record 683 weeks total, including a consecutive streak of 281 weeks that lasted over five years.",
+      "es": "Mantuve el ranking número uno en mi deporte por un récord total de 683 semanas, incluyendo una racha consecutiva de 281 semanas que duró más de cinco años."
     },
     "Achievements": {
       "en": "I became the youngest player ever to win all four major championships in my sport at age 24, completing what's known as the career Grand Slam.",
       "es": "Me convertí en el jugador más joven en ganar los cuatro campeonatos principales de mi deporte a los 24 años, completando lo que se conoce como el Grand Slam de carrera."
     },
     "Wildcard": {
-      "en": "After my father's death, I participated in civilian VIP training with Navy SEALs, learning combat techniques, weapons training, and skydiving at secret facilities despite never serving in the military.",
-      "es": "Después de la muerte de mi padre, participé en entrenamiento civil VIP con Navy SEALs, aprendiendo técnicas de combate, entrenamiento con armas y paracaidismo en instalaciones secretas a pesar de nunca haber servido en el ejército."
+      "en": "After my father's death, I participated in civilian VIP training with Navy SEALs, learning combat techniques, weapons training, and skydiving at secret facilities.",
+      "es": "Después de la muerte de mi padre, participé en entrenamiento civil VIP con Navy SEALs, aprendiendo técnicas de combate, entrenamiento con armas y paracaidismo en instalaciones secretas."
     }
   },
   "expanded": {

@@ -3,7 +3,7 @@
     "en": "India",
     "es": "India"
   },
-  "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1/countries/india",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525521/india_pgruu1.jpg",
   "citation": "Photo by Julian Yu on Unsplash",
   "facts": {
     "Language(s)": {
@@ -11,8 +11,8 @@
       "es": "Mi constitución reconoce 22 idiomas oficiales, pero no tengo idioma nacional en absoluto."
     },
     "Flag": {
-      "en": "My flag's central wheel contains exactly 24 spokes representing the hours of a day, symbolizing that life exists in movement and death in stagnation.",
-      "es": "La rueda central de mi bandera contiene exactamente 24 rayos que representan las horas del día, simbolizando que la vida existe en movimiento y la muerte en estancamiento."
+      "en": "My flag's central symbol contains exactly 24 spokes representing the hours of a day, symbolizing that life exists in movement and death in stagnation.",
+      "es": "El símbolo central de mi bandera contiene exactamente 24 rayos que representan las horas del día, simbolizando que la vida existe en movimiento y la muerte en estancamiento."
     },
     "Notable City": {
       "en": "One of my major cities is home to the world's largest film industry by number of films produced annually, creating over 1,800 movies each year.",
@@ -31,8 +31,8 @@
       "es": "Soy el mayor consumidor de oro del mundo y tengo las décimas reservas de oro más grandes a nivel mundial, con más del 80% de mi mercado de joyería dominado por el oro."
     },
     "Geography & Borders": {
-      "en": "My land borders stretch 15,200 kilometers while my coastline extends 7,516 kilometers, and I am defined by the world's largest mountain range to the north.",
-      "es": "Mis fronteras terrestres se extienden 15,200 kilómetros mientras que mi costa se extiende 7,516 kilómetros, y estoy definido por la cadena montañosa más grande del mundo al norte."
+      "en": "My land borders stretch 15,200 kilometers while my coastline extends 7,516 kilometers. The world's largest mountain range occupies my northern frontier.",
+      "es":"Mis fronteras terrestres se extienden 15,200 kilómetros mientras que mi costa se extiende 7,516 kilómetros. La cadena montañosa más grande del mundo ocupa mi frontera norte."
     },
     "Wildcard": {
       "en": "I made a direct economic transition from agriculture to services, skipping the traditional industrial phase that most Western and East Asian countries experienced.",

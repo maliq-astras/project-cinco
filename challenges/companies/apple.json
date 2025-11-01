@@ -3,16 +3,16 @@
     "en": "Apple",
     "es": "Apple"
   },
-  "imageUrl": "[Cloudinary URL for Apple logo/brand image]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525738/apple_kxv04p.jpg",
   "citation": "Photo by Henry Ascroft on Unsplash",
   "facts": {
     "Industry": {
-      "en": "In my 48 years of existence I've grown to become the world's largest company by market capitalization through consumer electronics innovation.",
-      "es": "En mis 48 años de existencia he crecido para convertirme en la empresa más grande del mundo por capitalización de mercado a través de la innovación en electrónicos de consumo."
+      "en": "I am one of the world's largest technology companies by market capitalization, driven in large part by consumer electronics innovation.",
+      "es": "Soy una de las empresas tecnológicas más grandes del mundo por capitalización de mercado, impulsada en gran medida por la innovación en electrónicos de consumo."
     },
     "Origin": {
-      "en": "My co-founders met through a computer hobbyist group called the Homebrew Computer Club, where they demonstrated their first creation to fellow electronics enthusiasts.",
-      "es": "Mis cofundadores se conocieron a través de un grupo de aficionados a las computadoras llamado Homebrew Computer Club, donde demostraron su primera creación a otros entusiastas de la electrónica."
+      "en": "My co-founders met through a computer hobbyist group called the Homebrew Computer Club, where they demonstrated their early creations to fellow electronics enthusiasts.",
+      "es": "Mis cofundadores se conocieron a través de un grupo de aficionados a las computadoras llamado Homebrew Computer Club, donde demostraron sus primeras creaciones a otros entusiastas de la electrónica."
     },
     "Logo": {
       "en": "My current minimalist logo replaced a much more complex design featuring Isaac Newton sitting under a tree, which was used only briefly in 1976.",
@@ -23,8 +23,8 @@
       "es": "Mi dispositivo más revolucionario redefinió toda una categoría de productos en 2007 al combinar tres productos separados en una sola interfaz."
     },
     "Target Audience": {
-      "en": "My customer base demonstrates unusual brand loyalty, with satisfaction rates consistently above 90% and customers who often upgrade within my ecosystem exclusively.",
-      "es": "Mi base de clientes demuestra una lealtad de marca inusual, con tasas de satisfacción consistentemente por encima del 90% y clientes que a menudo se actualizan exclusivamente dentro de mi ecosistema."
+      "en": "My customer base demonstrates strong brand loyalty, with reported satisfaction rates consistently above 90% and customers who often use my ecosystem exclusively.",
+      "es": "Mi base de clientes demuestra una lealtad de marca fuerte, con tasas de satisfacción reportadas consistentemente por encima del 90% y clientes que a menudo usan mi ecosistema exclusivamente."
     },
     "Tagline/Catchphrase": {
       "en": "In 1997 I launched an advertising campaign that encouraged customers to 'Think Different', featuring iconic figures like Albert Einstein, Martin Luther King Jr., and Pablo Picasso.",

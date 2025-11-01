@@ -3,7 +3,7 @@
     "en": "Simone Biles",
     "es": "Simone Biles"
   },
-  "imageUrl": "[Cloudinary URL for Simone Biles gymnastics action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525636/simone-biles_agbt3n.jpg",
   "citation": "Fernando Frazão, CC BY-SA 2.0",
   "facts": {
     "Personal Life": {
@@ -27,12 +27,12 @@
       "es": "A pesar de medir solo 4 pies 8 pulgadas de altura, genero suficiente poder para alcanzar alturas de más de 9 pies durante mis pases de tumbling en ejercicio de piso."
     },
     "Stats": {
-      "en": "I scored a 15.966 on floor exercise at the 2016 Olympics, achieving the highest score in that event by a significant margin over my competitors.",
-      "es": "Anoté 15.966 en ejercicio de piso en las Olimpiadas de 2016, logrando la puntuación más alta en ese evento por un margen significativo sobre mis competidoras."
+      "en": "I scored a 15.966 on floor exercise at the 2016 Olympics, achieving the highest score in that event by a significant margin.",
+      "es": "Anoté 15.966 en ejercicio de piso en las Olimpiadas de 2016, logrando la puntuación más alta en ese evento por un margen significativo."
     },
     "Achievements": {
-      "en": "I have won 41 Olympic and World Championship medals combined, making me the most decorated gymnast in the sport's history.",
-      "es": "He ganado 41 medallas olímpicas y de Campeonatos Mundiales combinadas, convirtiéndome en la gimnasta más condecorada en la historia del deporte."
+      "en": "I have won 41 Olympic and World Championship medals, making me the most decorated gymnast in the sport's history.",
+      "es": "He ganado 41 medallas olímpicas y de Campeonatos Mundiales, convirtiéndome en la gimnasta más condecorada en la historia del deporte."
     },
     "Wildcard": {
       "en": "I have five original skills named after me in the gymnastics Code of Points, more than any other female gymnast in history.",

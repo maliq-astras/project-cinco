@@ -3,16 +3,16 @@
     "en": "Tim Duncan",
     "es": "Tim Duncan"
   },
-  "imageUrl": "[Cloudinary URL for Tim Duncan action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525642/tim-duncan_pz3aya.jpg",
   "citation": "Geoff Livingston, CC BY 2.0",
   "facts": {
     "Personal Life": {
-      "en": "I originally trained as a competitive swimmer in the US Virgin Islands and only began playing basketball seriously at age 14 after Hurricane Hugo destroyed the only Olympic-sized pool.",
-      "es": "Originalmente entrené como nadador competitivo en las Islas Vírgenes de EE.UU. y solo comencé a jugar baloncesto en serio a los 14 años después de que el Huracán Hugo destruyera la única piscina de tamaño olímpico."
+      "en": "I originally trained as a competitive swimmer and only began playing basketball seriously at age 14 after a natural disaster destroyed the only Olympic-sized pool I could train in.",
+      "es": "Originalmente entrené como nadador competitivo y solo comencé a jugar baloncesto en serio a los 14 años después de que un desastre natural destruyera la única piscina de tamaño olímpico en la que podía entrenar."
     },
     "Affiliations": {
-      "en": "The NBA franchise that drafted me had won only 20 games the previous season, but after my arrival they never had another losing season for the remainder of my career.",
-      "es": "La franquicia de la NBA que me seleccionó había ganado solo 20 juegos la temporada anterior, pero después de mi llegada nunca tuvieron otra temporada perdedora durante el resto de mi carrera."
+      "en": "The NBA franchise that drafted me had won only 20 games the previous season, but after my arrival they never had a losing season for the duration of my career.",
+      "es": "La franquicia de la NBA que me seleccionó había ganado solo 20 juegos la temporada anterior, pero después de mi llegada nunca tuvieron otra temporada perdedora durante la duración de mi carrera."
     },
     "Era": {
       "en": "My career began during the Chicago Bulls dynasty and ended during the Golden State Warriors dynasty, with iconic runs by Jordan and Curry bookending my two decades in the league.",

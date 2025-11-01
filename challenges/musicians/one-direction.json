@@ -3,7 +3,7 @@
     "en": "One Direction",
     "es": "One Direction"
   },
-  "imageUrl": "[Cloudinary URL for One Direction performance photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525574/one-direction_jenr2v.jpg",
   "citation": "Brett Robson, CC BY 2.0",
   "facts": {
     "Genre": {
@@ -27,8 +27,8 @@
       "es": "Tenemos el Récord Mundial Guinness como el acto más premiado en los Teen Choice Awards con 28 victorias de 31 nominaciones."
     },
     "Collaborations": {
-      "en": "We worked with the same Swedish production trio of Savan Kotecha, Carl Falk, and Rami Yacoub who had previously created hits for Westlife and NSYNC.",
-      "es": "Trabajamos con el mismo trío de producción sueco de Savan Kotecha, Carl Falk y Rami Yacoub que previamente había creado éxitos para Westlife y NSYNC."
+      "en": "We worked with the Swedish production trio of Savan Kotecha, Carl Falk, and Rami Yacoub who had previously created hits for Westlife and NSYNC.",
+      "es": "Trabajamos con el trío de producción sueco de Savan Kotecha, Carl Falk y Rami Yacoub que previamente había creado éxitos para Westlife y NSYNC."
     },
     "Chart Performance": {
       "en": "We hold the unprecedented record as the only group in Billboard 200's 58-year history to have our first four studio albums debut consecutively at number one.",

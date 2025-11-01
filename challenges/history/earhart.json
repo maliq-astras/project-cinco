@@ -3,7 +3,7 @@
     "en": "Amelia Earhart",
     "es": "Amelia Earhart"
   },
-  "imageUrl": "[Cloudinary URL for Amelia Earhart historical photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525781/amelia-earhart_wxk8ui.jpg",
   "citation": "Image via Wikimedia Commons",
   "facts": {
     "Occupation": {

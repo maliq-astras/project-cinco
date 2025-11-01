@@ -3,12 +3,12 @@
     "en": "France",
     "es": "Francia"
   },
-  "imageUrl": "https://res.cloudinary.com/fact5game/image/upload/v1/countries/france",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525516/france_rb0zi7.jpg",
   "citation": "Photo by Chris Karidis on Unsplash",
   "facts": {
     "Language(s)": {
-      "en": "I officially ban the use of English words in government documents and require all foreign terms in advertising to have translations in my official language by law.",
-      "es": "Oficialmente prohíbo el uso de palabras en inglés en documentos gubernamentales y requiero que todos los términos extranjeros en publicidad tengan traducciones en mi idioma oficial por ley."
+      "en": "I legally require the use of my official language in government documents and advertising, mandating that any foreign words, especially English ones, be accompanied by translations.",
+      "es": "Requiero el uso de mi idioma oficial en documentos gubernamentales y publicidad, obligando que todos los términos extranjeros en publicidad tengan traducciones en mi idioma oficial por ley."
     },
     "Flag": {
       "en": "My tricolor flag was temporarily banned and replaced with a plain white flag from 1814 to 1830 when the monarchy was restored after a major military defeat.",
@@ -31,8 +31,8 @@
       "es": "Soy hogar del museo de arte más visitado del mundo, que consistentemente recibe más de 8 millones de visitantes anualmente y alberga la pintura más famosa de la historia."
     },
     "Geography & Borders": {
-      "en": "I am the only country to border both the Atlantic and Mediterranean seas while also sharing land borders with 8 different nations.",
-      "es": "Soy el único país que limita tanto con el Océano Atlántico como con el Mar Mediterráneo mientras también comparto fronteras terrestres con 8 naciones diferentes."
+      "en": "I border both the Atlantic and Mediterranean seas while also sharing land borders with 8 different nations.",
+      "es": "Limito tanto con el Océano Atlántico como con el Mar Mediterráneo mientras también comparto fronteras terrestres con 8 naciones diferentes."
     },
     "Wildcard": {
       "en": "I span more time zones than any other country in the world with 12 different zones across my overseas territories, despite my mainland being relatively small.",

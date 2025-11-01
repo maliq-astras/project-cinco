@@ -3,7 +3,7 @@
     "en": "Michael Phelps",
     "es": "Michael Phelps"
   },
-  "imageUrl": "[Cloudinary URL for Michael Phelps action photo]",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525639/michael-phelps_m2h3wa.jpg",
   "citation": "JD Lasica, CC BY-SA 2.0",
   "facts": {
     "Personal Life": {

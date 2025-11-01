@@ -3,7 +3,7 @@
     "en": "McDonald's",
     "es": "McDonald's"
   },
-  "imageUrl": "https://res.cloudinary.com/demo/image/upload/c_fill,w_1200,h_800/mcdonalds_golden_arches_logo.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525734/mcdonalds_igxisp.jpg",
   "citation": "Photo by Jurij Kenda on Unsplash",
   "facts": {
     "Industry": {
@@ -19,8 +19,8 @@
       "es": "Mi logotipo icónico comenzó como diseño arquitectónico funcional diseñado para llamar la atención de los conductores desde un cuarto de milla de distancia."
     },
     "Signature Product": {
-      "en": "One of my menu items marketed to children revolutionized fast food marketing by becoming the first to systematically combine food with collectibles.",
-      "es": "Uno de mis productos de menú dirigidos a niños revolucionó el marketing de comida rápida al convertirse en la primera en combinar sistemáticamente comida con objetos coleccionables."
+      "en": "One of my menu items revolutionized fast food marketing by becoming the first to systematically combine food with collectibles.",
+      "es": "Uno de mis productos de menú revolucionó el marketing de comida rápida al convertirse en la primera en combinar sistemáticamente comida con objetos coleccionables."
     },
     "Target Audience": {
       "en": "I serve approximately 70 million customers daily across more than 100 countries, making me one of the most frequented dining destinations on Earth.",
@@ -35,8 +35,8 @@
       "es": "Moví mi sede global en 2018 a un distrito urbano vibrante, construyendo mi nuevo hogar de nueve pisos en el sitio anterior de un famoso estudio de televisión en Chicago."
     },
     "Wildcard": {
-      "en": "I operate my own accredited university with campuses worldwide, where students can earn degrees in 'Hamburgerology'. Some campuses have acceptance rates lower than Harvard.",
-      "es": "Opero mi propia universidad acreditada con campus en todo el mundo, donde los estudiantes pueden obtener títulos en 'Hamburgerología'. Algunos campus tienen tasas de aceptación más bajas que Harvard."
+      "en": "I operate my own accredited university with campuses worldwide, where students can earn degrees. Some campuses have acceptance rates lower than Harvard.",
+      "es": "Opero mi propia universidad acreditada con campus en todo el mundo, donde los estudiantes pueden obtener títulos. Algunos campus tienen tasas de aceptación más bajas que Harvard."
     }
   },
   "expanded": {

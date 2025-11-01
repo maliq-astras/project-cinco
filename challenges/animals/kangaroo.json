@@ -3,7 +3,7 @@
     "en": "Kangaroo",
     "es": "Canguro"
   },
-  "imageUrl": "https://res.cloudinary.com/fact5-trivia-game/image/upload/v1/animals/kangaroo_natural_habitat.jpg",
+  "imageUrl": "https://res.cloudinary.com/dv8mf70xe/image/upload/v1757525371/kangaroo_avyrjr.jpg",
   "citation": "Photo by Ondrej Machart on Unsplash",
   "facts": {
     "Habitat": {
@@ -11,8 +11,8 @@
       "es": "Mi especie habita solo un continente, pero prosperamos en diversos paisajes desde desiertos áridos hasta bosques templados y regiones montañosas hasta 1,800 metros de elevación."
     },
     "Diet": {
-      "en": "I use foregut fermentation with my chambered stomach like ruminants, but unlike true cud-chewers, I only occasionally regurgitate food in a process called merycism that happens when I'm stressed or eating tough material.",
-      "es": "Uso fermentación de intestino anterior con mi estómago con cámaras como los rumiantes, pero a diferencia de los verdaderos masticadores de bolo alimenticio, solo ocasionalmente regurgito comida en un proceso llamado mericismo que ocurre cuando estoy estresado o comiendo material duro."
+      "en": "I ferment my food in my foregut like other grazers, but unique microbes in my stomach let me digest without producing much methane.",
+      "es": "Fermento mi comida en mi intestino anterior como otros herbívoros, pero microbios únicos en mi estómago me permiten digerir sin producir mucho metano."
     },
     "Physical Characteristics": {
       "en": "My second and third toes are fused together in a condition called syndactyly, creating a specialized grooming claw that functions like a built-in comb for cleaning my fur.",
@@ -31,8 +31,8 @@
       "es": "Las hembras de mi especie pueden pausar el desarrollo embrionario hasta 11 meses a través de diapausa embrionaria, esencialmente poniendo el embarazo en pausa hasta que las condiciones ambientales se vuelvan favorables para criar jóvenes."
     },
     "Interspecies Relationships": {
-      "en": "When threatened by predators I flee into water where I use my powerful forelimbs to grab them and attempt to hold them underwater until they drown, exploiting my superior swimming abilities.",
-      "es": "Cuando soy amenazado por depredadores huyo al agua donde uso mis poderosas patas delanteras para agarrarlos e intento mantenerlos bajo el agua hasta que se ahoguen, explotando mis habilidades superiores de natación."
+      "en": "When threatened by predators I flee into water where I use my powerful forelimbs to grab them and attempt to hold them underwater until they drown.",
+      "es": "Cuando soy amenazado por depredadores huyo al agua donde uso mis poderosas patas delanteras para agarrarlos e intento mantenerlos bajo el agua hasta que se ahoguen."
     },
     "Wildcard": {
       "en": "I am one of only a few animals that becomes more energy-efficient as I move faster, requiring less metabolic energy per kilometer at high speeds due to elastic energy storage in my Achilles tendons.",
@@ -45,8 +45,8 @@
       "es": "Los canguros demuestran una notable adaptabilidad de hábitat a través de su rango continental, ocupando ecosistemas desde duros desiertos interiores hasta montañas cubiertas de nieve a elevaciones de hasta 1,800 metros. Diferentes especies se han especializado para entornos distintos: los canguros rojos dominan las llanuras áridas y semiáridas del interior, mientras que los canguros grises orientales y occidentales prefieren paisajes más boscosos con acceso tanto a praderas abiertas para alimentarse como a cobertura forestal para refugio. Esta diversidad de hábitat se refleja en su distribución poblacional, con estimaciones gubernamentales que indican aproximadamente 42.8 millones de canguros dentro de las áreas de cosecha comercial a partir de 2019. Su capacidad para prosperar en condiciones tan variadas proviene de adaptaciones conductuales como buscar sombra durante el calor extremo y sus mecanismos eficientes de conservación de agua, permitiéndoles sobrevivir períodos extendidos sin acceso directo al agua extrayendo humedad de la vegetación."
     },
     "Diet": {
-      "en": "Kangaroos possess a unique digestive system that employs foregut fermentation through a chambered stomach, similar to ruminants like cattle and sheep. However, their digestive process differs significantly from true ruminants in several key ways. While they do occasionally regurgitate and re-chew food, this behavior called 'merycism' is not essential to their digestion and occurs primarily when they're stressed or consuming particularly tough plant material. Unlike the continuous cud-chewing of ruminants, kangaroos typically chew their food more thoroughly during initial consumption. Their specialized teeth continuously grow and replace themselves due to the wear from grinding abrasive plant material, and their efficient digestive system allows them to extract maximum nutrition from poor-quality vegetation while surviving extended periods without water by extracting moisture from plants.",
-      "es": "Los canguros poseen un sistema digestivo único que emplea fermentación de intestino anterior a través de un estómago con cámaras, similar a los rumiantes como el ganado y las ovejas. Sin embargo, su proceso digestivo difiere significativamente de los verdaderos rumiantes en varias formas clave. Aunque ocasionalmente regurgitan y remascan comida, este comportamiento llamado 'mericismo' no es esencial para su digestión y ocurre principalmente cuando están estresados o consumiendo material vegetal particularmente duro. A diferencia de la masticación continua de bolo alimenticio de los rumiantes, los canguros típicamente mastican su comida más completamente durante el consumo inicial. Sus dientes especializados crecen continuamente y se reemplazan debido al desgaste por moler material vegetal abrasivo, y su sistema digestivo eficiente les permite extraer la máxima nutrición de vegetación de mala calidad mientras sobreviven períodos extendidos sin agua extrayendo humedad de las plantas."
+      "en": "Kangaroos are foregut fermenters, meaning they break down plant material in specialized chambers before it reaches their main stomach, similar to cattle and sheep. However, kangaroos produce only about 20% of the methane that cattle produce per unit of digested food. This remarkable difference is due to unique acetogenic bacteria in their digestive system that convert hydrogen into acetate instead of methane. Scientists have studied kangaroo gut microbiomes extensively, hoping to potentially transfer these bacteria to cattle to reduce agricultural methane emissions, which contribute significantly to global greenhouse gases.",
+      "es": "Los canguros son fermentadores de intestino anterior, lo que significa que descomponen material vegetal en cámaras especializadas antes de que llegue a su estómago principal, similar al ganado y las ovejas. Sin embargo, los canguros producen solo alrededor del 20% del metano que produce el ganado por unidad de alimento digerido. Esta diferencia notable se debe a bacterias acetogénicas únicas en su sistema digestivo que convierten hidrógeno en acetato en lugar de metano. Los científicos han estudiado extensamente los microbiomas intestinales de los canguros, con la esperanza de potencialmente transferir estas bacterias al ganado para reducir las emisiones de metano agrícola, que contribuyen significativamente a los gases de efecto invernadero globales."
     },
     "Physical Characteristics": {
       "en": "One of the most distinctive yet often overlooked features of kangaroo anatomy is syndactyly—the fusion of the second and third digits on their hind feet. This evolutionary adaptation creates a double-clawed grooming tool that functions as a natural comb for maintaining their fur and removing parasites. The fused digits work in tandem, allowing precise manipulation during grooming sessions, while the large fourth digit bears the animal's weight during locomotion. This adaptation is shared across all diprotodont marsupials and represents an ancient mammalian trait that has persisted for millions of years. Kangaroos also possess semi-retractable claws on their forelimbs, similar to those of bears, which are used for gripping during feeding, fighting, and their unique pentapedal walking gait where the tail and forelimbs support the body weight when moving slowly.",
@@ -76,7 +76,7 @@
   "alternatives": {
     "en": [
       "Wallaby",
-      "Wombat", 
+      "Wombat",
       "Koala",
       "Tasmanian Devil",
       "Opossum",
@@ -88,7 +88,7 @@
     "es": [
       "Ualabí",
       "Wombat",
-      "Koala", 
+      "Koala",
       "Demonio de Tasmania",
       "Zarigüeya",
       "Bandicoot",
