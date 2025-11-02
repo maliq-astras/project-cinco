@@ -48,6 +48,19 @@ export function useThemeDOM() {
     }
     return '';
   };
+
+  // Update the theme-color meta tag for iOS status bar
+  const updateThemeColor = (color: string) => {
+    if (isBrowser) {
+      let themeColorMeta = document.querySelector('meta[name="theme-color"]');
+      if (!themeColorMeta) {
+        themeColorMeta = document.createElement('meta');
+        themeColorMeta.setAttribute('name', 'theme-color');
+        document.getElementsByTagName('head')[0].appendChild(themeColorMeta);
+      }
+      themeColorMeta.setAttribute('content', color);
+    }
+  };
   
   return {
     isBrowser,
@@ -55,6 +68,7 @@ export function useThemeDOM() {
     addClass,
     removeClass,
     setCSSProperty,
-    getCSSProperty
+    getCSSProperty,
+    updateThemeColor
   };
 }

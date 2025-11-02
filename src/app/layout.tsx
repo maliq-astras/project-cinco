@@ -42,12 +42,12 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: "/icon0.svg", type: "image/svg+xml" },
-      { url: "/icon1.png", type: "image/png" },
-      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/icon0.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/icon1.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16 32x32" },
     ],
     apple: [
-      { url: "/apple-icon.png", type: "image/png" },
+      { url: "/apple-icon.png", type: "image/png", sizes: "180x180" },
     ],
   },
 };
@@ -86,6 +86,24 @@ export default function RootLayout({
                   // Set initial background and text colors to prevent FOUC
                   document.documentElement.style.setProperty('background-color', '#000', 'important');
                   document.documentElement.style.setProperty('color', '#fff', 'important');
+                  
+                  // Set theme-color meta tag for iOS status bar
+                  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                  if (!themeColorMeta) {
+                    themeColorMeta = document.createElement('meta');
+                    themeColorMeta.name = 'theme-color';
+                    document.getElementsByTagName('head')[0].appendChild(themeColorMeta);
+                  }
+                  themeColorMeta.content = '#000000';
+                } else {
+                  // Set theme-color meta tag for iOS status bar (light mode)
+                  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                  if (!themeColorMeta) {
+                    themeColorMeta = document.createElement('meta');
+                    themeColorMeta.name = 'theme-color';
+                    document.getElementsByTagName('head')[0].appendChild(themeColorMeta);
+                  }
+                  themeColorMeta.content = '#ffffff';
                 }
 
                 // Apply high contrast mode if enabled

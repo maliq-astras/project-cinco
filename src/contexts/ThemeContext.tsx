@@ -236,7 +236,7 @@ export const ThemeProvider: React.FC<{
   const [highContrastMode, setHighContrastMode] = useState(false);
   
   // Use the theme DOM hook
-  const { isBrowser, addClass, removeClass, setCSSProperty, hasClass, getCSSProperty } = useThemeDOM();
+  const { isBrowser, addClass, removeClass, setCSSProperty, hasClass, getCSSProperty, updateThemeColor } = useThemeDOM();
 
   // Load saved preferences from localStorage on mount
   useEffect(() => {
@@ -275,8 +275,10 @@ export const ThemeProvider: React.FC<{
       if (isBrowser) {
         if (newValue) {
           addClass('dark');
+          updateThemeColor('#000000'); // Black for dark mode
         } else {
           removeClass('dark');
+          updateThemeColor('#ffffff'); // White for light mode
         }
         
         // Immediately update CSS variables
@@ -471,8 +473,10 @@ export const ThemeProvider: React.FC<{
       // Set dark/high contrast classes
       if (darkMode) {
         addClass('dark');
+        updateThemeColor('#000000'); // Black for dark mode
       } else {
         removeClass('dark');
+        updateThemeColor('#ffffff'); // White for light mode
       }
       
       if (highContrastMode) {
