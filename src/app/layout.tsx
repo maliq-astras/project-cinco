@@ -39,6 +39,17 @@ const righteous = Righteous({
 export const metadata: Metadata = {
   title: "Fact 5 - Daily Trivia Challenge",
   description: "Test your knowledge with daily trivia challenges",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icon0.svg", type: "image/svg+xml" },
+      { url: "/icon1.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", type: "image/png" },
+    ],
+  },
 };
 
 export const viewport = {
