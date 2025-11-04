@@ -14,11 +14,13 @@ export interface FinalFiveSlice {
   finalFiveTimeRemaining: number;
   isFinalFiveActive: boolean;
   isFinalFiveCompleted: boolean;
+  allCardsFlipped: boolean;
+  flippedCards: boolean[];
   showFinalFiveTransition: boolean;
   finalFiveTransitionReason: 'time' | 'guesses' | null;
   isFetchingFinalFiveOptions: boolean;
   finalFiveError: string | null;
-  
+
   // Actions
   decrementFinalFiveTimer: () => void;
   triggerFinalFive: () => Promise<void>;
@@ -27,6 +29,8 @@ export interface FinalFiveSlice {
   startFinalFive: () => void;
   resetFinalFiveError: () => void;
   filterFinalFiveOptions: () => void;
+  setAllCardsFlipped: (value: boolean) => void;
+  setFlippedCards: (value: boolean[] | ((prev: boolean[]) => boolean[])) => void;
 }
 
 export const createFinalFiveSlice: StateCreator<
@@ -39,6 +43,8 @@ export const createFinalFiveSlice: StateCreator<
   finalFiveTimeRemaining: 55, // Will be set to 5 in hard mode when game starts
   isFinalFiveActive: false,
   isFinalFiveCompleted: false,
+  allCardsFlipped: false,
+  flippedCards: [false, false, false, false, false],
   showFinalFiveTransition: false,
   finalFiveTransitionReason: null,
   isFetchingFinalFiveOptions: false,
@@ -84,10 +90,12 @@ export const createFinalFiveSlice: StateCreator<
     finalFiveRequestInProgress = true;
     
     // Reset state and show transition
-    set({ 
+    set({
       showFinalFiveTransition: true,
       finalFiveError: null,
-      finalFiveTimeRemaining: hardMode ? 5 : 55
+      finalFiveTimeRemaining: hardMode ? 5 : 55,
+      allCardsFlipped: false, // Reset for new Final Five
+      flippedCards: [false, false, false, false, false] // Reset card flip states
     });
     
     try {
@@ -352,6 +360,8 @@ export const createFinalFiveSlice: StateCreator<
     set((state: GameStore) => ({
       isFinalFiveActive: false,
       isFinalFiveCompleted: false, // Reset completion state when closing
+      allCardsFlipped: false, // Reset cards state when closing
+      flippedCards: [false, false, false, false, false], // Reset individual card states
       victoryAnimationStep: state.gameOutcome !== null ? 'summary' : null,
       isVictoryAnimationActive: state.gameOutcome === 'final-five-win'
     }));
@@ -372,6 +382,16 @@ export const createFinalFiveSlice: StateCreator<
   // Add a reset error method
   resetFinalFiveError: () => {
     set({ finalFiveError: null });
+  },
+
+  setAllCardsFlipped: (value: boolean) => {
+    set({ allCardsFlipped: value });
+  },
+
+  setFlippedCards: (value: boolean[] | ((prev: boolean[]) => boolean[])) => {
+    set((state: GameStore) => ({
+      flippedCards: typeof value === 'function' ? value(state.flippedCards) : value
+    }));
   },
   
   // Helper function to filter out previous guesses from Final Five options

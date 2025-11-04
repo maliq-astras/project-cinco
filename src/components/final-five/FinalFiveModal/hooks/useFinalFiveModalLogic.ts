@@ -16,12 +16,16 @@ export function useFinalFiveModal() {
     finalFiveTimeRemaining,
     isFinalFiveActive,
     isFinalFiveCompleted,
+    allCardsFlipped,
+    flippedCards,
     gameOutcome,
     decrementFinalFiveTimer,
     selectFinalFiveOption,
     closeFinalFive,
     hardMode,
-    isFetchingFinalFiveOptions
+    isFetchingFinalFiveOptions,
+    setAllCardsFlipped,
+    setFlippedCards
   } = useGameStore();
 
   const { colors, darkMode } = useTheme();
@@ -43,10 +47,6 @@ export function useFinalFiveModal() {
     setVerifyRetryCount,
     animationComplete,
     setAnimationComplete,
-    flippedCards,
-    setFlippedCards,
-    allCardsFlipped,
-    setAllCardsFlipped,
     startTimer,
     setStartTimer,
     timerReachedZero,
@@ -77,7 +77,6 @@ export function useFinalFiveModal() {
   // Side effects
   useFinalFiveModalEffects({
     isFinalFiveActive,
-    allCardsFlipped,
     options,
     isGameOver,
     finalFiveOptions,
@@ -90,6 +89,8 @@ export function useFinalFiveModal() {
     animationComplete,
     startTimer,
     finalFiveTimeRemaining,
+    allCardsFlipped,
+    flippedCards,
     decrementFinalFiveTimer,
     setFlippedCards,
     setAllCardsFlipped,
@@ -129,7 +130,8 @@ export function useFinalFiveModal() {
   }, [selectedOption, isFinalFiveCompleted, correctAnswer]);
 
   const getMessage = useCallback(() => {
-    if (!allCardsFlipped) {
+    // Guard: Don't show "revealing cards" if Final Five is already completed
+    if (!allCardsFlipped && !isFinalFiveCompleted) {
       return t('game.finalFive.revealingCards');
     }
 

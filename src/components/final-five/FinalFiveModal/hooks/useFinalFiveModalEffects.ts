@@ -4,7 +4,6 @@ import { UserGuess } from '@/types';
 
 interface UseFinalFiveModalEffectsProps {
   isFinalFiveActive: boolean;
-  allCardsFlipped: boolean;
   options: string[];
   isGameOver: boolean;
   finalFiveOptions: string[] | null;
@@ -17,6 +16,8 @@ interface UseFinalFiveModalEffectsProps {
   animationComplete: boolean;
   startTimer: boolean;
   finalFiveTimeRemaining: number;
+  allCardsFlipped: boolean;
+  flippedCards: boolean[];
   decrementFinalFiveTimer: () => void;
   setFlippedCards: (flippedCards: boolean[] | ((prev: boolean[]) => boolean[])) => void;
   setAllCardsFlipped: (allCardsFlipped: boolean) => void;
@@ -36,7 +37,6 @@ interface UseFinalFiveModalEffectsProps {
  */
 export function useFinalFiveModalEffects({
   isFinalFiveActive,
-  allCardsFlipped,
   options,
   isGameOver,
   finalFiveOptions,
@@ -49,6 +49,8 @@ export function useFinalFiveModalEffects({
   animationComplete,
   startTimer,
   finalFiveTimeRemaining,
+  allCardsFlipped,
+  flippedCards,
   decrementFinalFiveTimer,
   setFlippedCards,
   setAllCardsFlipped,
@@ -61,6 +63,29 @@ export function useFinalFiveModalEffects({
   setVerifyRetryCount,
   setLoadingStage
 }: UseFinalFiveModalEffectsProps) {
+
+  // Handle remount detection (e.g., after screen resize warning)
+  // Run once on mount to detect if we need to refresh or close
+  useEffect(() => {
+    // Case 1: Final Five is completed - just close it
+    if (isFinalFiveCompleted) {
+      // Small delay to avoid jarring immediate close
+      const timer = setTimeout(() => {
+        // Import closeFinalFive from parent scope
+        useGameStore.getState().closeFinalFive();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+
+    // Case 2: Final Five is active but cards are in mid-flip state
+    // This indicates a remount - reset to fresh state
+    if (isFinalFiveActive && (allCardsFlipped || flippedCards.some(f => f))) {
+      // Reset flip states to trigger fresh animation
+      setFlippedCards([false, false, false, false, false]);
+      setAllCardsFlipped(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Card flipping animation sequence
   useEffect(() => {
@@ -86,10 +111,12 @@ export function useFinalFiveModalEffects({
       }, 500);
     };
 
-    if (isFinalFiveActive && !allCardsFlipped && options.length === 5) {
+    // CRITICAL GUARD: Don't run animation if Final Five is already completed
+    // or if cards are already flipped (handles remount from screen resize)
+    if (isFinalFiveActive && !allCardsFlipped && !isFinalFiveCompleted && options.length === 5) {
       flipCardSequentially(0);
     }
-  }, [isFinalFiveActive, allCardsFlipped, options.length, setFlippedCards, setAllCardsFlipped, setStartTimer]);
+  }, [isFinalFiveActive, allCardsFlipped, isFinalFiveCompleted, options.length, setFlippedCards, setAllCardsFlipped, setStartTimer]);
 
   // Fetch correct answer when game over
   useEffect(() => {

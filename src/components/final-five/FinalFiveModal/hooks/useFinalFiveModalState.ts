@@ -9,8 +9,6 @@ export function useFinalFiveModalState() {
   const [loading, setLoading] = useState(false);
   const [verifyRetryCount, setVerifyRetryCount] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
-  const [flippedCards, setFlippedCards] = useState<boolean[]>([false, false, false, false, false]);
-  const [allCardsFlipped, setAllCardsFlipped] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
   const [timerReachedZero, setTimerReachedZero] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
@@ -26,10 +24,6 @@ export function useFinalFiveModalState() {
     setVerifyRetryCount,
     animationComplete,
     setAnimationComplete,
-    flippedCards,
-    setFlippedCards,
-    allCardsFlipped,
-    setAllCardsFlipped,
     startTimer,
     setStartTimer,
     timerReachedZero,

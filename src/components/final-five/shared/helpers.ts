@@ -13,13 +13,13 @@ export function getFinalFiveCardDimensions(width: number, height: number, isLand
     };
   } else if (width <= 768) {
     return {
-      minHeight: "90px", 
+      minHeight: "90px",
       maxWidth: "160px"
     };
-  } else if (isLandscape && height <= 600) {
+  } else if (height <= 680) {
     return {
       minHeight: "70px",
-      maxWidth: "130px" 
+      maxWidth: "130px"
     };
   } else {
     return {
@@ -41,7 +41,7 @@ export function getFinalFiveGridClasses(width: number, height: number, isLandsca
     return "grid grid-cols-2 gap-3 mb-4 mx-auto max-w-[320px] px-2";
   } else if (width <= 768) {
     return "grid grid-cols-2 gap-4 mb-6 mx-auto max-w-[420px] px-2";
-  } else if (isLandscape && height <= 600) {
+  } else if (height <= 680) {
     return "grid grid-cols-3 grid-rows-2 gap-3 mb-4 mx-auto max-w-[650px]";
   } else {
     return "grid grid-cols-3 grid-rows-2 gap-4 mb-6 mx-auto max-w-[600px]";
