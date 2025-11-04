@@ -2,6 +2,10 @@ export const getBackdropStyle = () => ({
   backdropFilter: 'blur(12px)',
 });
 
+export const getMenuContainerStyle = (primaryColor: string) => ({
+  borderTopColor: `var(--color-${primaryColor})`
+});
+
 export const getMenuTitleStyle = (primaryColor: string) => ({
   color: `var(--color-${primaryColor})`
 });

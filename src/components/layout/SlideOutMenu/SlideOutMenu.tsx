@@ -13,6 +13,7 @@ import {
   getCloseButtonAnimationProps,
   getMenuItemAnimationProps,
   getBackdropStyle,
+  getMenuContainerStyle,
   getMenuTitleStyle,
   getCloseButtonStyle,
   getMenuItemIcon
@@ -54,7 +55,8 @@ const SlideOutMenu = React.memo(function SlideOutMenu({
           {/* Slide-out menu */}
           <motion.div
             {...getSlideMenuAnimationProps()}
-            className="fixed top-0 right-0 h-full w-80 max-w-[80vw] z-[1000] bg-white dark:bg-black shadow-2xl border-l border-gray-200 dark:border-gray-700"
+            className="fixed top-0 right-0 h-full w-80 max-w-[80vw] z-[1000] bg-white dark:bg-black shadow-2xl border-l border-gray-200 dark:border-gray-700 border-t-2 rounded-t-[2px]"
+            style={getMenuContainerStyle(colors.primary)}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">

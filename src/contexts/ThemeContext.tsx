@@ -275,10 +275,10 @@ export const ThemeProvider: React.FC<{
       if (isBrowser) {
         if (newValue) {
           addClass('dark');
-          updateThemeColor('#000000'); // Black for dark mode
+          updateThemeColor('#121212'); // Dark gray for dark mode (matches CSS variable 7% brightness)
         } else {
           removeClass('dark');
-          updateThemeColor('#ffffff'); // White for light mode
+          updateThemeColor('#f9fafb'); // Light gray for light mode (matches bg-gray-50)
         }
         
         // Immediately update CSS variables
@@ -473,10 +473,10 @@ export const ThemeProvider: React.FC<{
       // Set dark/high contrast classes
       if (darkMode) {
         addClass('dark');
-        updateThemeColor('#000000'); // Black for dark mode
+        updateThemeColor('#000000'); // Pure black for dark mode
       } else {
         removeClass('dark');
-        updateThemeColor('#ffffff'); // White for light mode
+        updateThemeColor('#f9fafb'); // Light gray for light mode (matches bg-gray-50)
       }
       
       if (highContrastMode) {
