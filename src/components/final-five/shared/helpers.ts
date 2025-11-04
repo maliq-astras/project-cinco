@@ -5,7 +5,7 @@
  * @param isLandscape Whether device is in landscape orientation
  * @returns Object with minHeight and maxWidth properties
  */
-export function getFinalFiveCardDimensions(width: number, height: number, isLandscape: boolean) {
+export function getFinalFiveCardDimensions(width: number, height: number, _isLandscape: boolean) {
   if (width <= 480) {
     return {
       minHeight: "80px",
@@ -36,7 +36,7 @@ export function getFinalFiveCardDimensions(width: number, height: number, isLand
  * @param isLandscape Whether device is in landscape orientation
  * @returns CSS class string for grid layout
  */
-export function getFinalFiveGridClasses(width: number, height: number, isLandscape: boolean): string {
+export function getFinalFiveGridClasses(width: number, height: number, _isLandscape: boolean): string {
   if (width <= 480) {
     return "grid grid-cols-2 gap-3 mb-4 mx-auto max-w-[320px] px-2";
   } else if (width <= 768) {
