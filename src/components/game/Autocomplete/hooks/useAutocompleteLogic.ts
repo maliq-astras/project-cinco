@@ -96,12 +96,18 @@ export const useAutocompleteLogic = ({
       ? responsiveValues.spacing
       : inputRect.left - (desktopWidth - inputRect.width) / 2;
 
+    // Use visual viewport height on mobile to account for keyboard
+    const viewportHeight = typeof window !== 'undefined' && window.visualViewport
+      ? window.visualViewport.height
+      : height;
+
     return {
       position: 'fixed' as const,
       left: leftPosition,
-      bottom: height - inputRect.top + 6,
+      bottom: viewportHeight - inputRect.top + 6,
       width: isSmallScreen ? mobileWidth : desktopWidth,
-      zIndex: 58
+      zIndex: 58,
+      maxHeight: isSmallScreen ? '40vh' : undefined
     };
   };
 
