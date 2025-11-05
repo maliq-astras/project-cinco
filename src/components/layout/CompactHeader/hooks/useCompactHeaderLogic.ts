@@ -23,21 +23,29 @@ export const useCompactHeaderLogic = ({
   const gameState = useGameStore(state => state.gameState);
   const isTutorialOpen = useGameStore((state) => state.isTutorialOpen);
   const isSettingsOpen = useGameStore((state) => state.isSettingsPanelOpen);
+  const isFinalFiveActive = useGameStore(state => state.isFinalFiveActive);
+  const isFinalFiveCompleted = useGameStore(state => state.isFinalFiveCompleted);
+  const isPendingFinalFiveTransition = useGameStore(state => state.isPendingFinalFiveTransition);
+  const showFinalFiveTransition = useGameStore(state => state.showFinalFiveTransition);
 
   const themeColors = useMemo(() => ({
     primary: colors.primary,
     secondary: colors.secondary
   }), [colors.primary, colors.secondary]);
 
-  const menuItems = useMemo(() => 
+  const menuItems = useMemo(() =>
     generateMenuItems({
       gameState,
+      isFinalFiveActive,
+      isFinalFiveCompleted,
+      isPendingFinalFiveTransition,
+      showFinalFiveTransition,
       openSettings,
       openTutorial,
       openBugReportModal,
       openFeedbackModal
-    }), 
-    [gameState, openSettings, openTutorial, openBugReportModal, openFeedbackModal]
+    }),
+    [gameState, isFinalFiveActive, isFinalFiveCompleted, isPendingFinalFiveTransition, showFinalFiveTransition, openSettings, openTutorial, openBugReportModal, openFeedbackModal]
   );
 
   return {

@@ -15,6 +15,8 @@ export const useNavigation = ({ headerEntranceComplete = false }: UseNavigationP
     colors: state.colors,
     isGameOver: state.isGameOver,
     isFinalFiveActive: state.isFinalFiveActive,
+    isFinalFiveCompleted: state.isFinalFiveCompleted,
+    isPendingFinalFiveTransition: state.isPendingFinalFiveTransition,
     showFinalFiveTransition: state.showFinalFiveTransition,
     isDropdownOpen: state.isDropdownOpen,
     headerEntranceComplete,

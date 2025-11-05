@@ -89,6 +89,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
                 {weeklyCompletions[index] === 'completed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
                     className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.completedSymbol}`}
+                    style={{ color: 'white' }}
                     {...streakDisplayAnimations.completedSymbol(shouldAnimate, index, currentDay)}
                   >
                     ✔
@@ -97,6 +98,7 @@ export default function StreakDisplay({ className = '', shouldAnimate = false }:
                 {weeklyCompletions[index] === 'failed' && shouldShowSymbol(index, currentDay, showCurrentDaySymbol) && (
                   <motion.div
                     className={`${streakDisplayStyles.checkmark} ${streakDisplayStyles.failedSymbol}`}
+                    style={{ color: 'white' }}
                     {...streakDisplayAnimations.failedSymbol(shouldAnimate, index, currentDay)}
                   >
                     ✖

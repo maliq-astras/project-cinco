@@ -3,6 +3,10 @@ import { GameState } from '@/types';
 
 interface GenerateMenuItemsParams {
   gameState: GameState;
+  isFinalFiveActive: boolean;
+  isFinalFiveCompleted: boolean;
+  isPendingFinalFiveTransition: boolean;
+  showFinalFiveTransition: boolean;
   openSettings: () => void;
   openTutorial: () => void;
   openBugReportModal: () => void;
@@ -11,11 +15,18 @@ interface GenerateMenuItemsParams {
 
 export const generateMenuItems = ({
   gameState,
+  isFinalFiveActive,
+  isFinalFiveCompleted,
+  isPendingFinalFiveTransition,
+  showFinalFiveTransition,
   openSettings,
   openTutorial,
   openBugReportModal,
   openFeedbackModal
 }: GenerateMenuItemsParams): MenuItem[] => {
+  // Only show How to Play during active gameplay (not during Final Five or game over)
+  // Hide when: game is over, Final Five is active/completed/pending, or transition is showing
+  const shouldShowHowToPlay = !gameState.isGameOver && !isFinalFiveActive && !isFinalFiveCompleted && !isPendingFinalFiveTransition && !showFinalFiveTransition;
 
   return [
     {
@@ -24,12 +35,12 @@ export const generateMenuItems = ({
       showArrow: false,
       icon: 'settings' as const
     },
-    ...(gameState.isGameOver ? [] : [{
+    ...(shouldShowHowToPlay ? [{
       label: 'ui.navigation.howToPlay',
       onClick: openTutorial,
       showArrow: false,
       icon: 'help' as const
-    }]),
+    }] : []),
     {
       label: 'ui.navigation.feedback',
       onClick: openFeedbackModal,

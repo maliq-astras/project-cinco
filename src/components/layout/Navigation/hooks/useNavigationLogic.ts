@@ -17,6 +17,8 @@ interface UseNavigationLogicProps {
   };
   isGameOver: boolean;
   isFinalFiveActive: boolean;
+  isFinalFiveCompleted: boolean;
+  isPendingFinalFiveTransition: boolean;
   showFinalFiveTransition: boolean;
   isDropdownOpen: boolean;
   headerEntranceComplete: boolean;
@@ -31,6 +33,8 @@ export const useNavigationLogic = ({
   breakpoint,
   isGameOver,
   isFinalFiveActive,
+  isFinalFiveCompleted,
+  isPendingFinalFiveTransition,
   showFinalFiveTransition,
   isDropdownOpen,
   headerEntranceComplete,
@@ -47,7 +51,8 @@ export const useNavigationLogic = ({
   const navClasses = getResponsiveNavClasses(breakpoint);
 
   // Only show How to Play during active gameplay (not during Final Five or game over)
-  const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !showFinalFiveTransition;
+  // Hide when: game is over, Final Five is active/completed/pending, or transition is showing
+  const shouldShowHowToPlay = !isGameOver && !isFinalFiveActive && !isFinalFiveCompleted && !isPendingFinalFiveTransition && !showFinalFiveTransition;
 
   const openBugReportModal = () => {
     setIsBugReportModalOpen(true);

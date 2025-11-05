@@ -17,7 +17,9 @@ const countryIcons: IconMapping = {
   'Political History': 'history',
   'Economy': 'economy',
   'Culture & Tradition': 'culture',
+  'Culture & Traditions': 'culture', 
   'Geography & Border': 'geography',
+  'Geography & Borders': 'geography', 
   'Wildcard': 'wildcard'
 };
 
@@ -25,7 +27,7 @@ const countryIcons: IconMapping = {
 const animalIcons: IconMapping = {
   'Habitat': 'habitat',
   'Diet': 'ecological-role',
-  'Physical Characteristic': 'characteristic',
+  'Physical Characteristics': 'characteristic',
   'Evolutionary History': 'evolution',
   'Social Behavior': 'socialanimal',
   'Reproduction': 'reproduction',

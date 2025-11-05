@@ -7,6 +7,8 @@ import { useResponsive } from '@/hooks/responsive';
 interface GameStoreState {
   gameState: GameState;
   isFinalFiveActive: boolean;
+  isFinalFiveCompleted: boolean;
+  isPendingFinalFiveTransition: boolean;
   showFinalFiveTransition: boolean;
   hardMode: boolean;
   isHardModeEnabled: boolean;
@@ -36,6 +38,8 @@ export const useNavigationState = () => {
   // Use state from gameStore instead of local state
   const isGameOver = useGameStore((state: GameStoreState) => state.gameState.isGameOver);
   const isFinalFiveActive = useGameStore((state: GameStoreState) => state.isFinalFiveActive);
+  const isFinalFiveCompleted = useGameStore((state: GameStoreState) => state.isFinalFiveCompleted);
+  const isPendingFinalFiveTransition = useGameStore((state: GameStoreState) => state.isPendingFinalFiveTransition);
   const showFinalFiveTransition = useGameStore((state: GameStoreState) => state.showFinalFiveTransition);
   const hardMode = useGameStore((state: GameStoreState) => state.hardMode);
   const isHardModeEnabled = useGameStore((state: GameStoreState) => state.isHardModeEnabled);
@@ -52,7 +56,7 @@ export const useNavigationState = () => {
   return {
     // Theme
     colors,
-    
+
     // Local state
     isDropdownOpen,
     setIsDropdownOpen,
@@ -60,7 +64,7 @@ export const useNavigationState = () => {
     setIsBugReportModalOpen,
     isFeedbackModalOpen,
     setIsFeedbackModalOpen,
-    
+
     // Game store state
     isTutorialOpen,
     isSettingsOpen,
@@ -68,15 +72,17 @@ export const useNavigationState = () => {
     isHardModeEnabled,
     isGameOver,
     isFinalFiveActive,
+    isFinalFiveCompleted,
+    isPendingFinalFiveTransition,
     showFinalFiveTransition,
-    
+
     // Game store methods
     setSettingsPanelOpen,
     setTutorialOpen,
-    
+
     // Refs
     dropdownRef,
-    
+
     // Responsive values
     breakpoint,
     heightBreakpoint,
