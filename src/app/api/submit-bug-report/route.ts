@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     // Send email
     const emailData = await resend.emails.send({
-      from: 'Bug Reports <noreply@feedback>', // Using verified feedback domain
+      from: 'Bug Reports <noreply@feedback.fact5.io>', // Using verified feedback domain
       to: [process.env.BUG_REPORT_EMAIL || 'your-email@gmail.com'], // Replace with your email
       subject: `Bug Report: ${bugType.join(', ')} - ${deviceType}`,
       html: emailContent,

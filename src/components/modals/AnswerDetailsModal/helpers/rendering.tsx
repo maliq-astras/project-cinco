@@ -65,10 +65,10 @@ export const createRenderingHelpers = (props: RenderingHelpers) => {
               allowFullScreen
             />
           </div>
-        ) : challenge?.imageUrl ? (
+        ) : challenge?.metadata?.imageUrl ? (
           <div className="relative w-full h-full rounded-lg overflow-hidden">
             <Image
-              src={challenge.imageUrl}
+              src={challenge.metadata.imageUrl}
               alt={`Photo of ${capitalizeAnswer(answer)}`}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
