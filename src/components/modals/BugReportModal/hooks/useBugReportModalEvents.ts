@@ -44,12 +44,10 @@ export const useBugReportModalEvents = (props: BugReportModalEventsProps) => {
 
     } catch (error) {
       console.error('Error submitting bug report:', error);
-      // You could add error state handling here
-      // For now, we'll still show submitted state but you might want to show an error
-      props.setSubmitted(true);
-      setTimeout(() => {
-        props.onClose();
-      }, 2000);
+      // Don't show success state on error - let user know it failed
+      alert('Failed to submit bug report. Please try again.');
+      // Close modal without showing success
+      props.onClose();
     }
   }, [props]);
 

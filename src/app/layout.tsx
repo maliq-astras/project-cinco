@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from '@vercel/analytics/react';
 import "./globals.css";
 import { Inter, Quicksand, Iceberg, Righteous } from 'next/font/google'
 
@@ -126,6 +127,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${quicksand.variable} ${iceberg.variable} ${righteous.variable} font-sans`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
