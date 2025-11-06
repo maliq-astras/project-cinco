@@ -3,6 +3,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useResponsive } from '@/hooks/responsive';
 import { getLayoutMode, isMobileLayout } from '@/constants/breakpoints';
+import { storage, STORAGE_KEYS } from '@/utils/localStorage';
 import type { GameControlsHandle } from '@/components/game/GameControls';
 
 export function useMainContainerState() {
@@ -33,6 +34,9 @@ export function useMainContainerState() {
   const todayGameData = useGameStore(state => state.todayGameData);
   const isResumeModalOpen = useGameStore(state => state.isResumeModalOpen);
   const setResumeModalOpen = useGameStore(state => state.setResumeModalOpen);
+  const isWelcomeModalOpen = useGameStore(state => state.isWelcomeModalOpen);
+  const setWelcomeModalOpen = useGameStore(state => state.setWelcomeModalOpen);
+  const setTutorialOpen = useGameStore(state => state.setTutorialOpen);
 
   // Theme state
   const { colors } = useTheme();
@@ -60,6 +64,19 @@ export function useMainContainerState() {
       setGameEntranceComplete(true);
     }
   }, [hasSeenTodaysLoadingAnimation, gameState.challenge]);
+
+  // Show welcome modal for first-time visitors
+  useEffect(() => {
+    if (loadingComplete && gameEntranceComplete && gameState.challenge) {
+      const hasSeenWelcome = storage.get(STORAGE_KEYS.WELCOME_SEEN, false);
+      if (!hasSeenWelcome && !isWelcomeModalOpen) {
+        // Small delay to ensure smooth transition after loading
+        setTimeout(() => {
+          setWelcomeModalOpen(true);
+        }, 500);
+      }
+    }
+  }, [loadingComplete, gameEntranceComplete, gameState.challenge]); // Intentionally exclude isWelcomeModalOpen and setWelcomeModalOpen to prevent re-running when modal state changes
   
   // Ref for game controls
   const gameControlsRef = useRef<GameControlsHandle>(null);
@@ -94,6 +111,9 @@ export function useMainContainerState() {
     todayGameData,
     isResumeModalOpen,
     setResumeModalOpen,
+    isWelcomeModalOpen,
+    setWelcomeModalOpen,
+    setTutorialOpen,
     hasSeenTodaysLoadingAnimation,
     setHasSeenTodaysLoadingAnimation,
 

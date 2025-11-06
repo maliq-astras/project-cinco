@@ -69,7 +69,10 @@ export const useMainContainer = () => {
     startFinalFive: state.startFinalFive,
     isResumeModalOpen: state.isResumeModalOpen,
     setResumeModalOpen: state.setResumeModalOpen,
-    
+    isWelcomeModalOpen: state.isWelcomeModalOpen,
+    setWelcomeModalOpen: state.setWelcomeModalOpen,
+    setTutorialOpen: state.setTutorialOpen,
+
     // Logic results
     isTabletLandscape: logic.isTabletLandscape,
     showGameMessage: logic.showGameMessage,

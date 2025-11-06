@@ -11,10 +11,12 @@ import {
   LanguageSwitchLoader
 } from '@/components';
 import ResumeGameModal from '@/components/modals/ResumeGameModal';
+import WelcomeModal from '@/components/modals/WelcomeModal';
 import GameContentRenderer from '../GameContentRenderer';
 import { getHeaderComponent } from './helpers';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScreenSizeValidation } from '@/hooks/ui/useScreenSizeValidation';
+import { storage, STORAGE_KEYS } from '@/utils/localStorage';
 import ScreenSizeWarning from '../../ui/ScreenSizeWarning';
 
 export default function MainContainer() {
@@ -42,7 +44,10 @@ export default function MainContainer() {
     smartScalingStyle,
     needsMobileLayout,
     isResumeModalOpen,
-    setResumeModalOpen
+    setResumeModalOpen,
+    isWelcomeModalOpen,
+    setWelcomeModalOpen,
+    setTutorialOpen
   } = useMainContainer();
   
   const { isLanguageSwitching } = useLanguage();
@@ -119,6 +124,21 @@ export default function MainContainer() {
           const store = useGameStore.getState();
           store.setShouldPauseTimer(false);
           store.startTimer();
+        }}
+      />
+
+      {/* Welcome Modal */}
+      <WelcomeModal
+        isOpen={isWelcomeModalOpen}
+        onComplete={(preferences) => {
+          setWelcomeModalOpen(false);
+          // Mark as seen - theme and language are already applied from user interactions
+          storage.set(STORAGE_KEYS.WELCOME_SEEN, true);
+
+          // Handle tutorial choice
+          if (preferences.showTutorial) {
+            setTutorialOpen(true);
+          }
         }}
       />
     </div>

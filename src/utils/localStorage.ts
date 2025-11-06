@@ -6,7 +6,8 @@ export const STORAGE_KEYS = {
   STREAK_DATA: 'factfive_streak_data',
   PREFERENCES: 'factfive_preferences',
   LAST_CHALLENGE_DATE: 'factfive_last_challenge_date',
-  TIMER_DATA: 'factfive_timer_data'
+  TIMER_DATA: 'factfive_timer_data',
+  WELCOME_SEEN: 'factfive_welcome_seen'
 } as const;
 
 // Type-safe localStorage utilities

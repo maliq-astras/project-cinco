@@ -18,6 +18,7 @@ export interface UISlice {
   isSettingsPanelOpen: boolean;
   isTutorialOpen: boolean;
   isResumeModalOpen: boolean;
+  isWelcomeModalOpen: boolean;
   
   // Autocomplete settings
   isAutocompleteEnabled: boolean;
@@ -32,6 +33,7 @@ export interface UISlice {
   setSettingsPanelOpen: (isOpen: boolean) => void;
   setTutorialOpen: (isOpen: boolean) => void;
   setResumeModalOpen: (isOpen: boolean) => void;
+  setWelcomeModalOpen: (isOpen: boolean) => void;
   setAutocompleteEnabled: (enabled: boolean) => void;
   setHasUserInput: (hasInput: boolean) => void;
   setHasSeenTodaysLoadingAnimation: (hasSeen: boolean) => void;
@@ -58,6 +60,7 @@ export const createUISlice: StateCreator<
   isSettingsPanelOpen: false,
   isTutorialOpen: false,
   isResumeModalOpen: false,
+  isWelcomeModalOpen: false,
   
   // Autocomplete settings
   isAutocompleteEnabled: false, // Default to disabled, like dark mode
@@ -89,6 +92,12 @@ export const createUISlice: StateCreator<
   setResumeModalOpen: (isOpen: boolean) => {
     set({ isResumeModalOpen: isOpen });
     // Pause timer when resume modal is open
+    get().setShouldPauseTimer(isOpen);
+  },
+
+  setWelcomeModalOpen: (isOpen: boolean) => {
+    set({ isWelcomeModalOpen: isOpen });
+    // Pause timer when welcome modal is open
     get().setShouldPauseTimer(isOpen);
   },
 

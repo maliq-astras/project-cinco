@@ -310,6 +310,27 @@
       "submit": "Enviar"
     }
   },
+  "setup": {
+    "welcome": {
+      "title": "¡Bienvenido a Fact 5",
+      "subtitle": "Elige tus preferencias"
+    },
+    "theme": {
+      "label": "Tema",
+      "description": "Elige tu apariencia preferida"
+    },
+    "language": {
+      "label": "Idioma",
+      "description": "Selecciona tu idioma preferido"
+    },
+    "continue": "Continuar",
+    "tutorial": {
+      "title": "¡Listo para Jugar!",
+      "description": "¿Te gustaría ver un tutorial rápido para aprender a jugar?",
+      "skip": "Omitir Tutorial",
+      "view": "Ver Tutorial"
+    }
+  },
   "tutorial": {
     "navigation": {
       "continue": "Haz clic en cualquier lugar para continuar",

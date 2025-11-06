@@ -317,6 +317,27 @@
       "submit": "Submit"
     }
   },
+  "setup": {
+    "welcome": {
+      "title": "Welcome to Fact 5",
+      "subtitle": "Choose your preferences"
+    },
+    "theme": {
+      "label": "Theme",
+      "description": "Choose your preferred appearance"
+    },
+    "language": {
+      "label": "Language",
+      "description": "Select your preferred language"
+    },
+    "continue": "Continue",
+    "tutorial": {
+      "title": "Ready to Play!",
+      "description": "Would you like to see a quick tutorial to learn how to play?",
+      "skip": "Skip Tutorial",
+      "view": "View Tutorial"
+    }
+  },
   "tutorial": {
     "navigation": {
       "continue": "Click anywhere to continue",

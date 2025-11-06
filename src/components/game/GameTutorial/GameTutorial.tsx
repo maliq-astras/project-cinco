@@ -78,8 +78,8 @@ const GameTutorial = React.memo(function GameTutorial({ isOpen, onClose }: GameT
         </motion.p>
       </motion.div>
 
-      <motion.div 
-        className={styles.progressContainer}
+      <motion.div
+        className={`${styles.progressContainer} ${currentStep <= 4 ? styles.progressContainerBottom : styles.progressContainerTop}`}
         {...getProgressContainerAnimationProps()}
       >
         <motion.p 
