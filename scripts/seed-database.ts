@@ -145,16 +145,20 @@ function groupByCategory(challengeFiles: Array<{ filePath: string; category: Cat
     groups[file.category].push(file);
   });
 
-  // Shuffle within each category for variety (deterministic)
+  // Shuffle within each category for variety (randomized each run)
   Object.keys(groups).forEach(category => {
-    groups[category].sort((a, b) => {
-      const aHash = a.fileName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const bHash = b.fileName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      return aHash - bHash;
-    });
+    shuffleArray(groups[category]);
   });
 
   return groups;
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 /**
@@ -165,12 +169,8 @@ function createSmartRotation(challengeFiles: Array<{ filePath: string; category:
   const categories = Object.keys(groups);
   const result: Array<{ filePath: string; category: CategoryType; fileName: string }> = [];
 
-  // Shuffle category order for variety (deterministic)
-  const shuffledCategories = categories.sort((a, b) => {
-    const aHash = a.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const bHash = b.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return aHash - bHash;
-  });
+  // Shuffle category order for variety (randomized each run)
+  const shuffledCategories = shuffleArray(categories.slice());
 
   // Round-robin distribution to avoid consecutive same categories
   let categoryIndex = 0;
