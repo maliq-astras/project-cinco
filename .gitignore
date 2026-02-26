@@ -24,6 +24,8 @@
 .DS_Store
 *.pem
 .claude
+/bug-dossiers
+/challenges
 
 # debug
 npm-debug.log*
