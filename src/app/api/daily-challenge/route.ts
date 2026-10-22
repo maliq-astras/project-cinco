@@ -9,8 +9,34 @@ import { TIMEOUTS } from '@/constants/timeouts';
 import { createValidationErrorResponse, createNotFoundResponse, createInternalErrorResponse } from '@/utils/errorUtils';
 import { logger } from '@/utils/logger';
 import { getEasternDateString } from '@/utils/easternTime';
+import { selectChallengeForDate } from '@/utils/challengeSchedule';
 
 // Database indexes are initialized elsewhere to avoid Next.js route validation issues
+
+async function queryWithTimeout<T>(query: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      query,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_QUERY);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+function localizeFactContent(
+  content: Challenge['facts'][number]['content'] | null | undefined,
+  language: 'en' | 'es'
+): string {
+  if (typeof content === 'string') return content;
+  if (content && typeof content === 'object') {
+    return content[language] || content.en || '';
+  }
+  return '';
+}
 
 // Cache the daily challenge fetch for 5 minutes
 // Cache is automatically invalidated at Eastern midnight due to date-based cache key
@@ -27,54 +53,51 @@ const getDailyChallenge = unstable_cache(
 
     const challengesCollection = db.collection('challenges') as Collection<Challenge>;
 
-    // Add timeout handling for database query
-    const dbPromise = challengesCollection.findOne(
-      { date: today },
-      { projection: { _id: 0 } }
-    );
+    const scheduled = await queryWithTimeout(
+      challengesCollection.findOne(
+        { date: today },
+        { projection: { _id: 0 } }
+      )
+    ) as Challenge | null;
 
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Database query timed out')), TIMEOUTS.DB_QUERY)
-    );
-
-    const challenge = await Promise.race([dbPromise, timeoutPromise]) as Challenge | null;
-
-    if (!challenge) {
-      logger.info('No challenge found for today, attempting fallback', {
+    if (scheduled) {
+      logger.info('Found daily challenge', {
         component: 'daily-challenge-api',
         operation: 'getDailyChallenge',
-        date: today
+        challengeId: scheduled.challengeId,
+        category: scheduled.category
       });
-
-      // Fallback: Get any available challenge if no challenge exists for today
-      const fallbackChallenge = await challengesCollection.findOne(
-        {},
-        {
-          projection: { _id: 0 },
-          sort: { date: 1 } // Get the earliest challenge
-        }
-      ) as Challenge | null;
-
-      if (fallbackChallenge) {
-        logger.info('Using fallback challenge', {
-          component: 'daily-challenge-api',
-          operation: 'getDailyChallenge',
-          fallbackDate: fallbackChallenge.date,
-          targetDate: today
-        });
-      }
-
-      return fallbackChallenge;
+      return scheduled;
     }
 
-    logger.info('Found daily challenge', {
+    // Seeded dates are a finite list. After the last one, walk that same
+    // order again so a new challenge is served every day.
+    logger.info('No challenge scheduled for today, recycling roster', {
       component: 'daily-challenge-api',
       operation: 'getDailyChallenge',
-      challengeId: challenge.challengeId,
-      category: challenge.category
+      date: today
     });
 
-    return challenge;
+    const roster = await queryWithTimeout(
+      challengesCollection
+        .find({}, { projection: { _id: 0 } })
+        .sort({ date: 1 })
+        .toArray()
+    ) as Challenge[];
+
+    const selected = selectChallengeForDate(roster, today);
+    if (!selected) return null;
+
+    logger.info('Serving recycled challenge', {
+      component: 'daily-challenge-api',
+      operation: 'getDailyChallenge',
+      challengeId: selected.challenge.challengeId,
+      category: selected.challenge.category,
+      servedDate: today,
+      rosterSize: roster.length
+    });
+
+    return selected.challenge;
   },
   ['daily-challenge'], // Base cache key
   {
@@ -109,13 +132,13 @@ export async function GET(request: Request) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { answer, ...challengeWithoutAnswer } = challenge;
 
+    const facts = Array.isArray(challenge.facts) ? challenge.facts : [];
+
     return NextResponse.json({
       ...challengeWithoutAnswer,
-      facts: challenge.facts.map(fact => ({
+      facts: facts.map(fact => ({
         ...fact,
-        content: typeof fact.content === 'string'
-          ? fact.content // If content is already a string, keep it as is
-          : (fact.content[language] || fact.content.en) // If content has language keys, get the right one
+        content: localizeFactContent(fact?.content, language)
       })),
       // Include metadata and expanded content for answer details
       metadata: challenge.metadata ? {
